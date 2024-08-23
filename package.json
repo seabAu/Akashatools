@@ -1,7 +1,7 @@
 {
     "name": "akashatools",
-    "version": "1.0.0",
-    "description": "A collection of useful utiility functions for processing and rendering data, handling large or deeply-nested object-arrays, and verification of all data-types in javascript. ",
+    "version": "1.0.2",
+    "description": "A collection of useful utility functions for processing and rendering data, handling large or deeply-nested object-arrays, searching large JSON objects or databases for deeply nested values, and verification of most data-types in javascript. ",
     "main": "lib/index.js",
     "repository": {
         "type": "git",
