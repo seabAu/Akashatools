@@ -472,11 +472,56 @@ imports the large shared `time.js` module.
 | `filterTimestampAdapterItemsByWindow` | Filters timeline view models through overlap policy. | App-local composition. |
 | `validateTemporalItemAdapterContract` | Validates Mindspace view-model required/forbidden fields and Date ordering. | App-local contract validation. |
 
+## Export-level review — color and local text processing
+
+This pass covers 24 exports: 18 from `color.js`, 3 from
+`localTextInsights.js`, and 3 from `speechTextCleanup.js`.
+
+### Client `color.js` (18 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `randRGBChannel` | Multiplies by 257, allowing invalid channel value 256. | Reject implementation; `randomInt(0, 255)` supplies a valid primitive. |
+| `generateColorFromName` | Hashes a name to HSL but can emit negative hue. | Defer deterministic string-color API with normalized hue and collision expectations. |
+| `rgbRand` | Generates three channels through broken `randRGBChannel`. | Reject; future color helper composes validated channels. |
+| `rgbToHex` | Bitwise RGB-to-hex conversion without channel/type validation and without `#`. | Defer a strict color category. |
+| `randomColor` | Returns unprefixed hex using invalid-channel generator. | Reject; future random color needs format and injected-source options. |
+| `stringToHue` | String hash modulo can return negative hue. | Defer normalized deterministic hue helper. |
+| `stringToColor` | Formats HSL from unnormalized hue and unchecked saturation/lightness. | Defer strict color API. |
+| `colorByHashCode` | Interpolates unescaped caller text into an HTML string/style attribute. | Reject injection-prone presentation helper. |
+| `hslToHex` | Standard HSL conversion but does not validate/wrap channel ranges. | Candidate for a separately specified `color` category. |
+| `hslaToHex` | HSL conversion plus unchecked alpha-to-byte conversion. | Candidate after alpha/range policy is defined. |
+| `invertColor` | Expands 3-digit hex and inverts RGB; malformed hex digits can yield NaN-derived output. | Candidate with strict hex parser. |
+| `padZero` | Internal left-zero helper with off-by-one construction style. | Native `padStart`; not public. |
+| `stringAsColor` | Duplicate string hash to hex/hex-alpha; alpha zero is treated as absent. | Merge only into future deterministic color API. |
+| `createGradientFromColors` | Produces Tailwind/arbitrary CSS class strings with direction and fallback policy. | App-local styling. |
+| `createTextGradientFromColors` | Tailwind text-gradient class builder. | App-local styling. |
+| `createBorderGradientFromColors` | Tailwind border-gradient class builder. | App-local styling. |
+| `interpolateColor` | Interpolates numeric RGB arrays but does not validate factor/channels. | Candidate for strict color API. |
+| `interpolateColors` | Parses RGB strings by digit regex; `steps <= 1` creates invalid factors. | Defer/rewrite on top of validated color parser/interpolator. |
+
+### Client `localTextInsights.js` (3 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `deriveMoodFromSentiment` | Maps three sentiment labels to Mindspace mood copy. | App-local product vocabulary. |
+| `analyzeTextForOrganization` | English word lists infer Mindspace tags, categories, urgency, action signals, and sentiment. | App-local heuristic; generic tokenization/statistics may be extracted only with independent tests. |
+| `mergeUniqueTags` | Trims string tags, deduplicates, and limits to 12 by default. | Native map/filter/Set/slice composition; default limit is app policy. |
+
+### Client `speechTextCleanup.js` (3 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `transformSpeechTranscript` | Configurable English speech cleanup for filler words, spoken punctuation/structure/symbols/numbers, spacing, duplicates, and capitalization. | Defer as an optional English speech/text transform surface, not universal string behavior. |
+| `createSpeechTextTransformer` | Curries base speech options into a transformer. | Defer with the parent transform; generic currying wrapper is unnecessary. |
+| `cleanupSpeechTranscript` | Exact forwarding alias of `transformSpeechTranscript`. | Reject duplicate canonical name; compatibility alias only if a consumer requires it. |
+
 ## Export-level audit status
 
 - [x] Universal core: array/object/string/math/sort/client+server validation.
 - [x] Data/schema/random/error-validation cluster (58 exports).
 - [x] Date selection and timestamp adapter cluster (29 exports).
+- [x] Color/local-text/speech-cleanup cluster (24 exports).
 - [ ] Generic client candidates: export names and dispositions.
 - [ ] Browser/environment client candidates: export names and dispositions.
 - [ ] Generic server candidates: export names and duplicate matrix.

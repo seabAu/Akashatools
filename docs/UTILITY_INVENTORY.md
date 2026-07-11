@@ -263,6 +263,7 @@ with their own contracts.
   sorting, and client/server validation (66 exports).
 - [x] Mindspace data/schema/random/error-validation cluster reviewed (58 exports).
 - [x] Mindspace date-selection/timestamp-adapter cluster reviewed (29 exports).
+- [x] Mindspace color/local-text/speech-cleanup cluster reviewed (24 exports).
 - [ ] Portfolio rebuild client/server/shared utilities.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.

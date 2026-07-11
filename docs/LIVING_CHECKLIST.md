@@ -168,6 +168,8 @@ Acceptance criteria:
   and validation-error parsing exports.
 - [x] Inventory and disposition the 29 Mindspace date-selection and timestamp
   adapter exports.
+- [x] Inventory and disposition the 24 Mindspace color, local-text insight, and
+  English speech-cleanup exports.
 - [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [ ] Inventory generic server utilities under `app/server/utilities`.
 - [ ] Separate primitives from React, routing, notification, queue, recurrence,
@@ -525,6 +527,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Reject global prototype extension modules. | Importing Akashatools must never patch built-in prototypes, install chains, log, or change global behavior. |
 | 2026-07-11 | Keep schema-driven fixture generation app-local by default. | Network calls, custom model classes, database IDs, and domain schemas are not generic randomness primitives. |
 | 2026-07-11 | Do not silently guess zoned local times across DST ambiguity. | Generic local-input conversion needs explicit gap/overlap and invalid-zone policy rather than locale-string offset heuristics. |
+| 2026-07-11 | Keep language/product heuristics outside universal string helpers. | English filler words, sentiment labels, tags, categories, and dictation policy require an explicit optional surface. |
 
 ## Definition of done
 

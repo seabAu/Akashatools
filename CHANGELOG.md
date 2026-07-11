@@ -20,6 +20,8 @@
   and validation-error parsing exports.
 - Added export-level dispositions for 29 Mindspace date-selection and timestamp
   adapter exports.
+- Added export-level dispositions for 24 Mindspace color, local-text insight, and
+  speech-cleanup exports.
 - Added strict immutable `array.flatten` with native depth and sparse-slot
   semantics.
 - Enforced the `[0, 1)` contract for injected random sources and added
