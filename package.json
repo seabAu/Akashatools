@@ -1,0 +1,19 @@
+{
+    "name": "akashatools",
+    "version": "1.0.2",
+    "description": "A collection of useful utility functions for processing and rendering data, handling large or deeply-nested object-arrays, searching large JSON objects or databases for deeply nested values, and verification of most data-types in javascript. ",
+    "main": "lib/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/seabAu/Akashatools.git"
+    },
+    "directories": {
+        "lib": "lib",
+        "test": "test"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Sean Brown",
+    "license": "ISC"
+}
