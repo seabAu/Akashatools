@@ -22,8 +22,8 @@ copied code as independent evidence.
 | Admin field coercion | 1 | Complete below. |
 | Shared JSON contract validation | 2 | Complete below. |
 | Client DOM/data/debug utilities | 32 | Complete below. |
-| Copied/derived server legacy and app modules | 71 | Pending detailed ledger. |
-| **Total** | **120** | **49 complete; 71 pending.** |
+| Copied/derived server legacy and app modules | 71 | Complete below. |
+| **Total** | **120** | **Complete.** |
 
 ## Secure field paths: `server/utilities/fieldPath.js` (5 exports)
 
@@ -171,10 +171,149 @@ contract.
 The file is empty. It contributes no candidate behavior and is complete by
 classification.
 
-## Remaining portfolio audit
+## Verified server legacy copies (58 exports)
+
+These files are source-identical to reviewed Mindspace modules except that the
+portfolio `time.js` stops after `d8` and therefore lacks Mindspace's later
+`sanitizeDateArray` export. They provide consumer/provenance evidence, not 58
+independent reasons to preserve broken behavior.
+
+| Portfolio file | Exports | Verified relationship | Authoritative findings |
+| --- | ---: | --- | --- |
+| `server/utilities/file.js` | 7 | Exact byte-for-byte Mindspace copy. | [`MINDSPACE_SERVER.md`](./MINDSPACE_SERVER.md#filejs-7-exports) |
+| `server/utilities/utils.js` | 29 | Exact byte-for-byte Mindspace copy. | [`MINDSPACE_SERVER.md`](./MINDSPACE_SERVER.md#utilsjs-29-exports) |
+| `server/utilities/validation.js` | 4 | Exact byte-for-byte Mindspace copy. | [`MINDSPACE.md`](./MINDSPACE.md#server-validationjs-4-exports) |
+| `server/utilities/time.js` | 18 | Exact prefix of Mindspace server time; Mindspace adds one later export. | [`MINDSPACE_TIME.md`](./MINDSPACE_TIME.md#server-timejs-19-exports) |
+
+### Copied `file.js` export map (7)
+
+| Portfolio export | Akashatools disposition |
+| --- | --- |
+| `findFilesByPattern` | Reject undeclared-`glob` implementation; defer deliberate Node glob API. |
+| `saveFile` | Native Node write API or future explicit atomic/overwrite helper. |
+| `getFile` | App-local Mindspace media adapter. |
+| `getFiles` | App-local media adapter composition. |
+| `deleteFile` | Reject unrestricted-path and false-success implementation. |
+| `importFile` | Reject always-early return; future HTTP/file APIs remain separate. |
+| `checkImageURL` | Reject misleading extension-only image-validity claim. |
+
+### Copied `time.js` export map (18)
+
+| Portfolio export | Akashatools disposition |
+| --- | --- |
+| `isValidDate` | `date.isValidDate`. |
+| `dateToUnixSeconds` | Reject milliseconds-under-seconds bug; use `date.toUnixSeconds`. |
+| `unixSecondsToDate` | Reject milliseconds-under-seconds bug; use `date.fromUnixSeconds`. |
+| `_getFormattedTime` | App-local/`Intl`. |
+| `formatDate` | `date.localDateKey`. |
+| `formatDateTime` | Reject implicit-now fallback; use strict `date.formatDateTime`. |
+| `formatDateYYYYMMDD` | `date.localDateKey`. |
+| `dateFormatYYYYMMDD` | `date.localDateKey`. |
+| `formatDateTimezone` | Reject undefined-helper implementation; use `date.formatDate` with `timeZone`. |
+| `humanFriendlyDateStr` | App-local or future `Intl.RelativeTimeFormat` wrapper. |
+| `getDate` | App-local current-date template copy. |
+| `convert` | Explicit parser plus formatter; reject unvalidated text reordering. |
+| `YYYY_MM_DD_Formatter` | `date.localDateKey` or explicit display preset. |
+| `sameDay` | Defer explicitly named `isSameUtcDay` only if used. |
+| `isSameDay` | `date.isSameLocalDay`. |
+| `isToday` | `date.isToday`. |
+| `daysInMonth` | `date.daysInMonth`. |
+| `d8` | Reject monolith and broken `subtract`; extract primitives independently. |
+
+This copied module performs the same import-time `Date.prototype` mutations as
+Mindspace. Portfolio duplication reinforces the need for inert imports; it does
+not make the mutation a compatibility requirement.
+
+### Copied `utils.js` export map (29)
+
+| Portfolio export | Akashatools disposition |
+| --- | --- |
+| `generateTokenAndSetCookie` | App-owned auth; reject billion-day JWT unit bug. |
+| `chkfxRequestID` | Reject logging/shape-dependent Mongoose coercion. |
+| `isObjectIdValid` | Defer explicitly named Mongo predicate and dependency decision. |
+| `sendResponse` | Express/Mindspace response adapter. |
+| `SpliceObjArray` | Reject mutating, misleadingly named object-array merge. |
+| `catchAsync` | Express middleware adapter. |
+| `pick` | Independently covered by `object.pick`. |
+| `mergeProps` | Reject Mongoose patching that loses falsy updates. |
+| `swapIfValid` | Native explicit nullish/blank conditional. |
+| `isObject` | `object.isPlainObject`. |
+| `objectDeepMerge` | Reject unsafe mutation; use `object.deepMerge`. |
+| `hasOwnProperty` | Native `Object.hasOwn`. |
+| `parseSchema2` | App-local/reject duplicate Mongoose schema parser. |
+| `parseSchema` | App-local/reject inconsistent Mongoose parser. |
+| `getPropertyType` | App-local Mongoose reflection. |
+| `getPropertyTypeFromConstructor` | App-local parser helper. |
+| `parsePropertyDetails` | App-local Mongoose reflection. |
+| `getMongooseArrayType` | App-local Mongoose labeling. |
+| `getSchemaInfo` | Reject broken branch; any replacement remains a Mongoose adapter. |
+| `processSchema` | Defer only with an explicit schema-description format. |
+| `getSchemaDefinition` | App-local third Mongoose description format. |
+| `validateInputData` | Explicit own-key validation; keep English response copy app-local. |
+| `fetchNestedDocuments` | App-owned Mongo graph query. |
+| `isArray` | Native `Array.isArray`. |
+| `isValidArray` | Reject ambiguous first-slot/boolean-option semantics. |
+| `isObjectArray` | Reject ambiguous some-versus-every object semantics. |
+| `arrayContainsObjects` | Compose native `some` with a precise predicate. |
+| `isAO` | Reject broad abbreviated umbrella predicate. |
+| `handleCheckRequired` | Reject undeclared-namespace and falsy-value defects. |
+
+### Copied `validation.js` export map (4)
+
+| Portfolio export | Akashatools disposition |
+| --- | --- |
+| `isValidEmail` | Merge only tested syntax improvements into `validation.isEmail`. |
+| `isValidPhoneNumber` | Reject international-validity implication from regex/length approximation. |
+| `formatPhoneNumber` | `validation.formatNanpPhone` for explicit NANP behavior; international formatting deferred. |
+| `getValidationErrorMessage` | App-local English form feedback. |
+
+## Portfolio server app/framework modules (13 exports)
+
+### Recurrence and scheduling (6)
+
+| File/export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `client-recurrence-calculator.js` / `getNextOccurrenceForRule` | Exact copy of Mindspace's client-compatible reminder recurrence calculator. | App-owned reminder/rrule policy. |
+| `recurrence.calculator.js` / `getNextOccurrenceForRule` | Exact copy of the separate Mindspace server recurrence implementation under the same export name. | App-owned; identical name hides distinct contracts. |
+| `client-scheduler.js` / `calculateNextRunClient` | Calculates Mindspace reminder next-run state using its recurrence records. | App-owned scheduler. |
+| `client-scheduler.js` / `generateMockNotificationData` | Creates notification fixtures from reminder fields. | App-owned fixture/presentation data. |
+| `scheduler.utils.js` / `getNextOnDayOccurrence` | Searches up to 365 UTC days for named weekdays and applies a target UTC time. | App-owned recurrence primitive until weekday/timezone/range behavior is independently specified. |
+| `scheduler.utils.js` / `calculateNextRunAt` | Chooses future trigger/recurrence dates from Mindspace reminder shapes; active logic ignores `onDay` rules despite importing recurrence support. | App-owned; reject as generic scheduling API. |
+
+### Socket.IO registry (5)
+
+| Portfolio export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `unregisterSocket` | Mutates user-to-socket map and returns affected users. | App-local Socket.IO registry. |
+| `registerUserSocket` | Enforces one user per socket through global unregister then mutation. | App-local identity policy. |
+| `getUserSocketIds` | Normalizes set/array/string registry values into a copied list. | App-local. |
+| `emitToUserSockets` | Emits a Socket.IO event to every registered user socket without the later Mindspace liveness pruning. | App/framework adapter. |
+| `countRegisteredSockets` | Counts normalized socket IDs across registry values. | App-local registry metric. |
+
+### Authentication and SMS (2)
+
+| File/export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `generateTokenAndSetCookie.js` / `generateToken` | Couples jsonwebtoken, environment secret, and Express cookie policy; milliseconds are interpolated as JWT days and a `Date` is passed as cookie `maxAge`. | App-owned authentication; reject implementation. |
+| `notify.sms.js` / default `sendSMS` | Configures dotenv and a Twilio client at import, logs success/errors, and swallows delivery failures. | App-owned provider adapter; never import from a universal entry point. |
+
+## Portfolio inventory result
+
+- All 120 runtime exports are dispositioned: 49 in the core/client sections and
+  71 in the copied/app server sections.
+- Exact copies do not outrank the current Mindspace version or create new
+  compatibility promises. Their consumers will be fixtures for canonical APIs.
+- Portfolio search, admin sessions, public snapshots, navigation, and storage
+  service policy outside these requested utility roots remain app-local by
+  default; feature-local review is still a separate checklist item.
+- The only pending direct adoption candidates from this source set are the two
+  contained-path operations, gated on the Node surface design.
+
+## Portfolio audit status
 
 - [x] Client `DOM.js`, `Data.js`, and `Debug.js` (32 exports); empty
   `buildNav.js` is classified and has no public surface.
-- [ ] Copied server `file.js`, `time.js`, `utils.js`, and `validation.js` (58 exports).
-- [ ] Scheduler/recurrence, socket, auth-cookie, and SMS modules (13 exports).
-- [ ] Replace remaining group totals with a verified per-module completion table.
+- [x] Generic/security core and shared contracts (17 exports).
+- [x] Copied server `file.js`, `time.js`, `utils.js`, and `validation.js` (58 exports).
+- [x] Scheduler/recurrence, socket, auth-cookie, and SMS modules (13 exports).
+- [x] Per-module source counts total exactly 120 runtime exports.

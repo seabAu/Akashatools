@@ -266,8 +266,8 @@ with their own contracts.
 - [x] Mindspace data/schema/random/error-validation cluster reviewed (58 exports).
 - [x] Mindspace date-selection/timestamp-adapter cluster reviewed (29 exports).
 - [x] Mindspace color/local-text/speech-cleanup cluster reviewed (24 exports).
-- [ ] Portfolio rebuild client/server/shared utilities; 17 core-candidate
-  exports are dispositioned in `docs/inventory/PORTFOLIO.md`.
+- [x] Portfolio rebuild client/server/shared utilities; all 120 runtime exports
+  are dispositioned in `docs/inventory/PORTFOLIO.md`.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.
 - [ ] Cross-project behavior-group and duplicate matrix.

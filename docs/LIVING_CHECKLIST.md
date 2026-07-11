@@ -184,12 +184,13 @@ Acceptance criteria:
 
 ### 2.3 Portfolio rebuild
 
-- [ ] Inventory `client/src/utilities`, `server/utilities`, and shared contracts.
+- [x] Inventory all 120 runtime exports in `client/src/utilities`,
+  `server/utilities`, and shared contracts.
 - [x] Review field-path, own-property, stable-order, field-coercion, network, and
   contained-path utilities for generalized contracts.
 - [ ] Keep portfolio search, admin session, public snapshot, navigation, and
   storage policy app-local unless a clear independent abstraction emerges.
-- [ ] Compare portfolio legacy utility copies against Mindspace and Akashatools
+- [x] Compare portfolio legacy utility copies against Mindspace and Akashatools
   before adopting any implementation.
 
 ### 2.4 COMPOSR
