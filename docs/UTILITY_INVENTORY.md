@@ -50,7 +50,7 @@ Runtime: universal JavaScript, but coupled through the circular legacy
 | `findAll` | Filters by one exact property and optionally plucks another property. | Native `filter` plus `map`, or future `findAllBy` if usage supports it. | Source reviewed. |
 | `objectFindByKey` | Linear property lookup returning either an object or `{ error: "Not found" }`. | Native `find`; reject sentinel return shape. | Source reviewed. |
 | `splice` | Mutates every object in an array with `Object.assign`; name conflicts with array splice. | Reject; use immutable `map` plus object spread. | Source reviewed; mutation proven. |
-| `flatten` | This-bound recursive array flattening that calls nonexistent `this.flatten` in normal module use. | Native `Array.prototype.flat`; add canonical `flatten` wrapper only with explicit depth tests. | Defect proven from source. |
+| `flatten` | This-bound recursive array flattening that calls nonexistent `this.flatten` in normal module use. | Adopted strict `array.flatten`, delegating to native `flat` with documented depth and sparse-slot behavior. | Defect proven; 2.x flatten tests. |
 | `flattenObj` | Mutates nullish values in the input and joins nested keys with underscores without collision protection. | Defer a safe path-aware record flattener. | Source reviewed; mutation/key collision risk. |
 | `flattenObjArray` | Applies `flattenObj` with inconsistent nesting and return shapes. | Merge only after a canonical record-flatten contract exists. | Source reviewed. |
 | `flatMapObjText` | Recursively concatenates object labels and values for display without separators. | App-local presentation. | Source reviewed. |

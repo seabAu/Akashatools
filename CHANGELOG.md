@@ -16,6 +16,8 @@
   environment/framework, or application-owned scope.
 - Added export-level dispositions for 66 Mindspace core array, object, string,
   math, sort, and client/server validation exports.
+- Added strict immutable `array.flatten` with native depth and sparse-slot
+  semantics.
 - Added named, tree-shakeable root exports and explicit category subpaths.
 - Added modern array, async, browser, collection, date, number, object, random,
   sort, string, and validation modules.

@@ -78,6 +78,28 @@ export function unique(values, toKey = (value) => value) {
 }
 
 /**
+ * Flattens nested arrays to a requested depth without mutating the input.
+ * Semantics match `Array.prototype.flat`: `Infinity` flattens every level and
+ * sparse slots are removed at levels that are flattened.
+ *
+ * @template T
+ * @param {readonly T[]} values
+ * @param {number} [depth=Infinity]
+ * @returns {unknown[]}
+ * @throws {TypeError} If `values` is not an array or depth is not an integer.
+ * @throws {RangeError} If depth is negative or exceeds the safe-integer range.
+ * @since 2.0.0
+ */
+export function flatten(values, depth = Infinity) {
+  assertArray(values, "values");
+  if (depth !== Infinity && !Number.isSafeInteger(depth)) {
+    throw new TypeError("depth must be a non-negative safe integer or Infinity.");
+  }
+  if (depth < 0) throw new RangeError("depth cannot be negative.");
+  return values.flat(depth);
+}
+
+/**
  * Moves one item to another position without mutating the input.
  *
  * @template T

@@ -246,7 +246,7 @@ module. It also covers the side-effect-only `arrayEnhanced.js` module.
 | `getArrayElementTypes` | Returns structured homogeneity/type information. | Defer as a possible `inspectArrayTypes`; keep separate from basic type predicates. |
 | `chunkArray` | Chunks arrays but silently coerces invalid sizes to one. | Adopted strict `array.chunk`. |
 | `uniqueArray` | Set/key dedupe but logs and drops values when `keyFn` throws. | Adopted `array.unique`; callback failures propagate. |
-| `flattenArray` | Delegates to native `flat` with legacy fallback and silently normalizes depth. | Add planned strict `array.flatten`; use native `flat` meanwhile. |
+| `flattenArray` | Delegates to native `flat` with legacy fallback and silently normalizes depth. | Adopted strict `array.flatten` with native depth/sparse-slot semantics. |
 | `shuffleArray` | Immutable Fisher–Yates using `Math.random`. | Adopted `array.shuffle` with injectable randomness. |
 | `groupBy` | Returns a plain object, accepts property/function keys, and swallows key errors. | Adopted `array.groupBy` returning a collision-safe `Map`; errors propagate. |
 | `intersection` | Ignores non-array arguments and retains duplicates from the first input. | Adopted strict, unique `array.intersection`. |

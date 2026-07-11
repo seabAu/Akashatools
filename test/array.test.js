@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   chunk,
   compact,
+  flatten,
   groupBy,
   insertItem,
   intersection,
@@ -39,6 +40,23 @@ test("array set, grouping, range, zip, and shuffle helpers are deterministic", (
   assert.deepEqual(zip([1, 2], ["a", "b", "c"]), [[1, "a"], [2, "b"]]);
   assert.deepEqual(groupBy([1, 2, 3], (value) => value % 2).get(1), [1, 3]);
   assert.deepEqual(shuffle([1, 2, 3], () => 0), [2, 3, 1]);
+});
+
+test("flatten follows native depth semantics without mutating its input", () => {
+  const source = [1, [2, [3, [4]]]];
+  assert.deepEqual(flatten(source), [1, 2, 3, 4]);
+  assert.deepEqual(flatten(source, 1), [1, 2, [3, [4]]]);
+  assert.deepEqual(flatten(source, 0), source);
+  assert.notEqual(flatten(source, 0), source);
+  assert.deepEqual(source, [1, [2, [3, [4]]]]);
+});
+
+test("flatten documents native sparse-slot removal and rejects invalid depth", () => {
+  const sparse = [1, , [2, , 3]];
+  assert.deepEqual(flatten(sparse, 1), [1, 2, 3]);
+  assert.throws(() => flatten([], -1), RangeError);
+  assert.throws(() => flatten([], 1.5), TypeError);
+  assert.throws(() => flatten([], Number.MAX_SAFE_INTEGER + 1), TypeError);
 });
 
 test("invalid array arguments fail visibly", () => {

@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 21 tests currently pass.
+- [x] Add dependency-free Node tests; 23 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -208,7 +208,7 @@ Acceptance criteria:
 
 ### 3.1 Arrays and collections
 
-- [ ] Add and test `flatten` with explicit depth semantics.
+- [x] Add and test `flatten` with explicit depth semantics.
 - [ ] Evaluate `difference`, `union`, `partition`, `keyBy`, `countBy`, `sample`,
   `take`, and `drop` from actual consumer usage.
 - [ ] Consolidate reorder/move/insert/remove variants around immutable contracts.
