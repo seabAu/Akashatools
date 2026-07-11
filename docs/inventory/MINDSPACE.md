@@ -524,9 +524,11 @@ This pass covers 24 exports: 18 from `color.js`, 3 from
 - [x] Color/local-text/speech-cleanup cluster (24 exports).
 - [x] Client/server time cluster and duplicate matrix (84 exports); see
   [`MINDSPACE_TIME.md`](./MINDSPACE_TIME.md).
-- [ ] Generic client candidates: export names and dispositions.
+- [x] Generic client candidates: export names and dispositions.
 - [ ] Browser/environment client candidates: export names and dispositions.
-- [ ] Remaining generic server candidates: export names and duplicate matrix.
-- [ ] Node/framework server candidates: primitive/framework separation.
+- [x] Generic server candidates: export names and duplicate matrix.
+- [x] Node/framework server candidates: primitive/framework separation across
+  43 exports and one side-effect-only module; see
+  [`MINDSPACE_SERVER.md`](./MINDSPACE_SERVER.md).
 - [x] App-owned modules classified and excluded at module level.
 - [x] Archived/defunct modules isolated from active-source decisions.

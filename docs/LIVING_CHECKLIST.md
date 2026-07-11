@@ -172,9 +172,9 @@ Acceptance criteria:
   English speech-cleanup exports.
 - [x] Inventory and disposition all 84 client/server time exports and record the
   exact 16-name duplicate matrix.
-- [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
-- [ ] Inventory generic server utilities under `app/server/utilities`.
-- [ ] Separate primitives from React, routing, notification, queue, recurrence,
+- [x] Inventory generic client utilities under `app/client/src/lib/utilities`.
+- [x] Inventory generic server utilities under `app/server/utilities`.
+- [x] Separate inventoried primitives from React, routing, notification, queue, recurrence,
   authentication, and domain-owned behavior.
 - [ ] Compare client/server duplicates for time, validation, file, schema, and
   data operations.
@@ -532,6 +532,8 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep language/product heuristics outside universal string helpers. | English filler words, sentiment labels, tags, categories, and dictation policy require an explicit optional surface. |
 | 2026-07-11 | Never migrate utility-module writes to built-in prototypes. | Mindspace time modules patch `Date.prototype` during import; public package imports must remain inert and globally isolated. |
 | 2026-07-11 | Treat Unix-second APIs as strict unit contracts. | Legacy Mindspace helpers named for seconds actually consumed and returned milliseconds, creating silent thousand-fold errors. |
+| 2026-07-11 | Design the Node file surface from security contracts, not legacy wrappers. | Mindspace file helpers allow unrestricted paths, synchronous I/O, logging, undeclared dependencies, and false-success deletion; portfolio containment behavior must be compared first. |
+| 2026-07-11 | Keep database, web-framework, socket, and authentication adapters outside universal categories. | Mongoose, Express, Socket.IO, JWT/cookie, and app session contracts are useful but not environment-neutral primitives. |
 
 ## Definition of done
 
