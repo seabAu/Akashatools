@@ -162,6 +162,8 @@ Acceptance criteria:
 
 - [x] Classify every active module under the client/server utility roots as a
   generic candidate, environment/framework candidate, or app-owned module.
+- [x] Inventory and disposition the 66 universal-core exports across Mindspace
+  array, object, string, math, sort, and client/server validation modules.
 - [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [ ] Inventory generic server utilities under `app/server/utilities`.
 - [ ] Separate primitives from React, routing, notification, queue, recurrence,
@@ -516,6 +518,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Treat namespace collisions as test/build-time contract failures. | Silent overwrites are unsafe, while runtime scanning would add import work and hinder tree-shaking. |
 | 2026-07-11 | Preserve legacy intent, not demonstrably broken legacy behavior. | Compatibility aliases must not perpetuate reference errors, hidden mutation, misleading return types, or swallowed failures. |
 | 2026-07-11 | Classify source modules before migrating their exports. | Utility folders contain substantial domain and framework behavior; module location alone is not evidence of genericity. |
+| 2026-07-11 | Reject global prototype extension modules. | Importing Akashatools must never patch built-in prototypes, install chains, log, or change global behavior. |
 
 ## Definition of done
 

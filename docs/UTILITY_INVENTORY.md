@@ -259,6 +259,8 @@ with their own contracts.
 - [ ] Mindspace generic client utilities.
 - [ ] Mindspace generic server utilities.
 - [x] Mindspace active utility modules classified by portability/environment.
+- [x] Mindspace universal core exports reviewed: arrays, objects, strings, math,
+  sorting, and client/server validation (66 exports).
 - [ ] Portfolio rebuild client/server/shared utilities.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.
