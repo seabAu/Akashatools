@@ -525,7 +525,8 @@ This pass covers 24 exports: 18 from `color.js`, 3 from
 - [x] Client/server time cluster and duplicate matrix (84 exports); see
   [`MINDSPACE_TIME.md`](./MINDSPACE_TIME.md).
 - [x] Generic client candidates: export names and dispositions.
-- [ ] Browser/environment client candidates: 52 of 77 exports dispositioned in
+- [x] Browser/environment client candidates: all 77 exports plus four
+  initially zero-declaration/side-effect candidates dispositioned in
   [`MINDSPACE_BROWSER.md`](./MINDSPACE_BROWSER.md).
 - [x] Generic server candidates: export names and duplicate matrix.
 - [x] Node/framework server candidates: primitive/framework separation across

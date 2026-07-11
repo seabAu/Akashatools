@@ -115,7 +115,7 @@ Acceptance criteria:
   `schema` category or belong in a separate package/add-on.
 - [ ] Decide whether debug helpers merit a `debug` category or should be replaced
   by application logging/diagnostic interfaces.
-- [ ] Keep environment-specific modules out of universal entry points when merely
+- [x] Keep environment-specific modules out of universal entry points when merely
   importing them could reference unavailable globals.
 
 ### 1.3 Naming and signature conventions
@@ -172,10 +172,12 @@ Acceptance criteria:
   English speech-cleanup exports.
 - [x] Inventory and disposition all 84 client/server time exports and record the
   exact 16-name duplicate matrix.
-- [x] Inventory and disposition the first 37 Mindspace browser/UI/React runtime
-  exports; the fetch/import/I/O group remains.
+- [x] Inventory and disposition all 37 Mindspace browser/UI/React runtime
+  exports.
 - [x] Inventory and disposition all 15 Mindspace storage, credential-crypto, and
   service-worker debug queue exports.
+- [x] Inventory and disposition all 25 Mindspace fetch/import/export/I/O exports
+  and review prototype/Markdown/sentence modules without ESM declarations.
 - [x] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [x] Inventory generic server utilities under `app/server/utilities`.
 - [x] Separate inventoried primitives from React, routing, notification, queue, recurrence,
@@ -331,7 +333,7 @@ Acceptance criteria:
 - [ ] Define object URL revocation timing for synchronous and deferred clicks.
 - [ ] Evaluate clipboard, file reading, storage, and DOM helpers individually;
   avoid a miscellaneous browser dumping ground.
-- [ ] Keep React hooks and rendered DOM construction outside the core library.
+- [x] Keep React hooks and rendered DOM construction outside the core library.
 
 ### 4.2 Node filesystem and paths
 
@@ -541,6 +543,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep database, web-framework, socket, and authentication adapters outside universal categories. | Mongoose, Express, Socket.IO, JWT/cookie, and app session contracts are useful but not environment-neutral primitives. |
 | 2026-07-11 | Keep filesystem containment on a Node-only surface. | Lexical and realpath containment are valuable, but importing Node modules cannot leak into universal entry points and path resolution alone does not authorize a later filesystem mutation. |
 | 2026-07-11 | Separate lexical containment from existing realpath containment. | Pure resolution is useful for destination planning, while symlink-aware checks require existing paths and filesystem I/O; neither is permanent authorization against later path changes. |
+| 2026-07-11 | Require provenance and license review for embedded third-party utility source. | Mindspace includes old global-style Markdown code and an unattributed large word list; location in a utility folder is not permission or evidence that copying is maintainable. |
 
 ## Definition of done
 

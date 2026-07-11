@@ -16,9 +16,9 @@ in addition to named declarations.
 | --- | ---: | --- |
 | Browser/UI/React/runtime helpers | 37 | Complete below. |
 | Storage, credential crypto, and service-worker queue | 15 | Complete below. |
-| Fetch, import/export, and I/O | 25 | Pending. |
-| `markdown.js`, `prototypes.js`, `sentence.js` | 0 | Pending side-effect/provenance review. |
-| **Total** | **77** | **52 complete; 25 pending.** |
+| Fetch, import/export, and I/O | 25 | Complete below. |
+| `markdown.js`, `prototypes.js`, `sentence.js` | 0 | Side-effect/provenance review complete. |
+| **Total** | **77** | **Complete.** |
 
 ## `browser.js` (5 exports)
 
@@ -176,3 +176,95 @@ format needs a stricter and independently reviewed contract.
 - Akashatools will not log storage values, credentials, tokens, or imported data.
 - IndexedDB success is transaction completion, not merely one request's success;
   opened connections require deterministic cleanup.
+
+## `fetch.js` (10 exports)
+
+This 1,701-line module is Mindspace's API/auth/error/UI coordinator. It imports
+the application API service, auth persistence, global/error stores, permissions,
+Sonner, and several legacy Akashatools helpers. Its redaction/error-extraction
+work is valuable application behavior, but the public functions do not define a
+portable fetch layer.
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `validateInputs` | Treats all falsy values as missing; with `doThrow=false` it never records failures and always returns `{ valid: true }`. | Reject; use explicit own-key/value predicates and structured validation results. |
+| `reportClientRuntimeError` | Normalizes/redacts errors, writes Mindspace stores/local logs, and triggers toast/modal presentation. | App-owned diagnostics coordinator; reusable redaction requires a separate threat model. |
+| `getResultData` | Returns only nested, nonempty arrays from one response-envelope shape; uses instance `.hasOwnProperty` and returns null for valid empty arrays/scalars. | Reject misleading generic name; response parsing belongs to an explicit HTTP/envelope contract. |
+| `debounce` | Delays calls but loses dynamic `this`, returns no result/Promise, has no cancel/flush/pending controls, and does not validate function/wait. | Defer a `function.debounce` contract based on real consumers; async callers must not be silently orphaned. |
+| `attemptAuthTokenRefresh` | Public wrapper over a deduplicated Mindspace refresh endpoint and payload aliases. | App-owned authentication. |
+| `handleApiRequest` | Combines API-client dispatch, auth headers, loading/state setters, app envelopes, error stores, DB-unavailable fallback, token refresh/retry, logout, toast, timers, and redirects. | App-owned control plane; extract only independently testable HTTP primitives. |
+| `handleAPIRequestDebounced` | Debounces the async API coordinator with the void-returning debounce helper, so callers cannot await results/errors and superseded calls disappear silently. | Reject as generic API; request coalescing/debouncing needs explicit cancellation/result semantics. |
+| `handleFetchToast` | Maps types to Sonner methods with random IDs, serialized descriptions, app styling, default logging action, and swallowed presentation errors. | App-owned presentation. |
+| `handleError` | Coordinates global error display/state, DOM readiness timers, logging, and optional rethrow as a new Error that loses original identity/cause. | App-owned; generic HTTP errors retain cause and never schedule UI. |
+| `handleSuccess` | Extracts one response envelope, mutates UI state, and emits a Sonner toast containing placeholder `message: "test"`. | App-owned/reject placeholder behavior. |
+
+The module is requirements evidence for the future HTTP surface: `AbortSignal`,
+timeouts, typed errors, safe body parsing, secret redaction, retry eligibility,
+refresh coordination, and app presentation must be separate layers.
+
+## `import-export.js` (11 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `JSON_EXPORT_FORMAT` | Mindspace envelope identifier. | App-owned versioned format constant. |
+| `createJSONExportPayload` | Builds Mindspace format/version/type/time/metadata/data envelope and normalizes scalar data into an array. | App-owned export contract; generic bundle builders need caller-defined schemas. |
+| `stringifyJSONExportPayload` | Thin configurable `JSON.stringify`. | Native API; no wrapper needed. |
+| `parseJSONImportPayload` | Accepts Mindspace envelopes/bare arrays, checks type, runs caller normalization, and returns English success/error objects; normalization errors are reported as parse failures. | App-owned import adapter; separate syntax, envelope, normalization, and validation errors. |
+| `readJSONFile` | Uses `File.text`/`FileReader`, catches read/parse errors into Mindspace result copy, then delegates to the envelope parser. | Defer generic browser file reading with abort/size/encoding/error contracts. |
+| `downloadJSONExport` | Creates the Mindspace envelope, sanitizes its filename, downloads it, and returns the payload. | App-owned composition; generic download primitives already exist. |
+| `exportToJSON` | Legacy schema projection logs full data and output, defaults invalid schema to `{}`, and assumes array input. | Reject logging/data-exposure and ambiguous schema behavior. |
+| `exportToCSV` | Uses schema field labels as unescaped headers and quotes row cells; its `type` argument is unused. | Defer standards-compliant CSV serializer with delimiter/newline/formula-injection policy. |
+| `importFromJSON` | Validates Mindspace type/schema and logs validation results; returns partial data on schema failures. | App-owned schema import. |
+| `importFromCSV` | Parser splits physical lines before quote handling, so quoted newlines are impossible; applies Mindspace field/default/coercion policy. | Reject as generic CSV parser; use a tested grammar/dependency. |
+| `downloadFile` | Creates/clicks/removes an anchor and immediately revokes the object URL. | Duplicate of adopted `browser.downloadTextFile`/`downloadBlob`; filename and revocation refinements remain on that canonical API. |
+
+## `io.js` (4 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `convertToCSV` | Iterates enumerable fields and concatenates raw values without quoting/escaping, so commas, quotes, newlines, inherited keys, and objects corrupt output. | Reject; future tested CSV serializer. |
+| `downloadCSV` | Builds rows from object key order rather than header mapping, performs no CSV escaping, ignores `options`, then duplicates browser download behavior. | Reject. |
+| `csvFileToArray` | Splits only on commas/newlines, retains carriage returns, cannot parse quotes, and assigns untrusted header names directly to ordinary objects. | Reject parser and unsafe field construction. |
+| `downloadJSON` | Duplicates JSON browser download but never revokes its object URL. | Replaced by `browser.downloadJson`. |
+
+## Non-ESM/side-effect modules (0 exports)
+
+### `prototypes.js`
+
+Importing this file immediately assigns enumerable methods to
+`Array.prototype`, `Object.prototype`, and `Date.prototype`. `Array#isValid`
+also references undeclared `checkLength`; shuffle mutates its receiver and uses
+`Math.random`. The entire module is rejected. Equivalent useful behaviors are
+native or canonical standalone functions, and Akashatools never patches globals.
+
+### `markdown.js`
+
+This embeds the 2013 `downshow.js` HTML-to-Markdown implementation with a
+BSD-style license notice and CommonJS/AMD/browser-global branching. In an ESM
+browser import it assigns `window.downshow`; outside a DOM it attempts CommonJS
+`require("jsdom")`. It has no ESM export. Do not copy it into Akashatools:
+evaluate a maintained dependency and exact license/provenance or independently
+specify the conversion subset and security behavior.
+
+### `sentence.js`
+
+This file declares a roughly ten-thousand-entry English word list plus local
+random word/sentence/paragraph functions, but exports nothing. Importing it
+allocates the list without making behavior accessible. Its word-list provenance
+is not documented in the file. Reject it from the package until provenance is
+known and a deterministic fixture/text-generation contract is justified.
+
+## Browser/environment result
+
+- All 77 ESM exports and all four initially zero-declaration/side-effect modules
+  in this candidate set are now classified. (`click.js` contributes one
+  export-list export and is not actually zero-surface.)
+- Existing canonical browser coverage remains intentionally small:
+  `downloadBlob`, `downloadTextFile`, and `downloadJson` perform explicit
+  call-time effects with injectable browser objects.
+- No Firebase, React, Zustand, Sonner, Tailwind, IndexedDB database name,
+  Mindspace envelope, auth flow, or global prototype change enters universal
+  Akashatools.
+- Deferred candidates require distinct contracts: browser storage, file reading,
+  CSS custom properties, speech presentation, loopback hosts, debounce, CSV,
+  and possibly React refs in a separate ecosystem adapter.
