@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 25 tests currently pass.
+- [x] Add dependency-free Node tests; 28 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -110,7 +110,7 @@ Acceptance criteria:
 - [x] Confirm and document the stable categories: `array`, `async`, `browser`,
   `collection`, `date`, `function`, `http`, `number`, `object`, `random`, `sort`,
   `string`, and `validation`.
-- [ ] Design a separate `node` surface for filesystem/path/runtime utilities.
+- [x] Design a separate `node` surface for filesystem/path/runtime utilities.
 - [ ] Decide whether schema and data-model helpers are generic enough for a
   `schema` category or belong in a separate package/add-on.
 - [ ] Decide whether debug helpers merit a `debug` category or should be replaced
@@ -331,8 +331,8 @@ Acceptance criteria:
 
 ### 4.2 Node filesystem and paths
 
-- [ ] Create `akashatools/node` without importing it from the universal root.
-- [ ] Generalize the portfolio contained-path protection and test traversal,
+- [x] Create `akashatools/node` without importing it from the universal root.
+- [x] Generalize the portfolio contained-path protection and test traversal,
   symlink, separator, drive-letter, UNC, and case-sensitivity scenarios.
 - [ ] Design async file read/write helpers around explicit encoding and abort
   behavior.
@@ -536,6 +536,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Design the Node file surface from security contracts, not legacy wrappers. | Mindspace file helpers allow unrestricted paths, synchronous I/O, logging, undeclared dependencies, and false-success deletion; portfolio containment behavior must be compared first. |
 | 2026-07-11 | Keep database, web-framework, socket, and authentication adapters outside universal categories. | Mongoose, Express, Socket.IO, JWT/cookie, and app session contracts are useful but not environment-neutral primitives. |
 | 2026-07-11 | Keep filesystem containment on a Node-only surface. | Lexical and realpath containment are valuable, but importing Node modules cannot leak into universal entry points and path resolution alone does not authorize a later filesystem mutation. |
+| 2026-07-11 | Separate lexical containment from existing realpath containment. | Pure resolution is useful for destination planning, while symlink-aware checks require existing paths and filesystem I/O; neither is permanent authorization against later path changes. |
 
 ## Definition of done
 

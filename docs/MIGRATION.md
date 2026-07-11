@@ -48,8 +48,9 @@ security, and modern native equivalents before entering the public API.
   Mindspace-specific scheduling or recurrence policy.
 - Portfolio admin/session behavior, storage policy, and COMPOSR profiler bundle
   contracts that depend on application-owned types.
-- Filesystem utilities until a separate Node-only entry point and path-containment
-  contract are designed.
+- General file reads, writes, deletion, and discovery until their Node-only
+  encoding, abort, atomicity, glob, and operation-time containment contracts are
+  designed. Lexical and existing-realpath containment are now available.
 - HTTP wrappers until cancellation, retry, timeout, body parsing, and error-shape
   contracts are specified independently of the source applications.
 
@@ -71,8 +72,9 @@ clear generic contracts before becoming package APIs.
 
 ## Remaining phases
 
-1. Add a Node-only `akashatools/node` surface for contained filesystem paths,
-   file discovery, and safe file reads/writes.
+1. Extend the new Node-only `akashatools/node` surface only after file discovery
+   and safe read/write/delete contracts address encoding, aborts, atomicity, and
+   operation-time containment.
 2. Specify a fetch surface around `AbortSignal`, timeouts, typed HTTP errors, and
    response parsing before replacing the legacy HTTP module.
 3. Consolidate the remaining date-range, timezone, schema-to-model, sort, and

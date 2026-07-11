@@ -62,8 +62,8 @@ automatically.
 
 | Portfolio export | Finding | Akashatools disposition |
 | --- | --- | --- |
-| `resolveContainedPath` | Resolves a nonempty relative storage key and rejects null bytes, absolute paths, different drives/shares, and lexical traversal outside a root. It supports injected POSIX/Windows path APIs in tests. | Defer to planned `akashatools/node`; preserve this lexical contract with stronger types and platform tests. |
-| `resolveExistingContainedPath` | Applies lexical containment, resolves root/target symlinks with `realpath`, then rejects an existing target outside the real root. | Defer to Node surface; document existence requirement and that resolution alone cannot eliminate a later symlink/TOCTOU race. |
+| `resolveContainedPath` | Resolves a nonempty relative storage key and rejects null bytes, absolute paths, different drives/shares, and lexical traversal outside a root. It supports injected POSIX/Windows path APIs in tests. | Adopted on `akashatools/node` with strict arguments and cross-platform internal contract tests. |
+| `resolveExistingContainedPath` | Applies lexical containment, resolves root/target symlinks with `realpath`, then rejects an existing target outside the real root. | Adopted on `akashatools/node`, explicitly documenting existence, propagated filesystem errors, and symlink/TOCTOU limits. |
 
 These are materially safer than the copied legacy file deletion helpers. They
 are not universal exports because importing them loads `node:fs/promises` and
@@ -102,11 +102,11 @@ contracts and tests.
 
 ## Core-candidate result
 
-- Ten functions were adopted/generalized across `object`, `sort`, and
-  `validation`; one blocked-key helper remains internal.
+- Twelve functions were adopted/generalized across `object`, `sort`,
+  `validation`, and the Node-only surface; one blocked-key helper remains
+  internal.
 - Four network/field-coercion exports remain app-owned.
-- Two contained-path exports are the leading candidates for the future Node-only
-  entry point and are deferred until its security and error contracts are set.
+- Two contained-path exports now form the initial Node-only entry point.
 - No Portfolio source file is copied wholesale. The current implementations add
   validation, clearer names, modern native APIs, and narrower public signatures.
 
@@ -306,8 +306,8 @@ not make the mutation a compatibility requirement.
 - Portfolio search, admin sessions, public snapshots, navigation, and storage
   service policy outside these requested utility roots remain app-local by
   default; feature-local review is still a separate checklist item.
-- The only pending direct adoption candidates from this source set are the two
-  contained-path operations, gated on the Node surface design.
+- No direct adoption candidate remains unresolved in this source set; deferred
+  app behavior still requires demonstrated cross-project demand.
 
 ## Portfolio audit status
 

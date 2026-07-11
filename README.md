@@ -30,8 +30,8 @@ akasha.chunk([1, 2, 3, 4, 5], 2);
 The namespace prioritizes convenience. Named and category imports remain the
 focused option for explicit dependencies and minimal bundling.
 
-Every function is a named root export, allowing modern bundlers to tree-shake
-unused code:
+Every universal function is a named root export, allowing modern bundlers to
+tree-shake unused code:
 
 ```js
 import { chunk, getAtPath, safeFilename } from "akashatools";
@@ -56,6 +56,23 @@ import { array, object } from "akashatools";
 array.unique([1, 1, 2]);
 object.hasAtPath({ user: { id: 1 } }, "user.id");
 ```
+
+Node-only functions use a separate entry point so browser/shared imports never
+load Node filesystem modules:
+
+```js
+import {
+  resolveContainedPath,
+  resolveExistingContainedPath,
+} from "akashatools/node";
+
+resolveContainedPath("/srv/media", "2026/report.pdf");
+```
+
+The first function performs lexical containment without I/O. The second
+requires both paths to exist, resolves symlinks, and rejects a real target
+outside the real root. A resolved string is still a point-in-time check, not
+permanent authorization for a later destructive filesystem operation.
 
 ## Unified array removal
 

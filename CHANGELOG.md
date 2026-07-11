@@ -35,5 +35,7 @@
 - Added prototype-pollution protection to nested paths and deep object merging.
 - Added bounded concurrency mapping from COMPOSR's utility package.
 - Added safe nested path and JSON contract helpers from the portfolio rebuild.
+- Added a separate `akashatools/node` entry point with lexical and existing-realpath
+  containment checks, including cross-platform and symlink-escape tests.
 - Retained the 1.x `akashatools/lib` entry points as compatibility exports.
 - Added a dependency-free Node test suite and JSDoc for public functions.

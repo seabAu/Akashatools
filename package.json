@@ -1,7 +1,7 @@
 {
   "name": "akashatools",
   "version": "2.0.0-alpha.1",
-  "description": "Dependency-free JavaScript utilities for arrays, objects, strings, numbers, dates, validation, async workflows, and browser tasks.",
+  "description": "Dependency-free JavaScript utilities for shared, browser, and Node.js application code.",
   "type": "module",
   "main": "./src/index.js",
   "exports": {
@@ -11,6 +11,7 @@
     "./browser": "./src/browser.js",
     "./collection": "./src/collection.js",
     "./date": "./src/date.js",
+    "./node": "./src/node.js",
     "./number": "./src/number.js",
     "./object": "./src/object.js",
     "./random": "./src/random.js",
@@ -36,7 +37,7 @@
   },
   "scripts": {
     "check": "node --run check:syntax && node --run test",
-    "check:syntax": "node --check src/index.js && node --check lib/index.js",
+    "check:syntax": "node --check src/index.js && node --check src/node.js && node --check src/internal/contained-path.js && node --check lib/index.js",
     "test": "node --test",
     "pack:check": "npm pack --dry-run"
   },
@@ -56,5 +57,8 @@
     "objects"
   ],
   "author": "Sean Brown",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.20.1"
+  }
 }
