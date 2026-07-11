@@ -170,6 +170,8 @@ Acceptance criteria:
   adapter exports.
 - [x] Inventory and disposition the 24 Mindspace color, local-text insight, and
   English speech-cleanup exports.
+- [x] Inventory and disposition all 84 client/server time exports and record the
+  exact 16-name duplicate matrix.
 - [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [ ] Inventory generic server utilities under `app/server/utilities`.
 - [ ] Separate primitives from React, routing, notification, queue, recurrence,
@@ -528,6 +530,8 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep schema-driven fixture generation app-local by default. | Network calls, custom model classes, database IDs, and domain schemas are not generic randomness primitives. |
 | 2026-07-11 | Do not silently guess zoned local times across DST ambiguity. | Generic local-input conversion needs explicit gap/overlap and invalid-zone policy rather than locale-string offset heuristics. |
 | 2026-07-11 | Keep language/product heuristics outside universal string helpers. | English filler words, sentiment labels, tags, categories, and dictation policy require an explicit optional surface. |
+| 2026-07-11 | Never migrate utility-module writes to built-in prototypes. | Mindspace time modules patch `Date.prototype` during import; public package imports must remain inert and globally isolated. |
+| 2026-07-11 | Treat Unix-second APIs as strict unit contracts. | Legacy Mindspace helpers named for seconds actually consumed and returned milliseconds, creating silent thousand-fold errors. |
 
 ## Definition of done
 

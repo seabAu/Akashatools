@@ -522,9 +522,11 @@ This pass covers 24 exports: 18 from `color.js`, 3 from
 - [x] Data/schema/random/error-validation cluster (58 exports).
 - [x] Date selection and timestamp adapter cluster (29 exports).
 - [x] Color/local-text/speech-cleanup cluster (24 exports).
+- [x] Client/server time cluster and duplicate matrix (84 exports); see
+  [`MINDSPACE_TIME.md`](./MINDSPACE_TIME.md).
 - [ ] Generic client candidates: export names and dispositions.
 - [ ] Browser/environment client candidates: export names and dispositions.
-- [ ] Generic server candidates: export names and duplicate matrix.
+- [ ] Remaining generic server candidates: export names and duplicate matrix.
 - [ ] Node/framework server candidates: primitive/framework separation.
 - [x] App-owned modules classified and excluded at module level.
 - [x] Archived/defunct modules isolated from active-source decisions.
