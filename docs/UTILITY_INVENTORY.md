@@ -269,7 +269,8 @@ with their own contracts.
 - [x] Portfolio rebuild client/server/shared utilities; all 120 runtime exports
   are dispositioned in `docs/inventory/PORTFOLIO.md`.
 - [x] COMPOSR `app/packages/utilities` public surface.
-- [ ] COMPOSR utility-like cross-package primitives.
+- [x] COMPOSR utility-like cross-package primitives; see
+  `docs/inventory/COMPOSR_CROSS_PACKAGE.md`.
 - [x] Cross-project behavior-group and duplicate matrix; see
   `docs/DUPLICATE_ANALYSIS.md`.
 - [ ] Machine-readable legacy-to-modern alias manifest after canonical names settle.

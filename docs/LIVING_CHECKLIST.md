@@ -202,7 +202,9 @@ Acceptance criteria:
 ### 2.4 COMPOSR
 
 - [x] Inventory all exports in `app/packages/utilities`.
-- [ ] Inventory later utility-like primitives that live in other COMPOSR packages.
+- [x] Inventory all 79 public function declarations outside `@composr/utilities`
+  plus the HTTP class/transport surface, individually dispositioning 21
+  utility-like candidates.
 - [x] Keep profiler bundle logic coupled to COMPOSR contracts app-local.
 - [x] Generalize only dependency-free primitives or abstractions whose dependency
   belongs naturally in Akashatools.

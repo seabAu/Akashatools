@@ -88,6 +88,8 @@ conflicts are summarized here.
 | Debouncing | Mindspace fetch-local `debounce` | Deferred until sync/async result, context, cancel, flush, signal, and timing contracts are chosen. |
 | HTTP requests | Akashatools legacy HTTP and Mindspace API coordinator | Deferred typed HTTP layer; auth/store/toast/redirect policy remains app-owned. |
 | CSV | multiple Mindspace serializers/parsers | Reject naive implementations; evaluate a maintained grammar/dependency and formula-injection policy. |
+| Numeric distribution summaries | COMPOSR transition percentile/statistics helper | Adopt a strict finite-input `number.summarizeNumbers`; use null rather than false zero statistics for empty data. |
+| Security redaction/target checks | Mindspace error redaction and COMPOSR security package | Deferred threat-modeled security surface; HTTP transport must pin validated addresses and revalidate redirects. |
 | Debugging | legacy and portfolio console helpers | Deferred/inert injectable diagnostics; unconditional logging rejected. |
 | Prototype extensions | Mindspace prototype modules and time side effects | Rejected categorically; standalone functions only. |
 
