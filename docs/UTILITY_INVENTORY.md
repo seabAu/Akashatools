@@ -224,11 +224,37 @@ Runtime: console and legacy namespace formatting. Export count: 1.
 | `Debug.js` | 1 | Complete source review and preliminary disposition. |
 | **Total** | **119** | **Every 1.0.2 named export recorded.** |
 
+## COMPOSR — `app/packages/utilities`
+
+Runtime: TypeScript ESM. The package declares `@composr/contracts` because its
+profiler helpers use application-owned records; the remaining primitives are
+dependency-free. Public surface: 9 runtime functions and 2 exported interfaces.
+
+| COMPOSR export | Behavior and finding | Akashatools disposition | Evidence |
+| --- | --- | --- | --- |
+| `mapSettledWithConcurrency` | Maps with a worker ceiling, preserves input order, and retains every failure as a settled result. | Adopted with stricter safe-integer validation and JSDoc generics. | Akashatools bounded-concurrency/order/failure test. |
+| `fulfilledValues` | Projects fulfilled values from settled results in input order. | Adopted unchanged in principle with runtime argument validation. | Akashatools async test. |
+| `toSafeFilename` | Lowercases ASCII text, replaces non-alphanumerics with hyphens, and bounds code-unit length. | Adopted as `string.safeFilename`, adding Unicode normalization, trailing-hyphen cleanup, and named options. | Akashatools string test. |
+| `downloadBlob` | Creates an object URL, clicks an anchor, and revokes the URL in `finally`. | Adopted as `browser.downloadBlob` with a single injectable environment object and argument validation. | Runtime implementation reviewed; injected-browser tests remain open. |
+| `downloadTextFile` | Creates a Blob and delegates download; default content type is JSON despite accepting arbitrary text. | Adopted with `text/plain` default and named options; JSON has a separate `downloadJson`. | Runtime implementation reviewed; browser tests remain open. |
+| `upsertById` | Immutably prepends or replaces an object by string `id`. | Adopted as generic `collection.upsertBy`; retained as a deprecated convenience alias. | Akashatools collection tests. |
+| `excludeIds` | Immutably filters objects whose string IDs occur in a Set. | Adopted as generic `collection.excludeBy`; retained as a deprecated convenience alias. | Akashatools collection tests. |
+| `loadProfilerRunHistory` | Calls a COMPOSR API and clamps its tool-history limit to 1–500. | App-local; limit and API semantics belong to COMPOSR. | Source and COMPOSR test reviewed. |
+| `buildProfilerResultBundle` | Loads COMPOSR profiler envelopes with bounded concurrency and constructs a versioned COMPOSR export bundle. | App-local; its reusable concurrency primitives are already adopted. | Source and COMPOSR bundle test reviewed. |
+| `ProfilerRunHistoryApi` | Interface describing two COMPOSR profiler API methods and contract-owned records. | App-local type. | Imports `RunRecord`/`ProfilerResultExportEnvelope`. |
+| `ProfilerResultBundle` | Interface for the versioned COMPOSR profiler export format. | App-local type. | Format/tool contract reviewed. |
+
+COMPOSR package coverage is complete: every entry re-exported by
+`@composr/utilities/src/index.ts` is recorded. Utility-like primitives outside
+that package remain a separate audit item because they span application packages
+with their own contracts.
+
 ## Remaining source sets
 
 - [ ] Mindspace generic client utilities.
 - [ ] Mindspace generic server utilities.
 - [ ] Portfolio rebuild client/server/shared utilities.
-- [ ] COMPOSR utility package and cross-package primitives.
+- [x] COMPOSR `app/packages/utilities` public surface.
+- [ ] COMPOSR utility-like cross-package primitives.
 - [ ] Cross-project behavior-group and duplicate matrix.
 - [ ] Machine-readable legacy-to-modern alias manifest after canonical names settle.

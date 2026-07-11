@@ -10,6 +10,8 @@
   conventions.
 - Added a disposition ledger covering all 119 named Akashatools 1.0.2 exports,
   including defects, native replacements, adopted APIs, and deferred redesigns.
+- Recorded all 9 runtime and 2 type exports from COMPOSR's utility package,
+  separating adopted primitives from profiler-contract behavior.
 - Added named, tree-shakeable root exports and explicit category subpaths.
 - Added modern array, async, browser, collection, date, number, object, random,
   sort, string, and validation modules.

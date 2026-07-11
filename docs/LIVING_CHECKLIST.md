@@ -182,12 +182,12 @@ Acceptance criteria:
 
 ### 2.4 COMPOSR
 
-- [ ] Inventory all exports in `app/packages/utilities` and later utility-like
-  primitives that live in other packages.
-- [ ] Keep profiler bundle logic coupled to COMPOSR contracts app-local.
-- [ ] Generalize only dependency-free primitives or abstractions whose dependency
+- [x] Inventory all exports in `app/packages/utilities`.
+- [ ] Inventory later utility-like primitives that live in other COMPOSR packages.
+- [x] Keep profiler bundle logic coupled to COMPOSR contracts app-local.
+- [x] Generalize only dependency-free primitives or abstractions whose dependency
   belongs naturally in Akashatools.
-- [ ] Preserve bounded-concurrency ordering and failure semantics in compatibility
+- [x] Preserve bounded-concurrency ordering and failure semantics in compatibility
   tests for already adopted async functions.
 
 ### 2.5 Cross-project duplicate analysis
