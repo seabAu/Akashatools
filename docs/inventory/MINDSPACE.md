@@ -337,9 +337,100 @@ types also contain Mindspace UI/domain policy.
 | `formatPhoneNumber` | NANP formatting plus permissive international prefix fallback. | Current `formatNanpPhone` covers explicit NANP behavior; international formatting deferred. |
 | `getValidationErrorMessage` | Older English form feedback duplicate. | App-local presentation. |
 
+## Export-level review — data, schema, and random generation
+
+This pass covers 58 exports: 38 from `data.js`, 3 from `schema.js`, 15 from
+`random.js`, and 2 from `errorValidation.js`.
+
+### Client `data.js` (38 exports)
+
+The module imports the legacy Akashatools namespace and Mindspace's custom
+`DateTimeLocal` type. Much of its lower half generates form models from database
+schema descriptions rather than providing general data primitives.
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `invalid` | Treats nullish values, strings `"null"`/`"undefined"`, blank strings, empty arrays/plain objects, and NaN as invalid. | Reject umbrella semantics; compose `isBlank`, `isEmpty`, and finite-number checks. |
+| `isValid` | Negates the different, narrower `isInvalid` function rather than `invalid`. | Reject ambiguous/mismatched predicate. |
+| `safeGet` | Dot-path lookup uses inherited-property `in` checks and permits unsafe segments. | Adopted secure own-property `object.getAtPath`. |
+| `isValidArray` | Nonempty-array predicate optionally requiring every item to pass ambiguous `isValid`. | Adopted `isNonEmptyArray`; explicit caller predicates use `every`. |
+| `isObjectId` | Regex checks exactly 24 hexadecimal characters. | Defer as explicitly named Mongo/hex validation; not a generic object-ID claim. |
+| `getDocumentById` | Predicate returns any truthy `_id`, so it usually returns the first document regardless of requested ID. | Reject; use `find`/`upsertBy` with explicit identity selector. |
+| `cleanDocument` | Legacy `filterKeys` call and name do not clearly establish whether `_id` is selected or removed. | App-local persistence adapter; use explicit `pick`/`omit`. |
+| `isArrSafe` | Returns an array, not a boolean; both empty and nonempty arrays are truthy to callers. | Reject; use `asArray` or `isNonEmptyArray`. |
+| `arrSafeTernary` | Tests `isArrSafe` as boolean, so valid empty-array results defeat the intended fallback. | Reject. |
+| `arrSafeTernaryPair` | Same truthiness defect as `arrSafeTernary`. | Reject. |
+| `isObjectHasSafe` | Reads one own key through legacy checks and returns a fallback. | Adopted/generalized as `getAtPath` with fallback. |
+| `isEmptyArr` | Exact empty-array predicate. | Covered by `validation.isEmpty` or native length check. |
+| `isEmptyStr` | Whitespace-only string predicate. | Covered by `validation.isBlank`. |
+| `isInvalid` | Nullish/blank-string/empty-array predicate, unlike earlier `invalid`. | Reject duplicate semantic drift; compose literal predicates. |
+| `arrayToString` | Presentation conversion with pipe/space/comma assumptions and `N/A` sentinel. | App-local presentation. |
+| `stringToArray` | Replaces spaces with a separator and splits again; does not actually honor arbitrary token semantics cleanly. | App-local or redesign as explicit tokenizer. |
+| `deepPathSet` | Large mutating recursive setter with custom path parsing, logging branch, and no prototype-pollution protection. | Reject; adopted immutable `setAtPath`. |
+| `deepPathSetWorking` | Alternate mutating deep setter with overlapping behavior. | Reject duplicate; use `setAtPath`. |
+| `deepSet` | Mutating path/key recursive setter with ambiguous separation between path and final key. | Reject; use known full path with `setAtPath`. |
+| `deepSet2` | Fourth overlapping mutating deep setter. | Reject duplicate; use `setAtPath`. |
+| `generateString` | `Math.random` character generation duplicate. | Adopted `random.randomString` with validation/injected source. |
+| `setNestedValue` | Mutates nested objects, returns only a shallow root copy, and accepts unsafe path segments. | Reject; adopted immutable secure `setAtPath`. |
+| `getNestedValue` | Dot reduction with truthiness short-circuit and no own-property/unsafe-key protection. | Adopted `getAtPath`. |
+| `getDefaultValueForType` | Maps constructors to defaults, including current time for Date. | Defer to schema/model initialization; not a generic type predicate. |
+| `getType` | Custom legacy type strings inferred from first array element. | Adopted basic `validation.typeOf`; richer inspection deferred. |
+| `getValueType` | Adds Mindspace `DateTimeLocal` and form/schema-oriented capitalized labels. | App-local type adapter. |
+| `getFieldType` | Maps values to HTML input concepts. | App-local form adapter. |
+| `getArrayType` | References undeclared `test` for nonempty arrays. | Reject; future structured array inspection only. |
+| `formatInputValue` | Reads DOM event shapes and converts form controls. | App-local UI adapter. |
+| `initializeModel` | Delegates to legacy `cleanJSON`, which discards scalar values and all but first array examples. | Reject implementation; schema initialization must be explicit. |
+| `arrayToEnum` | Duplicate frozen value-to-itself object builder with unsafe key ambiguity. | Defer safe `keyBy`/lookup builder if usage warrants it. |
+| `typeToInitialDefault` | Form default mapper uses truthiness, so explicit false/zero defaults are lost. | App-local schema adapter; reject implementation. |
+| `dataType2fieldType` | Maps data type labels to HTML input types. | App-local form adapter. |
+| `generateRandom` | Type-switched fixture generator based on `Math.random`. | Merge primitive cases into adopted random APIs; schema switching stays fixture-local. |
+| `createBasicUUID` | Non-cryptographic random identifier with caller-defined complexity. | Reject for identity/security; future secure IDs use Web Crypto. |
+| `schemaToFormModel` | Converts Mongoose-like field definitions into UI form metadata. | App-local/schema candidate; coupled to input types and legacy helpers. |
+| `schemaToModel` | Builds initialized data models from Mongoose-like schema metadata. | App-local/schema candidate pending independent contract. |
+| `deepSearch` | Another first-match recursive key/predicate search without cycles. | Merge into planned canonical traversal API. |
+
+### Client `schema.js` (3 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `validateField` | Validates/coerces a custom import schema with type/default/required/enum/nested rules. | Defer to a deliberately scoped schema category; compare with `validateJsonContract`. |
+| `validateObject` | Iterates the custom schema, returns sanitized values, and logs input/schema/value details. | Reject logging in reusable code; defer pure schema behavior. |
+| `validateDataArray` | Validates each import row, preserves partial successes, and logs all data. | App-local import workflow unless a generic batch-validation contract emerges. |
+
+### Client `random.js` (15 exports)
+
+The module imports Axios plus Mindspace `DateTimeLocal`, `Decimal`, `ObjectArray`,
+and `ObjectId` classes. One switch also references undeclared `mongoose`.
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `getDefaultValueForType` | Recursively constructs defaults for Mindspace custom type constructors. | App-local schema fixture helper. |
+| `generateRandomString` | Fetches an external random word, ignores requested length on success, logs failures, then falls back to base-36 `Math.random`. | Reject network-coupled semantics; adopted deterministic `randomString`. |
+| `generateRandomNumber` | Inclusive integer generation. | Adopted strict `randomInt` with injectable source. |
+| `generateRandomDate` | Random instant between two Dates. | Adopted validated `randomDate`. |
+| `generateRandomBoolean` | `Math.random() < 0.5`. | Adopted `randomBoolean` with injectable source. |
+| `generateRandomDecimal` | Produces Mindspace `Decimal` after fixed-place formatting. | App-local custom-type fixture; primitive float generation uses `randomFloat`. |
+| `generateRandomDateTimeLocal` | Wraps random Date in Mindspace custom type. | App-local. |
+| `generateRandomArray` | Generates schema-typed arrays asynchronously. | App-local/schema fixture engine. |
+| `generateRandomObjectArray` | Generates custom `ObjectArray` fixtures. | App-local. |
+| `generateRandomObject` | Recursively generates object fields from custom schema. | App-local/schema fixture engine. |
+| `generateRandomObjectId` | Instantiates Mindspace `ObjectId`. | App-local custom type. |
+| `generateRandomValueForType` | Dispatches custom types, references undeclared `mongoose`, and mixes async/network/random behavior. | Reject as generic API; app fixture engine may be repaired locally. |
+| `generateRandomData` | Generates a custom-schema object asynchronously. | App-local/schema fixture engine. |
+| `generateRandomTasks` | Builds Mindspace task/group fixtures with domain fields. | App-local. |
+| `getRandomPosition` | References undeclared React/chart variables (`chartRef`, `chartSize`, `imageSize`). | Reject broken export; geometry helper must receive bounds explicitly. |
+
+### Client `errorValidation.js` (2 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `parseValidationIssuesFromMessage` | Parses Mongoose-style `Validation failed:` text into issue records. | Defer as framework-specific error adapter; do not parse generic errors by message. |
+| `extractValidationIssues` | Walks several response error shapes to depth five, merges parsed message issues, and deduplicates field/message pairs. | Defer to HTTP/framework adapter; preserve typed error causes in canonical APIs. |
+
 ## Export-level audit status
 
 - [x] Universal core: array/object/string/math/sort/client+server validation.
+- [x] Data/schema/random/error-validation cluster (58 exports).
 - [ ] Generic client candidates: export names and dispositions.
 - [ ] Browser/environment client candidates: export names and dispositions.
 - [ ] Generic server candidates: export names and duplicate matrix.

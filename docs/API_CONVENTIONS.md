@@ -85,7 +85,8 @@ resolved only when an effect runs, and Node-only modules stay under `akashatools
 - Options are read without mutation. Reusable option objects remain valid.
 - Cancellable asynchronous functions accept `signal` in the final option object.
 - Randomized functions accept an injectable random source when deterministic
-  testing or seeded behavior is useful.
+  testing or seeded behavior is useful. The source must follow `Math.random` and
+  return a finite value in the half-open interval `[0, 1)`.
 
 ## Validation and coercion
 

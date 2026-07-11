@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 23 tests currently pass.
+- [x] Add dependency-free Node tests; 25 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -164,6 +164,8 @@ Acceptance criteria:
   generic candidate, environment/framework candidate, or app-owned module.
 - [x] Inventory and disposition the 66 universal-core exports across Mindspace
   array, object, string, math, sort, and client/server validation modules.
+- [x] Inventory and disposition the 58 Mindspace data, schema, random-fixture,
+  and validation-error parsing exports.
 - [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [ ] Inventory generic server utilities under `app/server/utilities`.
 - [ ] Separate primitives from React, routing, notification, queue, recurrence,
@@ -274,7 +276,7 @@ Acceptance criteria:
 - [ ] Decide BigInt counterparts only where semantics remain clear.
 - [ ] Add cryptographically secure random helpers under an unmistakable name;
   never imply `Math.random` output is token-safe.
-- [ ] Add injectable random sources consistently for deterministic tests.
+- [x] Add injectable random sources consistently for deterministic tests.
 - [ ] Review range size limits to prevent accidental enormous allocations.
 - [ ] Expand sort helpers with selector, direction, null placement, collator, and
   stable multi-key ordering contracts.
@@ -519,6 +521,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Preserve legacy intent, not demonstrably broken legacy behavior. | Compatibility aliases must not perpetuate reference errors, hidden mutation, misleading return types, or swallowed failures. |
 | 2026-07-11 | Classify source modules before migrating their exports. | Utility folders contain substantial domain and framework behavior; module location alone is not evidence of genericity. |
 | 2026-07-11 | Reject global prototype extension modules. | Importing Akashatools must never patch built-in prototypes, install chains, log, or change global behavior. |
+| 2026-07-11 | Keep schema-driven fixture generation app-local by default. | Network calls, custom model classes, database IDs, and domain schemas are not generic randomness primitives. |
 
 ## Definition of done
 

@@ -8,7 +8,7 @@
  */
 export function randomFloat(minimum = 0, maximum = 1, random = Math.random) {
   validateRange(minimum, maximum, random);
-  return random() * (maximum - minimum) + minimum;
+  return sample(random) * (maximum - minimum) + minimum;
 }
 
 /**
@@ -27,7 +27,7 @@ export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = 
   validateRange(minimum, maximum, random);
   const width = maximum - minimum + (inclusiveMaximum ? 1 : 0);
   if (width <= 0) throw new RangeError("The random integer range is empty.");
-  return Math.floor(random() * width) + minimum;
+  return Math.floor(sample(random) * width) + minimum;
 }
 
 /**
@@ -38,7 +38,7 @@ export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = 
  */
 export function randomBoolean(random = Math.random) {
   assertRandom(random);
-  return random() >= 0.5;
+  return sample(random) >= 0.5;
 }
 
 /**
@@ -54,7 +54,7 @@ export function randomString(length, characters = "0123456789abcdefghijklmnopqrs
   if (!Number.isSafeInteger(length) || length < 0) throw new RangeError("length must be a non-negative safe integer.");
   if (typeof characters !== "string" || characters.length === 0) throw new TypeError("characters must be a non-empty string.");
   assertRandom(random);
-  return Array.from({ length }, () => characters[Math.floor(random() * characters.length)]).join("");
+  return Array.from({ length }, () => characters[Math.floor(sample(random) * characters.length)]).join("");
 }
 
 /**
@@ -82,4 +82,13 @@ function validateRange(minimum, maximum, random) {
 /** @param {unknown} random */
 function assertRandom(random) {
   if (typeof random !== "function") throw new TypeError("random must be a function.");
+}
+
+/** @param {() => number} random */
+function sample(random) {
+  const value = random();
+  if (!Number.isFinite(value) || value < 0 || value >= 1) {
+    throw new RangeError("random must return a finite number in the range [0, 1).");
+  }
+  return value;
 }
