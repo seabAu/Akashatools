@@ -21,9 +21,9 @@ copied code as independent evidence.
 | Network configuration/loopback guards | 3 | Complete below. |
 | Admin field coercion | 1 | Complete below. |
 | Shared JSON contract validation | 2 | Complete below. |
-| Client DOM/data/debug utilities | 32 | Pending detailed ledger. |
+| Client DOM/data/debug utilities | 32 | Complete below. |
 | Copied/derived server legacy and app modules | 71 | Pending detailed ledger. |
-| **Total** | **120** | **17 complete; 103 pending.** |
+| **Total** | **120** | **49 complete; 71 pending.** |
 
 ## Secure field paths: `server/utilities/fieldPath.js` (5 exports)
 
@@ -110,10 +110,71 @@ contracts and tests.
 - No Portfolio source file is copied wholesale. The current implementations add
   validation, clearer names, modern native APIs, and narrower public signatures.
 
+## Client `Data.js` (13 exports)
+
+This is an older portfolio copy of the same data/form-generation family already
+reviewed in Mindspace. It imports the Akashatools 1.x wildcard namespace and
+mixes primitive-looking functions with HTML input and schema-form policy.
+
+| Portfolio export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `generateString` | Generates characters with `Math.random` and no argument/source validation. | Replaced by validated, injectable `random.randomString`. |
+| `getType` | Produces legacy custom type strings and infers an array type from its first element. | Basic inspection is covered by `validation.typeOf`; structured array inspection remains deferred. |
+| `getFieldType` | Maps runtime values to HTML input concepts. | App-local form adapter. |
+| `getArrayType` | Infers from the first item and references undeclared `test` for nonempty arrays. | Reject broken implementation. |
+| `formatInputValue` | Reads DOM event/control shapes and applies HTML-field coercion. | App-local UI adapter. |
+| `initializeModel` | Delegates to legacy `cleanJSON`, which does not preserve a general value model. | Reject; model initialization requires an explicit schema contract. |
+| `arrayToEnum` | Builds a frozen value-to-itself object without defining duplicate/unsafe-key behavior. | Defer safe lookup/keying helper only if usage warrants it. |
+| `typeToInitialDefault` | Maps form types to defaults but loses explicit false/zero defaults through truthiness checks. | App-local; reject implementation. |
+| `dataType2fieldType` | Maps custom data-type labels to HTML input types. | App-local form adapter. |
+| `generateRandom` | Dispatches fixture generation by schema/form type using `Math.random`. | Primitive cases are covered by `random`; schema dispatch remains fixture-local. |
+| `createBasicUUID` | Produces a non-cryptographic, caller-shaped random identifier. | Reject for identity/security use; use Web Crypto identifiers. |
+| `schemaToFormModel` | Recursively turns a custom schema into form metadata and optional random fixtures. | App-local schema/form adapter. |
+| `schemaToModel` | Recursively creates a data model from the same custom schema. | App-local; compare only if a stable generic schema format is later selected. |
+
+## Client `Debug.js` (4 exports)
+
+| Portfolio export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `getArgs` | Copies its `arguments` object into an array. | Native rest parameters or `Array.from`; no public helper. |
+| `args2obj` | Logs its arguments and returns undefined; it never constructs the promised object. | Reject. |
+| `debug` | Depends on legacy `utils.val`, writes directly to console, overrides caller options with defaults, ignores rest values, and returns undefined. | Reject implementation; any future diagnostics API must be injectable and inert by default. |
+| `nameOf` | Removes punctuation from a function's source text and cannot reliably recover a variable/function name across syntax or minification. | Reject; use explicit labels or the limited native `.name` property. |
+
+## Client `DOM.js` (15 exports)
+
+This JSX-bearing module imports React and legacy Akashatools. Most exports are
+overlapping attempts to render arbitrary nested values as lists. They have no
+cycle policy, stable React keys, component contract, or safe HTML-string
+contract.
+
+| Portfolio export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `isDarkMode` | Reads `window.matchMedia` at import time, so server rendering/import without `window` can throw; result never updates. | Reject constant; a browser helper would feature-detect at call time and expose change observation separately. |
+| `setElementValueById` | Requires truthy inputs and assigns `value.latitude` rather than the supplied value. | Reject app-specific/broken DOM mutation. |
+| `obj2ListText` | Recursively interpolates unescaped keys/values into HTML-like strings and uses React `className` syntax in text markup. | Reject injection-prone serializer. |
+| `objArray2List` | Renders recursive React lists without keys and depends on ambiguous legacy validation/replacement helpers. | App-local component; reject as universal utility. |
+| `value2List` | Returns JSX for scalars and an empty string for objects/arrays. | App-local renderer. |
+| `array2List` | Calls itself with the unchanged array, causing infinite recursion for valid arrays. | Reject. |
+| `obj2List` | Recursive JSX object renderer with no cycle handling or React keys. | App-local/reject implementation. |
+| `objArrayToList` | Dispatches object/array/scalar rendering through legacy predicates whose object/array overlap can select the wrong branch. | Reject duplicate dispatcher. |
+| `arrayToList` | Second recursive JSX array renderer; drops empty arrays and lacks keys/cycle handling. | App-local/reject duplicate. |
+| `objToList` | Second recursive object renderer with branch-order ambiguity for arrays. | App-local/reject duplicate. |
+| `valueToList` | Scalar replacement helper returns empty text for null because `typeof null` is object. | Reject presentation semantics. |
+| `valToList` | Third JSX dispatch path for arrays/objects/scalars. | App-local/reject duplicate. |
+| `hasClass` | Checks `event.target.classList.contains` for one class. | Native DOM API; component code should call it directly with explicit target/currentTarget choice. |
+| `list` | Builds caller-selected list tags and interpolates unescaped values into an HTML string. | Reject injection-prone string builder; use DOM/React rendering or an escaping serializer. |
+| `ObjMap` | Logs, creates DOM nodes recursively, joins them into strings, and then embeds the result in JSX. | Reject mixed DOM/React/debug behavior. |
+
+## Client `buildNav.js` (0 exports)
+
+The file is empty. It contributes no candidate behavior and is complete by
+classification.
+
 ## Remaining portfolio audit
 
-- [ ] Client `DOM.js`, `Data.js`, and `Debug.js` (32 exports); empty
-  `buildNav.js` is classified but has no public surface.
+- [x] Client `DOM.js`, `Data.js`, and `Debug.js` (32 exports); empty
+  `buildNav.js` is classified and has no public surface.
 - [ ] Copied server `file.js`, `time.js`, `utils.js`, and `validation.js` (58 exports).
 - [ ] Scheduler/recurrence, socket, auth-cookie, and SMS modules (13 exports).
 - [ ] Replace remaining group totals with a verified per-module completion table.
