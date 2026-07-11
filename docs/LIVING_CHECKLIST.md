@@ -182,7 +182,7 @@ Acceptance criteria:
 - [x] Inventory generic server utilities under `app/server/utilities`.
 - [x] Separate inventoried primitives from React, routing, notification, queue, recurrence,
   authentication, and domain-owned behavior.
-- [ ] Compare client/server duplicates for time, validation, file, schema, and
+- [x] Compare client/server duplicates for time, validation, file, schema, and
   data operations.
 - [ ] Capture source behavior tests for any function whose edge cases are unclear.
 - [ ] Review feature-local helpers only when they express a reusable primitive;
@@ -211,12 +211,12 @@ Acceptance criteria:
 
 ### 2.5 Cross-project duplicate analysis
 
-- [ ] Group candidates by behavior rather than source name.
-- [ ] Identify semantic conflicts hidden behind identical names.
-- [ ] Identify identical behavior hidden behind different names.
+- [x] Group reviewed candidates by behavior rather than source name.
+- [x] Identify semantic conflicts hidden behind identical names.
+- [x] Identify identical behavior hidden behind different names.
 - [ ] Choose one canonical implementation and contract per behavior.
-- [ ] Record aliases separately from canonical exports.
-- [ ] Record native replacements such as `structuredClone`, `Object.hasOwn`,
+- [x] Record aliases separately from canonical exports.
+- [x] Record native replacements such as `structuredClone`, `Object.hasOwn`,
   `Array.prototype.toSorted`, `Intl`, `Set`, `Map`, and `URL`.
 
 ## Phase 3 — finish the universal core

@@ -270,5 +270,6 @@ with their own contracts.
   are dispositioned in `docs/inventory/PORTFOLIO.md`.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.
-- [ ] Cross-project behavior-group and duplicate matrix.
+- [x] Cross-project behavior-group and duplicate matrix; see
+  `docs/DUPLICATE_ANALYSIS.md`.
 - [ ] Machine-readable legacy-to-modern alias manifest after canonical names settle.
