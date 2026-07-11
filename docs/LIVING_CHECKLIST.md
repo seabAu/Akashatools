@@ -185,7 +185,7 @@ Acceptance criteria:
 ### 2.3 Portfolio rebuild
 
 - [ ] Inventory `client/src/utilities`, `server/utilities`, and shared contracts.
-- [ ] Review field-path, own-property, stable-order, field-coercion, network, and
+- [x] Review field-path, own-property, stable-order, field-coercion, network, and
   contained-path utilities for generalized contracts.
 - [ ] Keep portfolio search, admin session, public snapshot, navigation, and
   storage policy app-local unless a clear independent abstraction emerges.
@@ -534,6 +534,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Treat Unix-second APIs as strict unit contracts. | Legacy Mindspace helpers named for seconds actually consumed and returned milliseconds, creating silent thousand-fold errors. |
 | 2026-07-11 | Design the Node file surface from security contracts, not legacy wrappers. | Mindspace file helpers allow unrestricted paths, synchronous I/O, logging, undeclared dependencies, and false-success deletion; portfolio containment behavior must be compared first. |
 | 2026-07-11 | Keep database, web-framework, socket, and authentication adapters outside universal categories. | Mongoose, Express, Socket.IO, JWT/cookie, and app session contracts are useful but not environment-neutral primitives. |
+| 2026-07-11 | Keep filesystem containment on a Node-only surface. | Lexical and realpath containment are valuable, but importing Node modules cannot leak into universal entry points and path resolution alone does not authorize a later filesystem mutation. |
 
 ## Definition of done
 

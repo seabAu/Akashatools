@@ -256,15 +256,18 @@ with their own contracts.
 
 ## Remaining source sets
 
-- [ ] Mindspace generic client utilities.
-- [ ] Mindspace generic server utilities.
+- [x] Mindspace generic client utilities; see `docs/inventory/MINDSPACE.md` and
+  its linked behavior ledgers.
+- [x] Mindspace generic server utilities; see `docs/inventory/MINDSPACE_TIME.md`
+  and `docs/inventory/MINDSPACE_SERVER.md`.
 - [x] Mindspace active utility modules classified by portability/environment.
 - [x] Mindspace universal core exports reviewed: arrays, objects, strings, math,
   sorting, and client/server validation (66 exports).
 - [x] Mindspace data/schema/random/error-validation cluster reviewed (58 exports).
 - [x] Mindspace date-selection/timestamp-adapter cluster reviewed (29 exports).
 - [x] Mindspace color/local-text/speech-cleanup cluster reviewed (24 exports).
-- [ ] Portfolio rebuild client/server/shared utilities.
+- [ ] Portfolio rebuild client/server/shared utilities; 17 core-candidate
+  exports are dispositioned in `docs/inventory/PORTFOLIO.md`.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.
 - [ ] Cross-project behavior-group and duplicate matrix.
