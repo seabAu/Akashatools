@@ -1,0 +1,108 @@
+import * as arrayModule from "./array.js";
+import * as asyncModule from "./async.js";
+import * as browserModule from "./browser.js";
+import * as collectionModule from "./collection.js";
+import * as dateModule from "./date.js";
+import * as numberModule from "./number.js";
+import * as objectModule from "./object.js";
+import * as randomModule from "./random.js";
+import * as sortModule from "./sort.js";
+import * as stringModule from "./string.js";
+import * as validationModule from "./validation.js";
+
+/** Frozen array utilities for namespace-style discovery. */
+export const array = /* @__PURE__ */ Object.freeze({ ...arrayModule });
+/** Frozen asynchronous utilities for namespace-style discovery. */
+export const asyncUtils = /* @__PURE__ */ Object.freeze({ ...asyncModule });
+/** Frozen browser utilities for namespace-style discovery. */
+export const browser = /* @__PURE__ */ Object.freeze({ ...browserModule });
+/** Frozen collection utilities for namespace-style discovery. */
+export const collection = /* @__PURE__ */ Object.freeze({ ...collectionModule });
+/** Frozen date and time utilities for namespace-style discovery. */
+export const date = /* @__PURE__ */ Object.freeze({ ...dateModule });
+/** Frozen numeric utilities for namespace-style discovery. */
+export const number = /* @__PURE__ */ Object.freeze({ ...numberModule });
+/** Frozen object utilities for namespace-style discovery. */
+export const object = /* @__PURE__ */ Object.freeze({ ...objectModule });
+/** Frozen pseudo-random utilities for namespace-style discovery. */
+export const random = /* @__PURE__ */ Object.freeze({ ...randomModule });
+/** Frozen sorting utilities for namespace-style discovery. */
+export const sort = /* @__PURE__ */ Object.freeze({ ...sortModule });
+/** Frozen string utilities for namespace-style discovery. */
+export const string = /* @__PURE__ */ Object.freeze({ ...stringModule });
+/** Frozen validation utilities for namespace-style discovery. */
+export const validation = /* @__PURE__ */ Object.freeze({ ...validationModule });
+
+/**
+ * Akashatools' discoverable convenience namespace.
+ *
+ * Utilities appear both as flat properties (`akasha.chunk`) and within frozen
+ * categories (`akasha.array.chunk`). Focused named and subpath imports remain the
+ * recommended choice when bundle size is the primary concern.
+ *
+ * @example
+ * import akasha from "akashatools";
+ * akasha.array.chunk([1, 2, 3], 2);
+ * akasha.chunk([1, 2, 3], 2);
+ */
+export const akasha = /* @__PURE__ */ Object.freeze({
+  ...array,
+  ...asyncUtils,
+  ...browser,
+  ...collection,
+  ...date,
+  ...number,
+  ...object,
+  ...random,
+  ...sort,
+  ...string,
+  ...validation,
+  array,
+  async: asyncUtils,
+  browser,
+  collection,
+  date,
+  number,
+  object,
+  random,
+  sort,
+  string,
+  validation,
+});
+
+/**
+ * Rejects ambiguous flat utility names and collisions with category names.
+ * Exported only for package-internal contract tests; it is not a package entry.
+ *
+ * @param {readonly (readonly [string, Readonly<Record<string, unknown>>])[]} entries
+ * @returns {void}
+ * @throws {TypeError} If categories or flat utility names are ambiguous.
+ * @internal
+ */
+export function assertNamespaceIsCollisionFree(entries) {
+  const categoryNames = new Set();
+  const utilityOwners = new Map();
+
+  for (const [categoryName] of entries) {
+    if (categoryNames.has(categoryName)) {
+      throw new TypeError(`Duplicate Akashatools category: ${categoryName}`);
+    }
+    categoryNames.add(categoryName);
+  }
+
+  for (const [categoryName, category] of entries) {
+    for (const [utilityName, utility] of Object.entries(category)) {
+      if (categoryNames.has(utilityName)) {
+        throw new TypeError(`Utility name collides with an Akashatools category: ${utilityName}`);
+      }
+
+      const previous = utilityOwners.get(utilityName);
+      if (previous && previous.utility !== utility) {
+        throw new TypeError(
+          `Ambiguous Akashatools utility "${utilityName}" is exported by both "${previous.category}" and "${categoryName}".`,
+        );
+      }
+      utilityOwners.set(utilityName, { category: categoryName, utility });
+    }
+  }
+}

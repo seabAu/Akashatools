@@ -15,6 +15,21 @@ npm install akashatools
 
 ## Import only what you use
 
+For a discoverable dot-completion experience, use the frozen default namespace:
+
+```js
+import akasha from "akashatools";
+
+akasha.array.chunk([1, 2, 3, 4, 5], 2);
+akasha.validation.isEmail("person@example.com");
+
+// Collision-free utilities are also available flat.
+akasha.chunk([1, 2, 3, 4, 5], 2);
+```
+
+The namespace prioritizes convenience. Named and category imports remain the
+focused option for explicit dependencies and minimal bundling.
+
 Every function is a named root export, allowing modern bundlers to tree-shake
 unused code:
 
@@ -89,4 +104,5 @@ for editor IntelliSense.
 
 See [docs/LIVING_CHECKLIST.md](docs/LIVING_CHECKLIST.md) for the authoritative
 work plan and [docs/MIGRATION.md](docs/MIGRATION.md) for the first-alpha source
-audit and migration decisions.
+audit and migration decisions. Public naming and behavioral rules live in
+[docs/API_CONVENTIONS.md](docs/API_CONVENTIONS.md).

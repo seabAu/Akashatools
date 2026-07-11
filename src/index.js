@@ -17,14 +17,18 @@ export * from "./sort.js";
 export * from "./string.js";
 export * from "./validation.js";
 
-export * as array from "./array.js";
-export * as async from "./async.js";
-export * as browser from "./browser.js";
-export * as collection from "./collection.js";
-export * as date from "./date.js";
-export * as number from "./number.js";
-export * as object from "./object.js";
-export * as random from "./random.js";
-export * as sort from "./sort.js";
-export * as string from "./string.js";
-export * as validation from "./validation.js";
+export {
+  akasha,
+  akasha as default,
+  array,
+  asyncUtils as async,
+  browser,
+  collection,
+  date,
+  number,
+  object,
+  random,
+  sort,
+  string,
+  validation,
+} from "./namespace.js";

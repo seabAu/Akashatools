@@ -68,9 +68,12 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 16 tests currently pass.
+- [x] Add dependency-free Node tests; 21 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
+- [x] Verify focused-import tree-shaking after adding the default namespace:
+  esbuild 0.28.1 produced 304-byte minified bundles for both named-root and
+  category `chunk` imports versus 20,373 bytes for the complete namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, and COMPOSR.
 
@@ -78,21 +81,21 @@ would add API and type complexity and require demonstrated consumer value.
 
 ### 1.1 Namespace and import ergonomics
 
-- [ ] Add a documented default export named `akasha` internally.
-- [ ] Expose every collision-free public utility directly on the default object.
-- [ ] Expose every canonical category as a nested namespace on the default object.
-- [ ] Freeze the default object and nested category objects against accidental
+- [x] Add a documented default export named `akasha` internally.
+- [x] Expose every collision-free public utility directly on the default object.
+- [x] Expose every implemented canonical category as a nested namespace on the default object.
+- [x] Freeze the default object and nested category objects against accidental
   consumer mutation.
-- [ ] Confirm `import * as akasha from "akashatools"` remains useful and typed.
-- [ ] Decide whether abbreviated compatibility namespaces such as `val`, `str`,
+- [x] Confirm `import * as akasha from "akashatools"` remains useful and typed.
+- [x] Decide whether abbreviated compatibility namespaces such as `val`, `str`,
   `rand`, and `ao` belong only under `akashatools/legacy` or remain deprecated
   aliases on the main namespace.
-- [ ] Define deterministic handling for flat-name collisions. Preferred order:
+- [x] Define deterministic handling for flat-name collisions. Preferred order:
   rename for clarity, keep only the category form, or expose an explicit alias;
   never silently overwrite a function.
-- [ ] Add namespace completeness tests comparing category exports, root named
+- [x] Add namespace completeness tests comparing category exports, root named
   exports, and default-object properties.
-- [ ] Add an editor fixture proving dot completion for `akasha.array.`,
+- [x] Add an editor fixture proving dot completion for `akasha.array.`,
   `akasha.validation.`, and the flat namespace.
 
 Acceptance criteria:
@@ -104,7 +107,7 @@ Acceptance criteria:
 
 ### 1.2 Canonical categories
 
-- [ ] Confirm and document the stable categories: `array`, `async`, `browser`,
+- [x] Confirm and document the stable categories: `array`, `async`, `browser`,
   `collection`, `date`, `function`, `http`, `number`, `object`, `random`, `sort`,
   `string`, and `validation`.
 - [ ] Design a separate `node` surface for filesystem/path/runtime utilities.
@@ -117,22 +120,22 @@ Acceptance criteria:
 
 ### 1.3 Naming and signature conventions
 
-- [ ] Create `docs/API_CONVENTIONS.md` with naming rules and examples.
-- [ ] Prefer full words in canonical names (`validation`, not `val`; `string`, not
+- [x] Create `docs/API_CONVENTIONS.md` with naming rules and examples.
+- [x] Prefer full words in canonical names (`validation`, not `val`; `string`, not
   `str`) while documenting migration aliases.
-- [ ] Standardize callback naming: `predicate`, `mapper`, `toKey`, `compare`.
-- [ ] Standardize option-object placement as the final argument.
-- [ ] Standardize `AbortSignal` support for cancellable asynchronous operations.
-- [ ] Standardize range semantics as start-inclusive/end-exclusive unless the
+- [x] Standardize callback naming: `predicate`, `mapper`, `toKey`, `compare`.
+- [x] Standardize option-object placement as the final argument.
+- [x] Standardize `AbortSignal` support for cancellable asynchronous operations.
+- [x] Standardize range semantics as start-inclusive/end-exclusive unless the
   function name or option explicitly says otherwise.
-- [ ] Standardize nullish versus falsy handling; never treat `0`, `false`, and
+- [x] Standardize nullish versus falsy handling; never treat `0`, `false`, and
   `""` as invalid accidentally.
-- [ ] Standardize not-found results by domain (`undefined`, `null`, `-1`, empty
+- [x] Standardize not-found results by domain (`undefined`, `null`, `-1`, empty
   collection, or unchanged copy) and document each choice.
-- [ ] Standardize errors: programmer-contract violations throw `TypeError` or
+- [x] Standardize errors: programmer-contract violations throw `TypeError` or
   `RangeError`; operational failures retain a cause and domain-specific metadata.
-- [ ] Avoid boolean positional parameters where a named option is clearer.
-- [ ] Mark aliases with `@deprecated` and a replacement path.
+- [x] Avoid boolean positional parameters where a named option is clearer.
+- [x] Mark aliases with `@deprecated` and a replacement path.
 
 ## Phase 2 — complete the source inventory and disposition ledger
 
@@ -480,11 +483,11 @@ edits. When authorized, migrate one bounded area at a time.
 
 ## Open decisions
 
-- [ ] Final default-import name in documentation: `akasha`, `utils`, or `_`.
+- [x] Final default-import name in documentation: `akasha`, `utils`, or `_`.
   Recommendation: `akasha`; consumers can locally rename a default import.
-- [ ] Whether flat default properties and nested categories both ship in 2.0.
+- [x] Whether flat default properties and nested categories both ship in 2.0.
   Recommendation: yes, with automated collision detection.
-- [ ] Whether abbreviated namespaces remain outside a legacy-only surface.
+- [x] Whether abbreviated namespaces remain outside a legacy-only surface.
   Recommendation: legacy-only with JSDoc migration guidance.
 - [ ] Whether per-method package subpaths materially improve bundles beyond named
   exports and category subpaths.
@@ -505,6 +508,10 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep per-method imports within one package if adopted. | Avoids duplicated internals and fragmented package maintenance. |
 | 2026-07-11 | Keep app-domain utilities app-local by default. | A `utils` filename alone does not make behavior generic. |
 | 2026-07-11 | Require explicit approval for npm publishing and consumer-project edits. | These actions affect external state beyond the library workspace. |
+| 2026-07-11 | Use `akasha` as the canonical documented default import name. | It is distinctive, readable, and consumers remain free to rename a default import locally. |
+| 2026-07-11 | Ship flat and categorized properties on one frozen default namespace. | Flat access is concise while categories preserve dot-completion discovery. |
+| 2026-07-11 | Keep abbreviated namespaces on legacy-only surfaces. | Canonical full category names are clearer and avoid permanent duplicate APIs. |
+| 2026-07-11 | Treat namespace collisions as test/build-time contract failures. | Silent overwrites are unsafe, while runtime scanning would add import work and hinder tree-shaking. |
 
 ## Definition of done
 

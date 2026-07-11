@@ -9,5 +9,5 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2023", "DOM"]
   },
-  "include": ["src/**/*.js"]
+  "include": ["src/**/*.js", "fixtures/editor/**/*.js"]
 }
