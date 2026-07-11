@@ -172,6 +172,8 @@ Acceptance criteria:
   English speech-cleanup exports.
 - [x] Inventory and disposition all 84 client/server time exports and record the
   exact 16-name duplicate matrix.
+- [x] Inventory and disposition the first 37 Mindspace browser/UI/React runtime
+  exports; storage/crypto/service-worker and fetch/import/I/O groups remain.
 - [x] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [x] Inventory generic server utilities under `app/server/utilities`.
 - [x] Separate inventoried primitives from React, routing, notification, queue, recurrence,
