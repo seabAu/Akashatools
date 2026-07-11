@@ -18,6 +18,8 @@
   math, sort, and client/server validation exports.
 - Added export-level dispositions for 58 Mindspace data, schema, random-fixture,
   and validation-error parsing exports.
+- Added export-level dispositions for 29 Mindspace date-selection and timestamp
+  adapter exports.
 - Added strict immutable `array.flatten` with native depth and sparse-slot
   semantics.
 - Enforced the `[0, 1)` contract for injected random sources and added

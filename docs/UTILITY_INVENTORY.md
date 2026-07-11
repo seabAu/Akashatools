@@ -262,6 +262,7 @@ with their own contracts.
 - [x] Mindspace universal core exports reviewed: arrays, objects, strings, math,
   sorting, and client/server validation (66 exports).
 - [x] Mindspace data/schema/random/error-validation cluster reviewed (58 exports).
+- [x] Mindspace date-selection/timestamp-adapter cluster reviewed (29 exports).
 - [ ] Portfolio rebuild client/server/shared utilities.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.

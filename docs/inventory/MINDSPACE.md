@@ -427,10 +427,56 @@ and `ObjectId` classes. One switch also references undeclared `mongoose`.
 | `parseValidationIssuesFromMessage` | Parses Mongoose-style `Validation failed:` text into issue records. | Defer as framework-specific error adapter; do not parse generic errors by message. |
 | `extractValidationIssues` | Walks several response error shapes to depth five, merges parsed message issues, and deduplicates field/message pairs. | Defer to HTTP/framework adapter; preserve typed error causes in canonical APIs. |
 
+## Export-level review — date selection and timestamp adapters
+
+This pass covers 29 exports: 10 from `dateTimeSelection.js` and 19 from
+`timeTimestampAdapter.js`. Both depend on `date-fns`; the timestamp adapter also
+imports the large shared `time.js` module.
+
+### Client `dateTimeSelection.js` (10 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `DATE_SELECTION_MODE` | Constants for single/range/multiple UI selection state. | App-local until a generic date-selection state API is justified. |
+| `RANGE_SELECTION_TARGET` | Constants tracking which endpoint a UI click edits. | App-local UI state. |
+| `coerceSafeDate` | Clones Dates, accepts range-like `{ from }`, relies on host parsing before explicit format parsing, and returns fallback/null. | Merge carefully with `date.toDate`; explicit string formats must not be masked by host ambiguity. |
+| `inferDateSelectionMode` | Infers multiple from arrays and range from `from`/`to` keys. | App-local selection adapter or future explicit range type guard. |
+| `sanitizeDateSelectionValue` | Clones single/multiple selections and sorts reversed range endpoints. | Defer range normalization after inclusive/boundary semantics are designed. |
+| `applyDateSelectionPreset` | Interprets English preset names, date-fns offsets, endpoint toggling, and multi-day UI sequence policy. | App-local presentation/interaction policy. |
+| `updateDateSelectionByClick` | Applies click state transitions for single/range/multiple selection. | App-local UI state. |
+| `updateDateSelectionIndex` | Replaces an indexed multiple/range endpoint and reorders range bounds. | App-local UI state; primitive immutable replacement already exists. |
+| `toDateTimeLocalInputValue` | Formats an instant for `datetime-local`, optionally using an IANA zone and falling back silently. | Defer a dedicated local-input conversion contract with DST/error policy. |
+| `fromDateTimeLocalInputValue` | Converts local input to Date; zone conversion estimates offset through locale-string round trips. | Defer; algorithm is ambiguous across DST gaps/overlaps and must not silently fall back. |
+
+### Client `timeTimestampAdapter.js` (19 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `DEFAULT_TIMESTAMP_START_FIELDS` | Mindspace heuristic field-name priority list. | App-local adapter configuration. |
+| `DEFAULT_TIMESTAMP_END_FIELDS` | Mindspace heuristic end-field list. | App-local. |
+| `TEMPORAL_ITEM_REQUIRED_FIELDS` | Required fields for Mindspace timeline view models. | App-local contract. |
+| `TEMPORAL_ITEM_FORBIDDEN_FIELDS` | UI callback/component fields forbidden from timeline data. | App-local contract. |
+| `getPathValue` | Accepts selector functions or dot paths but reads inherited/unsafe properties. | String paths use adopted secure `getAtPath`; function selectors remain direct caller code. |
+| `getFirstPresentField` | Returns the first nonblank configured field/path and its source field. | Defer generic `firstPresent` only if repeated outside adapters. |
+| `isTimeOnlyString` | Regex is not end-anchored, so strings with trailing junk pass. | Reject implementation; future clock parser already validates full `HH:mm`. |
+| `coerceTimestampDate` | Combines Dates, time-only strings anchored to a base day, and broad date coercion; accepts `24:00`. | Defer explicit clock-plus-day composition and 24:00 policy. |
+| `buildDateTimeForDay` | Thin alias for time-only/date coercion with base day. | Merge into future explicit clock/date composition. |
+| `resolveTimestampRange` | Searches many app field aliases, applies overnight/default-duration policy, and returns metadata. | App-local adapter; interval normalization primitive may be extracted separately. |
+| `getTimeBlockDurationMinutes` | Uses Mindspace time-block field names and requires explicit end. | App-local. |
+| `buildTimelineKey` | Joins source/id/suffix with colons and fallback sentinels. | App-local identity policy. |
+| `getTimelineWindow` | Builds inclusive local start/end-of-day bounds from displayed days. | Defer generic calendar-window helper after timezone/boundary design. |
+| `doesTimeSpanOverlapWindow` | Inclusive interval-overlap predicate; invalid/missing end collapses to start. | Candidate for generic date-range API after boundary semantics are locked. |
+| `isDateInTimelineWindow` | Inclusive instant-in-window predicate. | Candidate for generic date-range API after boundary semantics are locked. |
+| `buildTimestampAdapterItem` | Converts arbitrary records to Mindspace timeline view models with source/raw references and routes. | App-local. |
+| `buildTimestampAdapterItems` | Batch wrapper assigning indices and dropping unadaptable records. | App-local. |
+| `filterTimestampAdapterItemsByWindow` | Filters timeline view models through overlap policy. | App-local composition. |
+| `validateTemporalItemAdapterContract` | Validates Mindspace view-model required/forbidden fields and Date ordering. | App-local contract validation. |
+
 ## Export-level audit status
 
 - [x] Universal core: array/object/string/math/sort/client+server validation.
 - [x] Data/schema/random/error-validation cluster (58 exports).
+- [x] Date selection and timestamp adapter cluster (29 exports).
 - [ ] Generic client candidates: export names and dispositions.
 - [ ] Browser/environment client candidates: export names and dispositions.
 - [ ] Generic server candidates: export names and duplicate matrix.
