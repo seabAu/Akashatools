@@ -1,0 +1,75 @@
+/**
+ * Maps values with a fixed concurrency ceiling. Results retain input order and
+ * individual failures are represented like `Promise.allSettled`.
+ *
+ * @template T, R
+ * @param {readonly T[]} values
+ * @param {number} concurrency
+ * @param {(value: T, index: number) => R | PromiseLike<R>} mapper
+ * @returns {Promise<PromiseSettledResult<R>[]>}
+ */
+export async function mapSettledWithConcurrency(values, concurrency, mapper) {
+  if (!Array.isArray(values)) throw new TypeError("values must be an array.");
+  if (!Number.isSafeInteger(concurrency) || concurrency < 1) {
+    throw new RangeError("concurrency must be a positive safe integer.");
+  }
+  if (typeof mapper !== "function") throw new TypeError("mapper must be a function.");
+
+  /** @type {PromiseSettledResult<R>[]} */
+  const results = new Array(values.length);
+  let cursor = 0;
+
+  const worker = async () => {
+    while (cursor < values.length) {
+      const index = cursor;
+      cursor += 1;
+      try {
+        results[index] = { status: "fulfilled", value: await mapper(values[index], index) };
+      } catch (reason) {
+        results[index] = { status: "rejected", reason };
+      }
+    }
+  };
+
+  await Promise.all(Array.from({ length: Math.min(concurrency, values.length) }, worker));
+  return results;
+}
+
+/**
+ * Extracts values from fulfilled settled results.
+ *
+ * @template T
+ * @param {readonly PromiseSettledResult<T>[]} results
+ * @returns {T[]}
+ */
+export function fulfilledValues(results) {
+  if (!Array.isArray(results)) throw new TypeError("results must be an array.");
+  return results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+}
+
+/**
+ * Waits for a duration and optionally supports cancellation.
+ *
+ * @param {number} milliseconds
+ * @param {{signal?: AbortSignal}} [options]
+ * @returns {Promise<void>}
+ */
+export function delay(milliseconds, { signal } = {}) {
+  if (!Number.isFinite(milliseconds) || milliseconds < 0) {
+    throw new RangeError("milliseconds must be a non-negative finite number.");
+  }
+  if (signal?.aborted) return Promise.reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
+  const abortSignal = signal;
+
+  return new Promise((resolve, reject) => {
+    const onAbort = () => {
+      clearTimeout(timeout);
+      reject(abortSignal?.reason ?? new DOMException("Aborted", "AbortError"));
+    };
+    const timeout = setTimeout(() => {
+      abortSignal?.removeEventListener("abort", onAbort);
+      resolve();
+    }, milliseconds);
+    abortSignal?.addEventListener("abort", onAbort, { once: true });
+  });
+}
