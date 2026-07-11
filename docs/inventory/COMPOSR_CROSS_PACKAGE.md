@@ -111,7 +111,7 @@ transport actually connects to the validated address and revalidates redirects.
 
 | COMPOSR export | Finding | Akashatools disposition |
 | --- | --- | --- |
-| `summarizeDistribution` | Returns count, min, max, linearly interpolated median/p75/p95, mean, and population standard deviation from a sorted copy; empty input becomes all zeros and non-finite inputs are not rejected. | Adopt a stricter `number.summarizeNumbers` contract with finite inputs and null empty statistics. |
+| `summarizeDistribution` | Returns count, min, max, linearly interpolated median/p75/p95, mean, and population standard deviation from a sorted copy; empty input becomes all zeros and non-finite inputs are not rejected. | Adopted as strict `number.summarizeNumbers` with finite inputs, scaled calculations, immutability, and null empty statistics. |
 
 The remaining six functions in this package select/aggregate/project COMPOSR
 transition profiler records or compare its environment fingerprint and remain
@@ -121,8 +121,8 @@ contract-owned.
 
 - All public function declarations outside `@composr/utilities` are classified,
   along with the utility-like HTTP class/transport surface.
-- Twenty-one utility-like exports receive individual dispositions; only numeric
-  distribution summarization is ready for immediate independent adoption.
+- Twenty-one utility-like exports receive individual dispositions; numeric
+  distribution summarization is independently adopted and verified.
 - CSV serialization, JSON tooling, security redaction/address checks, and the
   pinned HTTP client/retry rules remain strong evidence for future category
   designs rather than copied APIs.

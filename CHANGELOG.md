@@ -26,6 +26,9 @@
   semantics.
 - Enforced the `[0, 1)` contract for injected random sources and added
   deterministic float/date coverage.
+- Added `number.summarizeNumbers` with finite-input validation, interpolated
+  percentiles, population deviation, scaled extreme-value calculations, and
+  null empty-sample statistics.
 - Added named, tree-shakeable root exports and explicit category subpaths.
 - Added modern array, async, browser, collection, date, number, object, random,
   sort, string, and validation modules.

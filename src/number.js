@@ -111,6 +111,90 @@ export function toBinary(value) {
   return value.toString(2);
 }
 
+/**
+ * Summarizes a finite numeric sample without mutating it. Percentiles use
+ * linear interpolation at position `(length - 1) * percentile`, and standard
+ * deviation is the population value. Empty samples have count zero and null
+ * statistics so absence is not confused with observed zeroes.
+ *
+ * @param {readonly number[]} values
+ * @returns {{
+ *   count: number,
+ *   minimum: number | null,
+ *   maximum: number | null,
+ *   median: number | null,
+ *   p75: number | null,
+ *   p95: number | null,
+ *   mean: number | null,
+ *   standardDeviation: number | null
+ * }}
+ * @throws {TypeError} If values is not an array or contains a non-finite number.
+ * @throws {RangeError} If a statistic cannot be represented as a finite number.
+ * @example
+ * summarizeNumbers([10, 20, 30, 40]);
+ * // { count: 4, minimum: 10, maximum: 40, median: 25, ... }
+ */
+export function summarizeNumbers(values) {
+  if (!Array.isArray(values)) throw new TypeError("values must be an array.");
+  values.forEach((value, index) => {
+    if (!Number.isFinite(value)) throw new TypeError(`values[${index}] must be a finite number.`);
+  });
+
+  if (values.length === 0) {
+    return {
+      count: 0,
+      minimum: null,
+      maximum: null,
+      median: null,
+      p75: null,
+      p95: null,
+      mean: null,
+      standardDeviation: null,
+    };
+  }
+
+  const sorted = values.toSorted((left, right) => left - right);
+  const scale = sorted.reduce((largest, value) => Math.max(largest, Math.abs(value)), 0);
+  const normalizedMean = scale === 0
+    ? 0
+    : sorted.reduce((total, value) => total + value / scale / sorted.length, 0);
+  const mean = normalizedMean * scale;
+  const normalizedVariance = scale === 0
+    ? 0
+    : sorted.reduce((total, value) => total + (value / scale - normalizedMean) ** 2 / sorted.length, 0);
+  const standardDeviation = scale * Math.sqrt(normalizedVariance);
+
+  const summary = {
+    count: sorted.length,
+    minimum: sorted[0],
+    maximum: sorted.at(-1),
+    median: interpolatedPercentile(sorted, 0.5),
+    p75: interpolatedPercentile(sorted, 0.75),
+    p95: interpolatedPercentile(sorted, 0.95),
+    mean,
+    standardDeviation,
+  };
+  for (const [name, value] of Object.entries(summary)) {
+    if (!Number.isFinite(value)) throw new RangeError(`${name} is outside the representable finite range.`);
+  }
+  return summary;
+}
+
+/**
+ * @param {readonly number[]} sorted
+ * @param {number} percentile
+ * @returns {number}
+ */
+function interpolatedPercentile(sorted, percentile) {
+  const position = (sorted.length - 1) * percentile;
+  const lower = Math.floor(position);
+  const upper = Math.ceil(position);
+  const start = sorted[lower] ?? 0;
+  const end = sorted[upper] ?? start;
+  const fraction = position - lower;
+  return start * (1 - fraction) + end * fraction;
+}
+
 /** @param {Record<string, number>} values */
 function assertFiniteNumbers(values) {
   for (const [name, value] of Object.entries(values)) {

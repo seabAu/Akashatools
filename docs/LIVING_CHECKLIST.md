@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 28 tests currently pass.
+- [x] Add dependency-free Node tests; 32 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -285,6 +285,8 @@ Acceptance criteria:
 
 ### 3.5 Numbers, math, random, and sorting
 
+- [x] Add and test finite numeric distribution summaries with explicit
+  percentile, population-deviation, immutability, and empty-sample semantics.
 - [ ] Audit numeric coercion policy; default to rejecting implicit coercion.
 - [ ] Test `clamp`, `wrap`, and rounding at boundaries, infinities, `NaN`, and
   floating-point edge cases.
