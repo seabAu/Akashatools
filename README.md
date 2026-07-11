@@ -87,5 +87,6 @@ development dependencies. `jsconfig.json` enables strict JavaScript checking in
 VS Code. Public functions include JSDoc parameter, return, and generic annotations
 for editor IntelliSense.
 
-See [docs/MIGRATION.md](docs/MIGRATION.md) for the source audit, inclusion rules,
-and remaining migration phases.
+See [docs/LIVING_CHECKLIST.md](docs/LIVING_CHECKLIST.md) for the authoritative
+work plan and [docs/MIGRATION.md](docs/MIGRATION.md) for the first-alpha source
+audit and migration decisions.

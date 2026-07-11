@@ -1,0 +1,523 @@
+# Akashatools 2026 living checklist
+
+> Status: active project plan. Update this document in the same commit as each
+> meaningful implementation batch. Check an item only when its acceptance
+> criteria are verified. Add newly discovered work instead of keeping it in chat.
+
+## Goal-slot directive
+
+Work through this checklist until Akashatools 2.0 is release-ready. Preserve the
+1.0.2 baseline, keep the checklist and decision log current, implement in small
+reviewable commits, and verify every public behavior. Do not publish to npm or
+modify source consumer projects without explicit user approval.
+
+Canonical checklist:
+`akashatools2026/docs/LIVING_CHECKLIST.md`
+
+## North star
+
+Akashatools should be a modern, dependency-light utility library that is:
+
+- easy to discover interactively in VS Code;
+- painless for quick application work;
+- efficient when a consumer imports only one function or category;
+- explicit about mutation, failures, runtime requirements, and edge cases;
+- safe around untrusted paths, objects, URLs, files, and response bodies;
+- equally coherent in browser, server, and shared JavaScript code;
+- documented well enough that source-project archaeology is never required.
+
+The intended experience supports three complementary import styles:
+
+```js
+// Discoverable namespace: optimize for editor exploration.
+import akasha from "akashatools";
+akasha.array.chunk(values, 10);
+akasha.validation.isEmail(input);
+
+// Flat namespace: familiar Underscore/Lodash-style convenience.
+akasha.chunk(values, 10);
+akasha.isEmail(input);
+
+// Focused imports: optimize for explicit dependencies and bundling.
+import { chunk, isEmail } from "akashatools";
+import { chunk } from "akashatools/array";
+```
+
+The default namespace will be a plain, frozen utility object. It will not be a
+callable wrapper and will not implement implicit chaining in 2.0. Those features
+would add API and type complexity and require demonstrated consumer value.
+
+## Lessons adopted without copying another library
+
+- Underscore demonstrates that named exports and a default convenience interface
+  can coexist, and that fine-grained source modules make APIs inspectable.
+- Lodash demonstrates the value of a memorable flat namespace, documentation by
+  category, consistent iteratee conventions, and direct method imports.
+- Akashatools will keep its own naming, contracts, implementations, documentation,
+  and tests. We adopt interface principles, not source code or prose.
+- Standalone npm packages for every method are out of scope. They duplicate shared
+  internals and complicate dependency graphs. If per-method imports are justified,
+  they will be subpath exports from this single package.
+
+## Current verified baseline
+
+- [x] Initialize Git inside `akashatools2026`.
+- [x] Preserve copied Akashatools 1.0.2 in baseline commit `3a245be`.
+- [x] Commit the first 2.0 alpha foundation in `3b0fe6c`.
+- [x] Set the package to ESM and Node.js 22+.
+- [x] Add named root exports and category subpath exports.
+- [x] Retain legacy `akashatools/lib` entry points temporarily.
+- [x] Add strict JSDoc checking through `jsconfig.json`.
+- [x] Add dependency-free Node tests; 16 tests currently pass.
+- [x] Verify root, category, and legacy imports.
+- [x] Verify npm tarball contents with `npm pack --dry-run`.
+- [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
+  portfolio rebuild, and COMPOSR.
+
+## Phase 1 — lock the public API architecture
+
+### 1.1 Namespace and import ergonomics
+
+- [ ] Add a documented default export named `akasha` internally.
+- [ ] Expose every collision-free public utility directly on the default object.
+- [ ] Expose every canonical category as a nested namespace on the default object.
+- [ ] Freeze the default object and nested category objects against accidental
+  consumer mutation.
+- [ ] Confirm `import * as akasha from "akashatools"` remains useful and typed.
+- [ ] Decide whether abbreviated compatibility namespaces such as `val`, `str`,
+  `rand`, and `ao` belong only under `akashatools/legacy` or remain deprecated
+  aliases on the main namespace.
+- [ ] Define deterministic handling for flat-name collisions. Preferred order:
+  rename for clarity, keep only the category form, or expose an explicit alias;
+  never silently overwrite a function.
+- [ ] Add namespace completeness tests comparing category exports, root named
+  exports, and default-object properties.
+- [ ] Add an editor fixture proving dot completion for `akasha.array.`,
+  `akasha.validation.`, and the flat namespace.
+
+Acceptance criteria:
+
+- A new user can discover functions by typing dots without reading source files.
+- An experienced user can import a single function without loading a namespace.
+- All supported styles resolve to the same function identity where practical.
+- Namespace construction has no import-time effects beyond object creation.
+
+### 1.2 Canonical categories
+
+- [ ] Confirm and document the stable categories: `array`, `async`, `browser`,
+  `collection`, `date`, `function`, `http`, `number`, `object`, `random`, `sort`,
+  `string`, and `validation`.
+- [ ] Design a separate `node` surface for filesystem/path/runtime utilities.
+- [ ] Decide whether schema and data-model helpers are generic enough for a
+  `schema` category or belong in a separate package/add-on.
+- [ ] Decide whether debug helpers merit a `debug` category or should be replaced
+  by application logging/diagnostic interfaces.
+- [ ] Keep environment-specific modules out of universal entry points when merely
+  importing them could reference unavailable globals.
+
+### 1.3 Naming and signature conventions
+
+- [ ] Create `docs/API_CONVENTIONS.md` with naming rules and examples.
+- [ ] Prefer full words in canonical names (`validation`, not `val`; `string`, not
+  `str`) while documenting migration aliases.
+- [ ] Standardize callback naming: `predicate`, `mapper`, `toKey`, `compare`.
+- [ ] Standardize option-object placement as the final argument.
+- [ ] Standardize `AbortSignal` support for cancellable asynchronous operations.
+- [ ] Standardize range semantics as start-inclusive/end-exclusive unless the
+  function name or option explicitly says otherwise.
+- [ ] Standardize nullish versus falsy handling; never treat `0`, `false`, and
+  `""` as invalid accidentally.
+- [ ] Standardize not-found results by domain (`undefined`, `null`, `-1`, empty
+  collection, or unchanged copy) and document each choice.
+- [ ] Standardize errors: programmer-contract violations throw `TypeError` or
+  `RangeError`; operational failures retain a cause and domain-specific metadata.
+- [ ] Avoid boolean positional parameters where a named option is clearer.
+- [ ] Mark aliases with `@deprecated` and a replacement path.
+
+## Phase 2 — complete the source inventory and disposition ledger
+
+Create `docs/UTILITY_INVENTORY.md`. Every candidate needs: source project, file,
+export name, behavior summary, dependencies, environment, duplicates, known bugs,
+tests, proposed canonical name, and one disposition: adopt, merge, replace with a
+native API, keep app-local, defer, or reject.
+
+### 2.1 Akashatools 1.0.2
+
+- [ ] Inventory every export in `lib/AO.js`.
+- [ ] Inventory every export in `lib/Val.js`.
+- [ ] Inventory every export in `lib/Time.js`.
+- [ ] Inventory every export in `lib/Http.js`.
+- [ ] Inventory every export in `lib/String.js`.
+- [ ] Inventory every export in `lib/Math.js` and `lib/Rand.js`.
+- [ ] Inventory every export in `lib/File.js` and `lib/Debug.js`.
+- [ ] Record broken implementations and undeclared assumptions before replacing
+  them; examples already observed include incorrect variable references, browser
+  globals in universal validation code, and ambiguous validity semantics.
+- [ ] Map all 1.x names to a 2.x replacement, deprecation, or removal rationale.
+
+### 2.2 Mindspace
+
+- [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
+- [ ] Inventory generic server utilities under `app/server/utilities`.
+- [ ] Separate primitives from React, routing, notification, queue, recurrence,
+  authentication, and domain-owned behavior.
+- [ ] Compare client/server duplicates for time, validation, file, schema, and
+  data operations.
+- [ ] Capture source behavior tests for any function whose edge cases are unclear.
+- [ ] Review feature-local helpers only when they express a reusable primitive;
+  do not migrate code solely because its folder is named `utils` or `lib`.
+
+### 2.3 Portfolio rebuild
+
+- [ ] Inventory `client/src/utilities`, `server/utilities`, and shared contracts.
+- [ ] Review field-path, own-property, stable-order, field-coercion, network, and
+  contained-path utilities for generalized contracts.
+- [ ] Keep portfolio search, admin session, public snapshot, navigation, and
+  storage policy app-local unless a clear independent abstraction emerges.
+- [ ] Compare portfolio legacy utility copies against Mindspace and Akashatools
+  before adopting any implementation.
+
+### 2.4 COMPOSR
+
+- [ ] Inventory all exports in `app/packages/utilities` and later utility-like
+  primitives that live in other packages.
+- [ ] Keep profiler bundle logic coupled to COMPOSR contracts app-local.
+- [ ] Generalize only dependency-free primitives or abstractions whose dependency
+  belongs naturally in Akashatools.
+- [ ] Preserve bounded-concurrency ordering and failure semantics in compatibility
+  tests for already adopted async functions.
+
+### 2.5 Cross-project duplicate analysis
+
+- [ ] Group candidates by behavior rather than source name.
+- [ ] Identify semantic conflicts hidden behind identical names.
+- [ ] Identify identical behavior hidden behind different names.
+- [ ] Choose one canonical implementation and contract per behavior.
+- [ ] Record aliases separately from canonical exports.
+- [ ] Record native replacements such as `structuredClone`, `Object.hasOwn`,
+  `Array.prototype.toSorted`, `Intl`, `Set`, `Map`, and `URL`.
+
+## Phase 3 — finish the universal core
+
+### 3.1 Arrays and collections
+
+- [ ] Add and test `flatten` with explicit depth semantics.
+- [ ] Evaluate `difference`, `union`, `partition`, `keyBy`, `countBy`, `sample`,
+  `take`, and `drop` from actual consumer usage.
+- [ ] Consolidate reorder/move/insert/remove variants around immutable contracts.
+- [ ] Decide whether `removeFromArray` should optionally return removal metadata
+  or whether a separate `extractFromArray` function is clearer.
+- [ ] Add key-based remove/update helpers without conflating index and numeric
+  value selectors.
+- [ ] Define sparse-array behavior for every array transform.
+- [ ] Benchmark Set/Map strategies against nested `includes` for large inputs.
+- [ ] Add generic iterable support only where it improves real consumers without
+  making return types surprising.
+
+### 3.2 Objects and nested data
+
+- [ ] Add a well-specified deep equality function or explicitly defer to a
+  dedicated library/native future API.
+- [ ] Design deep traversal/search results with `{ value, key, path, parent }`.
+- [ ] Consolidate `deepSearch`, `deepSearchItems`, `findByKey`, `findByValue`, and
+  related legacy functions into a minimal traversal API.
+- [ ] Add cycle detection and traversal limits.
+- [ ] Decide handling for Maps, Sets, Dates, typed arrays, symbols, accessors, and
+  class instances in traversal and merge operations.
+- [ ] Test structural sharing guarantees for `setAtPath`.
+- [ ] Test prototype-pollution resistance across parsed and array-form paths.
+- [ ] Evaluate `pickBy`, `omitBy`, `mapValues`, `mapKeys`, `invert`, and `entries`
+  helpers based on cross-project use.
+- [ ] Specify whether deep merge replaces, concatenates, or rejects arrays; avoid
+  a single magical option set that obscures behavior.
+
+### 3.3 Validation and type inspection
+
+- [ ] Replace ambiguous 1.x `valid`, `isValid`, `isTruthy`, and `isBlank`
+  semantics with small, literal predicates.
+- [ ] Add type guards for plain object, finite number, safe integer, Date, Map,
+  Set, Blob, File, typed arrays, and object arrays where useful.
+- [ ] Ensure browser-only guards use `globalThis` feature detection safely.
+- [ ] Decide whether JSON validation accepts scalar JSON, objects/arrays only, or
+  exposes both predicates under distinct names.
+- [ ] Expand JSON contract support only with documented schema keywords and tests;
+  do not grow an accidental partial JSON Schema implementation indefinitely.
+- [ ] Evaluate email/phone/password functions as syntax helpers, not claims of
+  identity, ownership, or deliverability.
+- [ ] Add configurable validation-result objects where callers need multiple
+  errors; keep simple predicates boolean.
+- [ ] Review ReDoS and pathological-input behavior for every public regex.
+
+### 3.4 Strings
+
+- [ ] Test case conversion with acronyms, digits, separators, and non-ASCII text.
+- [ ] Decide locale-sensitive versus locale-neutral behavior per function.
+- [ ] Add literal and RegExp replacement APIs without confusing the two.
+- [ ] Evaluate truncate, words, slug, strip/normalize whitespace, and pluralization
+  candidates from real consumers.
+- [ ] Keep HTML escaping narrowly documented as text escaping, not full sanitizing.
+- [ ] Ensure filename helpers address reserved Windows names, trailing periods,
+  path separators, extensions, and byte-length constraints where applicable.
+
+### 3.5 Numbers, math, random, and sorting
+
+- [ ] Audit numeric coercion policy; default to rejecting implicit coercion.
+- [ ] Test `clamp`, `wrap`, and rounding at boundaries, infinities, `NaN`, and
+  floating-point edge cases.
+- [ ] Decide BigInt counterparts only where semantics remain clear.
+- [ ] Add cryptographically secure random helpers under an unmistakable name;
+  never imply `Math.random` output is token-safe.
+- [ ] Add injectable random sources consistently for deterministic tests.
+- [ ] Review range size limits to prevent accidental enormous allocations.
+- [ ] Expand sort helpers with selector, direction, null placement, collator, and
+  stable multi-key ordering contracts.
+- [ ] Benchmark repeated `localeCompare` against reusable `Intl.Collator` objects.
+
+### 3.6 Dates, time, ranges, and time zones
+
+- [ ] Build a duplicate matrix across Akashatools, Mindspace client/server, and
+  portfolio time utilities.
+- [ ] Separate absolute instants, local calendar dates, zoned times, durations,
+  clock times, and display formatting in names and types.
+- [ ] Consolidate same-day, days-in-month, local-date-key, Unix timestamp, and
+  clock conversion helpers.
+- [ ] Design date-range normalization and inclusive/exclusive boundary rules.
+- [ ] Test daylight-saving gaps, overlaps, and day differences.
+- [ ] Prefer `Intl.DateTimeFormat` and `Intl.RelativeTimeFormat` over hand-built
+  locale strings.
+- [ ] Evaluate the platform Temporal API only against the supported runtime floor
+  and browser targets; do not assume availability.
+- [ ] Decide whether advanced recurrence/timezone logic stays application-owned or
+  becomes a separately scoped package surface.
+
+### 3.7 Async and function control
+
+- [ ] Add tests for empty input, mapper sync throws, cancellation, high requested
+  concurrency, and result ordering.
+- [ ] Decide whether bounded mapping needs fail-fast and cancellation variants.
+- [ ] Add `once`, `memoize`, `debounce`, `throttle`, `retry`, and `timeout` only
+  after defining `this`, argument, result, rejection, timer, and cancellation
+  semantics.
+- [ ] Ensure timers do not retain abort listeners after settlement.
+- [ ] Define cache key and eviction behavior before exposing memoization.
+- [ ] Prefer composable primitives over one large async options object.
+
+## Phase 4 — environment-specific surfaces
+
+### 4.1 Browser
+
+- [ ] Test browser downloads with injected DOM/URL objects and a real browser.
+- [ ] Handle filename extensions without duplicate suffixes.
+- [ ] Define object URL revocation timing for synchronous and deferred clicks.
+- [ ] Evaluate clipboard, file reading, storage, and DOM helpers individually;
+  avoid a miscellaneous browser dumping ground.
+- [ ] Keep React hooks and rendered DOM construction outside the core library.
+
+### 4.2 Node filesystem and paths
+
+- [ ] Create `akashatools/node` without importing it from the universal root.
+- [ ] Generalize the portfolio contained-path protection and test traversal,
+  symlink, separator, drive-letter, UNC, and case-sensitivity scenarios.
+- [ ] Design async file read/write helpers around explicit encoding and abort
+  behavior.
+- [ ] Use atomic write patterns where a helper promises safe replacement.
+- [ ] Define file discovery semantics, glob dependency policy, ordering, and error
+  handling before migrating `findFilesByPattern`.
+- [ ] Never hide destructive file failures or accept unchecked computed paths.
+
+### 4.3 HTTP/fetch
+
+- [ ] Inventory all existing fetch wrappers and consumer expectations.
+- [ ] Define a typed `HttpError` carrying status, status text, URL, method,
+  response headers, parsed body when safe, and original cause.
+- [ ] Support `AbortSignal` composition and explicit timeout behavior.
+- [ ] Define JSON/text/blob/array-buffer response parsing and empty-body handling.
+- [ ] Define retry eligibility, backoff, jitter, `Retry-After`, idempotency, and
+  maximum elapsed time before implementing retries.
+- [ ] Redact secrets from diagnostics and errors.
+- [ ] Do not bake application API delays, authentication, or response envelopes
+  into generic helpers.
+- [ ] Test with a local HTTP server, not only mocked `fetch`.
+
+### 4.4 Debug and diagnostics
+
+- [ ] Inventory legacy debug behavior and actual current consumers.
+- [ ] Prefer injectable diagnostic callbacks over unconditional console output.
+- [ ] Decide whether function timing/profiling belongs in Akashatools or COMPOSR.
+- [ ] Ensure debug helpers are removable by bundlers and inert by default.
+
+## Phase 5 — documentation and types
+
+- [ ] Give every public function a complete JSDoc summary, generic types,
+  parameters, return type, thrown errors, examples, and important edge cases.
+- [ ] Add `@since 2.0.0` and `@deprecated` consistently.
+- [ ] Generate an API reference grouped by category from source comments or a
+  single authoritative manifest.
+- [ ] Add a searchable function index with old name, new name, category, runtime,
+  mutation behavior, and direct import path.
+- [ ] Add recipes for common array/object/data/date workflows.
+- [ ] Document convenience namespace versus focused import bundle tradeoffs.
+- [ ] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
+  category-level wildcard imports.
+- [ ] Evaluate generated `.d.ts` files from checked JavaScript.
+- [ ] Add declaration tests proving default, named, namespace, and subpath imports.
+- [ ] Verify VS Code completion manually in JavaScript and TypeScript consumers.
+- [ ] Keep README concise and route detailed material into `docs/`.
+
+## Phase 6 — compatibility and migration experience
+
+- [ ] Create a machine-readable legacy-to-modern alias manifest.
+- [ ] Add deprecation warnings only if they can be development-only, one-time,
+  side-effect controlled, and bundle-removable; otherwise rely on JSDoc/docs.
+- [ ] Create compatibility fixtures that execute representative 1.x imports.
+- [ ] Decide whether stable 2.0 ships a dedicated `akashatools/legacy` namespace.
+- [ ] Decide the removal release for `akashatools/lib/*` paths.
+- [ ] Write a migration guide with behavioral changes, not just renamed functions.
+- [ ] Consider a codemod only after the mapping stabilizes.
+- [ ] Never claim drop-in compatibility until fixtures from real consumers pass.
+
+## Phase 7 — testing, security, and performance
+
+### 7.1 Test architecture
+
+- [ ] Organize tests by public category and behavior contract.
+- [ ] Add test factories for mutation checks and invalid-argument checks.
+- [ ] Add randomized/property-style invariant tests for paths, ranges, sorting,
+  deduplication, and date conversions.
+- [ ] Add regression tests for every source bug found during migration.
+- [ ] Add cross-realm/browser tests for Blob, File, Map, Set, and typed arrays.
+- [ ] Add test coverage reporting and agree on meaningful thresholds.
+- [ ] Run tests on supported Node LTS lines and target browsers.
+
+### 7.2 Security review
+
+- [ ] Threat-model nested paths and object merges for prototype pollution.
+- [ ] Threat-model filesystem containment and symlink escape.
+- [ ] Threat-model HTTP redirects, secret leakage, decompression/body size, and
+  unsafe parsing.
+- [ ] Review regex complexity and input size limits.
+- [ ] Review random helpers for misleading security claims.
+- [ ] Review HTML/text helpers for sanitization ambiguity.
+- [ ] Run dependency and package-content audits before each prerelease.
+
+### 7.3 Benchmarks and bundle size
+
+- [ ] Establish representative small, medium, and large fixtures from source apps.
+- [ ] Benchmark only competing implementations with identical semantics.
+- [ ] Record Node version, warmup, iterations, variance, and memory where relevant.
+- [ ] Avoid micro-optimizations that reduce readability without measured benefit.
+- [ ] Add bundle fixtures for named root, category, default namespace, and direct
+  per-method imports if implemented.
+- [ ] Set size budgets after measuring actual bundler output.
+- [ ] Verify `sideEffects: false` remains truthful.
+
+## Phase 8 — packaging and automation
+
+- [ ] Decide whether ESM-only remains appropriate after consumer fixture testing.
+- [ ] If CommonJS is required, use generated dual outputs with identity/interop
+  tests; do not hand-maintain duplicate sources.
+- [ ] Decide extensioned versus extensionless public subpaths and keep one canonical
+  spelling per export.
+- [ ] Evaluate explicit per-method subpaths such as `akashatools/chunk` using real
+  bundle measurements; do not create separate npm packages.
+- [ ] Ensure export maps expose types, import targets, and environment targets
+  consistently.
+- [ ] Add reproducible scripts for type-check, lint/format, test, coverage,
+  benchmarks, build if needed, and package verification.
+- [ ] Add CI for supported runtimes and package smoke tests.
+- [ ] Add an API-surface snapshot so accidental exports fail CI.
+- [ ] Add an exports-resolution test generated from `package.json`.
+- [ ] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.
+- [ ] Add npm provenance/release automation only when publishing is authorized.
+
+## Phase 9 — dogfood in real consumers
+
+These projects are read-only references until the user explicitly authorizes
+edits. When authorized, migrate one bounded area at a time.
+
+- [ ] Create a Mindspace compatibility fixture for client/shared utilities.
+- [ ] Create a Mindspace compatibility fixture for server utilities.
+- [ ] Create a portfolio rebuild compatibility fixture.
+- [ ] Create a COMPOSR compatibility fixture.
+- [ ] Measure bundle/runtime impact before and after focused imports.
+- [ ] Record missing ergonomics discovered through real usage.
+- [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
+  or environment globals accidentally.
+- [ ] Feed validated improvements back into the canonical API before 2.0 RC.
+
+## Phase 10 — release gates
+
+### Alpha exit
+
+- [ ] Complete the disposition ledger for all four source sets.
+- [ ] Stabilize default/named/category namespace architecture.
+- [ ] Cover the universal core with contract tests and JSDoc.
+- [ ] Publish nothing until the user explicitly approves an alpha release.
+
+### Beta exit
+
+- [ ] Finish selected browser, Node, and HTTP surfaces.
+- [ ] Pass all consumer compatibility fixtures.
+- [ ] Freeze canonical names and option shapes except for critical corrections.
+- [ ] Complete security review and initial performance/bundle baselines.
+- [ ] Publish nothing until the user explicitly approves a beta release.
+
+### Release candidate exit
+
+- [ ] Complete API docs, migration guide, declarations, and package smoke tests.
+- [ ] Resolve all known breaking-change questions.
+- [ ] Confirm clean install and supported-runtime matrix.
+- [ ] Confirm package contents, license, changelog, repository links, and version.
+- [ ] Obtain explicit user approval before publishing an RC.
+
+### Stable 2.0.0
+
+- [ ] Tag the exact reviewed commit.
+- [ ] Publish with provenance and two-factor protections where available.
+- [ ] Verify the npm artifact and import examples after publication.
+- [ ] Create follow-up issues/checklist items for deferred utilities and 1.x path
+  removal; do not expand stable scope during release.
+
+## Open decisions
+
+- [ ] Final default-import name in documentation: `akasha`, `utils`, or `_`.
+  Recommendation: `akasha`; consumers can locally rename a default import.
+- [ ] Whether flat default properties and nested categories both ship in 2.0.
+  Recommendation: yes, with automated collision detection.
+- [ ] Whether abbreviated namespaces remain outside a legacy-only surface.
+  Recommendation: legacy-only with JSDoc migration guidance.
+- [ ] Whether per-method package subpaths materially improve bundles beyond named
+  exports and category subpaths.
+- [ ] Whether generated declarations are needed beyond JSDoc for downstream IDEs.
+- [ ] Whether ESM-only is acceptable for all active consumers.
+- [ ] Which advanced date/timezone and schema helpers are truly generic.
+- [ ] Whether HTTP retry and filesystem globbing justify dependencies.
+
+## Decision log
+
+| Date | Decision | Reason |
+| --- | --- | --- |
+| 2026-07-11 | Preserve 1.0.2 in a baseline commit before modernization. | Provides an exact rollback and comparison point. |
+| 2026-07-11 | Target Node.js 22+ and modern browsers for the 2.0 alpha. | Enables current platform APIs while targeting supported Node lines. |
+| 2026-07-11 | Use named root exports plus category subpaths. | Supports tree-shaking, explicit dependencies, and readable grouping. |
+| 2026-07-11 | Design a flat and categorized default namespace. | Restores dot-completion ergonomics without sacrificing focused imports. |
+| 2026-07-11 | Do not add wrapper chaining to the 2.0 plan. | It adds substantial complexity without a demonstrated Akashatools use case. |
+| 2026-07-11 | Keep per-method imports within one package if adopted. | Avoids duplicated internals and fragmented package maintenance. |
+| 2026-07-11 | Keep app-domain utilities app-local by default. | A `utils` filename alone does not make behavior generic. |
+| 2026-07-11 | Require explicit approval for npm publishing and consumer-project edits. | These actions affect external state beyond the library workspace. |
+
+## Definition of done
+
+Akashatools 2.0 is done when:
+
+- every candidate in the four source sets has a recorded disposition;
+- the canonical API is coherent, collision-free, documented, and discoverable;
+- default, flat, named, category, and approved compatibility imports are tested;
+- all public functions have strict types/JSDoc and behavioral tests;
+- browser, Node, and shared entry points do not leak environment assumptions;
+- security-sensitive utilities have threat-specific tests;
+- performance claims are backed by repeatable benchmarks;
+- real consumer fixtures pass without unexplained behavioral drift;
+- the packed artifact passes clean-install JavaScript and TypeScript smoke tests;
+- migration and API documentation are complete;
+- the user reviews and explicitly authorizes publication.

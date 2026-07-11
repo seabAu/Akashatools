@@ -1,5 +1,10 @@
 # Akashatools 2026 migration
 
+The full active work plan is maintained in
+[LIVING_CHECKLIST.md](LIVING_CHECKLIST.md). This document summarizes the audit
+and first-alpha migration decisions; the living checklist is authoritative for
+remaining work and completion criteria.
+
 ## Source audit
 
 The initial audit covered four source sets:
