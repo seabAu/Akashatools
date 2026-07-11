@@ -1,0 +1,234 @@
+# Akashatools utility inventory and disposition ledger
+
+This ledger is the authoritative migration record for utility candidates. Every
+source export receives a disposition before Akashatools 2.0 reaches release
+candidate status. The inventory describes behavior rather than assuming an old
+name or implementation should survive.
+
+## Disposition vocabulary
+
+- **Adopted** — a tested 2.x canonical implementation exists.
+- **Native** — use a JavaScript/Web/Node API directly unless repeated consumer
+  evidence justifies a clearer wrapper.
+- **Merge** — the behavior is useful but must be combined into a smaller,
+  explicitly specified 2.x API.
+- **Defer** — potentially generic, but its contract or environment surface is not
+  designed yet.
+- **App-local** — behavior is presentation, framework, schema, or domain policy.
+- **Reject** — misleading, broken, unsafe, or redundant behavior that should not
+  become a canonical API.
+
+Evidence values distinguish tested 2.x behavior from source-only observations.
+Compatibility fixtures remain required before any legacy path is removed.
+
+## Akashatools 1.0.2 — `lib/AO.js`
+
+Runtime: universal JavaScript, but coupled through the circular legacy
+`lib/index.js` namespace. Export count: 49.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `arrayToEnum` | Freezes an object mapping each array value to itself; property coercion and unsafe keys are unspecified. | Merge into a future safe `keyBy`/lookup builder only if consumers need it. | Source reviewed; parity pending. |
+| `isOneOf` | Strict membership in an array. | Native `Array.prototype.includes`. | Source reviewed. |
+| `uniqueArray` | Set-based first-occurrence deduplication after legacy array validation. | Adopted as `array.unique`. | 2.x array tests. |
+| `mergeArray` | Concatenates two arrays and optionally deduplicates via a positional boolean. | Native spread/`concat`; merge deduplicated behavior into future `union`. | Source reviewed. |
+| `replaceIfInvalid` | Replaces null, undefined, empty string, or exactly one space. | Merge with `cleanInvalid` into an explicitly named fallback helper; prefer `??` for nullish values. | Source reviewed; semantics conflict with `isBlank`. |
+| `removeEmpty` | Removes null, undefined, and empty strings while retaining `0` and `false`. | Merge as an explicit predicate/filter recipe; `compact` remains nullish-only. | Source reviewed; behavior differs from 2.x `compact`. |
+| `parseTextToArray` | Splits by one or multiple literal delimiters using a collision-prone sentinel. | Merge into a future `splitMany` with escaped alternation or deterministic scanning. | Source reviewed; sentinel can corrupt input. |
+| `cleanJSON` | Recursively replaces scalar values with type defaults and keeps only the first array element. | Reject the misleading name; reconsider only as schema-driven example/model initialization. | Defect/behavior proven from source. |
+| `sanitizeObj` | Mutates recursively, calls an undefined `cleanInvalid`, and returns `forEach`'s `undefined`. | Reject. | Defect proven from source. |
+| `sanitizeObjArray` | Maps through broken `sanitizeObj`, producing undefined entries. | Reject. | Defect proven from source. |
+| `formatObjArray` | Mutates object entries and assumes every nested value has string methods. | App-local formatting or redesign as a mapper supplied by the caller. | Source reviewed; mutation/throw risk. |
+| `cleanArray` | Removes every falsy value. | Native `array.filter(Boolean)`; do not conflate with nullish `compact`. | Source reviewed. |
+| `removeKey` | Returns a shallow copy with one own key deleted. | Adopted as `object.omit` for one or many keys. | 2.x object tests. |
+| `findOne` | Finds by property with optional case/substring matching, then returns either a property or the object. | Merge into separate `findBy`, text predicate, and property access operations; reject shape-changing return. | Source reviewed; contract redesign pending. |
+| `findAll` | Filters by one exact property and optionally plucks another property. | Native `filter` plus `map`, or future `findAllBy` if usage supports it. | Source reviewed. |
+| `objectFindByKey` | Linear property lookup returning either an object or `{ error: "Not found" }`. | Native `find`; reject sentinel return shape. | Source reviewed. |
+| `splice` | Mutates every object in an array with `Object.assign`; name conflicts with array splice. | Reject; use immutable `map` plus object spread. | Source reviewed; mutation proven. |
+| `flatten` | This-bound recursive array flattening that calls nonexistent `this.flatten` in normal module use. | Native `Array.prototype.flat`; add canonical `flatten` wrapper only with explicit depth tests. | Defect proven from source. |
+| `flattenObj` | Mutates nullish values in the input and joins nested keys with underscores without collision protection. | Defer a safe path-aware record flattener. | Source reviewed; mutation/key collision risk. |
+| `flattenObjArray` | Applies `flattenObj` with inconsistent nesting and return shapes. | Merge only after a canonical record-flatten contract exists. | Source reviewed. |
+| `flatMapObjText` | Recursively concatenates object labels and values for display without separators. | App-local presentation. | Source reviewed. |
+| `validateObject` | Intended to require keys, but `return false` inside `forEach` does not escape; most nonempty key lists pass. | Reject implementation; use `keys.every(key => Object.hasOwn(value, key))` or future `hasOwnKeys`. | Defect proven from source. |
+| `validateObjectArray` | Filters objects through broken `validateObject`. | Reject implementation; reconsider as `filter` plus `hasOwnKeys`. | Defect inherited from source. |
+| `hasKeys` | Named as a predicate but filters arrays and repeats ineffective `forEach` returns. | Reject; split predicate and filter behaviors. | Defect/name mismatch proven. |
+| `extractKey` | Maps one property from each object. | Native `map`; possible documented `pluck` only if frequent use warrants it. | Source reviewed. |
+| `extractKeyArray` | Duplicate property projection with additional legacy validation. | Merge with `extractKey`; prefer native `map`. | Source reviewed. |
+| `extractKeys` | Maps each object to a selected-key object. | Compose `map` with adopted `object.pick`. | `pick` tested; composition fixture pending. |
+| `getObjKeys` | Converts object keys into `{ key, value }` selector records. | App-local UI adapter. | Source reviewed. |
+| `objValsToArray` | Returns enumerable own property values. | Native `Object.values`. | Source reviewed. |
+| `arrayToObjArray` | Wraps every array value under a caller-provided property name. | Native `map`; unsafe property names would need protection in a wrapper. | Source reviewed. |
+| `keySortData` | Returns a copied array sorted by a property and direction. | Adopted/generalized as `sort.sortBy`. | 2.x sort tests. |
+| `filterKeys` | Builds an object from selected input keys. | Adopted as `object.pick`. | 2.x object tests. |
+| `filterData` | Applies a custom array-of-filter-records query language with coercion and substring policy. | Defer or keep app-local until real query semantics are captured. | Source reviewed; no independent contract. |
+| `filterDataFast` | Alternate filter engine with JSON stringification and different matching behavior. | Reject as a duplicate implementation; disposition behavior-by-behavior with `filterData`. | Source reviewed; semantic drift observed. |
+| `has` | Recursively checks for a key, mixing arrays/objects and legacy validity rules. | Merge into the planned cycle-safe traversal API; shallow paths use `hasAtPath`. | `hasAtPath` tested; deep parity pending. |
+| `hasAll` | Attempts recursive presence of all keys, with loop-return control-flow defects. | Reject implementation; redesign on top of canonical traversal. | Defect/source reviewed. |
+| `valContains` | JSON-stringifies values before substring comparison. | Adopted for actual strings as `string.includesText`; non-string search requires a separate explicit serializer/search API. | 2.x string tests. |
+| `objContains` | Recursively searches object values but relies on returns inside `forEach`. | Merge into canonical traversal/search. | Source reviewed; control-flow risk. |
+| `arrayContains` | Recursively searches array values with inconsistent object handling. | Merge into canonical traversal/search; primitive membership uses native `includes`. | Source reviewed. |
+| `deepGetKey` | Recursively returns values associated with a matching key. | Merge into path-aware traversal results. | Source reviewed; cycle handling absent. |
+| `deepSearch` | Recursively searches a named key using a predicate and optionally returns a parent. | Merge into traversal results shaped as `{ value, key, path, parent }`. | Source reviewed; cycle handling absent. |
+| `deepSearchItems` | Deep search variant that calls `this.deepSearchItems`, making module invocation fragile. | Reject implementation; merge behavior into canonical traversal. | Defect proven from source. |
+| `deepFindSet` | Intended immutable deep update, but recursive `forEach` returns are discarded; generally only a root match survives. | Reject; use `setAtPath` for known paths and design predicate-based deep update separately. | Defect proven from source. |
+| `cloneObj` | Recursive enumerable string-key clone that loses prototypes and special built-ins. | Adopted replacement `object.deepClone` using `structuredClone`. | 2.x clone tests. |
+| `deepCopy` | Recursive `for...in` clone without cycles or built-in preservation. | Adopted replacement `object.deepClone`. | 2.x clone tests. |
+| `deepCopyJSON` | JSON round-trip clone loses unsupported values/types and fails on cycles. | Adopted replacement `object.deepClone`; keep JSON round-trip only as explicit serialization. | 2.x clone tests. |
+| `findAndSetObject` | Mutates every recursively found property with a matching key. | Defer a cycle-safe predicate update API; known paths use `setAtPath`. | Source reviewed; mutation proven. |
+| `sortObject` | Creates a new object with enumerable string keys in lexical order. | Native `Object.fromEntries(Object.entries(value).sort(...))`; adopt only if consumer evidence warrants. | Source reviewed. |
+| `sortObjArray` | Mutates input using numeric subtraction on a property. | Adopted immutable replacements `sortBy`/`sortByNumericOrder`. | 2.x sort tests. |
+
+## Akashatools 1.0.2 — `lib/Val.js`
+
+Runtime: nominally universal, but `isFile` and `isBlob` directly reference browser
+globals. Export count: 30.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `valid` | References undeclared `variable` instead of `value`, throwing for defined input. | Reject; adopted literal predicate `validation.isDefined`. | Defect proven; 2.x predicate tested. |
+| `isValid` | Changes meaning by type and optional positional boolean; treats several legitimate falsy values as invalid. | Reject umbrella predicate; use `isDefined`, `isBlank`, `isEmpty`, or a domain validator. | Source reviewed. |
+| `validate` | Attempts nested truthiness checks, but returns inside `forEach` do not affect the result. | Reject; compose explicit predicates with `every`. | Defect proven from source. |
+| `cleanInvalid` | Duplicate fallback logic for nullish, empty string, and one space. | Merge with `replaceIfInvalid` into a clearly named fallback helper if needed. | Source reviewed. |
+| `isDefined` | Checks non-nullish values. | Adopted as `validation.isDefined`. | 2.x validation tests. |
+| `isTruthy` | Means defined and not empty string rather than JavaScript truthiness. | Reject misleading name; use native Boolean or literal predicates. | Source reviewed. |
+| `isString` | Cross-realm string tag check. | Defer/add a canonical type guard during validation expansion. | Source reviewed. |
+| `isNumber` | Checks `typeof value === "number"`, including `NaN` and infinities. | Merge into explicit `isNumber` and `isFiniteNumber` predicates; numeric APIs currently validate finiteness. | Source reviewed. |
+| `isNum` | Exact duplicate of `isNumber`. | Reject duplicate; legacy alias maps to the eventual canonical predicate. | Source reviewed. |
+| `isInt` | Integer check via modulo. | Native `Number.isInteger`; possible canonical type guard. | Source reviewed. |
+| `isSafeInt` | Safe integer check with redundant number test. | Native `Number.isSafeInteger`; possible canonical type guard. | Source reviewed. |
+| `isFloat` | Defines float as any number that is not an integer, including problematic values. | Reject name/semantics; consider `isFiniteNonInteger`. | Source reviewed. |
+| `isBool` | Checks exact true or false. | Native `typeof value === "boolean"`; possible canonical type guard. | Source reviewed. |
+| `isBlank` | References `this.length`/`this.trim()` in an arrow function and can throw. | Adopted replacement `validation.isBlank` with literal nullish/whitespace semantics. | Defect proven; 2.x tests. |
+| `escapeHtml` | Escapes five text-significant HTML characters. | Adopted under `string.escapeHtml`, documented as escaping rather than sanitization. | 2.x string tests. |
+| `isJSONRegex` | This-bound prototype-style function calls nonexistent `blank()` and uses a regex approximation. | Reject. | Defect proven from source. |
+| `isJSON` | Parses undeclared `str` instead of the argument and rejects valid scalar intent ambiguously. | Adopted replacement `validation.isJson`, accepting all valid JSON text. | Defect proven; 2.x tests. |
+| `isMap` | `instanceof Map` predicate. | Native or future canonical guard with cross-realm policy. | Source reviewed. |
+| `isSet` | `instanceof Set` predicate. | Native or future canonical guard with cross-realm policy. | Source reviewed. |
+| `isFile` | Uses `'File' in window` and direct `File`, throwing outside browsers. | Defer a `globalThis.File`-safe browser/type guard. | Environment defect proven. |
+| `isBlob` | Uses `'Blob' in window` and direct `Blob`, throwing outside browsers. | Defer a `globalThis.Blob`-safe browser/type guard. | Environment defect proven. |
+| `isObject` | Any defined non-array object, including Dates, Maps, and class instances. | Split into adopted `object.isPlainObject` and a future explicitly named object-like guard. | 2.x plain-object tests. |
+| `isArray` | Null-safe array predicate. | Native `Array.isArray`. | Source reviewed. |
+| `isValidArray` | Rejects empty arrays and arrays whose first item is undefined even when length checking is disabled. | Adopted clear predicate `array.isNonEmptyArray`; use `Array.isArray` when emptiness is allowed. | 2.x array tests. |
+| `arrayContainsObjects` | Returns true for any `typeof "object"` item, including null and arrays. | Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes. | Source reviewed. |
+| `isObjectArray` | Means an array containing at least one object-like item, not an array entirely of objects. | Reject ambiguous name; add explicit `isPlainObjectArray` only if needed. | Source reviewed. |
+| `isAO` | Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity. | Reject abbreviation; use explicit array/plain-object/object-like predicates. | Source reviewed. |
+| `getType` | Returns custom strings and infers array type from only the first element. | Adopted basic replacement `validation.typeOf`; richer array analysis remains separate. | 2.x type tests. |
+| `getFieldType` | Maps runtime values to HTML/form control concepts. | App-local/schema UI adapter. | Source reviewed. |
+| `getArrayType` | Walks array elements to report a custom homogeneous/mixed type string. | Defer a structured `inspectArrayTypes` result if consumer evidence warrants it. | Source reviewed. |
+
+## Akashatools 1.0.2 — `lib/Time.js`
+
+Runtime: universal Date/Intl. Export count: 14.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `convertDate` | Hard-coded English abbreviated weekday and full month display. | Merge into adopted `date.formatDate` with explicit `Intl` options. | 2.x date formatting tested at API level. |
+| `sec2str` | Formats seconds with inconsistent omitted units and mixed suffix/colon output. | Defer a duration formatter with a stable grammar. | Source reviewed. |
+| `elapsed` | Returns `(finish - start) / 1000`, despite docs calling inputs seconds. | Merge into a named duration/difference helper with unit-explicit inputs. | Source reviewed; unit mismatch. |
+| `timeElapsed` | References undeclared `finishg`. | Reject implementation; future composition of elapsed duration and formatter. | Defect proven. |
+| `estimate` | Documentation promises seconds but implementation returns `sec2str` and estimates total duration rather than remaining duration. | Reject signature; design `estimateRemaining` explicitly. | Defect/contract mismatch proven. |
+| `timeEstimate` | Omits `return` and passes the already formatted estimate back to `sec2str`. | Reject. | Defect proven. |
+| `dateStr2LocaleDateStr` | Parses English `Month Year`/`Present` and returns a locale-formatted string despite the name implying a Date. | App-local portfolio/resume presentation or redesign as explicit parser. | Source reviewed. |
+| `generateDateOptions` | Produces reverse chronological `{ key, value }` records for an HTML selector. | App-local UI adapter. | Source reviewed. |
+| `convertTimestampToYYYYMMDDDD` | Produces unpadded local `YYYY-M-D`; name contains duplicated `DD`. | Merge into adopted `date.localDateKey`. | 2.x date-key tests. |
+| `convertYYYYMMDDDDtoTimestamp` | Calls `new Date(date.split("-"))`, relying on array string coercion and host parsing. | Reject; use explicit local-date parsing when designed. | Source reviewed; parsing ambiguity. |
+| `formatDate` | Locale date formatting with a null fallback. | Adopted stricter `date.formatDate`. | 2.x date tests. |
+| `formatDateDMY` | Formats a Date as local `DD/MM/YYYY`. | Merge as a documented formatter preset rather than duplicate implementation. | Source reviewed. |
+| `formatDateDDMMYYYY` | Duplicate `formatDateDMY`. | Reject duplicate; same future preset. | Source reviewed. |
+| `formatTimestampDDMMYYYY` | Name/docs say DD/MM/YYYY, implementation returns local `YYYY-MM-DD`. | Reject misleading alias; adopted `localDateKey` covers actual output. | Defect proven; 2.x date-key tests. |
+
+## Akashatools 1.0.2 — `lib/String.js`
+
+Runtime: universal, but circularly imports the complete legacy namespace. Export
+count: 6.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `toCapitalCase` | Uppercases the first UTF-16 code unit. | Adopted Unicode-aware `string.capitalize`. | 2.x non-ASCII test. |
+| `toKebabCase` | Inserts a hyphen before every uppercase letter; does not normalize spaces/acronyms. | Adopted generalized `string.kebabCase`. | 2.x string tests. |
+| `toUpperCamelCase` | Converts hyphenated lowercase segments only. | Adopted generalized `string.pascalCase`. | 2.x string tests. |
+| `subStringSearch` | Literal substring search with optional case sensitivity. | Adopted `string.includesText` with a named option. | 2.x string tests. |
+| `replaceMultiple` | Treats replacement keys as raw regular expressions. | Adopted safe literal `string.replaceMany`; a regex API will be separate. | 2.x literal metacharacter test. |
+| `getLongest` | Returns maximum string length across array values, object keys, or a scalar. | Adopted `string.longestStringLength`. | Function implemented; focused test expansion pending. |
+
+## Akashatools 1.0.2 — `lib/Math.js`
+
+Runtime: universal math. Export count: 9.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `clamp` | Clamps without validating finite values or bound order. | Adopted strict `number.clamp`. | 2.x number tests. |
+| `wrap` | Modulo wrap over a half-open range. | Adopted strict `number.wrap`. | 2.x number tests. |
+| `round` | Decimal exponent-string rounding. | Adopted as `number.roundTo` with precision bounds. | 2.x number tests. |
+| `add` | Sums values from zero without validation. | Adopted strict `number.sum`. | 2.x number tests. |
+| `sub` | Negates the sum of all inputs rather than subtracting subsequent inputs from the first. | Reject as a likely defect; canonical `number.subtract(first, ...rest)` is explicit. | Source reviewed; 2.x subtract implemented. |
+| `distance` | Absolute distance between two numbers. | Adopted strict `number.distance`. | 2.x implementation; direct test expansion pending. |
+| `distance2` | Euclidean distance between `{ x, y }` objects. | Merge object-coordinate compatibility into or alongside adopted tuple-based `distance2d` only if consumers require it. | 2.x tuple test; legacy fixture pending. |
+| `boolRand` | Documentation promises boolean, implementation returns `1` or `-1`. | Split into adopted `randomBoolean` and future explicit `randomSign`. | Defect proven; boolean helper tested. |
+| `decToBinary` | Recursive numeric-digit representation with bitwise truncation limits. | Adopted `number.toBinary`, returning a string. | 2.x number tests. |
+
+## Akashatools 1.0.2 — `lib/Rand.js`
+
+Runtime: `Math.random`; never cryptographically secure. Export count: 2.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `rand` | Random float with unusual `(max, min)` parameter order. | Adopted `random.randomFloat(minimum, maximum, random)`, with a breaking argument-order correction. | Deterministic 2.x random tests. |
+| `randString` | Random string from a character set; JSDoc was copied from integer random behavior. | Adopted `random.randomString` with security warning and injectable source. | Deterministic 2.x random tests. |
+
+## Akashatools 1.0.2 — `lib/Http.js`
+
+Runtime: Fetch, AbortController, and timers; coupled to legacy validation. Export
+count: 6. All behavior feeds the future `http` design, but none is safe as a
+canonical compatibility implementation.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `handleBasicFetch` | Redundant Promise wrapper, always parses JSON, and never checks `response.ok`. | Reject implementation; defer to designed `http` request/parser API. | Source reviewed. |
+| `fetchData` | Callback API, sends JSON bodies for GET, logs/swallow errors, and returns no request promise. | Reject. | Source reviewed; error swallowing proven. |
+| `constructFetchError` | Returns a record containing methods and a live response, making serialization incomplete and unstable. | Replace with a typed `HttpError` data contract. | Source reviewed. |
+| `handleFetchResponse` | Sometimes returns a JSON Promise and otherwise throws JSON-stringified pseudo-errors. | Reject; design explicit status and body parsing. | Source reviewed. |
+| `parseError` | Parses stringified errors through broken legacy `isJSON`. | Reject; preserve typed errors and causes instead. | Dependency defect proven. |
+| `handleFetch` | Forces GET, delays requests, mixes caller/internal signals, clears timeout before fetch settles, and converts final rejection into a resolved parsed value. | Reject; use as requirements evidence for cancellation, timeout, retry, and error tests. | Multiple defects proven from source. |
+
+## Akashatools 1.0.2 — `lib/File.js`
+
+Runtime: Fetch/URL syntax, despite the category name suggesting filesystem I/O.
+Export count: 2.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `importFile` | Starts an asynchronous fetch but returns before `data` can be assigned. | Reject; future `http.getJson` or browser file reader depending intended source. | Defect proven. |
+| `checkImageURL` | Regex checks an HTTP(S) URL suffix only; misses query strings and says nothing about content. | Reject misleading validation claim; future helper must be named extension/syntax check or inspect media metadata. | Source reviewed. |
+
+## Akashatools 1.0.2 — `lib/Debug.js`
+
+Runtime: console and legacy namespace formatting. Export count: 1.
+
+| Legacy export | Behavior and finding | 2.x disposition | Evidence |
+| --- | --- | --- | --- |
+| `debug` | Formats and conditionally writes diagnostic values to the console. | Defer; prefer injectable diagnostics and keep logging inert by default. | Source reviewed; consumer inventory pending. |
+
+## Legacy inventory coverage
+
+| File | Exports recorded | Status |
+| --- | ---: | --- |
+| `AO.js` | 49 | Complete source review and preliminary disposition. |
+| `Val.js` | 30 | Complete source review and preliminary disposition. |
+| `Time.js` | 14 | Complete source review and preliminary disposition. |
+| `String.js` | 6 | Complete source review and preliminary disposition. |
+| `Math.js` | 9 | Complete source review and preliminary disposition. |
+| `Rand.js` | 2 | Complete source review and preliminary disposition. |
+| `Http.js` | 6 | Complete source review and preliminary disposition. |
+| `File.js` | 2 | Complete source review and preliminary disposition. |
+| `Debug.js` | 1 | Complete source review and preliminary disposition. |
+| **Total** | **119** | **Every 1.0.2 named export recorded.** |
+
+## Remaining source sets
+
+- [ ] Mindspace generic client utilities.
+- [ ] Mindspace generic server utilities.
+- [ ] Portfolio rebuild client/server/shared utilities.
+- [ ] COMPOSR utility package and cross-package primitives.
+- [ ] Cross-project behavior-group and duplicate matrix.
+- [ ] Machine-readable legacy-to-modern alias manifest after canonical names settle.

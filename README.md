@@ -105,4 +105,5 @@ for editor IntelliSense.
 See [docs/LIVING_CHECKLIST.md](docs/LIVING_CHECKLIST.md) for the authoritative
 work plan and [docs/MIGRATION.md](docs/MIGRATION.md) for the first-alpha source
 audit and migration decisions. Public naming and behavioral rules live in
-[docs/API_CONVENTIONS.md](docs/API_CONVENTIONS.md).
+[docs/API_CONVENTIONS.md](docs/API_CONVENTIONS.md), and per-function migration
+dispositions are tracked in [docs/UTILITY_INVENTORY.md](docs/UTILITY_INVENTORY.md).

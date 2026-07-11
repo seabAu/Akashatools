@@ -139,24 +139,24 @@ Acceptance criteria:
 
 ## Phase 2 — complete the source inventory and disposition ledger
 
-Create `docs/UTILITY_INVENTORY.md`. Every candidate needs: source project, file,
-export name, behavior summary, dependencies, environment, duplicates, known bugs,
-tests, proposed canonical name, and one disposition: adopt, merge, replace with a
-native API, keep app-local, defer, or reject.
+- [x] Create `docs/UTILITY_INVENTORY.md`. Every candidate needs: source project,
+  file, export name, behavior summary, dependencies, environment, duplicates,
+  known bugs, tests, proposed canonical name, and one disposition: adopt, merge,
+  replace with a native API, keep app-local, defer, or reject.
 
 ### 2.1 Akashatools 1.0.2
 
-- [ ] Inventory every export in `lib/AO.js`.
-- [ ] Inventory every export in `lib/Val.js`.
-- [ ] Inventory every export in `lib/Time.js`.
-- [ ] Inventory every export in `lib/Http.js`.
-- [ ] Inventory every export in `lib/String.js`.
-- [ ] Inventory every export in `lib/Math.js` and `lib/Rand.js`.
-- [ ] Inventory every export in `lib/File.js` and `lib/Debug.js`.
-- [ ] Record broken implementations and undeclared assumptions before replacing
+- [x] Inventory every export in `lib/AO.js`.
+- [x] Inventory every export in `lib/Val.js`.
+- [x] Inventory every export in `lib/Time.js`.
+- [x] Inventory every export in `lib/Http.js`.
+- [x] Inventory every export in `lib/String.js`.
+- [x] Inventory every export in `lib/Math.js` and `lib/Rand.js`.
+- [x] Inventory every export in `lib/File.js` and `lib/Debug.js`.
+- [x] Record broken implementations and undeclared assumptions before replacing
   them; examples already observed include incorrect variable references, browser
   globals in universal validation code, and ambiguous validity semantics.
-- [ ] Map all 1.x names to a 2.x replacement, deprecation, or removal rationale.
+- [x] Map all 1.x names to a 2.x replacement, deprecation, or removal rationale.
 
 ### 2.2 Mindspace
 
@@ -512,6 +512,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Ship flat and categorized properties on one frozen default namespace. | Flat access is concise while categories preserve dot-completion discovery. |
 | 2026-07-11 | Keep abbreviated namespaces on legacy-only surfaces. | Canonical full category names are clearer and avoid permanent duplicate APIs. |
 | 2026-07-11 | Treat namespace collisions as test/build-time contract failures. | Silent overwrites are unsafe, while runtime scanning would add import work and hinder tree-shaking. |
+| 2026-07-11 | Preserve legacy intent, not demonstrably broken legacy behavior. | Compatibility aliases must not perpetuate reference errors, hidden mutation, misleading return types, or swallowed failures. |
 
 ## Definition of done
 

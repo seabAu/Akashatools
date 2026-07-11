@@ -5,6 +5,9 @@ The full active work plan is maintained in
 and first-alpha migration decisions; the living checklist is authoritative for
 remaining work and completion criteria.
 
+The per-export source review and migration disposition are maintained in
+[UTILITY_INVENTORY.md](UTILITY_INVENTORY.md).
+
 ## Source audit
 
 The initial audit covered four source sets:
