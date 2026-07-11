@@ -160,6 +160,8 @@ Acceptance criteria:
 
 ### 2.2 Mindspace
 
+- [x] Classify every active module under the client/server utility roots as a
+  generic candidate, environment/framework candidate, or app-owned module.
 - [ ] Inventory generic client utilities under `app/client/src/lib/utilities`.
 - [ ] Inventory generic server utilities under `app/server/utilities`.
 - [ ] Separate primitives from React, routing, notification, queue, recurrence,
@@ -513,6 +515,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep abbreviated namespaces on legacy-only surfaces. | Canonical full category names are clearer and avoid permanent duplicate APIs. |
 | 2026-07-11 | Treat namespace collisions as test/build-time contract failures. | Silent overwrites are unsafe, while runtime scanning would add import work and hinder tree-shaking. |
 | 2026-07-11 | Preserve legacy intent, not demonstrably broken legacy behavior. | Compatibility aliases must not perpetuate reference errors, hidden mutation, misleading return types, or swallowed failures. |
+| 2026-07-11 | Classify source modules before migrating their exports. | Utility folders contain substantial domain and framework behavior; module location alone is not evidence of genericity. |
 
 ## Definition of done
 

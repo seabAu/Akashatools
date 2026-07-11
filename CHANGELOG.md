@@ -12,6 +12,8 @@
   including defects, native replacements, adopted APIs, and deferred redesigns.
 - Recorded all 9 runtime and 2 type exports from COMPOSR's utility package,
   separating adopted primitives from profiler-contract behavior.
+- Classified all 136 active Mindspace client/server utility modules by generic,
+  environment/framework, or application-owned scope.
 - Added named, tree-shakeable root exports and explicit category subpaths.
 - Added modern array, async, browser, collection, date, number, object, random,
   sort, string, and validation modules.

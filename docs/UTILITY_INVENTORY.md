@@ -5,6 +5,11 @@ source export receives a disposition before Akashatools 2.0 reaches release
 candidate status. The inventory describes behavior rather than assuming an old
 name or implementation should survive.
 
+Large source-set appendices provide full module classification and feed their
+export-level dispositions back into this ledger:
+
+- [Mindspace inventory](inventory/MINDSPACE.md)
+
 ## Disposition vocabulary
 
 - **Adopted** — a tested 2.x canonical implementation exists.
@@ -253,6 +258,7 @@ with their own contracts.
 
 - [ ] Mindspace generic client utilities.
 - [ ] Mindspace generic server utilities.
+- [x] Mindspace active utility modules classified by portability/environment.
 - [ ] Portfolio rebuild client/server/shared utilities.
 - [x] COMPOSR `app/packages/utilities` public surface.
 - [ ] COMPOSR utility-like cross-package primitives.
