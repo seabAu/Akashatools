@@ -15,10 +15,10 @@ in addition to named declarations.
 | Group | Runtime exports | Status |
 | --- | ---: | --- |
 | Browser/UI/React/runtime helpers | 37 | Complete below. |
-| Storage, credential crypto, and service-worker queue | 15 | Pending. |
+| Storage, credential crypto, and service-worker queue | 15 | Complete below. |
 | Fetch, import/export, and I/O | 25 | Pending. |
 | `markdown.js`, `prototypes.js`, `sentence.js` | 0 | Pending side-effect/provenance review. |
-| **Total** | **77** | **37 complete; 40 pending.** |
+| **Total** | **77** | **52 complete; 25 pending.** |
 
 ## `browser.js` (5 exports)
 
@@ -125,3 +125,54 @@ display is independent of those application contracts.
 - Importing universal Akashatools must never read `window`, `document`, user
   agent, permissions, stylesheets, or React state. Browser effects remain
   call-time operations under environment-specific entry points.
+
+## `credentialCrypto.js` (3 exports)
+
+The module derives AES-256-GCM keys with PBKDF2-SHA-256 at 250,000 iterations,
+uses random 16-byte salts and 12-byte IVs, and serializes an envelope with
+base64 fields. Those are reasonable building blocks, but a generic credential
+format needs a stricter and independently reviewed contract.
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `encryptCredentialSecret` | Encrypts nonblank string secrets with a passphrase of at least eight code units and returns a versioned-looking envelope. The version/algorithm fields are informational only and no associated data binds the metadata. | Keep app/security-owned; do not advertise generic credential safety without format review, test vectors, migration/rotation, and threat model. |
+| `decryptCredentialSecret` | Trusts envelope salt/IV/ciphertext and uses `Number(iterations) || default`, allowing negative, fractional, or resource-exhausting iteration values before Web Crypto rejects/works. It does not validate version, algorithm, KDF, base64, or expected byte lengths. | Reject as generic decryption API; harden locally before handling untrusted envelopes. |
+| `isCredentialEncryptionSupported` | Checks only `window.crypto.subtle`, while encryption also needs `getRandomValues`, `btoa`, `atob`, `TextEncoder`, and `TextDecoder`. | Reject incomplete capability predicate; future API feature-detects every required operation or attempts the operation. |
+
+## `draftPersistenceStorage.js` (7 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `DRAFT_STORAGE_BACKENDS` | Mutable constants for Mindspace session/local/IndexedDB policy. | App-owned; freeze locally if mutation is not intended. |
+| `normalizeDraftPersistenceOptions` | Accepts a TTL number or options and silently falls back to session storage/default TTL; finite negative/zero TTLs are accepted. | App-owned draft policy; a generic TTL API must state bounds and fallback behavior. |
+| `readDraftMapSync` | Reads session/local storage and silently converts absent/malformed/non-object JSON to `{}`; accessing storage itself can throw a browser security/quota error. | Defer browser storage adapter with injected storage and explicit parse/access failure policy. |
+| `writeDraftMapSync` | JSON-stringifies and writes a draft map, returning false only for unavailable backend/key; serialization, quota, and access errors throw. | App-owned until storage error/result contract is unified. |
+| `readDraftMap` | Async facade over sync storage or IndexedDB; the IndexedDB path resolves on request success and never closes its database connection. | Reject implementation for generic use; future IndexedDB helper settles/cleans up at transaction completion. |
+| `writeDraftMap` | IndexedDB path resolves true on request success before transaction completion and never closes the database, so a later transaction abort can follow reported success. | Reject implementation; transaction commit defines success. |
+| `pruneDraftMap` | Keeps entries with positive numeric `savedAt` and age strictly below TTL; future timestamps remain valid and input/TTL shapes are not validated. | App-owned draft expiration policy or future explicit timestamp-map filter. |
+
+## `local.js` (3 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `SetLocal` | Thin global `localStorage.setItem` wrapper that logs keys and values. | Reject logging/data-exposure behavior; use native Storage or future injected adapter. |
+| `GetLocal` | Logs stored values and returns null for missing/empty-string values, collapsing a meaningful stored empty string into absence. | Reject; native `getItem` already returns string or null. |
+| `DeleteLocal` | Logs then delegates to global `removeItem`. | Native Storage API; no wrapper needed. |
+
+## `serviceWorkerDebugQueue.js` (2 exports)
+
+| Mindspace export | Finding | Akashatools disposition |
+| --- | --- | --- |
+| `readQueuedServiceWorkerEvents` | Reads an app-specific IndexedDB store, sorts by `createdAt`, and converts every unavailable/open/read/transaction failure to an empty queue. | App-owned diagnostics; do not hide operational failure in a generic storage API. |
+| `removeQueuedServiceWorkerEvents` | Deletes truthy IDs in one transaction and resolves on transaction completion, with Mindspace database/store names. | App-owned service-worker debug queue. |
+
+## Storage/security result
+
+- Credential encryption remains outside Akashatools until its envelope parser,
+  iteration bounds, API capability checks, threat model, test vectors, key
+  rotation, and failure taxonomy are specified.
+- Storage utilities must be injectable/testable and must distinguish unavailable,
+  absent, malformed, serialization, quota, request, and transaction failures.
+- Akashatools will not log storage values, credentials, tokens, or imported data.
+- IndexedDB success is transaction completion, not merely one request's success;
+  opened connections require deterministic cleanup.
