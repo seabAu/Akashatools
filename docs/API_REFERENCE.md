@@ -740,149 +740,131 @@ Focused import: `akashatools/number`
 
 Constrains a finite number to an inclusive range.
 
-- Signature: `clamp(value, minimum, maximum)`
+- Signature: `clamp()`
 - Import: `import { clamp } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Value constrained to the inclusive range.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `number` | Not documented. |
-| `minimum` | `number` | Not documented. |
-| `maximum` | `number` | Not documented. |
+Throws:
+- `TypeError` — If any argument is not finite.
+- `RangeError` — If minimum exceeds maximum.
 
 ### wrap
 
 Wraps a finite number into the half-open interval [minimum, maximum).
 
-- Signature: `wrap(value, minimum, maximum)`
+- Signature: `wrap()`
 - Import: `import { wrap } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Equivalent value in the half-open interval.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `number` | Not documented. |
-| `minimum` | `number` | Not documented. |
-| `maximum` | `number` | Not documented. |
+Throws:
+- `TypeError` — If any argument is not finite.
+- `RangeError` — If the interval is empty, reversed, or has a non-finite span.
 
 ### roundTo
 
 Rounds a number to a decimal precision using exponent shifting.
 
-- Signature: `roundTo(value, digits?)`
+- Signature: `roundTo()`
 - Import: `import { roundTo } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Rounded finite value.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `number` | Not documented. |
-| `[digits=0]` | `number` | Not documented. |
+Throws:
+- `TypeError` — If value is not finite.
+- `RangeError` — If digits or the rounded result is outside supported finite bounds.
 
 ### sum
 
 Adds finite numeric arguments.
 
-- Signature: `sum(values)`
+- Signature: `sum()`
 - Import: `import { sum } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Arithmetic sum, which can overflow if the result is not representable.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `...number` | Not documented. |
+Throws:
+- `TypeError` — If any input is not finite.
 
 ### subtract
 
 Subtracts each subsequent value from the first.
 
-- Signature: `subtract(first, rest)`
+- Signature: `subtract()`
 - Import: `import { subtract } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Arithmetic difference, which can overflow if the result is not representable.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `first` | `number` | Not documented. |
-| `rest` | `...number` | Not documented. |
+Throws:
+- `TypeError` — If any input is not finite.
 
 ### distance
 
 Returns the absolute distance between two finite numbers.
 
-- Signature: `distance(left, right)`
+- Signature: `distance()`
 - Import: `import { distance } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Absolute arithmetic distance, possibly Infinity after numeric overflow.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `left` | `number` | Not documented. |
-| `right` | `number` | Not documented. |
+Throws:
+- `TypeError` — If either input is not finite.
 
 ### distance2d
 
 Calculates Euclidean distance between two `[x, y]` coordinates.
 
-- Signature: `distance2d(left, right)`
+- Signature: `distance2d()`
 - Import: `import { distance2d } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Euclidean distance, possibly Infinity when no finite result is representable.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `left` | `readonly [number, number]` | Not documented. |
-| `right` | `readonly [number, number]` | Not documented. |
+Throws:
+- `TypeError` — If either coordinate is not a two-item array of finite numbers.
 
 ### fibonacci
 
 Returns the nth Fibonacci number using an iterative O(n) implementation.
 
-- Signature: `fibonacci(index)`
+- Signature: `fibonacci()`
 - Import: `import { fibonacci } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Exactly representable Fibonacci number at index.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `index` | `number` | Not documented. |
+Throws:
+- `RangeError` — If index is outside the supported safe-integer range.
 
 ### toBinary
 
 Converts a safe integer to a binary string.
 
-- Signature: `toBinary(value)`
+- Signature: `toBinary()`
 - Import: `import { toBinary } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Signed binary digits without a radix prefix.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `number` | Not documented. |
+Throws:
+- `TypeError` — If value is not a safe integer.
 
 ### summarizeNumbers
 
 Summarizes a finite numeric sample without mutating it. Percentiles use linear interpolation at position `(length - 1) * percentile`, and standard deviation is the population value. Empty samples have count zero and null statistics so absence is not confused with observed zeroes.
 
-- Signature: `summarizeNumbers(values)`
+- Signature: `summarizeNumbers()`
 - Import: `import { summarizeNumbers } from "akashatools/number"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `{ count: number, minimum: number | null, maximum: number | null, median: number | null, p75: number | null, p95: number | null, mean: number | null, standardDeviation: number | null }`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly number[]` | Not documented. |
+- Returns: `{ count: number, minimum: number | null, maximum: number | null, median: number | null, p75: number | null, p95: number | null, mean: number | null, standardDeviation: number | null }` — Summary with interpolated percentiles and population deviation.
 
 Throws:
 - `TypeError` — If values is not an array or contains a non-finite number.

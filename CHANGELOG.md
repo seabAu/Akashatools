@@ -121,3 +121,5 @@
 - Completed and enforced IDE-visible parameter/return descriptions, thrown-error
   contracts, examples, and edge-case prose for async, browser, collection, and
   Node public APIs; regenerated the API reference and declarations.
+- Extended the enforced complete-JSDoc schema to the full number API, including
+  finite-input, overflow, precision, empty-sample, and representability edges.

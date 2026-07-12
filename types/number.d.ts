@@ -1,80 +1,110 @@
 /**
  * Constrains a finite number to an inclusive range.
  *
- * @param {number} value
- * @param {number} minimum
- * @param {number} maximum
- * @returns {number}
+ * @param {number} value Finite value to constrain.
+ * @param {number} minimum Finite inclusive lower boundary.
+ * @param {number} maximum Finite inclusive upper boundary.
+ * @returns {number} Value constrained to the inclusive range.
+ * @throws {TypeError} If any argument is not finite.
+ * @throws {RangeError} If minimum exceeds maximum.
+ * @example
+ * clamp(12, 0, 10); // 10
  * @since 2.0.0
  */
 export declare function clamp(value: number, minimum: number, maximum: number): number;
 /**
  * Wraps a finite number into the half-open interval [minimum, maximum).
  *
- * @param {number} value
- * @param {number} minimum
- * @param {number} maximum
- * @returns {number}
+ * @param {number} value Finite value to wrap.
+ * @param {number} minimum Finite inclusive lower boundary.
+ * @param {number} maximum Finite exclusive upper boundary.
+ * @returns {number} Equivalent value in the half-open interval.
+ * @throws {TypeError} If any argument is not finite.
+ * @throws {RangeError} If the interval is empty, reversed, or has a non-finite span.
+ * @example
+ * wrap(-1, 0, 4); // 3
  * @since 2.0.0
  */
 export declare function wrap(value: number, minimum: number, maximum: number): number;
 /**
  * Rounds a number to a decimal precision using exponent shifting.
  *
- * @param {number} value
- * @param {number} [digits=0]
- * @returns {number}
+ * @param {number} value Finite value to round.
+ * @param {number} [digits=0] Safe-integer decimal digits from -308 through 308.
+ * @returns {number} Rounded finite value.
+ * @throws {TypeError} If value is not finite.
+ * @throws {RangeError} If digits or the rounded result is outside supported finite bounds.
+ * @example
+ * roundTo(1.005, 2); // 1.01
  * @since 2.0.0
  */
 export declare function roundTo(value: number, digits?: number): number;
 /**
  * Adds finite numeric arguments.
  *
- * @param {...number} values
- * @returns {number}
+ * @param {...number} values Finite values to add; an empty list returns zero.
+ * @returns {number} Arithmetic sum, which can overflow if the result is not representable.
+ * @throws {TypeError} If any input is not finite.
+ * @example
+ * sum(1, 2, 3); // 6
  * @since 2.0.0
  */
 export declare function sum(...values: number[]): number;
 /**
  * Subtracts each subsequent value from the first.
  *
- * @param {number} first
- * @param {...number} rest
- * @returns {number}
+ * @param {number} first Finite starting value.
+ * @param {...number} rest Finite values subtracted from left to right.
+ * @returns {number} Arithmetic difference, which can overflow if the result is not representable.
+ * @throws {TypeError} If any input is not finite.
+ * @example
+ * subtract(10, 3, 2); // 5
  * @since 2.0.0
  */
 export declare function subtract(first: number, ...rest: number[]): number;
 /**
  * Returns the absolute distance between two finite numbers.
  *
- * @param {number} left
- * @param {number} right
- * @returns {number}
+ * @param {number} left First finite value.
+ * @param {number} right Second finite value.
+ * @returns {number} Absolute arithmetic distance, possibly Infinity after numeric overflow.
+ * @throws {TypeError} If either input is not finite.
+ * @example
+ * distance(-2, 3); // 5
  * @since 2.0.0
  */
 export declare function distance(left: number, right: number): number;
 /**
  * Calculates Euclidean distance between two `[x, y]` coordinates.
  *
- * @param {readonly [number, number]} left
- * @param {readonly [number, number]} right
- * @returns {number}
+ * @param {readonly [number, number]} left First finite `[x, y]` coordinate.
+ * @param {readonly [number, number]} right Second finite `[x, y]` coordinate.
+ * @returns {number} Euclidean distance, possibly Infinity when no finite result is representable.
+ * @throws {TypeError} If either coordinate is not a two-item array of finite numbers.
+ * @example
+ * distance2d([0, 0], [3, 4]); // 5
  * @since 2.0.0
  */
 export declare function distance2d(left: readonly [number, number], right: readonly [number, number]): number;
 /**
  * Returns the nth Fibonacci number using an iterative O(n) implementation.
  *
- * @param {number} index
- * @returns {number}
+ * @param {number} index Safe-integer sequence index from 0 through 78.
+ * @returns {number} Exactly representable Fibonacci number at index.
+ * @throws {RangeError} If index is outside the supported safe-integer range.
+ * @example
+ * fibonacci(10); // 55
  * @since 2.0.0
  */
 export declare function fibonacci(index: number): number;
 /**
  * Converts a safe integer to a binary string.
  *
- * @param {number} value
- * @returns {string}
+ * @param {number} value Safe integer to represent in base two.
+ * @returns {string} Signed binary digits without a radix prefix.
+ * @throws {TypeError} If value is not a safe integer.
+ * @example
+ * toBinary(-5); // "-101"
  * @since 2.0.0
  */
 export declare function toBinary(value: number): string;
@@ -84,7 +114,7 @@ export declare function toBinary(value: number): string;
  * deviation is the population value. Empty samples have count zero and null
  * statistics so absence is not confused with observed zeroes.
  *
- * @param {readonly number[]} values
+ * @param {readonly number[]} values Finite numeric sample left unmodified.
  * @returns {{
  *   count: number,
  *   minimum: number | null,
@@ -94,7 +124,7 @@ export declare function toBinary(value: number): string;
  *   p95: number | null,
  *   mean: number | null,
  *   standardDeviation: number | null
- * }}
+ * }} Summary with interpolated percentiles and population deviation.
  * @throws {TypeError} If values is not an array or contains a non-finite number.
  * @throws {RangeError} If a statistic cannot be represented as a finite number.
  * @example

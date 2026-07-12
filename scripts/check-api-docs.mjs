@@ -9,6 +9,7 @@ const completeSchemaModules = new Set([
   "src/browser.js",
   "src/collection.js",
   "src/node.js",
+  "src/number.js",
 ]);
 
 if (process.argv.includes("--fix-since")) {
@@ -80,7 +81,10 @@ for (const filename of publicModules) {
         }
       }
       const returnsLine = lines.find((line) => /^@returns?\s/.test(line));
-      if (kind !== "class" && !/^@returns?\s+\{.*\}\s+\S/.test(returnsLine ?? "")) {
+      const hasDescribedReturn = /^@returns?\s+\{.*\}\s+\S/.test(returnsLine ?? "") || (
+        /^@returns?\s+\{\{$/.test(returnsLine ?? "") && lines.some((line) => /^\}\}\s+\S/.test(line))
+      );
+      if (kind !== "class" && !hasDescribedReturn) {
         failures.push(`${location}: @returns must include a description`);
       }
       if (!/@throws\s+\{/.test(comment)) failures.push(`${location}: missing @throws contract`);
