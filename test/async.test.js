@@ -1,7 +1,22 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { delay, mapSettledWithConcurrency } from "akashatools/async";
+import { delay, fulfilledValues, mapSettledWithConcurrency } from "akashatools/async";
+
+test("bounded async mapping preserves order and filters fulfilled values", async () => {
+  let active = 0;
+  let maximum = 0;
+  const results = await mapSettledWithConcurrency([1, 2, 3, 4], 2, async (value) => {
+    active += 1;
+    maximum = Math.max(maximum, active);
+    await delay(2);
+    active -= 1;
+    if (value === 3) throw new Error("three");
+    return value * 2;
+  });
+  assert.equal(maximum, 2);
+  assert.deepEqual(fulfilledValues(results), [2, 4, 8]);
+});
 
 test("bounded settled mapping handles empty, sync-throw, high concurrency, and ordering", async () => {
   let emptyCalls = 0;

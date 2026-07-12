@@ -2,7 +2,39 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { summarizeNumbers } from "akashatools";
-import { summarizeNumbers as summarizeFromCategory } from "akashatools/number";
+import {
+  clamp,
+  distance2d,
+  fibonacci,
+  roundTo,
+  summarizeNumbers as summarizeFromCategory,
+  sum,
+  toBinary,
+  wrap,
+} from "akashatools/number";
+
+test("number helpers validate ranges and avoid recursive conversions", () => {
+  assert.equal(clamp(20, 0, 10), 10);
+  assert.equal(wrap(-1, 0, 4), 3);
+  assert.equal(roundTo(1.005, 2), 1.01);
+  assert.equal(sum(1, 2, 3), 6);
+  assert.equal(distance2d([0, 0], [3, 4]), 5);
+  assert.equal(fibonacci(10), 55);
+  assert.equal(toBinary(-5), "-101");
+});
+
+test("numeric boundaries reject coercion, overflow, and non-finite values", () => {
+  assert.equal(clamp(-10, -5, 5), -5);
+  assert.equal(wrap(5, 0, 5), 0);
+  assert.equal(wrap(-0.5, 0, 5), 4.5);
+  assert.equal(roundTo(1.005, 2), 1.01);
+  assert.equal(roundTo(1.2345e-7, 10), 1.235e-7);
+  assert.throws(() => clamp(/** @type {any} */ ("2"), 0, 5), TypeError);
+  assert.throws(() => clamp(Number.NaN, 0, 5), TypeError);
+  assert.throws(() => wrap(0, -Number.MAX_VALUE, Number.MAX_VALUE), RangeError);
+  assert.throws(() => roundTo(Number.POSITIVE_INFINITY, 2), TypeError);
+  assert.throws(() => roundTo(Number.MAX_VALUE, -308), RangeError);
+});
 
 test("summarizeNumbers reports interpolated percentiles and population deviation", () => {
   const source = [40, 10, 30, 20];

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 
 import {
   clock12To24,
@@ -30,6 +31,7 @@ test("date conversion and calendar helpers reject invalid values without mutatio
   assert.equal(toDate(null), null);
   assert.equal(toDate("not a date"), null);
   assert.equal(isValidDate({}), false);
+  assert.equal(isValidDate(runInNewContext("new Date(0)")), true);
   assert.equal(daysInMonth(2024, 1), 29);
   assert.equal(daysInMonth(original), 29);
   assert.throws(() => daysInMonth(2024, 12), RangeError);

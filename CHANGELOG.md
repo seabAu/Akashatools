@@ -107,3 +107,6 @@
 - Added source-only Node coverage reporting with enforced 95% line, 80% branch,
   and 90% function floors, plus focused browser, collection-compatibility, and
   date contract tests.
+- Reorganized all runtime contracts by canonical public category, removing the
+  historical mixed core/object-validation test files while retaining explicit
+  namespace, package, compatibility, and cross-category invariant suites.

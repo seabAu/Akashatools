@@ -21,6 +21,12 @@ const categoryNames = [
   "validation",
 ];
 
+test("root API exposes named functions and category namespaces", () => {
+  assert.equal(typeof root.array.chunk, "function");
+  assert.equal(typeof root.date.formatDate, "function");
+  assert.equal(root.formatDate, root.date.formatDate);
+});
+
 test("default and named Akashatools namespaces are the same frozen object", () => {
   assert.equal(akasha, root.akasha);
   assert.equal(root.default, akasha);

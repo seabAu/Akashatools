@@ -1,9 +1,10 @@
 # Testing policy
 
-Akashatools tests public behavior, not implementation shape. Category test files
-own contracts for their public subpaths; dedicated integration files cover the
-root namespace, export map, installed package, declarations, editor completion,
-and retained 1.x compatibility paths.
+Akashatools tests public behavior, not implementation shape. Every implemented
+public category has a focused test file that imports its canonical subpath;
+dedicated integration files cover cross-category invariants, the root namespace,
+export map, installed package, declarations, editor completion, and retained 1.x
+compatibility paths.
 
 ## Commands
 

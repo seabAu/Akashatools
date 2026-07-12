@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 80 tests currently pass.
+- [x] Add dependency-free runtime tests; 81 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -413,10 +413,10 @@ Acceptance criteria:
 
 ### 7.1 Test architecture
 
-- [ ] Organize tests by public category and behavior contract; array, async,
-  browser, collection, date, HTTP, Node, number, object/validation, and package
-  integration contracts now have focused files, while the remaining mixed core
-  assertions still need separation.
+- [x] Organize tests by public category and behavior contract. Each implemented
+  public category owns a focused test file; cross-category invariants, namespace,
+  exports, installed-package, and legacy compatibility remain explicit
+  integration suites.
 - [x] Add test factories for mutation checks and invalid-argument checks.
 - [x] Add deterministic randomized/property-style invariant tests for paths, ranges, sorting,
   deduplication, and date conversions.
