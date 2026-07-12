@@ -6,6 +6,7 @@ const windowsReservedFilename = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i;
  * @param {string} value
  * @param {string | string[]} [locales]
  * @returns {string}
+ * @since 2.0.0
  */
 export function capitalize(value, locales) {
   assertString(value, "value");
@@ -18,6 +19,7 @@ export function capitalize(value, locales) {
  *
  * @param {string} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function kebabCase(value) {
   assertString(value, "value");
@@ -29,6 +31,7 @@ export function kebabCase(value) {
  *
  * @param {string} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function camelCase(value) {
   assertString(value, "value");
@@ -43,6 +46,7 @@ export function camelCase(value) {
  *
  * @param {string} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function pascalCase(value) {
   return capitalize(camelCase(value));
@@ -53,6 +57,7 @@ export function pascalCase(value) {
  *
  * @param {string} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function sentenceCase(value) {
   assertString(value, "value");
@@ -66,6 +71,7 @@ export function sentenceCase(value) {
  * @param {string} search
  * @param {{caseSensitive?: boolean, locales?: string | string[]}} [options]
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function includesText(value, search, { caseSensitive = false, locales } = {}) {
   assertString(value, "value");
@@ -82,6 +88,7 @@ export function includesText(value, search, { caseSensitive = false, locales } =
  * @param {string} value
  * @param {ReadonlyMap<string, string> | Record<string, string>} replacements
  * @returns {string}
+ * @since 2.0.0
  */
 export function replaceMany(value, replacements) {
   assertString(value, "value");
@@ -102,6 +109,7 @@ export function replaceMany(value, replacements) {
  * @param {RegExp} pattern
  * @param {string | ((substring: string, ...args: any[]) => string)} replacement
  * @returns {string}
+ * @since 2.0.0
  */
 export function replaceRegex(value, pattern, replacement) {
   assertString(value, "value");
@@ -118,6 +126,7 @@ export function replaceRegex(value, pattern, replacement) {
  *
  * @param {unknown} value
  * @returns {number}
+ * @since 2.0.0
  */
 export function longestStringLength(value) {
   const candidates = Array.isArray(value)
@@ -136,6 +145,7 @@ export function longestStringLength(value) {
  * @param {string} value
  * @param {{fallback?: string, maximumLength?: number}} [options]
  * @returns {string}
+ * @since 2.0.0
  */
 export function safeFilename(value, { fallback = "download", maximumLength = 80 } = {}) {
   assertString(value, "value");
@@ -153,6 +163,7 @@ export function safeFilename(value, { fallback = "download", maximumLength = 80 
  * @param {string} value
  * @param {{fallback?: string, maximumLength?: number}} [options]
  * @returns {string}
+ * @since 2.0.0
  */
 export function slugify(value, { fallback = "item", maximumLength = 80 } = {}) {
   assertString(value, "value");
@@ -167,6 +178,7 @@ export function slugify(value, { fallback = "item", maximumLength = 80 } = {}) {
  *
  * @param {unknown} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function escapeHtml(value) {
   return String(value)
@@ -183,6 +195,7 @@ export function escapeHtml(value) {
  * @param {unknown} value
  * @param {number | string} [space=2]
  * @returns {string}
+ * @since 2.0.0
  */
 export function prettyJson(value, space = 2) {
   const result = JSON.stringify(value, null, space);

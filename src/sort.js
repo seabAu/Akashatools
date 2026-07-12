@@ -14,6 +14,7 @@ let defaultCollator;
  * @param {(value: T, index: number) => K} [toKey]
  * @param {{direction?: SortDirection, nulls?: NullPlacement, compare?: (left: K, right: K) => number}} [options]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function sortBy(values, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))), { direction = "asc", nulls = "last", compare = compareValues } = {}) {
   return sortByMany(values, [{ toKey, direction, nulls, compare }]);
@@ -33,6 +34,7 @@ export function sortBy(values, toKey = /** @type {(value: T) => K} */ ((value) =
  *   compare?: (left: any, right: any) => number
  * }>} criteria
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function sortByMany(values, criteria) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
@@ -73,6 +75,7 @@ export function sortByMany(values, criteria) {
  * @param {Intl.LocalesArgument} [locales]
  * @param {Intl.CollatorOptions} [options]
  * @returns {(left: unknown, right: unknown) => number}
+ * @since 2.0.0
  */
 export function createCollatorComparator(locales, options = { numeric: true, sensitivity: "base" }) {
   const collator = new Intl.Collator(locales, options);
@@ -86,6 +89,7 @@ export function createCollatorComparator(locales, options = { numeric: true, sen
  * @param {unknown} left
  * @param {unknown} right
  * @returns {number}
+ * @since 2.0.0
  */
 export function compareValues(left, right) {
   if (Object.is(left, right)) return 0;
@@ -112,6 +116,7 @@ export function compareValues(left, right) {
  * @param {Record<string, unknown>} right
  * @param {readonly string[]} [keys]
  * @returns {number}
+ * @since 2.0.0
  */
 export function compareNumericOrder(left, right, keys = ["showIndex", "index", "order"]) {
   if (!left || typeof left !== "object" || !right || typeof right !== "object") {
@@ -133,6 +138,7 @@ export function compareNumericOrder(left, right, keys = ["showIndex", "index", "
  * @param {readonly T[]} values
  * @param {readonly string[]} [keys]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function sortByNumericOrder(values, keys) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");

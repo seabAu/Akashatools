@@ -10,6 +10,7 @@ const maximumTimer = 2_147_483_647;
 
 /**
  * A stable HTTP/network error with redacted response metadata.
+ * @since 2.0.0
  */
 export class HttpError extends Error {
   /**
@@ -55,6 +56,7 @@ export class HttpError extends Error {
  * }} [options]
  * @returns {Promise<T>}
  * @throws {HttpError} For HTTP status, network, abort, timeout, size, or JSON parsing failures.
+ * @since 2.0.0
  */
 export async function request(input, options = {}) {
   const {
@@ -167,6 +169,7 @@ export async function request(input, options = {}) {
  * @param {HeadersInit} headers
  * @param {readonly string[]} [additionalSensitiveNames]
  * @returns {Record<string, string>}
+ * @since 2.0.0
  */
 export function redactHeaders(headers, additionalSensitiveNames = []) {
   validateSensitiveHeaderNames(additionalSensitiveNames);

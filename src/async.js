@@ -7,6 +7,7 @@
  * @param {number} concurrency
  * @param {(value: T, index: number) => R | PromiseLike<R>} mapper
  * @returns {Promise<PromiseSettledResult<R>[]>}
+ * @since 2.0.0
  */
 export async function mapSettledWithConcurrency(values, concurrency, mapper) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
@@ -41,6 +42,7 @@ export async function mapSettledWithConcurrency(values, concurrency, mapper) {
  * @template T
  * @param {readonly PromiseSettledResult<T>[]} results
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function fulfilledValues(results) {
   if (!Array.isArray(results)) throw new TypeError("results must be an array.");
@@ -53,6 +55,7 @@ export function fulfilledValues(results) {
  * @param {number} milliseconds
  * @param {{signal?: AbortSignal}} [options]
  * @returns {Promise<void>}
+ * @since 2.0.0
  */
 export function delay(milliseconds, { signal } = {}) {
   if (!Number.isFinite(milliseconds) || milliseconds < 0 || milliseconds > 2_147_483_647) {

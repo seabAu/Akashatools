@@ -11,6 +11,7 @@ const maximumRangeLength = 1_000_000;
  * @param {unknown} value
  * @param {readonly T[]} [fallback=[]]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function asArray(value, fallback = []) {
   return Array.isArray(value) ? value : [...fallback];
@@ -22,6 +23,7 @@ export function asArray(value, fallback = []) {
  * @template T
  * @param {unknown} value
  * @returns {value is T[]}
+ * @since 2.0.0
  */
 export function isNonEmptyArray(value) {
   return Array.isArray(value) && value.length > 0;
@@ -34,6 +36,7 @@ export function isNonEmptyArray(value) {
  * @template T
  * @param {readonly (T | null | undefined)[]} values
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function compact(values) {
   assertArray(values, "values");
@@ -48,6 +51,7 @@ export function compact(values) {
  * @param {readonly T[]} values
  * @param {number} size
  * @returns {T[][]}
+ * @since 2.0.0
  */
 export function chunk(values, size) {
   assertArray(values, "values");
@@ -71,6 +75,7 @@ export function chunk(values, size) {
  * @param {readonly T[]} values
  * @param {(value: T, index: number) => unknown} [toKey]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function unique(values, toKey = (value) => value) {
   assertArray(values, "values");
@@ -117,6 +122,7 @@ export function flatten(values, depth = Infinity) {
  * @param {number} fromIndex
  * @param {number} toIndex
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function moveItem(values, fromIndex, toIndex) {
   assertArray(values, "values");
@@ -139,6 +145,7 @@ export function moveItem(values, fromIndex, toIndex) {
  * @param {number} index
  * @param {T} item
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function insertItem(values, index, item) {
   assertArray(values, "values");
@@ -160,6 +167,7 @@ export function insertItem(values, index, item) {
  * @param {number | T | ((value: T, index: number, values: readonly T[]) => boolean)} selector
  * @param {{mode?: RemovalMode, all?: boolean}} [options]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function removeFromArray(values, selector, { mode = "auto", all = false } = {}) {
   assertArray(values, "values");
@@ -205,6 +213,7 @@ export function removeFromArray(values, selector, { mode = "auto", all = false }
  * @param {readonly T[]} values
  * @param {(value: T, index: number) => K} toKey
  * @returns {Map<K, T[]>}
+ * @since 2.0.0
  */
 export function groupBy(values, toKey) {
   assertArray(values, "values");
@@ -229,18 +238,25 @@ export function groupBy(values, toKey) {
  * @overload
  * @param {readonly T[]} values
  * @returns {Map<T, number>}
+ * @since 2.0.0
  */
 /**
+ * Counts items by a caller-provided key without coercing key identity.
+ *
  * @template T, K
  * @overload
  * @param {readonly T[]} values
  * @param {(value: T, index: number, values: readonly T[]) => K} toKey
  * @returns {Map<K, number>}
+ * @since 2.0.0
  */
 /**
+ * Counts items by a derived key without coercing key identity.
+ *
  * @param {readonly unknown[]} values
  * @param {(value: unknown, index: number, values: readonly unknown[]) => unknown} [toKey]
  * @returns {Map<unknown, number>}
+ * @since 2.0.0
  */
 export function countBy(values, toKey = (value) => value) {
   assertArray(values, "values");
@@ -263,6 +279,7 @@ export function countBy(values, toKey = (value) => value) {
  * @param {readonly T[]} values
  * @param {(value: T, index: number, values: readonly T[]) => boolean} predicate
  * @returns {[T[], T[]]}
+ * @since 2.0.0
  */
 export function partition(values, predicate) {
   assertArray(values, "values");
@@ -286,6 +303,7 @@ export function partition(values, predicate) {
  * @template T
  * @param {...readonly T[]} arrays
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function intersection(...arrays) {
   arrays.forEach((array) => assertArray(array, "array"));
@@ -302,6 +320,7 @@ export function intersection(...arrays) {
  * @param {number} [end]
  * @param {number} [step]
  * @returns {number[]}
+ * @since 2.0.0
  */
 export function range(start, end, step) {
   if (end === undefined) [start, end] = [0, start];
@@ -325,6 +344,7 @@ export function range(start, end, step) {
  *
  * @param {...readonly unknown[]} arrays
  * @returns {unknown[][]}
+ * @since 2.0.0
  */
 export function zip(...arrays) {
   arrays.forEach((array) => assertArray(array, "array"));
@@ -342,6 +362,7 @@ export function zip(...arrays) {
  * @param {readonly T[]} values
  * @param {() => number} [random=Math.random]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function shuffle(values, random = Math.random) {
   assertArray(values, "values");

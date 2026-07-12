@@ -23,6 +23,7 @@ const nanpInputPattern = /^[\d\s()+.-]+$/;
  * @template T
  * @param {T | null | undefined} value
  * @returns {value is T}
+ * @since 2.0.0
  */
 export function isDefined(value) {
   return value !== null && value !== undefined;
@@ -33,6 +34,7 @@ export function isDefined(value) {
  *
  * @param {unknown} value
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function isBlank(value) {
   return value === null || value === undefined || (typeof value === "string" && value.trim() === "");
@@ -44,6 +46,7 @@ export function isBlank(value) {
  *
  * @param {unknown} value
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function isEmpty(value) {
   if (isBlank(value)) return true;
@@ -58,6 +61,7 @@ export function isEmpty(value) {
  *
  * @param {unknown} value
  * @returns {value is number}
+ * @since 2.0.0
  */
 export function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
@@ -68,6 +72,7 @@ export function isFiniteNumber(value) {
  *
  * @param {unknown} value
  * @returns {value is number}
+ * @since 2.0.0
  */
 export function isSafeInteger(value) {
   return typeof value === "number" && Number.isSafeInteger(value);
@@ -78,6 +83,7 @@ export function isSafeInteger(value) {
  *
  * @param {unknown} value
  * @returns {value is Map<unknown, unknown>}
+ * @since 2.0.0
  */
 export function isMap(value) {
   try {
@@ -93,6 +99,7 @@ export function isMap(value) {
  *
  * @param {unknown} value
  * @returns {value is Set<unknown>}
+ * @since 2.0.0
  */
 export function isSet(value) {
   try {
@@ -109,6 +116,7 @@ export function isSet(value) {
  *
  * @param {unknown} value
  * @returns {value is Exclude<ArrayBufferView, DataView>}
+ * @since 2.0.0
  */
 export function isTypedArray(value) {
   return ArrayBuffer.isView(value) && typeof /** @type {any} */ (value).BYTES_PER_ELEMENT === "number";
@@ -120,6 +128,7 @@ export function isTypedArray(value) {
  *
  * @param {unknown} value
  * @returns {value is Record<PropertyKey, unknown>[]}
+ * @since 2.0.0
  */
 export function isPlainObjectArray(value) {
   return Array.isArray(value) && value.every(isPlainObject);
@@ -131,6 +140,7 @@ export function isPlainObjectArray(value) {
  *
  * @param {unknown} value
  * @returns {value is Blob}
+ * @since 2.0.0
  */
 export function isBlob(value) {
   const BlobConstructor = globalThis.Blob;
@@ -143,6 +153,7 @@ export function isBlob(value) {
  *
  * @param {unknown} value
  * @returns {value is File}
+ * @since 2.0.0
  */
 export function isFile(value) {
   const FileConstructor = globalThis.File;
@@ -154,6 +165,7 @@ export function isFile(value) {
  *
  * @param {unknown} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function typeOf(value) {
   if (value === null) return "null";
@@ -167,6 +179,7 @@ export function typeOf(value) {
  *
  * @param {unknown} value
  * @returns {value is string}
+ * @since 2.0.0
  */
 export function isJson(value) {
   if (typeof value !== "string") return false;
@@ -184,6 +197,7 @@ export function isJson(value) {
  *
  * @param {unknown} value
  * @returns {value is string}
+ * @since 2.0.0
  */
 export function isEmail(value) {
   if (typeof value !== "string" || value.length < 5 || value.length > 254) return false;
@@ -208,6 +222,7 @@ export function isEmail(value) {
  *
  * @param {unknown} value
  * @returns {string | null}
+ * @since 2.0.0
  */
 export function normalizeNanpPhone(value) {
   if (typeof value !== "string" && typeof value !== "number") return null;
@@ -224,6 +239,7 @@ export function normalizeNanpPhone(value) {
  *
  * @param {unknown} value
  * @returns {string | null}
+ * @since 2.0.0
  */
 export function formatNanpPhone(value) {
   const digits = normalizeNanpPhone(value);
@@ -239,6 +255,7 @@ export function formatNanpPhone(value) {
  * @param {unknown} value
  * @param {Record<string, any>} schema
  * @returns {string[]}
+ * @since 2.0.0
  */
 export function validateJsonContract(value, schema) {
   assertSupportedSchema(schema);
@@ -252,6 +269,7 @@ export function validateJsonContract(value, schema) {
  * @param {T} value
  * @param {Record<string, any>} schema
  * @returns {T}
+ * @since 2.0.0
  */
 export function assertJsonContract(value, schema) {
   const errors = validateJsonContract(value, schema);

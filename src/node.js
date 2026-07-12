@@ -15,6 +15,7 @@ import { assertContainedPath, resolveContainedPathWith } from "./internal/contai
  * @throws {RangeError} If the resolved path escapes the root.
  * @example
  * resolveContainedPath("/srv/media", "2026/report.pdf");
+ * @since 2.0.0
  */
 export function resolveContainedPath(root, relativePath) {
   return resolveContainedPathWith(root, relativePath, path);
@@ -32,6 +33,7 @@ export function resolveContainedPath(root, relativePath) {
  * @returns {Promise<string>}
  * @throws {TypeError} If either argument is not a supported path string.
  * @throws {RangeError} If the lexical or real target escapes the root.
+ * @since 2.0.0
  */
 export async function resolveExistingContainedPath(root, relativePath) {
   const target = resolveContainedPath(root, relativePath);

@@ -84,3 +84,5 @@
   no-retry/application-policy boundary.
 - Closed the optional category review: schema/model adapters and diagnostics stay
   app-owned, while generic JSON contract checks remain under `validation`.
+- Added consistent `@since 2.0.0` metadata to every public declaration and a
+  reproducible API-documentation check for summaries, types, and deprecations.

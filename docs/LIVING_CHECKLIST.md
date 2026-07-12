@@ -376,7 +376,8 @@ Acceptance criteria:
 
 - [ ] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-- [ ] Add `@since 2.0.0` and `@deprecated` consistently.
+- [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
+  115 public declarations by `npm run check:docs`.
 - [ ] Generate an API reference grouped by category from source comments or a
   single authoritative manifest.
 - [ ] Add a searchable function index with old name, new name, category, runtime,

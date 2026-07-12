@@ -3,6 +3,7 @@
  *
  * @param {unknown} value
  * @returns {value is Date}
+ * @since 2.0.0
  */
 export function isValidDate(value) {
   try {
@@ -17,6 +18,7 @@ export function isValidDate(value) {
  *
  * @param {Date | string | number | null | undefined} value
  * @returns {Date | null}
+ * @since 2.0.0
  */
 export function toDate(value) {
   if (value === null || value === undefined || value === "") return null;
@@ -30,6 +32,7 @@ export function toDate(value) {
  * @param {number | Date} yearOrDate
  * @param {number} [monthIndex]
  * @returns {number}
+ * @since 2.0.0
  */
 export function daysInMonth(yearOrDate, monthIndex) {
   const year = yearOrDate instanceof Date ? yearOrDate.getFullYear() : yearOrDate;
@@ -45,6 +48,7 @@ export function daysInMonth(yearOrDate, monthIndex) {
  *
  * @param {Date | string | number} value
  * @returns {Date}
+ * @since 2.0.0
  */
 export function startOfLocalDay(value) {
   const date = requiredDate(value);
@@ -57,6 +61,7 @@ export function startOfLocalDay(value) {
  *
  * @param {Date | string | number} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function localDateKey(value) {
   const date = requiredDate(value);
@@ -70,6 +75,7 @@ export function localDateKey(value) {
  * @param {Date | string | number} later
  * @param {Date | string | number} earlier
  * @returns {number}
+ * @since 2.0.0
  */
 export function differenceInLocalDays(later, earlier) {
   const left = requiredDate(later);
@@ -85,6 +91,7 @@ export function differenceInLocalDays(later, earlier) {
  * @param {Date | string | number} left
  * @param {Date | string | number} right
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function isSameLocalDay(left, right) {
   return localDateKey(left) === localDateKey(right);
@@ -96,6 +103,7 @@ export function isSameLocalDay(left, right) {
  * @param {Date | string | number} value
  * @param {Date} [now=new Date()]
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function isToday(value, now = new Date()) {
   return isSameLocalDay(value, now);
@@ -106,6 +114,7 @@ export function isToday(value, now = new Date()) {
  *
  * @param {Date | string | number} value
  * @returns {number}
+ * @since 2.0.0
  */
 export function toUnixSeconds(value) {
   return Math.trunc(requiredDate(value).getTime() / 1000);
@@ -116,6 +125,7 @@ export function toUnixSeconds(value) {
  *
  * @param {number} seconds
  * @returns {Date}
+ * @since 2.0.0
  */
 export function fromUnixSeconds(seconds) {
   if (!Number.isFinite(seconds)) throw new TypeError("seconds must be a finite number.");
@@ -131,6 +141,7 @@ export function fromUnixSeconds(seconds) {
  * @param {Date | string | number} start
  * @param {Date | string | number} end
  * @returns {{start: Date, end: Date}}
+ * @since 2.0.0
  */
 export function normalizeInstantRange(start, end) {
   const normalizedStart = requiredDate(start);
@@ -148,6 +159,7 @@ export function normalizeInstantRange(start, end) {
  * @param {Date | string | number} end
  * @param {{startInclusive?: boolean, endInclusive?: boolean}} [options]
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function isWithinInstantRange(value, start, end, { startInclusive = true, endInclusive = false } = {}) {
   if (typeof startInclusive !== "boolean" || typeof endInclusive !== "boolean") {
@@ -166,6 +178,7 @@ export function isWithinInstantRange(value, start, end, { startInclusive = true,
  *
  * @param {string} value
  * @returns {number | null}
+ * @since 2.0.0
  */
 export function clockTimeToMinutes(value) {
   if (typeof value !== "string") return null;
@@ -181,6 +194,7 @@ export function clockTimeToMinutes(value) {
  *
  * @param {number} minutes
  * @returns {string}
+ * @since 2.0.0
  */
 export function minutesToClockTime(minutes) {
   if (!Number.isFinite(minutes)) throw new TypeError("minutes must be a finite number.");
@@ -193,6 +207,7 @@ export function minutesToClockTime(minutes) {
  *
  * @param {string} value
  * @returns {string | null}
+ * @since 2.0.0
  */
 export function clock12To24(value) {
   if (typeof value !== "string") return null;
@@ -208,6 +223,7 @@ export function clock12To24(value) {
  *
  * @param {string} value
  * @returns {string | null}
+ * @since 2.0.0
  */
 export function clock24To12(value) {
   const minutes = clockTimeToMinutes(value);
@@ -223,6 +239,7 @@ export function clock24To12(value) {
  * @param {Intl.LocalesArgument} [locales]
  * @param {Intl.DateTimeFormatOptions} [options]
  * @returns {string}
+ * @since 2.0.0
  */
 export function formatDate(value, locales, options = { dateStyle: "long" }) {
   return new Intl.DateTimeFormat(locales, options).format(requiredDate(value));
@@ -235,6 +252,7 @@ export function formatDate(value, locales, options = { dateStyle: "long" }) {
  * @param {Intl.LocalesArgument} [locales]
  * @param {Intl.DateTimeFormatOptions} [options]
  * @returns {string}
+ * @since 2.0.0
  */
 export function formatDateTime(value, locales, options = { dateStyle: "medium", timeStyle: "short" }) {
   return new Intl.DateTimeFormat(locales, options).format(requiredDate(value));

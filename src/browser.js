@@ -10,6 +10,7 @@ import { safeFilename } from "./string.js";
  * @param {Blob} blob
  * @param {{document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">, schedule?: (callback: () => void) => unknown}} [environment]
  * @returns {void}
+ * @since 2.0.0
  */
 export function downloadBlob(filename, blob, environment = {}) {
   if (typeof filename !== "string" || filename.trim() === "") throw new TypeError("filename must be a non-empty string.");
@@ -51,6 +52,7 @@ export function downloadBlob(filename, blob, environment = {}) {
  * @param {string} content
  * @param {{contentType?: string, document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">, schedule?: (callback: () => void) => unknown}} [options]
  * @returns {void}
+ * @since 2.0.0
  */
 export function downloadTextFile(filename, content, { contentType = "text/plain;charset=utf-8", ...environment } = {}) {
   if (typeof content !== "string") throw new TypeError("content must be a string.");
@@ -64,6 +66,7 @@ export function downloadTextFile(filename, content, { contentType = "text/plain;
  * @param {unknown} value
  * @param {{space?: number | string, document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">, schedule?: (callback: () => void) => unknown}} [options]
  * @returns {void}
+ * @since 2.0.0
  */
 export function downloadJson(filename, value, { space = 2, ...environment } = {}) {
   const serialized = JSON.stringify(value, null, space);

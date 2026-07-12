@@ -5,6 +5,7 @@
  * @param {number} minimum
  * @param {number} maximum
  * @returns {number}
+ * @since 2.0.0
  */
 export function clamp(value, minimum, maximum) {
   assertFiniteNumbers({ value, minimum, maximum });
@@ -19,6 +20,7 @@ export function clamp(value, minimum, maximum) {
  * @param {number} minimum
  * @param {number} maximum
  * @returns {number}
+ * @since 2.0.0
  */
 export function wrap(value, minimum, maximum) {
   assertFiniteNumbers({ value, minimum, maximum });
@@ -34,6 +36,7 @@ export function wrap(value, minimum, maximum) {
  * @param {number} value
  * @param {number} [digits=0]
  * @returns {number}
+ * @since 2.0.0
  */
 export function roundTo(value, digits = 0) {
   if (!Number.isFinite(value)) throw new TypeError("value must be finite.");
@@ -50,7 +53,13 @@ export function roundTo(value, digits = 0) {
   return rounded;
 }
 
-/** @param {...number} values @returns {number} */
+/**
+ * Adds finite numeric arguments.
+ *
+ * @param {...number} values
+ * @returns {number}
+ * @since 2.0.0
+ */
 export function sum(...values) {
   values.forEach((value) => assertFiniteNumbers({ value }));
   return values.reduce((total, value) => total + value, 0);
@@ -62,6 +71,7 @@ export function sum(...values) {
  * @param {number} first
  * @param {...number} rest
  * @returns {number}
+ * @since 2.0.0
  */
 export function subtract(first, ...rest) {
   assertFiniteNumbers({ first });
@@ -69,7 +79,14 @@ export function subtract(first, ...rest) {
   return rest.reduce((result, value) => result - value, first);
 }
 
-/** @param {number} left @param {number} right @returns {number} */
+/**
+ * Returns the absolute distance between two finite numbers.
+ *
+ * @param {number} left
+ * @param {number} right
+ * @returns {number}
+ * @since 2.0.0
+ */
 export function distance(left, right) {
   assertFiniteNumbers({ left, right });
   return Math.abs(left - right);
@@ -81,6 +98,7 @@ export function distance(left, right) {
  * @param {readonly [number, number]} left
  * @param {readonly [number, number]} right
  * @returns {number}
+ * @since 2.0.0
  */
 export function distance2d(left, right) {
   if (!Array.isArray(left) || !Array.isArray(right) || left.length !== 2 || right.length !== 2) {
@@ -95,6 +113,7 @@ export function distance2d(left, right) {
  *
  * @param {number} index
  * @returns {number}
+ * @since 2.0.0
  */
 export function fibonacci(index) {
   if (!Number.isSafeInteger(index) || index < 0 || index > 78) {
@@ -113,6 +132,7 @@ export function fibonacci(index) {
  *
  * @param {number} value
  * @returns {string}
+ * @since 2.0.0
  */
 export function toBinary(value) {
   if (!Number.isSafeInteger(value)) throw new TypeError("value must be a safe integer.");
@@ -141,6 +161,7 @@ export function toBinary(value) {
  * @example
  * summarizeNumbers([10, 20, 30, 40]);
  * // { count: 4, minimum: 10, maximum: 40, median: 25, ... }
+ * @since 2.0.0
  */
 export function summarizeNumbers(values) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");

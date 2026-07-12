@@ -20,6 +20,7 @@ const blockedPathSegments = new Set(["__proto__", "prototype", "constructor"]);
  *
  * @param {unknown} value
  * @returns {value is Record<PropertyKey, unknown>}
+ * @since 2.0.0
  */
 export function isPlainObject(value) {
   if (value === null || typeof value !== "object") return false;
@@ -37,6 +38,7 @@ export function isPlainObject(value) {
  *
  * @param {string | readonly (string | number)[]} path
  * @returns {(string | number)[]}
+ * @since 2.0.0
  */
 export function parsePath(path) {
   if (Array.isArray(path)) return path.map(normalizePathSegment);
@@ -58,6 +60,7 @@ export function parsePath(path) {
  * @param {string | readonly (string | number)[]} path
  * @param {T} [fallback]
  * @returns {unknown | T}
+ * @since 2.0.0
  */
 export function getAtPath(value, path, fallback) {
   const segments = parsePath(path);
@@ -75,6 +78,7 @@ export function getAtPath(value, path, fallback) {
  * @param {unknown} value
  * @param {string | readonly (string | number)[]} path
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function hasAtPath(value, path) {
   const marker = Symbol("missing");
@@ -92,6 +96,7 @@ export function hasAtPath(value, path) {
  * @param {string | readonly (string | number)[]} path
  * @param {unknown} nextValue
  * @returns {T}
+ * @since 2.0.0
  */
 export function setAtPath(value, path, nextValue) {
   const segments = parsePath(path);
@@ -130,6 +135,7 @@ export function setAtPath(value, path, nextValue) {
  * @returns {ObjectTraversalEntry[]}
  * @throws {TypeError} If the root or options do not match the contract.
  * @throws {RangeError} If traversal would exceed `maxNodes`.
+ * @since 2.0.0
  */
 export function traverseObject(value, options = {}) {
   /** @type {ObjectTraversalEntry[]} */
@@ -152,6 +158,7 @@ export function traverseObject(value, options = {}) {
  * @returns {ObjectTraversalEntry | undefined}
  * @throws {TypeError} If the root, predicate, or options are invalid.
  * @throws {RangeError} If traversal would exceed `maxNodes` before a match.
+ * @since 2.0.0
  */
 export function findDeep(value, predicate, options = {}) {
   if (typeof predicate !== "function") throw new TypeError("predicate must be a function.");
@@ -172,6 +179,7 @@ export function findDeep(value, predicate, options = {}) {
  * @param {T} value
  * @param {readonly (keyof T)[]} keys
  * @returns {Partial<T>}
+ * @since 2.0.0
  */
 export function pick(value, keys) {
   if (!isObjectLike(value)) throw new TypeError("value must be an object.");
@@ -192,6 +200,7 @@ export function pick(value, keys) {
  * @param {T} value
  * @param {readonly (keyof T)[]} keys
  * @returns {Partial<T>}
+ * @since 2.0.0
  */
 export function omit(value, keys) {
   if (!isObjectLike(value)) throw new TypeError("value must be an object.");
@@ -208,6 +217,7 @@ export function omit(value, keys) {
  * @param {T} value
  * @param {StructuredSerializeOptions} [options]
  * @returns {T}
+ * @since 2.0.0
  */
 export function deepClone(value, options) {
   return structuredClone(value, options);
@@ -224,6 +234,7 @@ export function deepClone(value, options) {
  * @param {T} base
  * @param {U} override
  * @returns {T & U}
+ * @since 2.0.0
  */
 export function deepMerge(base, override) {
   if (!isPlainObject(base) || !isPlainObject(override)) {
@@ -249,6 +260,7 @@ export function deepMerge(base, override) {
  * @param {readonly string[]} allowedKeys
  * @param {{rejectUnknown?: boolean}} [options]
  * @returns {Record<string, unknown>}
+ * @since 2.0.0
  */
 export function pickAllowed(value, allowedKeys, { rejectUnknown = true } = {}) {
   if (!isPlainObject(value)) throw new TypeError("value must be a plain object.");

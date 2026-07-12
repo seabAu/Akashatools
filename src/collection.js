@@ -9,6 +9,7 @@
  * @param {(value: T) => K} [toKey]
  * @param {{prepend?: boolean}} [options]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function upsertBy(values, nextValue, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))), { prepend = true } = {}) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
@@ -35,6 +36,7 @@ export function upsertBy(values, nextValue, toKey = /** @type {(value: T) => K} 
  * @param {ReadonlySet<K>} excluded
  * @param {(value: T) => K} [toKey]
  * @returns {T[]}
+ * @since 2.0.0
  */
 export function excludeBy(values, excluded, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value)))) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
@@ -51,6 +53,7 @@ export function excludeBy(values, excluded, toKey = /** @type {(value: T) => K} 
  * @param {T} nextValue
  * @returns {T[]}
  * @deprecated Prefer `upsertBy` with an explicit key selector.
+ * @since 2.0.0
  */
 export const upsertById = (values, nextValue) => upsertBy(values, nextValue, ({ id }) => id);
 
@@ -62,5 +65,6 @@ export const upsertById = (values, nextValue) => upsertBy(values, nextValue, ({ 
  * @param {ReadonlySet<K>} excluded
  * @returns {T[]}
  * @deprecated Prefer `excludeBy` with an explicit key selector.
+ * @since 2.0.0
  */
 export const excludeIds = (values, excluded) => excludeBy(values, excluded, ({ id }) => id);

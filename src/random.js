@@ -10,6 +10,7 @@ const secureAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrst
  * @param {number} [maximum=1]
  * @param {() => number} [random=Math.random]
  * @returns {number}
+ * @since 2.0.0
  */
 export function randomFloat(minimum = 0, maximum = 1, random = Math.random) {
   validateRange(minimum, maximum, random);
@@ -26,6 +27,7 @@ export function randomFloat(minimum = 0, maximum = 1, random = Math.random) {
  * @param {number} maximum
  * @param {{inclusiveMaximum?: boolean, random?: () => number}} [options]
  * @returns {number}
+ * @since 2.0.0
  */
 export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = Math.random } = {}) {
   if (!Number.isSafeInteger(minimum) || !Number.isSafeInteger(maximum)) {
@@ -43,6 +45,7 @@ export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = 
  *
  * @param {() => number} [random=Math.random]
  * @returns {boolean}
+ * @since 2.0.0
  */
 export function randomBoolean(random = Math.random) {
   assertRandomSource(random);
@@ -57,6 +60,7 @@ export function randomBoolean(random = Math.random) {
  * @param {string} [characters]
  * @param {() => number} [random=Math.random]
  * @returns {string}
+ * @since 2.0.0
  */
 export function randomString(length, characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", random = Math.random) {
   assertRandomStringLength(length);
@@ -70,6 +74,7 @@ export function randomString(length, characters = "0123456789abcdefghijklmnopqrs
  *
  * @returns {string}
  * @throws {Error} If the runtime does not provide `crypto.randomUUID`.
+ * @since 2.0.0
  */
 export function secureRandomUuid() {
   const cryptoApi = globalThis.crypto;
@@ -87,6 +92,7 @@ export function secureRandomUuid() {
  * @param {string} [alphabet]
  * @returns {string}
  * @throws {Error} If the runtime does not provide `crypto.getRandomValues`.
+ * @since 2.0.0
  */
 export function secureRandomString(length, alphabet = secureAlphabet) {
   assertRandomStringLength(length);
@@ -123,6 +129,7 @@ export function secureRandomString(length, alphabet = secureAlphabet) {
  * @param {Date | string | number} [end=new Date()]
  * @param {() => number} [random=Math.random]
  * @returns {Date}
+ * @since 2.0.0
  */
 export function randomDate(start, end = new Date(), random = Math.random) {
   const startTime = new Date(start).getTime();
