@@ -79,7 +79,9 @@ export function hasAtPath(value, path) {
 
 /**
  * Sets a nested value while structurally sharing untouched objects and arrays.
- * Missing containers are inferred from the following path segment.
+ * Missing containers are inferred from the following path segment. If an
+ * existing leaf is `Object.is`-identical to `nextValue`, the original root is
+ * returned without allocating replacement ancestors.
  *
  * @template T
  * @param {T} value
@@ -92,16 +94,20 @@ export function setAtPath(value, path, nextValue) {
 
   /** @param {any} current @param {number} offset @returns {any} */
   const setSegment = (current, offset) => {
-    if (offset === segments.length) return nextValue;
+    if (offset === segments.length) return Object.is(current, nextValue) ? current : nextValue;
     const segment = segments[offset];
     const nextSegment = segments[offset + 1];
     const source = isObjectLike(current) ? current : undefined;
-    /** @type {any} */
-    const clone = Array.isArray(source) ? [...source] : { ...(source ?? {}) };
-    const child = source && Object.hasOwn(source, segment)
+    const hasChild = Boolean(source) && Object.hasOwn(/** @type {object} */ (source), segment);
+    const child = hasChild
       ? /** @type {Record<PropertyKey, any>} */ (/** @type {unknown} */ (source))[segment]
       : typeof nextSegment === "number" ? [] : {};
-    clone[segment] = setSegment(child, offset + 1);
+    const updatedChild = setSegment(child, offset + 1);
+    if (hasChild && Object.is(updatedChild, child)) return current;
+
+    /** @type {any} */
+    const clone = Array.isArray(source) ? [...source] : { ...(source ?? {}) };
+    clone[segment] = updatedChild;
     return clone;
   };
 

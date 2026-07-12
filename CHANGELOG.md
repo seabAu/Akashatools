@@ -49,6 +49,8 @@
 - Adopted native `structuredClone`, `Object.hasOwn`, `Intl.DateTimeFormat`,
   `Map`, `Set`, `String.prototype.replaceAll`, and `Math.hypot` where appropriate.
 - Added prototype-pollution protection to nested paths and deep object merging.
+- Locked `setAtPath` structural sharing/no-op identity guarantees and expanded
+  string/array path prototype-pollution regression coverage.
 - Added bounded, cycle-safe `traverseObject` and `findDeep` with path/parent
   results and side-effect-safe own-data-property traversal.
 - Defined deep-merge handling for non-plain values, symbols, accessors, unsafe

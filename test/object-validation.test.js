@@ -36,6 +36,40 @@ test("nested paths are safe, own-property based, and immutable", () => {
   assert.throws(() => setAtPath({}, ["constructor", "prototype", "polluted"], true), TypeError);
 });
 
+test("setAtPath structurally shares untouched branches and elides identical writes", () => {
+  const source = {
+    profile: { name: { first: "Akasha" }, settings: { theme: "dark" } },
+    unrelated: { retained: true },
+  };
+  const updated = setAtPath(source, "profile.name.first", "Ember");
+
+  assert.notEqual(updated, source);
+  assert.notEqual(updated.profile, source.profile);
+  assert.notEqual(updated.profile.name, source.profile.name);
+  assert.equal(updated.profile.settings, source.profile.settings);
+  assert.equal(updated.unrelated, source.unrelated);
+  assert.equal(setAtPath(source, "profile.name.first", "Akasha"), source);
+});
+
+test("nested paths and deep merge resist prototype-pollution keys", () => {
+  for (const path of [
+    "__proto__.polluted",
+    "constructor.prototype.polluted",
+    ["safe", "prototype", "polluted"],
+    ["safe", "constructor", "polluted"],
+    ["safe", "__proto__", "polluted"],
+  ]) {
+    assert.throws(() => parsePath(path), TypeError);
+    assert.throws(() => setAtPath({}, path, true), TypeError);
+  }
+
+  const unsafe = JSON.parse('{"__proto__":{"polluted":true}}');
+  assert.throws(() => deepMerge(unsafe, {}), TypeError);
+  assert.throws(() => deepMerge({}, unsafe), TypeError);
+  assert.equal(Object.prototype.hasOwnProperty.call(Object.prototype, "polluted"), false);
+  assert.equal(/** @type {any} */ ({}).polluted, undefined);
+});
+
 test("deep clone and deep merge use modern safe semantics", () => {
   const source = { date: new Date("2026-07-11T00:00:00Z"), map: new Map([["one", 1]]) };
   source.self = source;

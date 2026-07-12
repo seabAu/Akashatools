@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 42 tests currently pass.
+- [x] Add dependency-free Node tests; 44 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -248,8 +248,8 @@ Acceptance criteria:
 - [x] Add cycle detection and traversal limits.
 - [x] Decide handling for Maps, Sets, Dates, typed arrays, symbols, accessors, and
   class instances in traversal and merge operations.
-- [ ] Test structural sharing guarantees for `setAtPath`.
-- [ ] Test prototype-pollution resistance across parsed and array-form paths.
+- [x] Test structural sharing guarantees for `setAtPath`.
+- [x] Test prototype-pollution resistance across parsed and array-form paths.
 - [ ] Evaluate `pickBy`, `omitBy`, `mapValues`, `mapKeys`, `invert`, and `entries`
   helpers based on cross-project use.
 - [ ] Specify whether deep merge replaces, concatenates, or rejects arrays; avoid
