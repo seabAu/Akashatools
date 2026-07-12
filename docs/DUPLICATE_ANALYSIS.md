@@ -40,6 +40,7 @@ conflicts are summarized here.
 | Form error copy | both `getValidationErrorMessage` | Older/newer English UI copy, not validation behavior. | App-local presentation. |
 | Array validity | client data/array helpers and server `isValidArray` | “Valid” can mean array, nonempty, first slot defined, or all values pass an umbrella predicate. | Native `Array.isArray`, `isNonEmptyArray`, or explicit `every(predicate)`. |
 | Value validity | client `invalid`/`isInvalid`/`isValid`, server required helpers | Nullish, blank, empty, NaN, and falsy meanings drift; server drops zero/false. | Literal predicates (`isDefined`, `isBlank`, `isEmpty`, finite-number guards). |
+| Runtime type guards | legacy `isNumber`/`isSafeInt`/`isMap`/`isSet`/`isFile`/`isBlob`/`isObjectArray` | Literal `validation` guards; Map/Set/Date support cross-realm brands, Blob/File use safe `globalThis` detection, and plain-object arrays require every item. |
 
 ### File and browser I/O
 

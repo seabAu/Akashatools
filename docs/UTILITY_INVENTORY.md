@@ -97,25 +97,25 @@ globals. Export count: 30.
 | `isDefined` | Checks non-nullish values. | Adopted as `validation.isDefined`. | 2.x validation tests. |
 | `isTruthy` | Means defined and not empty string rather than JavaScript truthiness. | Reject misleading name; use native Boolean or literal predicates. | Source reviewed. |
 | `isString` | Cross-realm string tag check. | Defer/add a canonical type guard during validation expansion. | Source reviewed. |
-| `isNumber` | Checks `typeof value === "number"`, including `NaN` and infinities. | Merge into explicit `isNumber` and `isFiniteNumber` predicates; numeric APIs currently validate finiteness. | Source reviewed. |
+| `isNumber` | Checks `typeof value === "number"`, including `NaN` and infinities. | Use explicit `validation.isFiniteNumber` where numeric APIs require usable finite values; raw primitive checks remain native. | 2.x cross-realm/type-guard tests. |
 | `isNum` | Exact duplicate of `isNumber`. | Reject duplicate; legacy alias maps to the eventual canonical predicate. | Source reviewed. |
 | `isInt` | Integer check via modulo. | Native `Number.isInteger`; possible canonical type guard. | Source reviewed. |
-| `isSafeInt` | Safe integer check with redundant number test. | Native `Number.isSafeInteger`; possible canonical type guard. | Source reviewed. |
+| `isSafeInt` | Safe integer check with redundant number test. | Adopted as explicit `validation.isSafeInteger`; native `Number.isSafeInteger` remains equally valid inline. | 2.x type-guard tests. |
 | `isFloat` | Defines float as any number that is not an integer, including problematic values. | Reject name/semantics; consider `isFiniteNonInteger`. | Source reviewed. |
 | `isBool` | Checks exact true or false. | Native `typeof value === "boolean"`; possible canonical type guard. | Source reviewed. |
 | `isBlank` | References `this.length`/`this.trim()` in an arrow function and can throw. | Adopted replacement `validation.isBlank` with literal nullish/whitespace semantics. | Defect proven; 2.x tests. |
 | `escapeHtml` | Escapes five text-significant HTML characters. | Adopted under `string.escapeHtml`, documented as escaping rather than sanitization. | 2.x string tests. |
 | `isJSONRegex` | This-bound prototype-style function calls nonexistent `blank()` and uses a regex approximation. | Reject. | Defect proven from source. |
 | `isJSON` | Parses undeclared `str` instead of the argument and rejects valid scalar intent ambiguously. | Adopted replacement `validation.isJson`, accepting all valid JSON text. | Defect proven; 2.x tests. |
-| `isMap` | `instanceof Map` predicate. | Native or future canonical guard with cross-realm policy. | Source reviewed. |
-| `isSet` | `instanceof Set` predicate. | Native or future canonical guard with cross-realm policy. | Source reviewed. |
-| `isFile` | Uses `'File' in window` and direct `File`, throwing outside browsers. | Defer a `globalThis.File`-safe browser/type guard. | Environment defect proven. |
-| `isBlob` | Uses `'Blob' in window` and direct `Blob`, throwing outside browsers. | Defer a `globalThis.Blob`-safe browser/type guard. | Environment defect proven. |
+| `isMap` | `instanceof Map` predicate. | Adopted as `validation.isMap` with a cross-realm brand check. | 2.x cross-realm tests. |
+| `isSet` | `instanceof Set` predicate. | Adopted as `validation.isSet` with a cross-realm brand check. | 2.x cross-realm tests. |
+| `isFile` | Uses `'File' in window` and direct `File`, throwing outside browsers. | Adopted as `validation.isFile` using safe `globalThis.File` detection. | 2.x universal-runtime tests. |
+| `isBlob` | Uses `'Blob' in window` and direct `Blob`, throwing outside browsers. | Adopted as `validation.isBlob` using safe `globalThis.Blob` detection. | 2.x universal-runtime tests. |
 | `isObject` | Any defined non-array object, including Dates, Maps, and class instances. | Split into adopted `object.isPlainObject` and a future explicitly named object-like guard. | 2.x plain-object tests. |
 | `isArray` | Null-safe array predicate. | Native `Array.isArray`. | Source reviewed. |
 | `isValidArray` | Rejects empty arrays and arrays whose first item is undefined even when length checking is disabled. | Adopted clear predicate `array.isNonEmptyArray`; use `Array.isArray` when emptiness is allowed. | 2.x array tests. |
 | `arrayContainsObjects` | Returns true for any `typeof "object"` item, including null and arrays. | Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes. | Source reviewed. |
-| `isObjectArray` | Means an array containing at least one object-like item, not an array entirely of objects. | Reject ambiguous name; add explicit `isPlainObjectArray` only if needed. | Source reviewed. |
+| `isObjectArray` | Means an array containing at least one object-like item, not an array entirely of objects. | Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array. | 2.x type-guard tests. |
 | `isAO` | Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity. | Reject abbreviation; use explicit array/plain-object/object-like predicates. | Source reviewed. |
 | `getType` | Returns custom strings and infers array type from only the first element. | Adopted basic replacement `validation.typeOf`; richer array analysis remains separate. | 2.x type tests. |
 | `getFieldType` | Maps runtime values to HTML/form control concepts. | App-local/schema UI adapter. | Source reviewed. |

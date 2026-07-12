@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 44 tests currently pass.
+- [x] Add dependency-free Node tests; 45 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -257,12 +257,12 @@ Acceptance criteria:
 
 ### 3.3 Validation and type inspection
 
-- [ ] Replace ambiguous 1.x `valid`, `isValid`, `isTruthy`, and `isBlank`
+- [x] Replace ambiguous 1.x `valid`, `isValid`, `isTruthy`, and `isBlank`
   semantics with small, literal predicates.
-- [ ] Add type guards for plain object, finite number, safe integer, Date, Map,
+- [x] Add type guards for plain object, finite number, safe integer, Date, Map,
   Set, Blob, File, typed arrays, and object arrays where useful.
-- [ ] Ensure browser-only guards use `globalThis` feature detection safely.
-- [ ] Decide whether JSON validation accepts scalar JSON, objects/arrays only, or
+- [x] Ensure browser-only guards use `globalThis` feature detection safely.
+- [x] Decide whether JSON validation accepts scalar JSON, objects/arrays only, or
   exposes both predicates under distinct names.
 - [ ] Expand JSON contract support only with documented schema keywords and tests;
   do not grow an accidental partial JSON Schema implementation indefinitely.

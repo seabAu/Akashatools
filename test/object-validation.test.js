@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 
 import {
   assertJsonContract,
@@ -10,10 +11,20 @@ import {
   getAtPath,
   hasAtPath,
   isBlank,
+  isBlob,
   isDefined,
   isEmail,
   isEmpty,
+  isFile,
+  isFiniteNumber,
   isJson,
+  isMap,
+  isPlainObject,
+  isPlainObjectArray,
+  isSafeInteger,
+  isSet,
+  isTypedArray,
+  isValidDate,
   parsePath,
   pickAllowed,
   setAtPath,
@@ -153,6 +164,26 @@ test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
   assert.equal(isJson("undefined"), false);
   assert.equal(isEmail("person@example.com"), true);
   assert.equal(formatNanpPhone("+1 555 123 4567"), "(555) 123-4567");
+});
+
+test("type guards are literal, cross-realm aware, and browser-global safe", () => {
+  const foreign = runInNewContext("({ object: {}, date: new Date(0), map: new Map(), set: new Set(), typed: new Uint16Array(2) })");
+  assert.equal(isFiniteNumber(0), true);
+  assert.equal(isFiniteNumber(Number.POSITIVE_INFINITY), false);
+  assert.equal(isSafeInteger(1), true);
+  assert.equal(isSafeInteger(1.5), false);
+  assert.equal(isPlainObject(foreign.object), true);
+  assert.equal(isValidDate(foreign.date), true);
+  assert.equal(isMap(foreign.map), true);
+  assert.equal(isSet(foreign.set), true);
+  assert.equal(isTypedArray(foreign.typed), true);
+  assert.equal(isTypedArray(new DataView(new ArrayBuffer(1))), false);
+  assert.equal(isPlainObjectArray([{}, Object.create(null)]), true);
+  assert.equal(isPlainObjectArray([{}, new Date()]), false);
+  assert.equal(isBlob(new Blob(["data"])), true);
+  assert.equal(isFile(new File(["data"], "data.txt")), true);
+  assert.equal(isBlob({}), false);
+  assert.equal(isFile({}), false);
 });
 
 test("JSON contract validation reports paths and supports local references", () => {

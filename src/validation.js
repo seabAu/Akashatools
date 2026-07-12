@@ -35,6 +35,102 @@ export function isEmpty(value) {
 }
 
 /**
+ * Checks whether a value is a finite primitive number.
+ *
+ * @param {unknown} value
+ * @returns {value is number}
+ */
+export function isFiniteNumber(value) {
+  return typeof value === "number" && Number.isFinite(value);
+}
+
+/**
+ * Checks whether a value is a safe primitive integer.
+ *
+ * @param {unknown} value
+ * @returns {value is number}
+ */
+export function isSafeInteger(value) {
+  return typeof value === "number" && Number.isSafeInteger(value);
+}
+
+/**
+ * Checks for a Map, including Maps created in another JavaScript realm.
+ *
+ * @param {unknown} value
+ * @returns {value is Map<unknown, unknown>}
+ */
+export function isMap(value) {
+  try {
+    Map.prototype.has.call(value, brandCheckKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Checks for a Set, including Sets created in another JavaScript realm.
+ *
+ * @param {unknown} value
+ * @returns {value is Set<unknown>}
+ */
+export function isSet(value) {
+  try {
+    Set.prototype.has.call(value, brandCheckKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Checks for any typed-array view while excluding DataView. Cross-realm typed
+ * arrays are accepted.
+ *
+ * @param {unknown} value
+ * @returns {value is Exclude<ArrayBufferView, DataView>}
+ */
+export function isTypedArray(value) {
+  return ArrayBuffer.isView(value) && typeof /** @type {any} */ (value).BYTES_PER_ELEMENT === "number";
+}
+
+/**
+ * Checks whether every item in an array is a plain object. Empty arrays satisfy
+ * the contract; use `isNonEmptyArray` as an additional condition when needed.
+ *
+ * @param {unknown} value
+ * @returns {value is Record<PropertyKey, unknown>[]}
+ */
+export function isPlainObjectArray(value) {
+  return Array.isArray(value) && value.every(isPlainObject);
+}
+
+/**
+ * Checks for a Blob when the current runtime exposes `globalThis.Blob`.
+ * Returns false instead of throwing in runtimes without Blob support.
+ *
+ * @param {unknown} value
+ * @returns {value is Blob}
+ */
+export function isBlob(value) {
+  const BlobConstructor = globalThis.Blob;
+  return typeof BlobConstructor === "function" && value instanceof BlobConstructor;
+}
+
+/**
+ * Checks for a File when the current runtime exposes `globalThis.File`.
+ * Returns false instead of throwing in runtimes without File support.
+ *
+ * @param {unknown} value
+ * @returns {value is File}
+ */
+export function isFile(value) {
+  const FileConstructor = globalThis.File;
+  return typeof FileConstructor === "function" && value instanceof FileConstructor;
+}
+
+/**
  * Returns a precise, lowercase runtime type name.
  *
  * @param {unknown} value
@@ -187,3 +283,6 @@ function matchesJsonType(value, expected) {
   if (expected === "null") return value === null;
   return typeof value === expected;
 }
+import { isPlainObject } from "./object.js";
+
+const brandCheckKey = Object.freeze({});

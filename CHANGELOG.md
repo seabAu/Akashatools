@@ -61,3 +61,5 @@
   containment checks, including cross-platform and symlink-escape tests.
 - Retained the 1.x `akashatools/lib` entry points as compatibility exports.
 - Added a dependency-free Node test suite and JSDoc for public functions.
+- Added literal finite-number, safe-integer, Map, Set, typed-array, plain-object
+  array, Blob, and File guards with cross-realm or safe-global behavior.

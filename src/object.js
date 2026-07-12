@@ -24,7 +24,11 @@ const blockedPathSegments = new Set(["__proto__", "prototype", "constructor"]);
 export function isPlainObject(value) {
   if (value === null || typeof value !== "object") return false;
   const prototype = Object.getPrototypeOf(value);
-  return prototype === Object.prototype || prototype === null;
+  if (prototype === null) return true;
+  if (!Object.hasOwn(prototype, "constructor")) return false;
+  const constructor = prototype.constructor;
+  return typeof constructor === "function" &&
+    Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object);
 }
 
 /**

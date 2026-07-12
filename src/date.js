@@ -5,7 +5,11 @@
  * @returns {value is Date}
  */
 export function isValidDate(value) {
-  return value instanceof Date && !Number.isNaN(value.getTime());
+  try {
+    return Number.isFinite(Date.prototype.getTime.call(value));
+  } catch {
+    return false;
+  }
 }
 
 /**
