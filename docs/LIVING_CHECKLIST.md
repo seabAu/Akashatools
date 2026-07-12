@@ -250,9 +250,9 @@ Acceptance criteria:
   class instances in traversal and merge operations.
 - [x] Test structural sharing guarantees for `setAtPath`.
 - [x] Test prototype-pollution resistance across parsed and array-form paths.
-- [ ] Evaluate `pickBy`, `omitBy`, `mapValues`, `mapKeys`, `invert`, and `entries`
+- [x] Evaluate `pickBy`, `omitBy`, `mapValues`, `mapKeys`, `invert`, and `entries`
   helpers based on cross-project use.
-- [ ] Specify whether deep merge replaces, concatenates, or rejects arrays; avoid
+- [x] Specify whether deep merge replaces, concatenates, or rejects arrays; avoid
   a single magical option set that obscures behavior.
 
 ### 3.3 Validation and type inspection
