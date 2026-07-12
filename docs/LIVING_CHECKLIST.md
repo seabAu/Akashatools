@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 69 tests currently pass.
+- [x] Add dependency-free runtime tests; 74 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -414,8 +414,8 @@ Acceptance criteria:
 ### 7.1 Test architecture
 
 - [ ] Organize tests by public category and behavior contract.
-- [ ] Add test factories for mutation checks and invalid-argument checks.
-- [ ] Add randomized/property-style invariant tests for paths, ranges, sorting,
+- [x] Add test factories for mutation checks and invalid-argument checks.
+- [x] Add deterministic randomized/property-style invariant tests for paths, ranges, sorting,
   deduplication, and date conversions.
 - [ ] Add regression tests for every source bug found during migration.
 - [ ] Add cross-realm/browser tests for Blob, File, Map, Set, and typed arrays.

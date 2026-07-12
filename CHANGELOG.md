@@ -102,3 +102,5 @@
 - Bounded nested path and deep-merge complexity, rejected mutually circular merge
   pairs, and consolidated object/filesystem/regex/random/HTML threat models with
   a reproducible prerelease dependency and package audit.
+- Added reusable mutation/invalid-contract test helpers and seeded randomized
+  invariants for paths, ranges, stable sorting, deduplication, and Unix dates.
