@@ -49,6 +49,10 @@
 - Adopted native `structuredClone`, `Object.hasOwn`, `Intl.DateTimeFormat`,
   `Map`, `Set`, `String.prototype.replaceAll`, and `Math.hypot` where appropriate.
 - Added prototype-pollution protection to nested paths and deep object merging.
+- Added bounded, cycle-safe `traverseObject` and `findDeep` with path/parent
+  results and side-effect-safe own-data-property traversal.
+- Defined deep-merge handling for non-plain values, symbols, accessors, unsafe
+  names, and null-prototype base objects without invoking getters.
 - Added bounded concurrency mapping from COMPOSR's utility package.
 - Added safe nested path and JSON contract helpers from the portfolio rebuild.
 - Added a separate `akashatools/node` entry point with lexical and existing-realpath

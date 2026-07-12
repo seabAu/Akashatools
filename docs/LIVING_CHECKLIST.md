@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 39 tests currently pass.
+- [x] Add dependency-free Node tests; 42 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -242,11 +242,11 @@ Acceptance criteria:
 
 - [x] Add a well-specified deep equality function or explicitly defer to a
   dedicated library/native future API.
-- [ ] Design deep traversal/search results with `{ value, key, path, parent }`.
-- [ ] Consolidate `deepSearch`, `deepSearchItems`, `findByKey`, `findByValue`, and
+- [x] Design deep traversal/search results with `{ value, key, path, parent }`.
+- [x] Consolidate `deepSearch`, `deepSearchItems`, `findByKey`, `findByValue`, and
   related legacy functions into a minimal traversal API.
-- [ ] Add cycle detection and traversal limits.
-- [ ] Decide handling for Maps, Sets, Dates, typed arrays, symbols, accessors, and
+- [x] Add cycle detection and traversal limits.
+- [x] Decide handling for Maps, Sets, Dates, typed arrays, symbols, accessors, and
   class instances in traversal and merge operations.
 - [ ] Test structural sharing guarantees for `setAtPath`.
 - [ ] Test prototype-pollution resistance across parsed and array-form paths.

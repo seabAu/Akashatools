@@ -5,6 +5,7 @@ import {
   assertJsonContract,
   deepClone,
   deepMerge,
+  findDeep,
   formatNanpPhone,
   getAtPath,
   hasAtPath,
@@ -16,6 +17,7 @@ import {
   parsePath,
   pickAllowed,
   setAtPath,
+  traverseObject,
   typeOf,
   validateJsonContract,
 } from "akashatools";
@@ -46,6 +48,64 @@ test("deep clone and deep merge use modern safe semantics", () => {
     keep: true,
   });
   assert.deepEqual(pickAllowed({ one: 1, two: 2 }, ["one"], { rejectUnknown: false }), { one: 1 });
+});
+
+test("deep merge replaces non-plain values and rejects active property semantics", () => {
+  const replacement = [1, 2];
+  const merged = deepMerge({ list: [0], nested: { keep: true } }, { list: replacement, nested: { date: new Date(0) } });
+  assert.equal(merged.list, replacement);
+  assert.equal(merged.nested.date?.getTime(), 0);
+  const nullBase = Object.assign(Object.create(null), { one: 1 });
+  const nullMerged = deepMerge(nullBase, { two: 2 });
+  assert.equal(Object.getPrototypeOf(nullMerged), null);
+  assert.deepEqual({ ...nullMerged }, { one: 1, two: 2 });
+
+  let getterCalls = 0;
+  const accessor = {};
+  Object.defineProperty(accessor, "computed", {
+    enumerable: true,
+    get() { getterCalls += 1; return true; },
+  });
+  assert.throws(() => deepMerge({}, accessor), TypeError);
+  assert.equal(getterCalls, 0);
+  assert.throws(() => deepMerge({}, { [Symbol("key")]: true }), TypeError);
+});
+
+test("object traversal returns deterministic path-aware entries", () => {
+  const source = { user: { name: "Akasha" }, items: [{ id: 1 }] };
+  const entries = traverseObject(source);
+
+  assert.deepEqual(entries.map(({ key, path, value }) => ({ key, path, value })), [
+    { key: "user", path: ["user"], value: source.user },
+    { key: "name", path: ["user", "name"], value: "Akasha" },
+    { key: "items", path: ["items"], value: source.items },
+    { key: 0, path: ["items", 0], value: source.items[0] },
+    { key: "id", path: ["items", 0, "id"], value: 1 },
+  ]);
+  assert.equal(entries[1].parent, source.user);
+  assert.deepEqual(traverseObject(source, { includeRoot: true, maxDepth: 0 })[0].path, []);
+  assert.deepEqual(findDeep(source, ({ key }) => key === "id")?.path, ["items", 0, "id"]);
+});
+
+test("object traversal is cycle-safe, bounded, and does not invoke accessors", () => {
+  let getterCalls = 0;
+  const source = { child: { value: 1 }, sparse: [, "present"], map: new Map([["one", 1]]) };
+  Object.defineProperty(source, "computed", {
+    enumerable: true,
+    get() { getterCalls += 1; return "unsafe"; },
+  });
+  source.self = source;
+
+  const entries = traverseObject(source);
+  assert.equal(getterCalls, 0);
+  assert.equal(entries.some(({ key }) => key === "computed"), false);
+  assert.equal(entries.filter(({ value }) => value === source).length, 1);
+  assert.equal(entries.some(({ path }) => path.join(".") === "map.one"), false);
+  assert.equal(entries.some(({ path }) => path.join(".") === "sparse.0"), false);
+  assert.deepEqual(findDeep(source, ({ value }) => value === "present")?.path, ["sparse", 1]);
+  assert.throws(() => traverseObject(source, { maxNodes: 2 }), RangeError);
+  assert.throws(() => traverseObject(source, { maxDepth: -1 }), RangeError);
+  assert.throws(() => findDeep(source, /** @type {any} */ (null)), TypeError);
 });
 
 test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
