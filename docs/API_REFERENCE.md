@@ -1197,93 +1197,79 @@ Focused import: `akashatools/sort`
 
 Returns a stably sorted copy based on a derived key. Nullish keys sort last. Modern JavaScript guarantees stable `toSorted` behavior without mutating the input array.
 
-- Signature: `sortBy(values, toKey?, options?)`
+- Signature: `sortBy()`
 - Import: `import { sortBy } from "akashatools/sort"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense stably sorted copy.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `[toKey]` | `(value: T, index: number) => K` | Not documented. |
-| `[options]` | `{direction?: SortDirection, nulls?: NullPlacement, compare?: (left: K, right: K) => number}` | Not documented. |
+Throws:
+- `TypeError` — If values, selector, options, or comparator results are invalid.
 
 ### sortByMany
 
 Returns a stable copy ordered by multiple selector criteria. Criteria are evaluated once per item and applied in array order. Sparse slots are treated as `undefined` items and the result is dense.
 
-- Signature: `sortByMany(values, criteria)`
+- Signature: `sortByMany()`
 - Import: `import { sortByMany } from "akashatools/sort"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense stably sorted copy using criteria in priority order.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `criteria` | `ReadonlyArray<{ toKey: (value: T, index: number) => unknown, direction?: SortDirection, nulls?: NullPlacement, compare?: (left: any, right: any) => number }>` | Not documented. |
+Throws:
+- `TypeError` — If values, criteria, selectors, policies, or comparator results are invalid.
 
 ### createCollatorComparator
 
 Creates a reusable locale-aware comparator. Reusing the returned function avoids reconstructing collator options during repeated comparisons.
 
-- Signature: `createCollatorComparator(locales?, options?)`
+- Signature: `createCollatorComparator()`
 - Import: `import { createCollatorComparator } from "akashatools/sort"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `(left: unknown, right: unknown) => number`
+- Returns: `(left: unknown, right: unknown) => number` — Reusable comparator that stringifies values.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `[locales]` | `Intl.LocalesArgument` | Not documented. |
-| `[options]` | `Intl.CollatorOptions` | Not documented. |
+Throws:
+- `RangeError` — If Intl rejects a locale or option value.
 
 ### compareValues
 
-Compares strings, numbers, bigints, booleans, and Dates with nullish values ordered last. Other values fall back to locale-aware string comparison.
+Compares strings, numbers, bigints, booleans, and Dates with nullish values ordered last. Other values fall back to locale-aware string comparison. Invalid Dates and NaN sort after their valid peers. Numeric and Date results are normalized to -1, 0, or 1 so extreme values remain valid comparators.
 
-- Signature: `compareValues(left, right)`
+- Signature: `compareValues()`
 - Import: `import { compareValues } from "akashatools/sort"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Negative, zero, or positive ordering signal.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `left` | `unknown` | Not documented. |
-| `right` | `unknown` | Not documented. |
+Throws:
+- `RangeError` — If the runtime's default Intl.Collator cannot be constructed.
 
 ### compareNumericOrder
 
 Compares objects across the first available finite numeric ordering key. Missing and invalid order values sort last. Number-like strings are coerced intentionally for compatibility with persisted legacy ordering fields.
 
-- Signature: `compareNumericOrder(left, right, keys?)`
+- Signature: `compareNumericOrder()`
 - Import: `import { compareNumericOrder } from "akashatools/sort"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Numeric ordering signal; zero when all normalized fields tie.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `left` | `Record<string, unknown>` | Not documented. |
-| `right` | `Record<string, unknown>` | Not documented. |
-| `[keys]` | `readonly string[]` | Not documented. |
+Throws:
+- `TypeError` — If either value is not an object or keys is not an array.
 
 ### sortByNumericOrder
 
 Returns a stable copy ordered by common numeric position fields.
 
-- Signature: `sortByNumericOrder(values, keys?)`
+- Signature: `sortByNumericOrder()`
 - Import: `import { sortByNumericOrder } from "akashatools/sort"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Stable sorted copy with absent/invalid order fields last.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `[keys]` | `readonly string[]` | Not documented. |
+Throws:
+- `TypeError` — If values or delegated comparator inputs are invalid.
 
 ## string
 

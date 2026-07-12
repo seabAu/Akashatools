@@ -125,3 +125,5 @@
   finite-input, overflow, precision, empty-sample, and representability edges.
 - Completed and enforced random API documentation, and fixed `randomInt` to
   reject non-boolean `inclusiveMaximum` options instead of coercing truthiness.
+- Completed and enforced sort API documentation, and normalized numeric/Date
+  comparisons so invalid Dates and extreme numbers always yield finite ordering signals.

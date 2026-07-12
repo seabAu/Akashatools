@@ -2,11 +2,19 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  compareValues,
   createCollatorComparator,
   sortBy,
   sortByMany,
   sortByNumericOrder,
 } from "akashatools/sort";
+
+test("default comparison remains finite for invalid dates and extreme numbers", () => {
+  assert.equal(compareValues(new Date(Number.NaN), new Date(0)), 1);
+  assert.equal(compareValues(new Date(Number.NaN), new Date(Number.NaN)), 0);
+  assert.equal(compareValues(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY), -1);
+  assert.equal(compareValues(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY), 1);
+});
 
 test("sorting returns stable copies and handles missing order fields", () => {
   const source = [{ name: "ten", rank: 10 }, { name: "two", rank: 2 }, { name: "none" }];

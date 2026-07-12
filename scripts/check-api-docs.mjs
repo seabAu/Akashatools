@@ -11,6 +11,7 @@ const completeSchemaModules = new Set([
   "src/node.js",
   "src/number.js",
   "src/random.js",
+  "src/sort.js",
 ]);
 
 if (process.argv.includes("--fix-since")) {

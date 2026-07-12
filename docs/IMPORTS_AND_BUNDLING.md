@@ -60,8 +60,8 @@ and both raw and gzip byte counts. The 2026-07-11 measurements are:
 | Named root `chunk` | 321 | 252 | 400 / 300 |
 | Category `chunk` | 321 | 252 | 400 / 300 |
 | Category namespace `array.chunk` | 321 | 252 | 400 / 300 |
-| Default flat `akasha.chunk` | 37,672 | 12,343 | 45,000 / 15,000 |
-| Default category `akasha.array.chunk` | 37,678 | 12,345 | 45,000 / 15,000 |
+| Default flat `akasha.chunk` | 37,717 | 12,360 | 45,000 / 15,000 |
+| Default category `akasha.array.chunk` | 37,723 | 12,363 | 45,000 / 15,000 |
 | Simulated `akashatools/chunk` | 321 | 252 | 400 / 300 |
 | Side-effect-only root import | 0 | 20 | 0 / 20 |
 

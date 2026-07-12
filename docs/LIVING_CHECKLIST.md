@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 81 tests currently pass.
+- [x] Add dependency-free runtime tests; 82 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -376,7 +376,7 @@ Acceptance criteria:
 
 - [ ] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  Async, browser, collection, Node, number, and random are complete (29 of 115 public
+  Async, browser, collection, Node, number, random, and sort are complete (35 of 115 public
   declarations), with parameter/return prose, throws, and examples enforced by
   `npm run check:docs`; continue category by category.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
