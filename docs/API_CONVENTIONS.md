@@ -146,6 +146,18 @@ resolved only when an effect runs, and Node-only modules stay under `akashatools
   timer creation, or environment probing with observable effects.
 - `sideEffects: false` remains valid for every published module.
 
+## Sparse arrays
+
+- Array transforms treat a sparse slot as an `undefined` sequence item and
+  return dense arrays by default. This keeps callbacks, indices, and output
+  length consistent across iterator and index-based implementations.
+- `array.flatten` deliberately follows native `Array.prototype.flat` semantics,
+  which remove sparse slots at flattened levels.
+- `array.asArray` deliberately returns an array input unchanged, so it preserves
+  both identity and sparsity. Its fallback copy is dense.
+- A utility that differs from these rules must state the exception in JSDoc and
+  include sparse-input tests.
+
 ## Public JSDoc
 
 Every public utility includes:

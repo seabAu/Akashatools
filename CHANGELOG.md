@@ -35,6 +35,9 @@
 - Unified immutable array removal behind `removeFromArray`.
 - Defined dense sparse-array behavior for move/insert/remove operations and
   validated the `all` removal option.
+- Standardized sparse-array behavior across the complete array surface: sparse
+  slots are `undefined` sequence items by default, with documented native-flat
+  and identity-preserving normalization exceptions.
 - Added strict standalone `countBy` and `partition` array helpers with dense
   sparse-slot behavior, identity-safe keys, and fail-fast callbacks.
 - Verified `upsertBy` and `excludeBy` as the canonical immutable key-based

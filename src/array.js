@@ -3,7 +3,8 @@ import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
 /** @typedef {"auto" | "index" | "value" | "predicate"} RemovalMode */
 
 /**
- * Returns the input when it is an array, or a fresh fallback array otherwise.
+ * Returns the input when it is an array, preserving its identity and sparse
+ * slots, or a fresh dense copy of the fallback otherwise.
  *
  * @template T
  * @param {unknown} value
@@ -27,6 +28,7 @@ export function isNonEmptyArray(value) {
 
 /**
  * Removes nullish values from an array without removing `0`, `false`, or `""`.
+ * Sparse slots are treated as `undefined` and therefore removed.
  *
  * @template T
  * @param {readonly (T | null | undefined)[]} values
@@ -34,11 +36,12 @@ export function isNonEmptyArray(value) {
  */
 export function compact(values) {
   assertArray(values, "values");
-  return values.filter((value) => value !== null && value !== undefined);
+  return [...values].filter((value) => value !== null && value !== undefined);
 }
 
 /**
  * Splits an array into same-sized chunks. The final chunk may be shorter.
+ * Sparse slots are treated as `undefined` items and returned chunks are dense.
  *
  * @template T
  * @param {readonly T[]} values
@@ -51,15 +54,17 @@ export function chunk(values, size) {
     throw new RangeError("size must be a positive safe integer.");
   }
 
+  const denseValues = [...values];
   const chunks = [];
-  for (let index = 0; index < values.length; index += size) {
-    chunks.push(values.slice(index, index + size));
+  for (let index = 0; index < denseValues.length; index += size) {
+    chunks.push(denseValues.slice(index, index + size));
   }
   return chunks;
 }
 
 /**
- * Returns the first item for each unique key, preserving input order.
+ * Returns the first item for each unique key, preserving input order. Sparse
+ * slots are treated as `undefined` items and the returned array is dense.
  *
  * @template T
  * @param {readonly T[]} values
@@ -70,8 +75,9 @@ export function unique(values, toKey = (value) => value) {
   assertArray(values, "values");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
 
+  const denseValues = [...values];
   const seen = new Set();
-  return values.filter((value, index) => {
+  return denseValues.filter((value, index) => {
     const key = toKey(value, index);
     if (seen.has(key)) return false;
     seen.add(key);
@@ -192,6 +198,7 @@ export function removeFromArray(values, selector, { mode = "auto", all = false }
 
 /**
  * Groups items in a Map, avoiding object-key coercion and prototype collisions.
+ * Sparse slots are treated as `undefined` items and group arrays are dense.
  *
  * @template T, K
  * @param {readonly T[]} values
@@ -202,8 +209,9 @@ export function groupBy(values, toKey) {
   assertArray(values, "values");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
 
+  const denseValues = [...values];
   const groups = new Map();
-  values.forEach((value, index) => {
+  denseValues.forEach((value, index) => {
     const key = toKey(value, index);
     const group = groups.get(key);
     if (group) group.push(value);
@@ -271,7 +279,8 @@ export function partition(values, predicate) {
 }
 
 /**
- * Returns unique values present in every input array.
+ * Returns unique values present in every input array. Sparse slots are treated
+ * as `undefined` items and the returned array is dense.
  *
  * @template T
  * @param {...readonly T[]} arrays
@@ -282,7 +291,7 @@ export function intersection(...arrays) {
   if (arrays.length === 0) return [];
 
   const remaining = arrays.slice(1).map((array) => new Set(array));
-  return unique(arrays[0]).filter((value) => remaining.every((set) => set.has(value)));
+  return unique([...arrays[0]]).filter((value) => remaining.every((set) => set.has(value)));
 }
 
 /**
@@ -307,7 +316,8 @@ export function range(start, end, step) {
 }
 
 /**
- * Combines arrays by position, stopping at the shortest input.
+ * Combines arrays by position, stopping at the shortest input. Sparse slots are
+ * read as `undefined` and every returned row is dense.
  *
  * @param {...readonly unknown[]} arrays
  * @returns {unknown[][]}
@@ -321,7 +331,8 @@ export function zip(...arrays) {
 
 /**
  * Returns a shuffled copy using Fisher-Yates. A random source can be injected
- * for deterministic tests or seeded applications.
+ * for deterministic tests or seeded applications. Sparse slots are treated as
+ * `undefined` items and the returned array is dense.
  *
  * @template T
  * @param {readonly T[]} values

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  asArray,
   chunk,
   compact,
   countBy,
@@ -114,6 +115,19 @@ test("flatten documents native sparse-slot removal and rejects invalid depth", (
   assert.throws(() => flatten([], -1), RangeError);
   assert.throws(() => flatten([], 1.5), TypeError);
   assert.throws(() => flatten([], Number.MAX_SAFE_INTEGER + 1), TypeError);
+});
+
+test("array transforms apply the documented sparse-slot policy", () => {
+  const sparse = ["a", , "c"];
+  assert.equal(asArray(sparse), sparse);
+  assert.equal(1 in asArray(sparse), false);
+  assert.deepEqual(compact(sparse), ["a", "c"]);
+  assert.deepEqual(chunk(sparse, 2), [["a", undefined], ["c"]]);
+  assert.deepEqual(unique(["a", , undefined]), ["a", undefined]);
+  assert.deepEqual(groupBy(sparse, (value) => value === undefined ? "missing" : "value").get("missing"), [undefined]);
+  assert.deepEqual(intersection([, "a"], [undefined, "b"]), [undefined]);
+  assert.deepEqual(zip([, "a"], [1, 2]), [[undefined, 1], ["a", 2]]);
+  assert.deepEqual(shuffle([, "a"], () => 0), ["a", undefined]);
 });
 
 test("invalid array arguments fail visibly", () => {
