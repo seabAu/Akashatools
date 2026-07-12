@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 37 tests currently pass.
+- [x] Add dependency-free Node tests; 38 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -231,7 +231,7 @@ Acceptance criteria:
 - [x] Consolidate reorder/move/insert/remove variants around immutable contracts.
 - [x] Decide whether `removeFromArray` should optionally return removal metadata
   or whether a separate `extractFromArray` function is clearer.
-- [ ] Add key-based remove/update helpers without conflating index and numeric
+- [x] Add key-based remove/update helpers without conflating index and numeric
   value selectors.
 - [ ] Define sparse-array behavior for every array transform.
 - [ ] Benchmark Set/Map strategies against nested `includes` for large inputs.

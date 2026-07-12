@@ -76,7 +76,7 @@ conflicts are summarized here.
 | Random array selection | Mindspace prototype `sample` and feature-local Heatmap sampler | Deferred: neither implementation has an active caller, the feature helper uses biased random sorting, and the name does not establish single-item versus multi-item return behavior. |
 | Reordering | `reorder`, `reorderArray`, move variants | Immutable `array.moveItem` with strict indices. |
 | Removal | index/value/predicate legacy variants | One `removeFromArray` with explicit mode/options; metadata belongs in a separate future `extractFromArray` only if demanded. |
-| Uniqueness/exclusion | prototype `unique`, legacy unique, COMPOSR `excludeIds` | `array.unique`, generic `collection.excludeBy`, and native `Set`. |
+| Identity replacement/exclusion | COMPOSR `upsertById`/`excludeIds`, Mindspace bulk pending-scrap removal | Generic immutable `collection.upsertBy`/`excludeBy`; `Object.is`/`Set` compare derived keys, so numeric keys are never interpreted as array indices. Database updates remain app-owned. |
 | Nested paths | many `deep*`, `safeGet`, portfolio field paths | Secure `object.parsePath`, `getAtPath`, `hasAtPath`, `setAtPath`. |
 | Picking/allow-listing | server `pick`, portfolio `pickOwnAllowed`, legacy filters | `pick`, `omit`, `pickAllowed`; unsafe segments rejected. |
 | Cloning | JSON clone helpers and COMPOSR/app copies | Native `structuredClone` through `object.deepClone`. |

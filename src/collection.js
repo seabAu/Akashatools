@@ -1,5 +1,7 @@
 /**
  * Inserts or replaces a value by a derived identity, preserving immutability.
+ * Keys are compared with `Object.is`; numeric keys are never treated as indices.
+ * Sparse slots are treated as `undefined` items and returned arrays are dense.
  *
  * @template T, K
  * @param {readonly T[]} values
@@ -11,18 +13,22 @@
 export function upsertBy(values, nextValue, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))), { prepend = true } = {}) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
+  if (typeof prepend !== "boolean") throw new TypeError("prepend must be a boolean.");
 
+  const denseValues = [...values];
   const nextKey = toKey(nextValue);
-  const index = values.findIndex((value) => Object.is(toKey(value), nextKey));
-  if (index < 0) return prepend ? [nextValue, ...values] : [...values, nextValue];
+  const index = denseValues.findIndex((value) => Object.is(toKey(value), nextKey));
+  if (index < 0) return prepend ? [nextValue, ...denseValues] : [...denseValues, nextValue];
 
-  const result = [...values];
+  const result = [...denseValues];
   result[index] = nextValue;
   return result;
 }
 
 /**
- * Excludes values whose derived identities occur in a Set.
+ * Excludes values whose derived identities occur in a Set. Numeric keys are
+ * never treated as indices. Sparse slots are treated as `undefined` items and
+ * returned arrays are dense.
  *
  * @template T, K
  * @param {readonly T[]} values
@@ -34,7 +40,8 @@ export function excludeBy(values, excluded, toKey = /** @type {(value: T) => K} 
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
   if (!(excluded instanceof Set)) throw new TypeError("excluded must be a Set.");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
-  return excluded.size === 0 ? [...values] : values.filter((value) => !excluded.has(toKey(value)));
+  const denseValues = [...values];
+  return excluded.size === 0 ? denseValues : denseValues.filter((value) => !excluded.has(toKey(value)));
 }
 
 /**

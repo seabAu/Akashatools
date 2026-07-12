@@ -119,3 +119,13 @@ test("collection helpers upsert and exclude by derived identity", () => {
   assert.deepEqual(upsertBy([{ key: "one", value: 1 }], { key: "one", value: 2 }, ({ key }) => key), [{ key: "one", value: 2 }]);
   assert.deepEqual(excludeBy([{ key: "one" }, { key: "two" }], new Set(["one"]), ({ key }) => key), [{ key: "two" }]);
 });
+
+test("collection identity helpers keep numeric keys distinct from indices", () => {
+  const source = [10, , 20];
+  assert.deepEqual(upsertBy(source, 11, (value) => value, { prepend: false }), [10, undefined, 20, 11]);
+  assert.deepEqual(upsertBy(source, 12, () => 10), [12, undefined, 20]);
+  assert.deepEqual(excludeBy(source, new Set([0]), (value) => value), [10, undefined, 20]);
+  assert.deepEqual(excludeBy(source, new Set([10]), (value) => value), [undefined, 20]);
+  assert.equal(1 in source, false);
+  assert.throws(() => upsertBy([], 1, undefined, { prepend: /** @type {any} */ ("yes") }), TypeError);
+});
