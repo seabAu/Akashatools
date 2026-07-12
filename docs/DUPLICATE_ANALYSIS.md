@@ -54,6 +54,7 @@ conflicts are summarized here.
 | Server file write/delete | `saveFile`, `deleteFile` | Thin sync write versus unrestricted broken delete with false success. | Native APIs for basic use; safe helpers require Node-only atomicity/containment/error contracts. |
 | Path containment | portfolio contained-path pair versus unrestricted server file paths | Lexical planning and realpath/symlink checking are distinct. | `akashatools/node` `resolveContainedPath` and `resolveExistingContainedPath`. |
 | File discovery | server `findFilesByPattern` | Calls undeclared glob and defines no ordering/error/dependency contract. | Deferred Node glob design. |
+| Node file mutation | legacy `saveFile`/`deleteFile`, portfolio storage services | Native `fs/promises` plus contained paths for current use; no generic helper claims atomicity until verified parent/symlink/durability/cleanup semantics exist. |
 
 ### Schema and data
 

@@ -344,12 +344,12 @@ Acceptance criteria:
 - [x] Create `akashatools/node` without importing it from the universal root.
 - [x] Generalize the portfolio contained-path protection and test traversal,
   symlink, separator, drive-letter, UNC, and case-sensitivity scenarios.
-- [ ] Design async file read/write helpers around explicit encoding and abort
+- [x] Design async file read/write helpers around explicit encoding and abort
   behavior.
-- [ ] Use atomic write patterns where a helper promises safe replacement.
-- [ ] Define file discovery semantics, glob dependency policy, ordering, and error
+- [x] Use atomic write patterns where a helper promises safe replacement.
+- [x] Define file discovery semantics, glob dependency policy, ordering, and error
   handling before migrating `findFilesByPattern`.
-- [ ] Never hide destructive file failures or accept unchecked computed paths.
+- [x] Never hide destructive file failures or accept unchecked computed paths.
 
 ### 4.3 HTTP/fetch
 
