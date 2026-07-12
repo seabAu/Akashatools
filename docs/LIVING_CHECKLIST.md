@@ -446,8 +446,8 @@ Acceptance criteria:
 - [ ] Decide whether ESM-only remains appropriate after consumer fixture testing.
 - [ ] If CommonJS is required, use generated dual outputs with identity/interop
   tests; do not hand-maintain duplicate sources.
-- [ ] Decide extensioned versus extensionless public subpaths and keep one canonical
-  spelling per export.
+- [x] Keep extensionless modern subpaths as the canonical spelling; extensioned
+  `lib/*.js` paths exist only for explicitly temporary 1.x compatibility.
 - [ ] Evaluate explicit per-method subpaths such as `akashatools/chunk` using real
   bundle measurements; do not create separate npm packages.
 - [x] Ensure export maps expose types, import targets, and environment targets
@@ -457,7 +457,7 @@ Acceptance criteria:
 - [ ] Add CI for supported runtimes and package smoke tests.
 - [x] Add an API-surface snapshot so accidental exports fail CI.
 - [x] Add an exports-resolution test generated from `package.json`.
-- [ ] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.
+- [x] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.
 - [ ] Add npm provenance/release automation only when publishing is authorized.
 
 ## Phase 9 — dogfood in real consumers
@@ -558,6 +558,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Do not create `schema` or `debug` categories for 2.0. | Reviewed schemas are incompatible app/framework contracts, while diagnostics are unused console wrappers or active app/profiler coordinators; the generic JSON subset already belongs under `validation`. |
 | 2026-07-11 | Generate migration lookup data without runtime deprecation warnings. | A deterministic manifest can distinguish replacements from merely related APIs without adding import-time logging, global warning state, or production bundle effects. |
 | 2026-07-11 | Generate and commit declarations from strict JSDoc. | Explicit conditional type targets give TypeScript and editors deterministic subpath resolution, while source comments remain authoritative and drift is mechanically checked. |
+| 2026-07-11 | Use extensionless canonical 2.0 subpaths. | `akashatools/array`-style imports are concise and stable; extensioned `lib/*.js` spellings remain solely to avoid prematurely breaking 1.x consumers. |
 
 ## Definition of done
 

@@ -42,7 +42,7 @@
   "scripts": {
     "benchmark:collator": "node benchmark/collator.mjs",
     "benchmark:membership": "node benchmark/membership.mjs",
-    "check": "node --run check:syntax && node --run check:docs && node --run check:generated && node --run check:types && node --run test:types && node --run test:completions && node --run test",
+    "check": "node --run check:syntax && node --run check:docs && node --run check:generated && node --run check:types && node --run test:types && node --run test:completions && node --run test:package && node --run test",
     "check:docs": "node scripts/check-api-docs.mjs",
     "check:generated": "node scripts/generate-api-reference.mjs --check && node scripts/generate-migration-index.mjs --check && node scripts/generate-api-snapshot.mjs --check",
     "check:syntax": "node --check src/index.js && node --check src/node.js && node --check src/internal/contained-path.js && node --check lib/index.js",
@@ -54,6 +54,7 @@
     "check:types": "npm run typecheck && node scripts/build-types.mjs --check",
     "test:types": "tsc -p fixtures/types/tsconfig.json",
     "test:completions": "node scripts/check-editor-completions.mjs",
+    "test:package": "node scripts/package-smoke.mjs",
     "test": "node --test",
     "pack:check": "npm pack --dry-run"
   },

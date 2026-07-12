@@ -13,6 +13,9 @@ truth for both VS Code IntelliSense and committed TypeScript declarations.
 - `npm run test:completions` asks the TypeScript 7 language service used by
   VS Code for JavaScript and TypeScript completions after `akasha.`,
   `akasha.array.`, `akasha.validation.`, and `akasha.http.`.
+- `npm run test:package` packs and installs the exact artifact into a fresh
+  temporary project, then executes JavaScript and compiles TypeScript against
+  only the installed package.
 
 Every modern export-map entry exposes a `types` condition before runtime
 conditions. Browser-effect and Node-only entry points additionally expose their

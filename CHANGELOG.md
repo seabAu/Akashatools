@@ -95,3 +95,5 @@
 - Added generated declarations with conditional type exports, strict JavaScript
   and TypeScript consumer fixtures, language-service completion tests, export
   resolution coverage, and a reviewed API-surface snapshot.
+- Added a clean-room package smoke test that packs, installs, executes JavaScript,
+  and compiles TypeScript against the exact installed tarball.
