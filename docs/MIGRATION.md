@@ -103,6 +103,31 @@ The old and new functions are not assumed behavior-identical. In particular,
 explicit options for ambiguous operations. Consult
 [FUNCTION_INDEX.md](FUNCTION_INDEX.md) for replacements versus related APIs.
 
+## Important behavioral changes
+
+| Area | 1.x behavior | 2.x behavior |
+| --- | --- | --- |
+| Invalid arguments | Many helpers returned fallbacks, logged, swallowed errors, or failed later. | Programmer-contract violations throw `TypeError`/`RangeError`; operational errors retain causes. |
+| Array removal | Index, numeric value, and predicate selection were spread across ambiguous helpers. | `removeFromArray` is immutable and requires `mode: "value"` for numeric values. |
+| Sparse arrays | Behavior varied by native method and incidental loops. | Transforms document dense-undefined semantics; `flatten` deliberately follows native hole removal. |
+| Nested properties | Several helpers read inherited keys or allowed prototype-mutating paths. | Path APIs use own properties and reject `__proto__`, `prototype`, and `constructor`. |
+| Cloning/merging | JSON/recursive clones lost built-ins and merge variants mutated or invoked getters. | `deepClone` uses `structuredClone`; `deepMerge` has bounded plain-data semantics. |
+| Validation | `valid`/`isValid`/`isTruthy` changed meaning by type and conflated legitimate falsy values. | Small literal predicates distinguish defined, blank, empty, finite, and domain syntax. |
+| Random numbers | `rand` accepted `(maximum, minimum)` and all randomness looked interchangeable. | `randomFloat` uses `(minimum, maximum)`; secure IDs/strings are separately named Web Crypto APIs. |
+| Dates/timestamps | Some “seconds” helpers actually returned milliseconds or silently substituted now. | Unix-second and instant-range APIs use strict units and explicit boundaries. |
+| HTTP | Legacy wrappers delayed, logged/swallowed, and resolved some errors as values. | `http.request` performs one bounded attempt and throws typed, redacted `HttpError` instances. |
+| Side effects | Prototype-extension and logging modules could alter globals or console output. | Canonical imports are inert; browser/network effects are explicitly named. |
+
+## Legacy path lifetime
+
+Akashatools 2.0 retains `akashatools/lib` and `akashatools/lib/*.js` as archival
+migration paths. It does not add an `akashatools/legacy` alias: another namespace
+would imply a newly supported coherent API while duplicating known broken and
+ambiguous behavior. The `lib` paths are eligible for removal no earlier than
+3.0, only after real-consumer fixtures pass, migration data is stable, and the
+removal receives explicit approval. No 2.0 codemod is planned until those
+fixtures show that mechanical rewriting can preserve intent.
+
 ## Remaining phases
 
 1. Extend the new Node-only `akashatools/node` surface only after file discovery

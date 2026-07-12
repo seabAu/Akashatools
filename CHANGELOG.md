@@ -97,3 +97,5 @@
   resolution coverage, and a reviewed API-surface snapshot.
 - Added a clean-room package smoke test that packs, installs, executes JavaScript,
   and compiles TypeScript against the exact installed tarball.
+- Added executable representative 1.x compatibility coverage and documented the
+  behavioral migration, no-new-legacy-namespace, and 3.0-earliest removal policy.

@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 68 tests currently pass.
+- [x] Add dependency-free runtime tests; 69 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -399,11 +399,14 @@ Acceptance criteria:
   Akashatools 1.0.2 named exports.
 - [x] Add deprecation warnings only if they can be development-only, one-time,
   side-effect controlled, and bundle-removable; otherwise rely on JSDoc/docs.
-- [ ] Create compatibility fixtures that execute representative 1.x imports.
-- [ ] Decide whether stable 2.0 ships a dedicated `akashatools/legacy` namespace.
-- [ ] Decide the removal release for `akashatools/lib/*` paths.
-- [ ] Write a migration guide with behavioral changes, not just renamed functions.
-- [ ] Consider a codemod only after the mapping stabilizes.
+- [x] Create compatibility fixtures that execute representative 1.x imports.
+- [x] Decide whether stable 2.0 ships a dedicated `akashatools/legacy` namespace:
+  no; retain only the existing archival `lib` paths without blessing a duplicate API.
+- [x] Decide the removal release for `akashatools/lib/*` paths: no earlier than
+  3.0, after consumer fixtures and explicit approval.
+- [x] Write a migration guide with behavioral changes, not just renamed functions.
+- [x] Consider a codemod only after the mapping stabilizes; defer it until real
+  consumer fixtures prove which rewrites preserve intent.
 - [ ] Never claim drop-in compatibility until fixtures from real consumers pass.
 
 ## Phase 7 — testing, security, and performance
@@ -559,6 +562,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Generate migration lookup data without runtime deprecation warnings. | A deterministic manifest can distinguish replacements from merely related APIs without adding import-time logging, global warning state, or production bundle effects. |
 | 2026-07-11 | Generate and commit declarations from strict JSDoc. | Explicit conditional type targets give TypeScript and editors deterministic subpath resolution, while source comments remain authoritative and drift is mechanically checked. |
 | 2026-07-11 | Use extensionless canonical 2.0 subpaths. | `akashatools/array`-style imports are concise and stable; extensioned `lib/*.js` spellings remain solely to avoid prematurely breaking 1.x consumers. |
+| 2026-07-11 | Retain only existing `lib` compatibility paths through 2.x. | A new `/legacy` namespace would duplicate and legitimize incoherent or broken 1.x behavior; removal waits for 3.0, real-consumer evidence, and explicit approval. |
 
 ## Definition of done
 
