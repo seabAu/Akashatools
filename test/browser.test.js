@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { downloadBlob, downloadJson } from "akashatools/browser";
+import { downloadBlob, downloadJson, downloadTextFile } from "akashatools/browser";
 
 function browserHarness({ clickError, scheduleError } = {}) {
   const events = [];
@@ -60,6 +60,25 @@ test("browser downloads revoke immediately when clicking or scheduling fails", (
   const scheduleFailure = browserHarness({ scheduleError: new Error("schedule failed") });
   assert.throws(() => downloadBlob("report.txt", new Blob(), scheduleFailure.environment), /schedule failed/);
   assert.deepEqual(scheduleFailure.events.slice(-2), ["remove", "revoke-url"]);
+});
+
+test("browser downloads validate content and browser environment contracts", () => {
+  const harness = browserHarness();
+  assert.throws(() => downloadBlob("", new Blob(), harness.environment), TypeError);
+  assert.throws(() => downloadBlob("report.txt", /** @type {any} */ ("report"), harness.environment), TypeError);
+  assert.throws(() => downloadBlob("report.txt", new Blob(), { document: /** @type {any} */ ({}), url: harness.environment.url }), /browser-like environment/);
+  assert.throws(() => downloadBlob("report.txt", new Blob(), { ...harness.environment, schedule: /** @type {any} */ (1) }), TypeError);
+  assert.throws(() => downloadTextFile("report.txt", /** @type {any} */ (1), harness.environment), TypeError);
+  assert.throws(() => downloadJson("report", undefined, harness.environment), TypeError);
+});
+
+test("text downloads preserve the requested media type", async () => {
+  const harness = browserHarness();
+  downloadTextFile("notes.md", "# Notes", { ...harness.environment, contentType: "text/markdown;charset=utf-8" });
+  assert.equal(harness.filename, "notes.md");
+  assert.equal(harness.blob?.type, "text/markdown;charset=utf-8");
+  assert.equal(await harness.blob?.text(), "# Notes");
+  harness.scheduled[0]();
 });
 
 test("JSON downloads normalize one extension and preserve JSON media type", async () => {

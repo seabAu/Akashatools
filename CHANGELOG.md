@@ -103,4 +103,7 @@
   pairs, and consolidated object/filesystem/regex/random/HTML threat models with
   a reproducible prerelease dependency and package audit.
 - Added reusable mutation/invalid-contract test helpers and seeded randomized
-  invariants for paths, ranges, stable sorting, deduplication, and Unix dates.
+  invariant coverage across paths, ranges, sorting, deduplication, and dates.
+- Added source-only Node coverage reporting with enforced 95% line, 80% branch,
+  and 90% function floors, plus focused browser, collection-compatibility, and
+  date contract tests.

@@ -110,6 +110,7 @@ exports or category subpaths.
 
 ```sh
 npm test
+npm run test:coverage
 npm run check
 npm run pack:check
 npm run audit:release
@@ -134,3 +135,5 @@ Declaration and editor guarantees are documented in
 [docs/TYPES.md](docs/TYPES.md).
 Security boundaries and threat models are collected in
 [docs/SECURITY.md](docs/SECURITY.md).
+Test organization, invariant seeds, and coverage policy are documented in
+[docs/TESTING.md](docs/TESTING.md).

@@ -6,22 +6,15 @@ import {
   camelCase,
   capitalize,
   clamp,
-  clock12To24,
-  clock24To12,
-  clockTimeToMinutes,
   createCollatorComparator,
   date,
-  differenceInLocalDays,
   distance2d,
   escapeHtml,
-  excludeBy,
   fibonacci,
   formatDate,
   fulfilledValues,
   kebabCase,
-  localDateKey,
   mapSettledWithConcurrency,
-  minutesToClockTime,
   pascalCase,
   randomBoolean,
   randomDate,
@@ -41,7 +34,6 @@ import {
   sortByNumericOrder,
   sum,
   toBinary,
-  upsertBy,
   wrap,
 } from "akashatools";
 
@@ -174,16 +166,6 @@ test("secure random helpers use explicit Web Crypto contracts", () => {
   assert.throws(() => randomString(1_000_001), RangeError);
 });
 
-test("date helpers handle local calendar and clock operations", () => {
-  const local = new Date(2026, 6, 11, 23, 30);
-  assert.equal(localDateKey(local), "2026-07-11");
-  assert.equal(differenceInLocalDays(new Date(2026, 6, 12), new Date(2026, 6, 10)), 2);
-  assert.equal(clockTimeToMinutes("23:59"), 1439);
-  assert.equal(minutesToClockTime(-1), "23:59");
-  assert.equal(clock12To24("12:05 AM"), "00:05");
-  assert.equal(clock24To12("14:05"), "2:05 PM");
-});
-
 test("bounded async mapping preserves order and failures", async () => {
   let active = 0;
   let maximum = 0;
@@ -197,19 +179,4 @@ test("bounded async mapping preserves order and failures", async () => {
   });
   assert.equal(maximum, 2);
   assert.deepEqual(fulfilledValues(results), [2, 4, 8]);
-});
-
-test("collection helpers upsert and exclude by derived identity", () => {
-  assert.deepEqual(upsertBy([{ key: "one", value: 1 }], { key: "one", value: 2 }, ({ key }) => key), [{ key: "one", value: 2 }]);
-  assert.deepEqual(excludeBy([{ key: "one" }, { key: "two" }], new Set(["one"]), ({ key }) => key), [{ key: "two" }]);
-});
-
-test("collection identity helpers keep numeric keys distinct from indices", () => {
-  const source = [10, , 20];
-  assert.deepEqual(upsertBy(source, 11, (value) => value, { prepend: false }), [10, undefined, 20, 11]);
-  assert.deepEqual(upsertBy(source, 12, () => 10), [12, undefined, 20]);
-  assert.deepEqual(excludeBy(source, new Set([0]), (value) => value), [10, undefined, 20]);
-  assert.deepEqual(excludeBy(source, new Set([10]), (value) => value), [undefined, 20]);
-  assert.equal(1 in source, false);
-  assert.throws(() => upsertBy([], 1, undefined, { prepend: /** @type {any} */ ("yes") }), TypeError);
 });

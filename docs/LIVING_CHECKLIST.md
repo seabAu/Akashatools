@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 74 tests currently pass.
+- [x] Add dependency-free runtime tests; 80 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -413,13 +413,20 @@ Acceptance criteria:
 
 ### 7.1 Test architecture
 
-- [ ] Organize tests by public category and behavior contract.
+- [ ] Organize tests by public category and behavior contract; array, async,
+  browser, collection, date, HTTP, Node, number, object/validation, and package
+  integration contracts now have focused files, while the remaining mixed core
+  assertions still need separation.
 - [x] Add test factories for mutation checks and invalid-argument checks.
 - [x] Add deterministic randomized/property-style invariant tests for paths, ranges, sorting,
   deduplication, and date conversions.
 - [ ] Add regression tests for every source bug found during migration.
 - [ ] Add cross-realm/browser tests for Blob, File, Map, Set, and typed arrays.
-- [ ] Add test coverage reporting and agree on meaningful thresholds.
+- [x] Add source-only coverage reporting with enforced aggregate floors of 95%
+  lines, 80% branches, and 90% functions. The 2026-07-11 observed baseline after
+  focused public-contract additions is 96.65% / 82.20% / 94.14%, respectively;
+  branch accounting can vary slightly with random-source execution; see
+  `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers.
 
 ### 7.2 Security review

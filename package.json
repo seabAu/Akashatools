@@ -43,7 +43,7 @@
     "benchmark:collator": "node benchmark/collator.mjs",
     "benchmark:membership": "node benchmark/membership.mjs",
     "audit:dependencies": "npm audit --audit-level=high",
-    "audit:release": "npm run audit:dependencies && npm run check && npm run pack:check",
+    "audit:release": "npm run audit:dependencies && npm run check && npm run test:coverage && npm run pack:check",
     "check": "node --run check:syntax && node --run check:docs && node --run check:generated && node --run check:types && node --run test:types && node --run test:completions && node --run test:package && node --run test",
     "check:docs": "node scripts/check-api-docs.mjs",
     "check:generated": "node scripts/generate-api-reference.mjs --check && node scripts/generate-migration-index.mjs --check && node scripts/generate-api-snapshot.mjs --check",
@@ -58,6 +58,7 @@
     "test:completions": "node scripts/check-editor-completions.mjs",
     "test:package": "node scripts/package-smoke.mjs",
     "test": "node --test",
+    "test:coverage": "node --experimental-test-coverage --test --test-coverage-include=\"src/**/*.js\" --test-coverage-lines=95 --test-coverage-branches=80 --test-coverage-functions=90",
     "pack:check": "npm pack --dry-run"
   },
   "repository": {
