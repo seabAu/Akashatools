@@ -88,3 +88,5 @@
   reproducible API-documentation check for summaries, types, and deprecations.
 - Added a source-generated API reference grouped by category and a drift check
   integrated into the normal project verification command.
+- Added a deterministic JSON manifest for all 119 legacy exports and a searchable
+  canonical/legacy function index with runtime, mutation, and import metadata.

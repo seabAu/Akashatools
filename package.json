@@ -42,9 +42,10 @@
     "benchmark:membership": "node benchmark/membership.mjs",
     "check": "node --run check:syntax && node --run check:docs && node --run check:generated && node --run test",
     "check:docs": "node scripts/check-api-docs.mjs",
-    "check:generated": "node scripts/generate-api-reference.mjs --check",
+    "check:generated": "node scripts/generate-api-reference.mjs --check && node scripts/generate-migration-index.mjs --check",
     "check:syntax": "node --check src/index.js && node --check src/node.js && node --check src/internal/contained-path.js && node --check lib/index.js",
     "docs:api": "node scripts/generate-api-reference.mjs",
+    "docs:migration": "node scripts/generate-migration-index.mjs",
     "test": "node --test",
     "pack:check": "npm pack --dry-run"
   },

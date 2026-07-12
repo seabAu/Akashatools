@@ -380,7 +380,7 @@ Acceptance criteria:
   115 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
-- [ ] Add a searchable function index with old name, new name, category, runtime,
+- [x] Add a searchable function index with old name, new name, category, runtime,
   mutation behavior, and direct import path.
 - [ ] Add recipes for common array/object/data/date workflows.
 - [ ] Document convenience namespace versus focused import bundle tradeoffs.
@@ -393,8 +393,9 @@ Acceptance criteria:
 
 ## Phase 6 — compatibility and migration experience
 
-- [ ] Create a machine-readable legacy-to-modern alias manifest.
-- [ ] Add deprecation warnings only if they can be development-only, one-time,
+- [x] Create a machine-readable legacy-to-modern alias manifest covering all 119
+  Akashatools 1.0.2 named exports.
+- [x] Add deprecation warnings only if they can be development-only, one-time,
   side-effect controlled, and bundle-removable; otherwise rely on JSDoc/docs.
 - [ ] Create compatibility fixtures that execute representative 1.x imports.
 - [ ] Decide whether stable 2.0 ships a dedicated `akashatools/legacy` namespace.
@@ -552,6 +553,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep removal metadata out of `removeFromArray`. | Reviewed consumers only need the resulting array; a future `extractFromArray` can return values/indices without changing the established return type if demand appears. |
 | 2026-07-11 | Keep the generic HTTP surface to one bounded, non-retrying Fetch attempt. | Transport parsing, cancellation, size limits, redaction, and typed errors are reusable; authentication, envelopes, SSRF policy, retries, and UI effects depend on the consuming application. |
 | 2026-07-11 | Do not create `schema` or `debug` categories for 2.0. | Reviewed schemas are incompatible app/framework contracts, while diagnostics are unused console wrappers or active app/profiler coordinators; the generic JSON subset already belongs under `validation`. |
+| 2026-07-11 | Generate migration lookup data without runtime deprecation warnings. | A deterministic manifest can distinguish replacements from merely related APIs without adding import-time logging, global warning state, or production bundle effects. |
 
 ## Definition of done
 

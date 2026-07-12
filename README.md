@@ -124,5 +124,6 @@ work plan and [docs/MIGRATION.md](docs/MIGRATION.md) for the first-alpha source
 audit and migration decisions. Public naming and behavioral rules live in
 [docs/API_CONVENTIONS.md](docs/API_CONVENTIONS.md), the generated function
 reference is [docs/API_REFERENCE.md](docs/API_REFERENCE.md), and per-function
-migration dispositions are tracked in
-[docs/UTILITY_INVENTORY.md](docs/UTILITY_INVENTORY.md).
+migration lookup is available in
+[docs/FUNCTION_INDEX.md](docs/FUNCTION_INDEX.md). The complete source disposition
+ledger remains [docs/UTILITY_INVENTORY.md](docs/UTILITY_INVENTORY.md).

@@ -1,0 +1,1539 @@
+{
+  "schemaVersion": 1,
+  "sourcePackageVersion": "1.0.2",
+  "entryCount": 119,
+  "entries": [
+    {
+      "module": "AO.js",
+      "name": "arrayToEnum",
+      "canonicalReferences": [],
+      "decision": "Merge into a future safe `keyBy`/lookup builder only if consumers need it.",
+      "behavior": "Freezes an object mapping each array value to itself; property coercion and unsafe keys are unspecified.",
+      "evidence": "Source reviewed; parity pending."
+    },
+    {
+      "module": "AO.js",
+      "name": "isOneOf",
+      "canonicalReferences": [],
+      "decision": "Native `Array.prototype.includes`.",
+      "behavior": "Strict membership in an array.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "uniqueArray",
+      "canonicalReferences": [
+        {
+          "name": "unique",
+          "category": "array",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/array",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `array.unique`.",
+      "behavior": "Set-based first-occurrence deduplication after legacy array validation.",
+      "evidence": "2.x array tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "mergeArray",
+      "canonicalReferences": [],
+      "decision": "Native spread/`concat`; merge deduplicated behavior into future `union`.",
+      "behavior": "Concatenates two arrays and optionally deduplicates via a positional boolean.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "replaceIfInvalid",
+      "canonicalReferences": [],
+      "decision": "Merge with `cleanInvalid` into an explicitly named fallback helper; prefer `??` for nullish values.",
+      "behavior": "Replaces null, undefined, empty string, or exactly one space.",
+      "evidence": "Source reviewed; semantics conflict with `isBlank`."
+    },
+    {
+      "module": "AO.js",
+      "name": "removeEmpty",
+      "canonicalReferences": [
+        {
+          "name": "compact",
+          "category": "array",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/array",
+          "relation": "related"
+        }
+      ],
+      "decision": "Merge as an explicit predicate/filter recipe; `compact` remains nullish-only.",
+      "behavior": "Removes null, undefined, and empty strings while retaining `0` and `false`.",
+      "evidence": "Source reviewed; behavior differs from 2.x `compact`."
+    },
+    {
+      "module": "AO.js",
+      "name": "parseTextToArray",
+      "canonicalReferences": [],
+      "decision": "Merge into a future `splitMany` with escaped alternation or deterministic scanning.",
+      "behavior": "Splits by one or multiple literal delimiters using a collision-prone sentinel.",
+      "evidence": "Source reviewed; sentinel can corrupt input."
+    },
+    {
+      "module": "AO.js",
+      "name": "cleanJSON",
+      "canonicalReferences": [],
+      "decision": "Reject the misleading name; reconsider only as schema-driven example/model initialization.",
+      "behavior": "Recursively replaces scalar values with type defaults and keeps only the first array element.",
+      "evidence": "Defect/behavior proven from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "sanitizeObj",
+      "canonicalReferences": [],
+      "decision": "Reject.",
+      "behavior": "Mutates recursively, calls an undefined `cleanInvalid`, and returns `forEach`'s `undefined`.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "sanitizeObjArray",
+      "canonicalReferences": [],
+      "decision": "Reject.",
+      "behavior": "Maps through broken `sanitizeObj`, producing undefined entries.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "formatObjArray",
+      "canonicalReferences": [],
+      "decision": "App-local formatting or redesign as a mapper supplied by the caller.",
+      "behavior": "Mutates object entries and assumes every nested value has string methods.",
+      "evidence": "Source reviewed; mutation/throw risk."
+    },
+    {
+      "module": "AO.js",
+      "name": "cleanArray",
+      "canonicalReferences": [
+        {
+          "name": "compact",
+          "category": "array",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/array",
+          "relation": "related"
+        }
+      ],
+      "decision": "Native `array.filter(Boolean)`; do not conflate with nullish `compact`.",
+      "behavior": "Removes every falsy value.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "removeKey",
+      "canonicalReferences": [
+        {
+          "name": "omit",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `object.omit` for one or many keys.",
+      "behavior": "Returns a shallow copy with one own key deleted.",
+      "evidence": "2.x object tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "findOne",
+      "canonicalReferences": [],
+      "decision": "Merge into separate `findBy`, text predicate, and property access operations; reject shape-changing return.",
+      "behavior": "Finds by property with optional case/substring matching, then returns either a property or the object.",
+      "evidence": "Source reviewed; contract redesign pending."
+    },
+    {
+      "module": "AO.js",
+      "name": "findAll",
+      "canonicalReferences": [],
+      "decision": "Native `filter` plus `map`, or future `findAllBy` if usage supports it.",
+      "behavior": "Filters by one exact property and optionally plucks another property.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "objectFindByKey",
+      "canonicalReferences": [],
+      "decision": "Native `find`; reject sentinel return shape.",
+      "behavior": "Linear property lookup returning either an object or `{ error: \"Not found\" }`.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "splice",
+      "canonicalReferences": [],
+      "decision": "Reject; use immutable `map` plus object spread.",
+      "behavior": "Mutates every object in an array with `Object.assign`; name conflicts with array splice.",
+      "evidence": "Source reviewed; mutation proven."
+    },
+    {
+      "module": "AO.js",
+      "name": "flatten",
+      "canonicalReferences": [
+        {
+          "name": "flatten",
+          "category": "array",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/array",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted strict `array.flatten`, delegating to native `flat` with documented depth and sparse-slot behavior.",
+      "behavior": "This-bound recursive array flattening that calls nonexistent `this.flatten` in normal module use.",
+      "evidence": "Defect proven; 2.x flatten tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "flattenObj",
+      "canonicalReferences": [],
+      "decision": "Defer a safe path-aware record flattener.",
+      "behavior": "Mutates nullish values in the input and joins nested keys with underscores without collision protection.",
+      "evidence": "Source reviewed; mutation/key collision risk."
+    },
+    {
+      "module": "AO.js",
+      "name": "flattenObjArray",
+      "canonicalReferences": [],
+      "decision": "Merge only after a canonical record-flatten contract exists.",
+      "behavior": "Applies `flattenObj` with inconsistent nesting and return shapes.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "flatMapObjText",
+      "canonicalReferences": [],
+      "decision": "App-local presentation.",
+      "behavior": "Recursively concatenates object labels and values for display without separators.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "validateObject",
+      "canonicalReferences": [],
+      "decision": "Reject implementation; use `keys.every(key => Object.hasOwn(value, key))` or future `hasOwnKeys`.",
+      "behavior": "Intended to require keys, but `return false` inside `forEach` does not escape; most nonempty key lists pass.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "validateObjectArray",
+      "canonicalReferences": [],
+      "decision": "Reject implementation; reconsider as `filter` plus `hasOwnKeys`.",
+      "behavior": "Filters objects through broken `validateObject`.",
+      "evidence": "Defect inherited from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "hasKeys",
+      "canonicalReferences": [],
+      "decision": "Reject; split predicate and filter behaviors.",
+      "behavior": "Named as a predicate but filters arrays and repeats ineffective `forEach` returns.",
+      "evidence": "Defect/name mismatch proven."
+    },
+    {
+      "module": "AO.js",
+      "name": "extractKey",
+      "canonicalReferences": [],
+      "decision": "Native `map`; possible documented `pluck` only if frequent use warrants it.",
+      "behavior": "Maps one property from each object.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "extractKeyArray",
+      "canonicalReferences": [],
+      "decision": "Merge with `extractKey`; prefer native `map`.",
+      "behavior": "Duplicate property projection with additional legacy validation.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "extractKeys",
+      "canonicalReferences": [
+        {
+          "name": "pick",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Compose `map` with adopted `object.pick`.",
+      "behavior": "Maps each object to a selected-key object.",
+      "evidence": "`pick` tested; composition fixture pending."
+    },
+    {
+      "module": "AO.js",
+      "name": "getObjKeys",
+      "canonicalReferences": [],
+      "decision": "App-local UI adapter.",
+      "behavior": "Converts object keys into `{ key, value }` selector records.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "objValsToArray",
+      "canonicalReferences": [],
+      "decision": "Native `Object.values`.",
+      "behavior": "Returns enumerable own property values.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "arrayToObjArray",
+      "canonicalReferences": [],
+      "decision": "Native `map`; unsafe property names would need protection in a wrapper.",
+      "behavior": "Wraps every array value under a caller-provided property name.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "keySortData",
+      "canonicalReferences": [
+        {
+          "name": "sortBy",
+          "category": "sort",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/sort",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted/generalized as `sort.sortBy`.",
+      "behavior": "Returns a copied array sorted by a property and direction.",
+      "evidence": "2.x sort tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "filterKeys",
+      "canonicalReferences": [
+        {
+          "name": "pick",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `object.pick`.",
+      "behavior": "Builds an object from selected input keys.",
+      "evidence": "2.x object tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "filterData",
+      "canonicalReferences": [],
+      "decision": "Defer or keep app-local until real query semantics are captured.",
+      "behavior": "Applies a custom array-of-filter-records query language with coercion and substring policy.",
+      "evidence": "Source reviewed; no independent contract."
+    },
+    {
+      "module": "AO.js",
+      "name": "filterDataFast",
+      "canonicalReferences": [],
+      "decision": "Reject as a duplicate implementation; disposition behavior-by-behavior with `filterData`.",
+      "behavior": "Alternate filter engine with JSON stringification and different matching behavior.",
+      "evidence": "Source reviewed; semantic drift observed."
+    },
+    {
+      "module": "AO.js",
+      "name": "has",
+      "canonicalReferences": [
+        {
+          "name": "hasAtPath",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Merge into the planned cycle-safe traversal API; shallow paths use `hasAtPath`.",
+      "behavior": "Recursively checks for a key, mixing arrays/objects and legacy validity rules.",
+      "evidence": "`hasAtPath` tested; deep parity pending."
+    },
+    {
+      "module": "AO.js",
+      "name": "hasAll",
+      "canonicalReferences": [],
+      "decision": "Reject implementation; redesign on top of canonical traversal.",
+      "behavior": "Attempts recursive presence of all keys, with loop-return control-flow defects.",
+      "evidence": "Defect/source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "valContains",
+      "canonicalReferences": [
+        {
+          "name": "includesText",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted for actual strings as `string.includesText`; non-string search requires a separate explicit serializer/search API.",
+      "behavior": "JSON-stringifies values before substring comparison.",
+      "evidence": "2.x string tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "objContains",
+      "canonicalReferences": [],
+      "decision": "Merge into canonical traversal/search.",
+      "behavior": "Recursively searches object values but relies on returns inside `forEach`.",
+      "evidence": "Source reviewed; control-flow risk."
+    },
+    {
+      "module": "AO.js",
+      "name": "arrayContains",
+      "canonicalReferences": [],
+      "decision": "Merge into canonical traversal/search; primitive membership uses native `includes`.",
+      "behavior": "Recursively searches array values with inconsistent object handling.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "deepGetKey",
+      "canonicalReferences": [],
+      "decision": "Merge into path-aware traversal results.",
+      "behavior": "Recursively returns values associated with a matching key.",
+      "evidence": "Source reviewed; cycle handling absent."
+    },
+    {
+      "module": "AO.js",
+      "name": "deepSearch",
+      "canonicalReferences": [],
+      "decision": "Merge into traversal results shaped as `{ value, key, path, parent }`.",
+      "behavior": "Recursively searches a named key using a predicate and optionally returns a parent.",
+      "evidence": "Source reviewed; cycle handling absent."
+    },
+    {
+      "module": "AO.js",
+      "name": "deepSearchItems",
+      "canonicalReferences": [],
+      "decision": "Reject implementation; merge behavior into canonical traversal.",
+      "behavior": "Deep search variant that calls `this.deepSearchItems`, making module invocation fragile.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "deepFindSet",
+      "canonicalReferences": [
+        {
+          "name": "setAtPath",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; use `setAtPath` for known paths and design predicate-based deep update separately.",
+      "behavior": "Intended immutable deep update, but recursive `forEach` returns are discarded; generally only a root match survives.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "AO.js",
+      "name": "cloneObj",
+      "canonicalReferences": [
+        {
+          "name": "deepClone",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted replacement `object.deepClone` using `structuredClone`.",
+      "behavior": "Recursive enumerable string-key clone that loses prototypes and special built-ins.",
+      "evidence": "2.x clone tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "deepCopy",
+      "canonicalReferences": [
+        {
+          "name": "deepClone",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted replacement `object.deepClone`.",
+      "behavior": "Recursive `for...in` clone without cycles or built-in preservation.",
+      "evidence": "2.x clone tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "deepCopyJSON",
+      "canonicalReferences": [
+        {
+          "name": "deepClone",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted replacement `object.deepClone`; keep JSON round-trip only as explicit serialization.",
+      "behavior": "JSON round-trip clone loses unsupported values/types and fails on cycles.",
+      "evidence": "2.x clone tests."
+    },
+    {
+      "module": "AO.js",
+      "name": "findAndSetObject",
+      "canonicalReferences": [
+        {
+          "name": "setAtPath",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Defer a cycle-safe predicate update API; known paths use `setAtPath`.",
+      "behavior": "Mutates every recursively found property with a matching key.",
+      "evidence": "Source reviewed; mutation proven."
+    },
+    {
+      "module": "AO.js",
+      "name": "sortObject",
+      "canonicalReferences": [],
+      "decision": "Native `Object.fromEntries(Object.entries(value).sort(...))`; adopt only if consumer evidence warrants.",
+      "behavior": "Creates a new object with enumerable string keys in lexical order.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "AO.js",
+      "name": "sortObjArray",
+      "canonicalReferences": [
+        {
+          "name": "sortBy",
+          "category": "sort",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/sort",
+          "relation": "replacement"
+        },
+        {
+          "name": "sortByNumericOrder",
+          "category": "sort",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/sort",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted immutable replacements `sortBy`/`sortByNumericOrder`.",
+      "behavior": "Mutates input using numeric subtraction on a property.",
+      "evidence": "2.x sort tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "valid",
+      "canonicalReferences": [
+        {
+          "name": "isDefined",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; adopted literal predicate `validation.isDefined`.",
+      "behavior": "References undeclared `variable` instead of `value`, throwing for defined input.",
+      "evidence": "Defect proven; 2.x predicate tested."
+    },
+    {
+      "module": "Val.js",
+      "name": "isValid",
+      "canonicalReferences": [
+        {
+          "name": "isDefined",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        },
+        {
+          "name": "isBlank",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        },
+        {
+          "name": "isEmpty",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject umbrella predicate; use `isDefined`, `isBlank`, `isEmpty`, or a domain validator.",
+      "behavior": "Changes meaning by type and optional positional boolean; treats several legitimate falsy values as invalid.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "validate",
+      "canonicalReferences": [],
+      "decision": "Reject; compose explicit predicates with `every`.",
+      "behavior": "Attempts nested truthiness checks, but returns inside `forEach` do not affect the result.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "Val.js",
+      "name": "cleanInvalid",
+      "canonicalReferences": [],
+      "decision": "Merge with `replaceIfInvalid` into a clearly named fallback helper if needed.",
+      "behavior": "Duplicate fallback logic for nullish, empty string, and one space.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isDefined",
+      "canonicalReferences": [
+        {
+          "name": "isDefined",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `validation.isDefined`.",
+      "behavior": "Checks non-nullish values.",
+      "evidence": "2.x validation tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isTruthy",
+      "canonicalReferences": [],
+      "decision": "Reject misleading name; use native Boolean or literal predicates.",
+      "behavior": "Means defined and not empty string rather than JavaScript truthiness.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isString",
+      "canonicalReferences": [],
+      "decision": "Defer/add a canonical type guard during validation expansion.",
+      "behavior": "Cross-realm string tag check.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isNumber",
+      "canonicalReferences": [
+        {
+          "name": "isFiniteNumber",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        }
+      ],
+      "decision": "Use explicit `validation.isFiniteNumber` where numeric APIs require usable finite values; raw primitive checks remain native.",
+      "behavior": "Checks `typeof value === \"number\"`, including `NaN` and infinities.",
+      "evidence": "2.x cross-realm/type-guard tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isNum",
+      "canonicalReferences": [],
+      "decision": "Reject duplicate; legacy alias maps to the eventual canonical predicate.",
+      "behavior": "Exact duplicate of `isNumber`.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isInt",
+      "canonicalReferences": [],
+      "decision": "Native `Number.isInteger`; possible canonical type guard.",
+      "behavior": "Integer check via modulo.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isSafeInt",
+      "canonicalReferences": [
+        {
+          "name": "isSafeInteger",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as explicit `validation.isSafeInteger`; native `Number.isSafeInteger` remains equally valid inline.",
+      "behavior": "Safe integer check with redundant number test.",
+      "evidence": "2.x type-guard tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isFloat",
+      "canonicalReferences": [],
+      "decision": "Reject name/semantics; consider `isFiniteNonInteger`.",
+      "behavior": "Defines float as any number that is not an integer, including problematic values.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isBool",
+      "canonicalReferences": [],
+      "decision": "Native `typeof value === \"boolean\"`; possible canonical type guard.",
+      "behavior": "Checks exact true or false.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isBlank",
+      "canonicalReferences": [
+        {
+          "name": "isBlank",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted replacement `validation.isBlank` with literal nullish/whitespace semantics.",
+      "behavior": "References `this.length`/`this.trim()` in an arrow function and can throw.",
+      "evidence": "Defect proven; 2.x tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "escapeHtml",
+      "canonicalReferences": [
+        {
+          "name": "escapeHtml",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted under `string.escapeHtml`, documented as escaping rather than sanitization.",
+      "behavior": "Escapes five text-significant HTML characters.",
+      "evidence": "2.x string tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isJSONRegex",
+      "canonicalReferences": [],
+      "decision": "Reject.",
+      "behavior": "This-bound prototype-style function calls nonexistent `blank()` and uses a regex approximation.",
+      "evidence": "Defect proven from source."
+    },
+    {
+      "module": "Val.js",
+      "name": "isJSON",
+      "canonicalReferences": [
+        {
+          "name": "isJson",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted replacement `validation.isJson`, accepting all valid JSON text.",
+      "behavior": "Parses undeclared `str` instead of the argument and rejects valid scalar intent ambiguously.",
+      "evidence": "Defect proven; 2.x tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isMap",
+      "canonicalReferences": [
+        {
+          "name": "isMap",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `validation.isMap` with a cross-realm brand check.",
+      "behavior": "`instanceof Map` predicate.",
+      "evidence": "2.x cross-realm tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isSet",
+      "canonicalReferences": [
+        {
+          "name": "isSet",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `validation.isSet` with a cross-realm brand check.",
+      "behavior": "`instanceof Set` predicate.",
+      "evidence": "2.x cross-realm tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isFile",
+      "canonicalReferences": [
+        {
+          "name": "isFile",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `validation.isFile` using safe `globalThis.File` detection.",
+      "behavior": "Uses `'File' in window` and direct `File`, throwing outside browsers.",
+      "evidence": "2.x universal-runtime tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isBlob",
+      "canonicalReferences": [
+        {
+          "name": "isBlob",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `validation.isBlob` using safe `globalThis.Blob` detection.",
+      "behavior": "Uses `'Blob' in window` and direct `Blob`, throwing outside browsers.",
+      "evidence": "2.x universal-runtime tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isObject",
+      "canonicalReferences": [
+        {
+          "name": "isPlainObject",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Split into adopted `object.isPlainObject` and a future explicitly named object-like guard.",
+      "behavior": "Any defined non-array object, including Dates, Maps, and class instances.",
+      "evidence": "2.x plain-object tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isArray",
+      "canonicalReferences": [],
+      "decision": "Native `Array.isArray`.",
+      "behavior": "Null-safe array predicate.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isValidArray",
+      "canonicalReferences": [
+        {
+          "name": "isNonEmptyArray",
+          "category": "array",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/array",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted clear predicate `array.isNonEmptyArray`; use `Array.isArray` when emptiness is allowed.",
+      "behavior": "Rejects empty arrays and arrays whose first item is undefined even when length checking is disabled.",
+      "evidence": "2.x array tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "arrayContainsObjects",
+      "canonicalReferences": [],
+      "decision": "Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes.",
+      "behavior": "Returns true for any `typeof \"object\"` item, including null and arrays.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "isObjectArray",
+      "canonicalReferences": [
+        {
+          "name": "isPlainObjectArray",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array.",
+      "behavior": "Means an array containing at least one object-like item, not an array entirely of objects.",
+      "evidence": "2.x type-guard tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isAO",
+      "canonicalReferences": [],
+      "decision": "Reject abbreviation; use explicit array/plain-object/object-like predicates.",
+      "behavior": "Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "getType",
+      "canonicalReferences": [
+        {
+          "name": "typeOf",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted basic replacement `validation.typeOf`; richer array analysis remains separate.",
+      "behavior": "Returns custom strings and infers array type from only the first element.",
+      "evidence": "2.x type tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "getFieldType",
+      "canonicalReferences": [],
+      "decision": "App-local/schema UI adapter.",
+      "behavior": "Maps runtime values to HTML/form control concepts.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Val.js",
+      "name": "getArrayType",
+      "canonicalReferences": [],
+      "decision": "Defer a structured `inspectArrayTypes` result if consumer evidence warrants it.",
+      "behavior": "Walks array elements to report a custom homogeneous/mixed type string.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Time.js",
+      "name": "convertDate",
+      "canonicalReferences": [
+        {
+          "name": "formatDate",
+          "category": "date",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/date",
+          "relation": "related"
+        }
+      ],
+      "decision": "Merge into adopted `date.formatDate` with explicit `Intl` options.",
+      "behavior": "Hard-coded English abbreviated weekday and full month display.",
+      "evidence": "2.x date formatting tested at API level."
+    },
+    {
+      "module": "Time.js",
+      "name": "sec2str",
+      "canonicalReferences": [],
+      "decision": "Defer a duration formatter with a stable grammar.",
+      "behavior": "Formats seconds with inconsistent omitted units and mixed suffix/colon output.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Time.js",
+      "name": "elapsed",
+      "canonicalReferences": [],
+      "decision": "Merge into a named duration/difference helper with unit-explicit inputs.",
+      "behavior": "Returns `(finish - start) / 1000`, despite docs calling inputs seconds.",
+      "evidence": "Source reviewed; unit mismatch."
+    },
+    {
+      "module": "Time.js",
+      "name": "timeElapsed",
+      "canonicalReferences": [],
+      "decision": "Reject implementation; future composition of elapsed duration and formatter.",
+      "behavior": "References undeclared `finishg`.",
+      "evidence": "Defect proven."
+    },
+    {
+      "module": "Time.js",
+      "name": "estimate",
+      "canonicalReferences": [],
+      "decision": "Reject signature; design `estimateRemaining` explicitly.",
+      "behavior": "Documentation promises seconds but implementation returns `sec2str` and estimates total duration rather than remaining duration.",
+      "evidence": "Defect/contract mismatch proven."
+    },
+    {
+      "module": "Time.js",
+      "name": "timeEstimate",
+      "canonicalReferences": [],
+      "decision": "Reject.",
+      "behavior": "Omits `return` and passes the already formatted estimate back to `sec2str`.",
+      "evidence": "Defect proven."
+    },
+    {
+      "module": "Time.js",
+      "name": "dateStr2LocaleDateStr",
+      "canonicalReferences": [],
+      "decision": "App-local portfolio/resume presentation or redesign as explicit parser.",
+      "behavior": "Parses English `Month Year`/`Present` and returns a locale-formatted string despite the name implying a Date.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Time.js",
+      "name": "generateDateOptions",
+      "canonicalReferences": [],
+      "decision": "App-local UI adapter.",
+      "behavior": "Produces reverse chronological `{ key, value }` records for an HTML selector.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Time.js",
+      "name": "convertTimestampToYYYYMMDDDD",
+      "canonicalReferences": [
+        {
+          "name": "localDateKey",
+          "category": "date",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/date",
+          "relation": "related"
+        }
+      ],
+      "decision": "Merge into adopted `date.localDateKey`.",
+      "behavior": "Produces unpadded local `YYYY-M-D`; name contains duplicated `DD`.",
+      "evidence": "2.x date-key tests."
+    },
+    {
+      "module": "Time.js",
+      "name": "convertYYYYMMDDDDtoTimestamp",
+      "canonicalReferences": [],
+      "decision": "Reject; use explicit local-date parsing when designed.",
+      "behavior": "Calls `new Date(date.split(\"-\"))`, relying on array string coercion and host parsing.",
+      "evidence": "Source reviewed; parsing ambiguity."
+    },
+    {
+      "module": "Time.js",
+      "name": "formatDate",
+      "canonicalReferences": [
+        {
+          "name": "formatDate",
+          "category": "date",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/date",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted stricter `date.formatDate`.",
+      "behavior": "Locale date formatting with a null fallback.",
+      "evidence": "2.x date tests."
+    },
+    {
+      "module": "Time.js",
+      "name": "formatDateDMY",
+      "canonicalReferences": [],
+      "decision": "Merge as a documented formatter preset rather than duplicate implementation.",
+      "behavior": "Formats a Date as local `DD/MM/YYYY`.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Time.js",
+      "name": "formatDateDDMMYYYY",
+      "canonicalReferences": [],
+      "decision": "Reject duplicate; same future preset.",
+      "behavior": "Duplicate `formatDateDMY`.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Time.js",
+      "name": "formatTimestampDDMMYYYY",
+      "canonicalReferences": [
+        {
+          "name": "localDateKey",
+          "category": "date",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/date",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject misleading alias; adopted `localDateKey` covers actual output.",
+      "behavior": "Name/docs say DD/MM/YYYY, implementation returns local `YYYY-MM-DD`.",
+      "evidence": "Defect proven; 2.x date-key tests."
+    },
+    {
+      "module": "String.js",
+      "name": "toCapitalCase",
+      "canonicalReferences": [
+        {
+          "name": "capitalize",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted Unicode-aware `string.capitalize`.",
+      "behavior": "Uppercases the first UTF-16 code unit.",
+      "evidence": "2.x non-ASCII test."
+    },
+    {
+      "module": "String.js",
+      "name": "toKebabCase",
+      "canonicalReferences": [
+        {
+          "name": "kebabCase",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted generalized `string.kebabCase`.",
+      "behavior": "Inserts a hyphen before every uppercase letter; does not normalize spaces/acronyms.",
+      "evidence": "2.x string tests."
+    },
+    {
+      "module": "String.js",
+      "name": "toUpperCamelCase",
+      "canonicalReferences": [
+        {
+          "name": "pascalCase",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted generalized `string.pascalCase`.",
+      "behavior": "Converts hyphenated lowercase segments only.",
+      "evidence": "2.x string tests."
+    },
+    {
+      "module": "String.js",
+      "name": "subStringSearch",
+      "canonicalReferences": [
+        {
+          "name": "includesText",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `string.includesText` with a named option.",
+      "behavior": "Literal substring search with optional case sensitivity.",
+      "evidence": "2.x string tests."
+    },
+    {
+      "module": "String.js",
+      "name": "replaceMultiple",
+      "canonicalReferences": [
+        {
+          "name": "replaceMany",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        },
+        {
+          "name": "replaceRegex",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted safe literal `string.replaceMany`; explicit regex behavior uses `string.replaceRegex` with a cloned caller RegExp.",
+      "behavior": "Treats replacement keys as raw regular expressions.",
+      "evidence": "2.x literal/regex contract tests."
+    },
+    {
+      "module": "String.js",
+      "name": "getLongest",
+      "canonicalReferences": [
+        {
+          "name": "longestStringLength",
+          "category": "string",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/string",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `string.longestStringLength`.",
+      "behavior": "Returns maximum string length across array values, object keys, or a scalar.",
+      "evidence": "Function implemented; focused test expansion pending."
+    },
+    {
+      "module": "Math.js",
+      "name": "clamp",
+      "canonicalReferences": [
+        {
+          "name": "clamp",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted strict `number.clamp`.",
+      "behavior": "Clamps without validating finite values or bound order.",
+      "evidence": "2.x number tests."
+    },
+    {
+      "module": "Math.js",
+      "name": "wrap",
+      "canonicalReferences": [
+        {
+          "name": "wrap",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted strict `number.wrap`.",
+      "behavior": "Modulo wrap over a half-open range.",
+      "evidence": "2.x number tests."
+    },
+    {
+      "module": "Math.js",
+      "name": "round",
+      "canonicalReferences": [
+        {
+          "name": "roundTo",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted as `number.roundTo` with precision bounds.",
+      "behavior": "Decimal exponent-string rounding.",
+      "evidence": "2.x number tests."
+    },
+    {
+      "module": "Math.js",
+      "name": "add",
+      "canonicalReferences": [
+        {
+          "name": "sum",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted strict `number.sum`.",
+      "behavior": "Sums values from zero without validation.",
+      "evidence": "2.x number tests."
+    },
+    {
+      "module": "Math.js",
+      "name": "sub",
+      "canonicalReferences": [
+        {
+          "name": "subtract",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject as a likely defect; canonical `number.subtract(first, ...rest)` is explicit.",
+      "behavior": "Negates the sum of all inputs rather than subtracting subsequent inputs from the first.",
+      "evidence": "Source reviewed; 2.x subtract implemented."
+    },
+    {
+      "module": "Math.js",
+      "name": "distance",
+      "canonicalReferences": [
+        {
+          "name": "distance",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted strict `number.distance`.",
+      "behavior": "Absolute distance between two numbers.",
+      "evidence": "2.x implementation; direct test expansion pending."
+    },
+    {
+      "module": "Math.js",
+      "name": "distance2",
+      "canonicalReferences": [
+        {
+          "name": "distance2d",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "related"
+        }
+      ],
+      "decision": "Merge object-coordinate compatibility into or alongside adopted tuple-based `distance2d` only if consumers require it.",
+      "behavior": "Euclidean distance between `{ x, y }` objects.",
+      "evidence": "2.x tuple test; legacy fixture pending."
+    },
+    {
+      "module": "Math.js",
+      "name": "boolRand",
+      "canonicalReferences": [
+        {
+          "name": "randomBoolean",
+          "category": "random",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/random",
+          "relation": "related"
+        }
+      ],
+      "decision": "Split into adopted `randomBoolean` and future explicit `randomSign`.",
+      "behavior": "Documentation promises boolean, implementation returns `1` or `-1`.",
+      "evidence": "Defect proven; boolean helper tested."
+    },
+    {
+      "module": "Math.js",
+      "name": "decToBinary",
+      "canonicalReferences": [
+        {
+          "name": "toBinary",
+          "category": "number",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/number",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `number.toBinary`, returning a string.",
+      "behavior": "Recursive numeric-digit representation with bitwise truncation limits.",
+      "evidence": "2.x number tests."
+    },
+    {
+      "module": "Rand.js",
+      "name": "rand",
+      "canonicalReferences": [
+        {
+          "name": "randomFloat",
+          "category": "random",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/random",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `random.randomFloat(minimum, maximum, random)`, with a breaking argument-order correction.",
+      "behavior": "Random float with unusual `(max, min)` parameter order.",
+      "evidence": "Deterministic 2.x random tests."
+    },
+    {
+      "module": "Rand.js",
+      "name": "randString",
+      "canonicalReferences": [
+        {
+          "name": "randomString",
+          "category": "random",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/random",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `random.randomString` with security warning and injectable source.",
+      "behavior": "Random string from a character set; JSDoc was copied from integer random behavior.",
+      "evidence": "Deterministic 2.x random tests."
+    },
+    {
+      "module": "Http.js",
+      "name": "handleBasicFetch",
+      "canonicalReferences": [
+        {
+          "name": "request",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "network effect",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject implementation; adopted `http.request` checks status and exposes explicit parsing.",
+      "behavior": "Redundant Promise wrapper, always parses JSON, and never checks `response.ok`.",
+      "evidence": "Source reviewed; 2.x local-server tests."
+    },
+    {
+      "module": "Http.js",
+      "name": "fetchData",
+      "canonicalReferences": [
+        {
+          "name": "request",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "network effect",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; compose adopted `http.request` with an application callback only where needed.",
+      "behavior": "Callback API, sends JSON bodies for GET, logs/swallow errors, and returns no request promise.",
+      "evidence": "Source reviewed; error swallowing proven; 2.x HTTP tests."
+    },
+    {
+      "module": "Http.js",
+      "name": "constructFetchError",
+      "canonicalReferences": [
+        {
+          "name": "HttpError",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/http",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Replace with a typed `HttpError` data contract.",
+      "behavior": "Returns a record containing methods and a live response, making serialization incomplete and unstable.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Http.js",
+      "name": "handleFetchResponse",
+      "canonicalReferences": [
+        {
+          "name": "request",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "network effect",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        },
+        {
+          "name": "HttpError",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; adopted `http.request` provides explicit status/body parsing and `HttpError`.",
+      "behavior": "Sometimes returns a JSON Promise and otherwise throws JSON-stringified pseudo-errors.",
+      "evidence": "Source reviewed; 2.x HTTP tests."
+    },
+    {
+      "module": "Http.js",
+      "name": "parseError",
+      "canonicalReferences": [
+        {
+          "name": "HttpError",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; preserve adopted `HttpError` instances and causes instead.",
+      "behavior": "Parses stringified errors through broken legacy `isJSON`.",
+      "evidence": "Dependency defect proven; 2.x typed-error tests."
+    },
+    {
+      "module": "Http.js",
+      "name": "handleFetch",
+      "canonicalReferences": [
+        {
+          "name": "request",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "network effect",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; adopted `http.request` composes caller cancellation and timeout without delays or automatic retries.",
+      "behavior": "Forces GET, delays requests, mixes caller/internal signals, clears timeout before fetch settles, and converts final rejection into a resolved parsed value.",
+      "evidence": "Multiple defects proven; 2.x timeout/abort tests."
+    },
+    {
+      "module": "File.js",
+      "name": "importFile",
+      "canonicalReferences": [
+        {
+          "name": "request",
+          "category": "http",
+          "runtime": "universal",
+          "mutation": "network effect",
+          "importPath": "akashatools/http",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject; use adopted `http.request` for URLs or a separate browser `File` reader for local files.",
+      "behavior": "Starts an asynchronous fetch but returns before `data` can be assigned.",
+      "evidence": "Defect proven; 2.x HTTP tests."
+    },
+    {
+      "module": "File.js",
+      "name": "checkImageURL",
+      "canonicalReferences": [],
+      "decision": "Reject misleading validation claim; future helper must be named extension/syntax check or inspect media metadata.",
+      "behavior": "Regex checks an HTTP(S) URL suffix only; misses query strings and says nothing about content.",
+      "evidence": "Source reviewed."
+    },
+    {
+      "module": "Debug.js",
+      "name": "debug",
+      "canonicalReferences": [],
+      "decision": "Reject generic helper and omit a 2.0 `debug` category; diagnostics stay operation/app-specific and inert by default.",
+      "behavior": "Formats and conditionally writes diagnostic values to the console.",
+      "evidence": "Source reviewed; the portfolio copy is imported once but has no live call, while active Mindspace/COMPOSR diagnostics are app-owned coordinators/profilers."
+    }
+  ]
+}

@@ -51,8 +51,8 @@ security, and modern native equivalents before entering the public API.
 - General file reads, writes, deletion, and discovery until their Node-only
   encoding, abort, atomicity, glob, and operation-time containment contracts are
   designed. Lexical and existing-realpath containment are now available.
-- HTTP wrappers until cancellation, retry, timeout, body parsing, and error-shape
-  contracts are specified independently of the source applications.
+- Application HTTP authentication, response envelopes, UI effects, SSRF policy,
+  and retries. The generic bounded one-attempt transport is now `http.request`.
 
 These are not rejected forever. They require environment-specific entry points or
 clear generic contracts before becoming package APIs.
@@ -75,8 +75,8 @@ clear generic contracts before becoming package APIs.
 1. Extend the new Node-only `akashatools/node` surface only after file discovery
    and safe read/write/delete contracts address encoding, aborts, atomicity, and
    operation-time containment.
-2. Specify a fetch surface around `AbortSignal`, timeouts, typed HTTP errors, and
-   response parsing before replacing the legacy HTTP module.
+2. Exercise the adopted Fetch surface in consumer fixtures before adding any
+   retry or application-client policy.
 3. Consolidate the remaining date-range, timezone, schema-to-model, sort, and
    deep-search candidates after source-specific behavior tests are captured.
 4. Add generated declaration files or a TypeScript build if downstream editor

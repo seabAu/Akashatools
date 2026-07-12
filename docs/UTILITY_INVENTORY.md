@@ -189,12 +189,12 @@ canonical compatibility implementation.
 
 | Legacy export | Behavior and finding | 2.x disposition | Evidence |
 | --- | --- | --- | --- |
-| `handleBasicFetch` | Redundant Promise wrapper, always parses JSON, and never checks `response.ok`. | Reject implementation; defer to designed `http` request/parser API. | Source reviewed. |
-| `fetchData` | Callback API, sends JSON bodies for GET, logs/swallow errors, and returns no request promise. | Reject. | Source reviewed; error swallowing proven. |
+| `handleBasicFetch` | Redundant Promise wrapper, always parses JSON, and never checks `response.ok`. | Reject implementation; adopted `http.request` checks status and exposes explicit parsing. | Source reviewed; 2.x local-server tests. |
+| `fetchData` | Callback API, sends JSON bodies for GET, logs/swallow errors, and returns no request promise. | Reject; compose adopted `http.request` with an application callback only where needed. | Source reviewed; error swallowing proven; 2.x HTTP tests. |
 | `constructFetchError` | Returns a record containing methods and a live response, making serialization incomplete and unstable. | Replace with a typed `HttpError` data contract. | Source reviewed. |
-| `handleFetchResponse` | Sometimes returns a JSON Promise and otherwise throws JSON-stringified pseudo-errors. | Reject; design explicit status and body parsing. | Source reviewed. |
-| `parseError` | Parses stringified errors through broken legacy `isJSON`. | Reject; preserve typed errors and causes instead. | Dependency defect proven. |
-| `handleFetch` | Forces GET, delays requests, mixes caller/internal signals, clears timeout before fetch settles, and converts final rejection into a resolved parsed value. | Reject; use as requirements evidence for cancellation, timeout, retry, and error tests. | Multiple defects proven from source. |
+| `handleFetchResponse` | Sometimes returns a JSON Promise and otherwise throws JSON-stringified pseudo-errors. | Reject; adopted `http.request` provides explicit status/body parsing and `HttpError`. | Source reviewed; 2.x HTTP tests. |
+| `parseError` | Parses stringified errors through broken legacy `isJSON`. | Reject; preserve adopted `HttpError` instances and causes instead. | Dependency defect proven; 2.x typed-error tests. |
+| `handleFetch` | Forces GET, delays requests, mixes caller/internal signals, clears timeout before fetch settles, and converts final rejection into a resolved parsed value. | Reject; adopted `http.request` composes caller cancellation and timeout without delays or automatic retries. | Multiple defects proven; 2.x timeout/abort tests. |
 
 ## Akashatools 1.0.2 — `lib/File.js`
 
@@ -203,7 +203,7 @@ Export count: 2.
 
 | Legacy export | Behavior and finding | 2.x disposition | Evidence |
 | --- | --- | --- | --- |
-| `importFile` | Starts an asynchronous fetch but returns before `data` can be assigned. | Reject; future `http.getJson` or browser file reader depending intended source. | Defect proven. |
+| `importFile` | Starts an asynchronous fetch but returns before `data` can be assigned. | Reject; use adopted `http.request` for URLs or a separate browser `File` reader for local files. | Defect proven; 2.x HTTP tests. |
 | `checkImageURL` | Regex checks an HTTP(S) URL suffix only; misses query strings and says nothing about content. | Reject misleading validation claim; future helper must be named extension/syntax check or inspect media metadata. | Source reviewed. |
 
 ## Akashatools 1.0.2 — `lib/Debug.js`
