@@ -24,6 +24,7 @@ export function wrap(value, minimum, maximum) {
   assertFiniteNumbers({ value, minimum, maximum });
   if (minimum >= maximum) throw new RangeError("minimum must be less than maximum.");
   const span = maximum - minimum;
+  if (!Number.isFinite(span)) throw new RangeError("The wrap interval is outside the finite range.");
   return ((value - minimum) % span + span) % span + minimum;
 }
 
@@ -39,7 +40,14 @@ export function roundTo(value, digits = 0) {
   if (!Number.isSafeInteger(digits) || digits < -308 || digits > 308) {
     throw new RangeError("digits must be a safe integer between -308 and 308.");
   }
-  return Number(Math.round(Number(`${value}e${digits}`)) + `e-${digits}`);
+  const shifted = shiftExponent(value, digits);
+  if (!Number.isFinite(shifted)) {
+    if (digits > 0) return value;
+    throw new RangeError("The rounded value is outside the finite range.");
+  }
+  const rounded = shiftExponent(Math.round(shifted), -digits);
+  if (!Number.isFinite(rounded)) throw new RangeError("The rounded value is outside the finite range.");
+  return rounded;
 }
 
 /** @param {...number} values @returns {number} */
@@ -193,6 +201,12 @@ function interpolatedPercentile(sorted, percentile) {
   const end = sorted[upper] ?? start;
   const fraction = position - lower;
   return start * (1 - fraction) + end * fraction;
+}
+
+/** @param {number} value @param {number} exponent */
+function shiftExponent(value, exponent) {
+  const [coefficient, currentExponent = "0"] = String(value).split("e");
+  return Number(`${coefficient}e${Number(currentExponent) + exponent}`);
 }
 
 /** @param {Record<string, number>} values */

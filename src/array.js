@@ -1,6 +1,7 @@
 import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
 
 /** @typedef {"auto" | "index" | "value" | "predicate"} RemovalMode */
+const maximumRangeLength = 1_000_000;
 
 /**
  * Returns the input when it is an array, preserving its identity and sparse
@@ -312,6 +313,9 @@ export function range(start, end, step) {
   if (Math.sign(increment) !== direction && start !== end) return [];
 
   const length = Math.max(0, Math.ceil((end - start) / increment));
+  if (!Number.isSafeInteger(length) || length > maximumRangeLength) {
+    throw new RangeError(`range cannot allocate more than ${maximumRangeLength} items.`);
+  }
   return Array.from({ length }, (_, index) => start + index * increment);
 }
 

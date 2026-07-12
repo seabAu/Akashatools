@@ -97,6 +97,11 @@ resolved only when an effect runs, and Node-only modules stay under `akashatools
 - Falsy values `0`, `false`, and `""` remain valid values unless the function is
   explicitly checking blank or empty input.
 - `NaN` and infinite values are rejected by finite-number contracts.
+- The explicitly named legacy numeric-order comparator may coerce number-like
+  ordering fields; general numeric helpers never do.
+- BigInt arithmetic stays native until consumer evidence justifies a separate
+  BigInt-specific contract. Number range and rounding helpers do not accept both
+  numeric domains under one signature.
 - Browser-only values are checked through safe `globalThis` feature detection or
   runtime injection; importing a universal module must not require a browser.
 

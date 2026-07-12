@@ -88,6 +88,7 @@ conflicts are summarized here.
 | Cloning | JSON clone helpers and COMPOSR/app copies | Native `structuredClone` through `object.deepClone`. |
 | Stable sorting | prototype `sortBy`, Mindspace `sortBy`, portfolio numeric order | `sort.sortBy`, `compareNumericOrder`, `sortByNumericOrder`; never mutate input. |
 | Random values | legacy `rand`, color/data generators, portfolio data generator | Validated `randomInt`, `randomFloat`, `randomString`, `randomDate` with injected `[0,1)` source. |
+| Secure identifiers/tokens | portfolio `createBasicUUID`, active consumer `crypto.randomUUID`, legacy pseudo-random strings | `random.secureRandomUuid` and bias-free `secureRandomString` require Web Crypto; `randomString` remains explicitly non-cryptographic. |
 | Local dates/clocks | Akashatools/Mindspace/portfolio time copies | Small `date` primitives and `Intl`; ranges/zones/durations remain separate deferred designs. |
 | Bounded async work | COMPOSR concurrency utilities | `async.mapSettledWithConcurrency` and `fulfilledValues`, preserving order/failures. |
 | Browser downloads | COMPOSR and Mindspace variants | `browser.downloadBlob`, `downloadTextFile`, `downloadJson`; formats remain app compositions. |

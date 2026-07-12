@@ -69,3 +69,5 @@
   documented the public regular-expression complexity review.
 - Added portfolio-derived `slugify`, an explicit cloned-RegExp replacement API,
   locale-neutral identifier casing, and cross-platform filename hardening.
+- Added Web Crypto `secureRandomUuid`/`secureRandomString`, corrected scientific
+  decimal rounding and wrap overflow, and bounded range/string allocations.

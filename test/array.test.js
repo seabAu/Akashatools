@@ -135,4 +135,5 @@ test("invalid array arguments fail visibly", () => {
   assert.throws(() => moveItem([1], 2, 0), RangeError);
   assert.throws(() => range(0, 4, 0), RangeError);
   assert.deepEqual(range(0, 4, -1), []);
+  assert.throws(() => range(0, 1_000_001), RangeError);
 });

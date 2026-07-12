@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 49 tests currently pass.
+- [x] Add dependency-free Node tests; 51 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -287,14 +287,14 @@ Acceptance criteria:
 
 - [x] Add and test finite numeric distribution summaries with explicit
   percentile, population-deviation, immutability, and empty-sample semantics.
-- [ ] Audit numeric coercion policy; default to rejecting implicit coercion.
-- [ ] Test `clamp`, `wrap`, and rounding at boundaries, infinities, `NaN`, and
+- [x] Audit numeric coercion policy; default to rejecting implicit coercion.
+- [x] Test `clamp`, `wrap`, and rounding at boundaries, infinities, `NaN`, and
   floating-point edge cases.
-- [ ] Decide BigInt counterparts only where semantics remain clear.
-- [ ] Add cryptographically secure random helpers under an unmistakable name;
+- [x] Decide BigInt counterparts only where semantics remain clear.
+- [x] Add cryptographically secure random helpers under an unmistakable name;
   never imply `Math.random` output is token-safe.
 - [x] Add injectable random sources consistently for deterministic tests.
-- [ ] Review range size limits to prevent accidental enormous allocations.
+- [x] Review range size limits to prevent accidental enormous allocations.
 - [ ] Expand sort helpers with selector, direction, null placement, collator, and
   stable multi-key ordering contracts.
 - [ ] Benchmark repeated `localeCompare` against reusable `Intl.Collator` objects.
