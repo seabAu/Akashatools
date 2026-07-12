@@ -119,7 +119,46 @@ export function toUnixSeconds(value) {
  */
 export function fromUnixSeconds(seconds) {
   if (!Number.isFinite(seconds)) throw new TypeError("seconds must be a finite number.");
-  return new Date(seconds * 1000);
+  const date = new Date(seconds * 1000);
+  if (!isValidDate(date)) throw new RangeError("seconds is outside the supported Date range.");
+  return date;
+}
+
+/**
+ * Normalizes two Date-compatible boundaries into fresh Date objects. Boundaries
+ * represent absolute instants and are never swapped implicitly.
+ *
+ * @param {Date | string | number} start
+ * @param {Date | string | number} end
+ * @returns {{start: Date, end: Date}}
+ */
+export function normalizeInstantRange(start, end) {
+  const normalizedStart = requiredDate(start);
+  const normalizedEnd = requiredDate(end);
+  if (normalizedStart > normalizedEnd) throw new RangeError("start cannot be after end.");
+  return { start: normalizedStart, end: normalizedEnd };
+}
+
+/**
+ * Checks whether a Date-compatible value is within an absolute instant range.
+ * The default range is start-inclusive and end-exclusive.
+ *
+ * @param {Date | string | number} value
+ * @param {Date | string | number} start
+ * @param {Date | string | number} end
+ * @param {{startInclusive?: boolean, endInclusive?: boolean}} [options]
+ * @returns {boolean}
+ */
+export function isWithinInstantRange(value, start, end, { startInclusive = true, endInclusive = false } = {}) {
+  if (typeof startInclusive !== "boolean" || typeof endInclusive !== "boolean") {
+    throw new TypeError("Range inclusion options must be booleans.");
+  }
+  const instant = requiredDate(value).getTime();
+  const range = normalizeInstantRange(start, end);
+  const startTime = range.start.getTime();
+  const endTime = range.end.getTime();
+  return (startInclusive ? instant >= startTime : instant > startTime) &&
+    (endInclusive ? instant <= endTime : instant < endTime);
 }
 
 /**

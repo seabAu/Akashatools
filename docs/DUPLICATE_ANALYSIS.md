@@ -27,7 +27,8 @@ conflicts are summarized here.
 | Presentation | `_getFormattedTime`, `getPretty*`, `formatDateTime`, `formatDateTimezone`, `formatDateTimeInt` | Local/UTC mixing, implicit-now fallback, missing server helper, hard-coded locale. | `Intl`-backed `formatDate`/`formatDateTime` with explicit options. |
 | Time zones | `getTZOffset`, `getTimezoneOffset`, zoned input converters, timezone list helpers | Locale-string offset estimation, silent fallbacks, stale DST caching, logging. | Deferred zoned-time design with explicit instant, zone, gap, and overlap policy. |
 | Time text | `isValidTime24`, `parseClockTimeToMinutes`, `convert12to24`, `convert24to12` | Source parser accepts invalid ranges; 12-hour converter's regex/splitting disagree. | `clockTimeToMinutes`, `clock12To24`, `clock24To12`. |
-| Date ranges/filters | three `filterByDate*` variants plus range selectors | Inclusive boundaries, broad coercion, logging, and duplicate concatenation vary. | Deferred start-inclusive/end-exclusive range predicates; filtering composes them. |
+| Date ranges/filters | three `filterByDate*` variants plus range selectors | Inclusive boundaries, broad coercion, logging, and duplicate concatenation vary. | Adopt strict instant-range normalization/predicate; filtering stays native composition. |
+| Absolute instant ranges | reviewed date filter/comparison consumers | `date.normalizeInstantRange` plus start-inclusive/end-exclusive `isWithinInstantRange`; boundary overrides are independent booleans and reversed ranges throw. |
 | Date toolkit | client/server `d8` | Copied monolith mixes unrelated operations and contains broken members. | Reject monolith; extract only independently specified primitives. |
 
 ### Validation

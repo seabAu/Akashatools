@@ -73,3 +73,5 @@
   decimal rounding and wrap overflow, and bounded range/string allocations.
 - Added stable multi-key sorting, explicit null placement, reusable collator
   comparators, and a reproducible collator benchmark.
+- Added explicit instant-range normalization/predicates, Unix-second range
+  validation, and DST gap/overlap local-calendar tests.

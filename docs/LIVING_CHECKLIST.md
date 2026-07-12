@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 53 tests currently pass.
+- [x] Add dependency-free Node tests; 56 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -301,19 +301,19 @@ Acceptance criteria:
 
 ### 3.6 Dates, time, ranges, and time zones
 
-- [ ] Build a duplicate matrix across Akashatools, Mindspace client/server, and
+- [x] Build a duplicate matrix across Akashatools, Mindspace client/server, and
   portfolio time utilities.
-- [ ] Separate absolute instants, local calendar dates, zoned times, durations,
+- [x] Separate absolute instants, local calendar dates, zoned times, durations,
   clock times, and display formatting in names and types.
-- [ ] Consolidate same-day, days-in-month, local-date-key, Unix timestamp, and
+- [x] Consolidate same-day, days-in-month, local-date-key, Unix timestamp, and
   clock conversion helpers.
-- [ ] Design date-range normalization and inclusive/exclusive boundary rules.
-- [ ] Test daylight-saving gaps, overlaps, and day differences.
-- [ ] Prefer `Intl.DateTimeFormat` and `Intl.RelativeTimeFormat` over hand-built
+- [x] Design date-range normalization and inclusive/exclusive boundary rules.
+- [x] Test daylight-saving gaps, overlaps, and day differences.
+- [x] Prefer `Intl.DateTimeFormat` and `Intl.RelativeTimeFormat` over hand-built
   locale strings.
-- [ ] Evaluate the platform Temporal API only against the supported runtime floor
+- [x] Evaluate the platform Temporal API only against the supported runtime floor
   and browser targets; do not assume availability.
-- [ ] Decide whether advanced recurrence/timezone logic stays application-owned or
+- [x] Decide whether advanced recurrence/timezone logic stays application-owned or
   becomes a separately scoped package surface.
 
 ### 3.7 Async and function control
