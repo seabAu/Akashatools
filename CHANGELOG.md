@@ -118,3 +118,6 @@
 - Added exactly pinned esbuild bundle fixtures and budgets, verified focused
   import equivalence and zero-byte side-effect elimination, and rejected
   redundant per-method subpaths after a byte-identical simulation.
+- Completed and enforced IDE-visible parameter/return descriptions, thrown-error
+  contracts, examples, and edge-case prose for async, browser, collection, and
+  Node public APIs; regenerated the API reference and declarations.

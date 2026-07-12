@@ -4,6 +4,12 @@ const publicModules = [
   "array", "async", "browser", "collection", "date", "http", "number",
   "object", "random", "sort", "string", "validation", "node",
 ].map((category) => `src/${category}.js`);
+const completeSchemaModules = new Set([
+  "src/async.js",
+  "src/browser.js",
+  "src/collection.js",
+  "src/node.js",
+]);
 
 if (process.argv.includes("--fix-since")) {
   let updatedCount = 0;
@@ -64,6 +70,21 @@ for (const filename of publicModules) {
 
     if (fullDeclaration.includes("function") && !/@param\s*\{/.test(comment) && hasDeclaredParameters(source, declarationOffset)) {
       failures.push(`${location}: parameterized function is missing @param types`);
+    }
+
+    if (completeSchemaModules.has(filename)) {
+      const lines = comment.split(/\r?\n/).map((line) => line.replace(/^\s*\*\s?/, "").trim());
+      for (const line of lines.filter((line) => line.startsWith("@param "))) {
+        if (!/^@param\s+\{.*\}\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(line)) {
+          failures.push(`${location}: @param must include a description`);
+        }
+      }
+      const returnsLine = lines.find((line) => /^@returns?\s/.test(line));
+      if (kind !== "class" && !/^@returns?\s+\{.*\}\s+\S/.test(returnsLine ?? "")) {
+        failures.push(`${location}: @returns must include a description`);
+      }
+      if (!/@throws\s+\{/.test(comment)) failures.push(`${location}: missing @throws contract`);
+      if (!/@example\b/.test(comment)) failures.push(`${location}: missing @example`);
     }
   }
 }

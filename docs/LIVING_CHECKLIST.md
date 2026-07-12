@@ -376,6 +376,9 @@ Acceptance criteria:
 
 - [ ] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
+  Async, browser, collection, and Node are complete (12 of 115 public
+  declarations), with parameter/return prose, throws, and examples enforced by
+  `npm run check:docs`; continue category by category.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
   115 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
@@ -538,8 +541,9 @@ edits. When authorized, migrate one bounded area at a time.
   Recommendation: yes, with automated collision detection.
 - [x] Whether abbreviated namespaces remain outside a legacy-only surface.
   Recommendation: legacy-only with JSDoc migration guidance.
-- [ ] Whether per-method package subpaths materially improve bundles beyond named
-  exports and category subpaths.
+- [x] Whether per-method package subpaths materially improve bundles beyond named
+  exports and category subpaths: no; the esbuild simulation is byte-identical at
+  321 raw / 252 gzip bytes, so 2.0 will not add redundant per-method exports.
 - [x] Whether generated declarations are needed beyond JSDoc for downstream IDEs:
   yes, expose deterministic conditional type targets generated from source.
 - [ ] Whether ESM-only is acceptable for all active consumers.
@@ -556,6 +560,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Design a flat and categorized default namespace. | Restores dot-completion ergonomics without sacrificing focused imports. |
 | 2026-07-11 | Do not add wrapper chaining to the 2.0 plan. | It adds substantial complexity without a demonstrated Akashatools use case. |
 | 2026-07-11 | Keep per-method imports within one package if adopted. | Avoids duplicated internals and fragmented package maintenance. |
+| 2026-07-11 | Do not add per-method subpaths in 2.0. | Pinned esbuild measurements show no byte savings over named-root or category imports, while extra paths would expand exports, declarations, docs, and maintenance. |
 | 2026-07-11 | Keep app-domain utilities app-local by default. | A `utils` filename alone does not make behavior generic. |
 | 2026-07-11 | Require explicit approval for npm publishing and consumer-project edits. | These actions affect external state beyond the library workspace. |
 | 2026-07-11 | Use `akasha` as the canonical documented default import name. | It is distinctive, readable, and consumers remain free to rename a default import locally. |

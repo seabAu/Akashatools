@@ -267,46 +267,42 @@ Focused import: `akashatools/async`
 
 Maps values with a fixed concurrency ceiling. Results retain input order and individual failures are represented like `Promise.allSettled`.
 
-- Signature: `mapSettledWithConcurrency(values, concurrency, mapper)`
+- Signature: `mapSettledWithConcurrency()`
 - Import: `import { mapSettledWithConcurrency } from "akashatools/async"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Promise<PromiseSettledResult<R>[]>`
+- Returns: `Promise<PromiseSettledResult<R>[]>` — Settled results in input order.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `concurrency` | `number` | Not documented. |
-| `mapper` | `(value: T, index: number) => R \| PromiseLike<R>` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or mapper is not a function.
+- `RangeError` — If concurrency is not a positive safe integer.
 
 ### fulfilledValues
 
 Extracts values from fulfilled settled results.
 
-- Signature: `fulfilledValues(results)`
+- Signature: `fulfilledValues()`
 - Import: `import { fulfilledValues } from "akashatools/async"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Values from fulfilled entries only.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `results` | `readonly PromiseSettledResult<T>[]` | Not documented. |
+Throws:
+- `TypeError` — If results is not an array.
 
 ### delay
 
 Waits for a duration and optionally supports cancellation.
 
-- Signature: `delay(milliseconds, options?)`
+- Signature: `delay()`
 - Import: `import { delay } from "akashatools/async"`
 - Input mutation: Does not mutate inputs; schedules a timer.
 - Since: 2.0.0
-- Returns: `Promise<void>`
+- Returns: `Promise<void>` — Promise fulfilled after the duration or rejected on cancellation.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `milliseconds` | `number` | Not documented. |
-| `[options]` | `{signal?: AbortSignal}` | Not documented. |
+Throws:
+- `TypeError` — If signal does not implement the AbortSignal contract.
+- `RangeError` — If milliseconds is outside the host timer range.
 
 ## browser
 
@@ -318,49 +314,43 @@ Focused import: `akashatools/browser`
 
 Triggers a browser download for a Blob. The temporary anchor is removed synchronously; object URL revocation is deferred to the next timer turn so the browser can consume the click. Click/scheduling failures revoke at once. Browser globals and the scheduler can be injected for testing.
 
-- Signature: `downloadBlob(filename, blob, environment?)`
+- Signature: `downloadBlob()`
 - Import: `import { downloadBlob } from "akashatools/browser"`
 - Input mutation: Does not mutate inputs; performs a browser download effect.
 - Since: 2.0.0
-- Returns: `void`
+- Returns: `void` — Performs the download effect synchronously and schedules URL cleanup.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `filename` | `string` | Not documented. |
-| `blob` | `Blob` | Not documented. |
-| `[environment]` | `{document?: Document, url?: Pick<typeof URL, "createObjectURL" \| "revokeObjectURL">, schedule?: (callback: () => void) => unknown}` | Not documented. |
+Throws:
+- `TypeError` — If filename, blob, or the injected scheduler is invalid.
+- `Error` — If required document or object-URL capabilities are unavailable.
 
 ### downloadTextFile
 
 Downloads string content as a file in a browser.
 
-- Signature: `downloadTextFile(filename, content, options?)`
+- Signature: `downloadTextFile()`
 - Import: `import { downloadTextFile } from "akashatools/browser"`
 - Input mutation: Does not mutate inputs; performs a browser download effect.
 - Since: 2.0.0
-- Returns: `void`
+- Returns: `void` — Performs the download effect.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `filename` | `string` | Not documented. |
-| `content` | `string` | Not documented. |
-| `[options]` | `{contentType?: string, document?: Document, url?: Pick<typeof URL, "createObjectURL" \| "revokeObjectURL">, schedule?: (callback: () => void) => unknown}` | Not documented. |
+Throws:
+- `TypeError` — If content or delegated Blob arguments are invalid.
+- `Error` — If required browser capabilities are unavailable.
 
 ### downloadJson
 
 Creates a safe filename and downloads JSON content.
 
-- Signature: `downloadJson(filename, value, options?)`
+- Signature: `downloadJson()`
 - Import: `import { downloadJson } from "akashatools/browser"`
 - Input mutation: Does not mutate inputs; performs a browser download effect.
 - Since: 2.0.0
-- Returns: `void`
+- Returns: `void` — Performs a JSON download using a normalized safe filename.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `filename` | `string` | Not documented. |
-| `value` | `unknown` | Not documented. |
-| `[options]` | `{space?: number \| string, document?: Document, url?: Pick<typeof URL, "createObjectURL" \| "revokeObjectURL">, schedule?: (callback: () => void) => unknown}` | Not documented. |
+Throws:
+- `TypeError` — If JSON.stringify returns undefined or delegated arguments are invalid.
+- `Error` — If serialization or required browser capabilities fail.
 
 ## collection
 
@@ -372,66 +362,55 @@ Focused import: `akashatools/collection`
 
 Inserts or replaces a value by a derived identity, preserving immutability. Keys are compared with `Object.is`; numeric keys are never treated as indices. Sparse slots are treated as `undefined` items and returned arrays are dense.
 
-- Signature: `upsertBy(values, nextValue, toKey?, options?)`
+- Signature: `upsertBy()`
 - Import: `import { upsertBy } from "akashatools/collection"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense copied array containing the upserted value.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `nextValue` | `T` | Not documented. |
-| `[toKey]` | `(value: T) => K` | Not documented. |
-| `[options]` | `{prepend?: boolean}` | Not documented. |
+Throws:
+- `TypeError` — If values, toKey, or prepend does not match its contract.
 
 ### excludeBy
 
 Excludes values whose derived identities occur in a Set. Numeric keys are never treated as indices. Sparse slots are treated as `undefined` items and returned arrays are dense.
 
-- Signature: `excludeBy(values, excluded, toKey?)`
+- Signature: `excludeBy()`
 - Import: `import { excludeBy } from "akashatools/collection"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense copied array without excluded identities.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `excluded` | `ReadonlySet<K>` | Not documented. |
-| `[toKey]` | `(value: T) => K` | Not documented. |
+Throws:
+- `TypeError` — If values, excluded, or toKey does not match its contract.
 
 ### upsertById
 
 Inserts or replaces an object by its `id` property.
 
-- Signature: `upsertById(values, nextValue)`
+- Signature: `upsertById()`
 - Import: `import { upsertById } from "akashatools/collection"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Copied array containing the upserted object.
 - Deprecated: Prefer `upsertBy` with an explicit key selector.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `nextValue` | `T` | Not documented. |
+Throws:
+- `TypeError` — If delegated upsert arguments are invalid.
 
 ### excludeIds
 
 Excludes objects whose `id` properties occur in a Set.
 
-- Signature: `excludeIds(values, excluded)`
+- Signature: `excludeIds()`
 - Import: `import { excludeIds } from "akashatools/collection"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Copied array without objects carrying excluded ids.
 - Deprecated: Prefer `excludeBy` with an explicit key selector.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `excluded` | `ReadonlySet<K>` | Not documented. |
+Throws:
+- `TypeError` — If delegated exclusion arguments are invalid.
 
 ## date
 
@@ -1802,16 +1781,11 @@ Focused import: `akashatools/node`
 
 Resolves a relative path beneath a root without accessing the filesystem. Absolute, drive-relative, UNC/rooted, null-byte, and escaping paths are rejected. This lexical check does not inspect symlinks.
 
-- Signature: `resolveContainedPath(root, relativePath)`
+- Signature: `resolveContainedPath()`
 - Import: `import { resolveContainedPath } from "akashatools/node"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `root` | `string` | Not documented. |
-| `relativePath` | `string` | Not documented. |
+- Returns: `string` — Lexically resolved path beneath root.
 
 Throws:
 - `TypeError` — If either argument is not a supported path string.
@@ -1821,16 +1795,11 @@ Throws:
 
 Resolves an existing path beneath an existing root, following symlinks for both and rejecting targets whose real path is outside the real root. Filesystem errors such as missing paths and permission failures propagate. The returned string is a checked snapshot; callers performing sensitive mutations must still account for later symlink/time-of-check changes.
 
-- Signature: `resolveExistingContainedPath(root, relativePath)`
+- Signature: `resolveExistingContainedPath()`
 - Import: `import { resolveExistingContainedPath } from "akashatools/node"`
 - Input mutation: Does not mutate inputs; reads filesystem metadata.
 - Since: 2.0.0
-- Returns: `Promise<string>`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `root` | `string` | Not documented. |
-| `relativePath` | `string` | Not documented. |
+- Returns: `Promise<string>` — Real target path proven inside the real root at check time.
 
 Throws:
 - `TypeError` — If either argument is not a supported path string.
