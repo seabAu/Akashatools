@@ -14,6 +14,7 @@ arbitrarily large inputs are inexpensive.
 | Property paths | Numeric bracket replacement, bracket detection, segment grammar | All scans are linear. Parsed segments are additionally checked for safe integers and prototype-mutating names. |
 | Filename normalization | Combining-mark, non-ASCII-safe-character, edge-hyphen scans | Each replacement is linear. Very large filenames still require proportional normalization memory; callers handling untrusted bulk content should impose request/body limits before this presentation helper. |
 | Case conversion | Two boundary scans plus Unicode letter/number tokenization | Linear passes with no nested repetition. Output allocation remains proportional to input. |
+| HTTP methods | Anchored HTTP token character class | One linear pass rejects whitespace, separators, control characters, and empty methods before Fetch. |
 
 Literal replacement uses `String.prototype.replaceAll`. `replaceRegex` accepts
 only an already-compiled caller RegExp and clones its source/flags so the

@@ -49,7 +49,7 @@ import { chunk as chunkArray } from "akashatools/array";
 | `string` | implemented | Case, replacement, escaping, and serialization helpers. |
 | `validation` | implemented | Literal predicates, normalization, and contract checks. |
 | `function` | reserved | Function control such as once/debounce/throttle if adopted. |
-| `http` | reserved | Fetch, cancellation, parsing, and typed HTTP errors. |
+| `http` | implemented | Bounded Fetch, cancellation, parsing, redaction, and typed HTTP errors. |
 | `node` | reserved subpath | Node-only filesystem, path, and runtime operations; never flattened into the universal root. |
 
 `schema` and `debug` remain candidate categories rather than reserved API names.

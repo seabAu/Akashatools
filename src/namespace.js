@@ -3,6 +3,7 @@ import * as asyncModule from "./async.js";
 import * as browserModule from "./browser.js";
 import * as collectionModule from "./collection.js";
 import * as dateModule from "./date.js";
+import * as httpModule from "./http.js";
 import * as numberModule from "./number.js";
 import * as objectModule from "./object.js";
 import * as randomModule from "./random.js";
@@ -20,6 +21,8 @@ export const browser = /* @__PURE__ */ Object.freeze({ ...browserModule });
 export const collection = /* @__PURE__ */ Object.freeze({ ...collectionModule });
 /** Frozen date and time utilities for namespace-style discovery. */
 export const date = /* @__PURE__ */ Object.freeze({ ...dateModule });
+/** Frozen HTTP request and error utilities. */
+export const http = /* @__PURE__ */ Object.freeze({ ...httpModule });
 /** Frozen numeric utilities for namespace-style discovery. */
 export const number = /* @__PURE__ */ Object.freeze({ ...numberModule });
 /** Frozen object utilities for namespace-style discovery. */
@@ -51,6 +54,7 @@ export const akasha = /* @__PURE__ */ Object.freeze({
   ...browser,
   ...collection,
   ...date,
+  ...http,
   ...number,
   ...object,
   ...random,
@@ -62,6 +66,7 @@ export const akasha = /* @__PURE__ */ Object.freeze({
   browser,
   collection,
   date,
+  http,
   number,
   object,
   random,

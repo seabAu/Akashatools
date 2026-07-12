@@ -11,6 +11,7 @@
     "./browser": "./src/browser.js",
     "./collection": "./src/collection.js",
     "./date": "./src/date.js",
+    "./http": "./src/http.js",
     "./node": "./src/node.js",
     "./number": "./src/number.js",
     "./object": "./src/object.js",

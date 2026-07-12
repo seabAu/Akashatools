@@ -12,6 +12,7 @@ const categoryNames = [
   "browser",
   "collection",
   "date",
+  "http",
   "number",
   "object",
   "random",

@@ -10,6 +10,7 @@ export * from "./async.js";
 export * from "./browser.js";
 export * from "./collection.js";
 export * from "./date.js";
+export * from "./http.js";
 export * from "./number.js";
 export * from "./object.js";
 export * from "./random.js";
@@ -25,6 +26,7 @@ export {
   browser,
   collection,
   date,
+  http,
   number,
   object,
   random,

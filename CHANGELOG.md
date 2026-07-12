@@ -79,3 +79,6 @@
   limits, and abort-listener cleanup; recorded function-control deferrals.
 - Hardened browser downloads with temporary-anchor cleanup, deferred URL
   revocation, single JSON extensions, injected tests, and a real-browser fixture.
+- Added bounded `http.request` with composed cancellation/timeouts, explicit
+  response modes, typed and redacted errors, local-server tests, and a documented
+  no-retry/application-policy boundary.

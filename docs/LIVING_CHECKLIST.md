@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 62 tests currently pass.
+- [x] Add dependency-free Node tests; 65 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -353,17 +353,17 @@ Acceptance criteria:
 
 ### 4.3 HTTP/fetch
 
-- [ ] Inventory all existing fetch wrappers and consumer expectations.
-- [ ] Define a typed `HttpError` carrying status, status text, URL, method,
+- [x] Inventory all existing fetch wrappers and consumer expectations.
+- [x] Define a typed `HttpError` carrying status, status text, URL, method,
   response headers, parsed body when safe, and original cause.
-- [ ] Support `AbortSignal` composition and explicit timeout behavior.
-- [ ] Define JSON/text/blob/array-buffer response parsing and empty-body handling.
-- [ ] Define retry eligibility, backoff, jitter, `Retry-After`, idempotency, and
+- [x] Support `AbortSignal` composition and explicit timeout behavior.
+- [x] Define JSON/text/blob/array-buffer response parsing and empty-body handling.
+- [x] Define retry eligibility, backoff, jitter, `Retry-After`, idempotency, and
   maximum elapsed time before implementing retries.
-- [ ] Redact secrets from diagnostics and errors.
-- [ ] Do not bake application API delays, authentication, or response envelopes
+- [x] Redact secrets from diagnostics and errors.
+- [x] Do not bake application API delays, authentication, or response envelopes
   into generic helpers.
-- [ ] Test with a local HTTP server, not only mocked `fetch`.
+- [x] Test with a local HTTP server, not only mocked `fetch`.
 
 ### 4.4 Debug and diagnostics
 
@@ -419,7 +419,7 @@ Acceptance criteria:
 
 - [ ] Threat-model nested paths and object merges for prototype pollution.
 - [ ] Threat-model filesystem containment and symlink escape.
-- [ ] Threat-model HTTP redirects, secret leakage, decompression/body size, and
+- [x] Threat-model HTTP redirects, secret leakage, decompression/body size, and
   unsafe parsing.
 - [ ] Review regex complexity and input size limits.
 - [ ] Review random helpers for misleading security claims.
@@ -549,6 +549,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Separate lexical containment from existing realpath containment. | Pure resolution is useful for destination planning, while symlink-aware checks require existing paths and filesystem I/O; neither is permanent authorization against later path changes. |
 | 2026-07-11 | Require provenance and license review for embedded third-party utility source. | Mindspace includes old global-style Markdown code and an unattributed large word list; location in a utility folder is not permission or evidence that copying is maintainable. |
 | 2026-07-11 | Keep removal metadata out of `removeFromArray`. | Reviewed consumers only need the resulting array; a future `extractFromArray` can return values/indices without changing the established return type if demand appears. |
+| 2026-07-11 | Keep the generic HTTP surface to one bounded, non-retrying Fetch attempt. | Transport parsing, cancellation, size limits, redaction, and typed errors are reusable; authentication, envelopes, SSRF policy, retries, and UI effects depend on the consuming application. |
 
 ## Definition of done
 
