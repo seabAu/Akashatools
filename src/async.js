@@ -55,8 +55,16 @@ export function fulfilledValues(results) {
  * @returns {Promise<void>}
  */
 export function delay(milliseconds, { signal } = {}) {
-  if (!Number.isFinite(milliseconds) || milliseconds < 0) {
-    throw new RangeError("milliseconds must be a non-negative finite number.");
+  if (!Number.isFinite(milliseconds) || milliseconds < 0 || milliseconds > 2_147_483_647) {
+    throw new RangeError("milliseconds must be between 0 and 2147483647.");
+  }
+  if (signal !== undefined && (
+    signal === null || typeof signal !== "object" ||
+    typeof signal.aborted !== "boolean" ||
+    typeof signal.addEventListener !== "function" ||
+    typeof signal.removeEventListener !== "function"
+  )) {
+    throw new TypeError("signal must be an AbortSignal.");
   }
   if (signal?.aborted) return Promise.reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
   const abortSignal = signal;
@@ -64,6 +72,7 @@ export function delay(milliseconds, { signal } = {}) {
   return new Promise((resolve, reject) => {
     const onAbort = () => {
       clearTimeout(timeout);
+      abortSignal?.removeEventListener("abort", onAbort);
       reject(abortSignal?.reason ?? new DOMException("Aborted", "AbortError"));
     };
     const timeout = setTimeout(() => {

@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 56 tests currently pass.
+- [x] Add dependency-free Node tests; 59 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -318,15 +318,15 @@ Acceptance criteria:
 
 ### 3.7 Async and function control
 
-- [ ] Add tests for empty input, mapper sync throws, cancellation, high requested
+- [x] Add tests for empty input, mapper sync throws, cancellation, high requested
   concurrency, and result ordering.
-- [ ] Decide whether bounded mapping needs fail-fast and cancellation variants.
-- [ ] Add `once`, `memoize`, `debounce`, `throttle`, `retry`, and `timeout` only
+- [x] Decide whether bounded mapping needs fail-fast and cancellation variants.
+- [x] Add `once`, `memoize`, `debounce`, `throttle`, `retry`, and `timeout` only
   after defining `this`, argument, result, rejection, timer, and cancellation
   semantics.
-- [ ] Ensure timers do not retain abort listeners after settlement.
-- [ ] Define cache key and eviction behavior before exposing memoization.
-- [ ] Prefer composable primitives over one large async options object.
+- [x] Ensure timers do not retain abort listeners after settlement.
+- [x] Define cache key and eviction behavior before exposing memoization.
+- [x] Prefer composable primitives over one large async options object.
 
 ## Phase 4 — environment-specific surfaces
 

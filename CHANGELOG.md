@@ -75,3 +75,5 @@
   comparators, and a reproducible collator benchmark.
 - Added explicit instant-range normalization/predicates, Unix-second range
   validation, and DST gap/overlap local-calendar tests.
+- Hardened bounded all-settled mapping and cancellable delay edge cases, timer
+  limits, and abort-listener cleanup; recorded function-control deferrals.
