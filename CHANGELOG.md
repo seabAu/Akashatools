@@ -44,6 +44,8 @@
   replacement/removal pair, including numeric-key and sparse-slot semantics.
 - Centralized and enforced the finite `[0, 1)` injected-random contract for
   array shuffling and primitive random helpers.
+- Added a reproducible repeated-membership benchmark documenting when Set/Map
+  construction outperforms nested linear membership checks.
 - Adopted native `structuredClone`, `Object.hasOwn`, `Intl.DateTimeFormat`,
   `Map`, `Set`, `String.prototype.replaceAll`, and `Math.hypot` where appropriate.
 - Added prototype-pollution protection to nested paths and deep object merging.

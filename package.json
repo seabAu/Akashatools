@@ -24,6 +24,7 @@
     "./package.json": "./package.json"
   },
   "files": [
+    "benchmark",
     "src",
     "lib",
     "docs",
@@ -36,6 +37,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "benchmark:membership": "node benchmark/membership.mjs",
     "check": "node --run check:syntax && node --run test",
     "check:syntax": "node --check src/index.js && node --check src/node.js && node --check src/internal/contained-path.js && node --check lib/index.js",
     "test": "node --test",

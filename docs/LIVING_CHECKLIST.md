@@ -234,7 +234,7 @@ Acceptance criteria:
 - [x] Add key-based remove/update helpers without conflating index and numeric
   value selectors.
 - [x] Define sparse-array behavior for every array transform.
-- [ ] Benchmark Set/Map strategies against nested `includes` for large inputs.
+- [x] Benchmark Set/Map strategies against nested `includes` for large inputs.
 - [ ] Add generic iterable support only where it improves real consumers without
   making return types surprising.
 
