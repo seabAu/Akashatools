@@ -37,6 +37,7 @@
     "node": ">=22"
   },
   "scripts": {
+    "benchmark:collator": "node benchmark/collator.mjs",
     "benchmark:membership": "node benchmark/membership.mjs",
     "check": "node --run check:syntax && node --run test",
     "check:syntax": "node --check src/index.js && node --check src/node.js && node --check src/internal/contained-path.js && node --check lib/index.js",

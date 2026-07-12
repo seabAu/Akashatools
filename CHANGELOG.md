@@ -71,3 +71,5 @@
   locale-neutral identifier casing, and cross-platform filename hardening.
 - Added Web Crypto `secureRandomUuid`/`secureRandomString`, corrected scientific
   decimal rounding and wrap overflow, and bounded range/string allocations.
+- Added stable multi-key sorting, explicit null placement, reusable collator
+  comparators, and a reproducible collator benchmark.

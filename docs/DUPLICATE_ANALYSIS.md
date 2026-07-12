@@ -86,7 +86,7 @@ conflicts are summarized here.
 | Nested paths | many `deep*`, `safeGet`, portfolio field paths | Secure `object.parsePath`, `getAtPath`, `hasAtPath`, `setAtPath`. |
 | Picking/allow-listing | server `pick`, portfolio `pickOwnAllowed`, legacy filters | `pick`, `omit`, `pickAllowed`; unsafe segments rejected. |
 | Cloning | JSON clone helpers and COMPOSR/app copies | Native `structuredClone` through `object.deepClone`. |
-| Stable sorting | prototype `sortBy`, Mindspace `sortBy`, portfolio numeric order | `sort.sortBy`, `compareNumericOrder`, `sortByNumericOrder`; never mutate input. |
+| Stable sorting | prototype `sortBy`, Mindspace `sortBy`, portfolio numeric order, repeated hand-built locale tie-breakers | `sortBy`/`sortByMany` with selectors, direction, explicit null placement, reusable collators, and stable ties; legacy numeric-order coercion stays isolated. |
 | Random values | legacy `rand`, color/data generators, portfolio data generator | Validated `randomInt`, `randomFloat`, `randomString`, `randomDate` with injected `[0,1)` source. |
 | Secure identifiers/tokens | portfolio `createBasicUUID`, active consumer `crypto.randomUUID`, legacy pseudo-random strings | `random.secureRandomUuid` and bias-free `secureRandomString` require Web Crypto; `randomString` remains explicitly non-cryptographic. |
 | Local dates/clocks | Akashatools/Mindspace/portfolio time copies | Small `date` primitives and `Intl`; ranges/zones/durations remain separate deferred designs. |
