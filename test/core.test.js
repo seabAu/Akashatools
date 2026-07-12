@@ -12,6 +12,7 @@ import {
   date,
   differenceInLocalDays,
   distance2d,
+  escapeHtml,
   excludeBy,
   fibonacci,
   formatDate,
@@ -20,15 +21,18 @@ import {
   localDateKey,
   mapSettledWithConcurrency,
   minutesToClockTime,
+  pascalCase,
   randomBoolean,
   randomDate,
   randomFloat,
   randomInt,
   randomString,
   replaceMany,
+  replaceRegex,
   roundTo,
   safeFilename,
   sentenceCase,
+  slugify,
   sortBy,
   sortByNumericOrder,
   sum,
@@ -50,6 +54,29 @@ test("string helpers normalize identifiers and replace literal text", () => {
   assert.equal(sentenceCase("helloWorld_value"), "Hello world value");
   assert.equal(replaceMany("a.b + a.b", { "a.b": "x" }), "x + x");
   assert.equal(safeFilename("  Résumé / July  "), "resume-july");
+  assert.equal(kebabCase("APIResponse2_value déjà"), "api-response2-value-déjà");
+  assert.equal(camelCase("XML_HTTP response2Value"), "xmlHttpResponse2Value");
+  assert.equal(pascalCase("version2-api"), "Version2Api");
+});
+
+test("literal and regular-expression replacements have separate contracts", () => {
+  const pattern = /a./g;
+  pattern.lastIndex = 2;
+  assert.equal(replaceMany("a.b + a.b", { "a.b": "literal" }), "literal + literal");
+  assert.equal(replaceRegex("ab ac", pattern, "x"), "x x");
+  assert.equal(pattern.lastIndex, 2);
+  assert.equal(replaceRegex("a1 b2", /([a-z])(\d)/g, (_, letter, digit) => `${digit}${letter}`), "1a 2b");
+  assert.throws(() => replaceRegex("value", /** @type {any} */ ("value"), "x"), TypeError);
+});
+
+test("slug and filename helpers normalize unsafe cross-platform names", () => {
+  assert.equal(slugify("Crème brûlée / API v2"), "creme-brulee-api-v2");
+  assert.equal(slugify("***", { fallback: "Fallback Item" }), "fallback-item");
+  assert.equal(safeFilename("CON"), "file-con");
+  assert.equal(safeFilename(" report.\u0000. "), "report");
+  assert.equal(safeFilename("***", { fallback: "NUL" }), "file-nul");
+  assert.equal(safeFilename("abcdefgh", { maximumLength: 5 }), "abcde");
+  assert.equal(escapeHtml('<script src="x">&</script>'), "&lt;script src=&quot;x&quot;&gt;&amp;&lt;/script&gt;");
 });
 
 test("number helpers validate ranges and avoid recursive conversions", () => {

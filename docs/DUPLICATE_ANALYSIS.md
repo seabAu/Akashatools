@@ -92,6 +92,7 @@ conflicts are summarized here.
 | Bounded async work | COMPOSR concurrency utilities | `async.mapSettledWithConcurrency` and `fulfilledValues`, preserving order/failures. |
 | Browser downloads | COMPOSR and Mindspace variants | `browser.downloadBlob`, `downloadTextFile`, `downloadJson`; formats remain app compositions. |
 | Safe filenames | COMPOSR `toSafeFilename`, Mindspace export sanitizer | `string.safeFilename` with Unicode normalization/options. |
+| URL/path slugs | duplicated portfolio client/server `slugify` implementations | `string.slugify` with strict string input, ASCII/NFKD normalization, fallback, and length options. |
 | JSON contracts | portfolio shared validator and Mindspace custom schemas | `validation.validateJsonContract`/`assertJsonContract` for documented subset only. |
 | Node containment | portfolio storage paths versus unsafe legacy file helpers | Separate Node-only lexical and existing-realpath functions. |
 | Debouncing | Mindspace fetch-local `debounce` | Deferred until sync/async result, context, cancel, flush, signal, and timing contracts are chosen. |

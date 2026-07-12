@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 47 tests currently pass.
+- [x] Add dependency-free Node tests; 49 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -274,13 +274,13 @@ Acceptance criteria:
 
 ### 3.4 Strings
 
-- [ ] Test case conversion with acronyms, digits, separators, and non-ASCII text.
-- [ ] Decide locale-sensitive versus locale-neutral behavior per function.
-- [ ] Add literal and RegExp replacement APIs without confusing the two.
-- [ ] Evaluate truncate, words, slug, strip/normalize whitespace, and pluralization
+- [x] Test case conversion with acronyms, digits, separators, and non-ASCII text.
+- [x] Decide locale-sensitive versus locale-neutral behavior per function.
+- [x] Add literal and RegExp replacement APIs without confusing the two.
+- [x] Evaluate truncate, words, slug, strip/normalize whitespace, and pluralization
   candidates from real consumers.
-- [ ] Keep HTML escaping narrowly documented as text escaping, not full sanitizing.
-- [ ] Ensure filename helpers address reserved Windows names, trailing periods,
+- [x] Keep HTML escaping narrowly documented as text escaping, not full sanitizing.
+- [x] Ensure filename helpers address reserved Windows names, trailing periods,
   path separators, extensions, and byte-length constraints where applicable.
 
 ### 3.5 Numbers, math, random, and sorting

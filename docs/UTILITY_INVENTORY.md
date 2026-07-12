@@ -153,7 +153,7 @@ count: 6.
 | `toKebabCase` | Inserts a hyphen before every uppercase letter; does not normalize spaces/acronyms. | Adopted generalized `string.kebabCase`. | 2.x string tests. |
 | `toUpperCamelCase` | Converts hyphenated lowercase segments only. | Adopted generalized `string.pascalCase`. | 2.x string tests. |
 | `subStringSearch` | Literal substring search with optional case sensitivity. | Adopted `string.includesText` with a named option. | 2.x string tests. |
-| `replaceMultiple` | Treats replacement keys as raw regular expressions. | Adopted safe literal `string.replaceMany`; a regex API will be separate. | 2.x literal metacharacter test. |
+| `replaceMultiple` | Treats replacement keys as raw regular expressions. | Adopted safe literal `string.replaceMany`; explicit regex behavior uses `string.replaceRegex` with a cloned caller RegExp. | 2.x literal/regex contract tests. |
 | `getLongest` | Returns maximum string length across array values, object keys, or a scalar. | Adopted `string.longestStringLength`. | Function implemented; focused test expansion pending. |
 
 ## Akashatools 1.0.2 — `lib/Math.js`

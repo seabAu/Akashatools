@@ -67,3 +67,5 @@
   enforce finite JSON numbers, plain records, sparse items, and own-only refs.
 - Reworked email/NANP checks as bounded syntax and normalization helpers, and
   documented the public regular-expression complexity review.
+- Added portfolio-derived `slugify`, an explicit cloned-RegExp replacement API,
+  locale-neutral identifier casing, and cross-platform filename hardening.

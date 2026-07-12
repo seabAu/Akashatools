@@ -15,10 +15,11 @@ arbitrarily large inputs are inexpensive.
 | Filename normalization | Combining-mark, non-ASCII-safe-character, edge-hyphen scans | Each replacement is linear. Very large filenames still require proportional normalization memory; callers handling untrusted bulk content should impose request/body limits before this presentation helper. |
 | Case conversion | Two boundary scans plus Unicode letter/number tokenization | Linear passes with no nested repetition. Output allocation remains proportional to input. |
 
-Literal replacement uses `String.prototype.replaceAll`, not caller-compiled
-regular expressions. Akashatools currently exposes no API that compiles an
-untrusted pattern. Any future RegExp-accepting public API requires a new review,
-an explicit stateful-flag policy, and adversarial tests before release.
+Literal replacement uses `String.prototype.replaceAll`. `replaceRegex` accepts
+only an already-compiled caller RegExp and clones its source/flags so the
+caller's `lastIndex` is unchanged; it does not claim to make a caller's unsafe
+pattern safe. Akashatools never compiles an untrusted pattern string. Any future
+pattern-string API requires a separate threat review and adversarial tests.
 
 ## Validation result shapes
 
