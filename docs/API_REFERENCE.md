@@ -1093,63 +1093,57 @@ Focused import: `akashatools/random`
 
 Returns a random float in the half-open range [minimum, maximum).
 
-- Signature: `randomFloat(minimum?, maximum?, random?)`
+- Signature: `randomFloat()`
 - Import: `import { randomFloat } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Random value in the requested half-open interval.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `[minimum=0]` | `number` | Not documented. |
-| `[maximum=1]` | `number` | Not documented. |
-| `[random=Math.random]` | `() => number` | Not documented. |
+Throws:
+- `TypeError` — If bounds or the random source are not finite/function values.
+- `RangeError` — If boundaries are reversed, their width overflows, or random violates `[0, 1)`.
 
 ### randomInt
 
 Returns a random integer. The minimum is inclusive; the maximum can be inclusive (default) or exclusive.
 
-- Signature: `randomInt(minimum, maximum, options?)`
+- Signature: `randomInt()`
 - Import: `import { randomInt } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Random safe integer in the requested range.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `minimum` | `number` | Not documented. |
-| `maximum` | `number` | Not documented. |
-| `[options]` | `{inclusiveMaximum?: boolean, random?: () => number}` | Not documented. |
+Throws:
+- `TypeError` — If bounds, inclusiveMaximum, or random do not match their contracts.
+- `RangeError` — If the range is reversed, empty, too wide, or random violates `[0, 1)`.
 
 ### randomBoolean
 
 Returns a random boolean.
 
-- Signature: `randomBoolean(random?)`
+- Signature: `randomBoolean()`
 - Import: `import { randomBoolean } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
+- Returns: `boolean` — False below 0.5 and true at or above 0.5.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `[random=Math.random]` | `() => number` | Not documented. |
+Throws:
+- `TypeError` — If random is not a function.
+- `RangeError` — If random returns outside `[0, 1)` or a non-finite value.
 
 ### randomString
 
 Returns a random string from the supplied character set. This is not suitable for passwords, tokens, or identifiers requiring cryptographic unpredictability.
 
-- Signature: `randomString(length, characters?, random?)`
+- Signature: `randomString()`
 - Import: `import { randomString } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Non-cryptographic sampled string of exactly length code units.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `length` | `number` | Not documented. |
-| `[characters]` | `string` | Not documented. |
-| `[random=Math.random]` | `() => number` | Not documented. |
+Throws:
+- `TypeError` — If characters or random do not match their contracts.
+- `RangeError` — If length or a sampled random value is outside its bounds.
 
 ### secureRandomUuid
 
@@ -1159,7 +1153,7 @@ Returns a cryptographically secure RFC 4122 UUID through Web Crypto.
 - Import: `import { secureRandomUuid } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Cryptographically secure UUID string supplied by Web Crypto.
 
 Throws:
 - `Error` — If the runtime does not provide `crypto.randomUUID`.
@@ -1168,35 +1162,30 @@ Throws:
 
 Returns a cryptographically secure string using rejection sampling to avoid modulo bias. The alphabet must contain 2-256 unique Unicode code points.
 
-- Signature: `secureRandomString(length, alphabet?)`
+- Signature: `secureRandomString()`
 - Import: `import { secureRandomString } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `length` | `number` | Not documented. |
-| `[alphabet]` | `string` | Not documented. |
+- Returns: `string` — Cryptographically secure unbiased sampled string.
 
 Throws:
+- `TypeError` — If alphabet is not a string.
+- `RangeError` — If length or alphabet constraints are violated.
 - `Error` — If the runtime does not provide `crypto.getRandomValues`.
 
 ### randomDate
 
 Returns a random Date within an inclusive timestamp range.
 
-- Signature: `randomDate(start, end?, random?)`
+- Signature: `randomDate()`
 - Import: `import { randomDate } from "akashatools/random"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Date`
+- Returns: `Date` — Fresh Date at a whole-millisecond instant in the range.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `start` | `Date \| string \| number` | Not documented. |
-| `[end=new Date()]` | `Date \| string \| number` | Not documented. |
-| `[random=Math.random]` | `() => number` | Not documented. |
+Throws:
+- `TypeError` — If either boundary is not a valid Date-compatible value.
+- `RangeError` — If the range or random source violates delegated integer constraints.
 
 ## sort
 

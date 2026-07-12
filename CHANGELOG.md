@@ -123,3 +123,5 @@
   Node public APIs; regenerated the API reference and declarations.
 - Extended the enforced complete-JSDoc schema to the full number API, including
   finite-input, overflow, precision, empty-sample, and representability edges.
+- Completed and enforced random API documentation, and fixed `randomInt` to
+  reject non-boolean `inclusiveMaximum` options instead of coercing truthiness.
