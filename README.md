@@ -127,3 +127,6 @@ reference is [docs/API_REFERENCE.md](docs/API_REFERENCE.md), and per-function
 migration lookup is available in
 [docs/FUNCTION_INDEX.md](docs/FUNCTION_INDEX.md). The complete source disposition
 ledger remains [docs/UTILITY_INVENTORY.md](docs/UTILITY_INVENTORY.md).
+Practical compositions live in [docs/RECIPES.md](docs/RECIPES.md), with import
+and bundle tradeoffs in
+[docs/IMPORTS_AND_BUNDLING.md](docs/IMPORTS_AND_BUNDLING.md).

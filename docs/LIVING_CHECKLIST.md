@@ -382,14 +382,14 @@ Acceptance criteria:
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
   mutation behavior, and direct import path.
-- [ ] Add recipes for common array/object/data/date workflows.
-- [ ] Document convenience namespace versus focused import bundle tradeoffs.
-- [ ] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
+- [x] Add recipes for common array/object/data/date workflows.
+- [x] Document convenience namespace versus focused import bundle tradeoffs.
+- [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [ ] Evaluate generated `.d.ts` files from checked JavaScript.
 - [ ] Add declaration tests proving default, named, namespace, and subpath imports.
 - [ ] Verify VS Code completion manually in JavaScript and TypeScript consumers.
-- [ ] Keep README concise and route detailed material into `docs/`.
+- [x] Keep README concise and route detailed material into `docs/`.
 
 ## Phase 6 — compatibility and migration experience
 

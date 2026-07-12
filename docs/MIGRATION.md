@@ -70,6 +70,39 @@ clear generic contracts before becoming package APIs.
 6. Every category is importable directly, and every public function is fronted
    by `src/index.js` as a named export.
 
+## Namespace migration examples
+
+Replace the legacy nested wildcard style with the default namespace when editor
+dot-completion is the priority:
+
+```js
+// 1.x
+import * as utils from "akashatools";
+utils.val.isBlank(value);
+utils.ao.flatten(values);
+utils.str.toKebabCase(label);
+
+// 2.x
+import akasha from "akashatools";
+akasha.validation.isBlank(value);
+akasha.array.flatten(values);
+akasha.string.kebabCase(label);
+```
+
+For focused imports, move directly to canonical functions or category modules:
+
+```js
+import { flatten, isBlank, kebabCase } from "akashatools";
+// or
+import * as array from "akashatools/array";
+array.flatten(values);
+```
+
+The old and new functions are not assumed behavior-identical. In particular,
+2.x rejects invalid arguments visibly, avoids hidden mutation/coercion, and uses
+explicit options for ambiguous operations. Consult
+[FUNCTION_INDEX.md](FUNCTION_INDEX.md) for replacements versus related APIs.
+
 ## Remaining phases
 
 1. Extend the new Node-only `akashatools/node` surface only after file discovery

@@ -90,3 +90,5 @@
   integrated into the normal project verification command.
 - Added a deterministic JSON manifest for all 119 legacy exports and a searchable
   canonical/legacy function index with runtime, mutation, and import metadata.
+- Added workflow recipes, namespace migration examples, and explicit guidance on
+  default, named, category, and wildcard import bundle tradeoffs.
