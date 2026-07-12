@@ -1,12 +1,14 @@
 import { safeFilename } from "./string.js";
 
 /**
- * Triggers a browser download for a Blob and always revokes its object URL.
- * Browser globals can be injected for testing.
+ * Triggers a browser download for a Blob. The temporary anchor is removed
+ * synchronously; object URL revocation is deferred to the next timer turn so
+ * the browser can consume the click. Click/scheduling failures revoke at once.
+ * Browser globals and the scheduler can be injected for testing.
  *
  * @param {string} filename
  * @param {Blob} blob
- * @param {{document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">}} [environment]
+ * @param {{document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">, schedule?: (callback: () => void) => unknown}} [environment]
  * @returns {void}
  */
 export function downloadBlob(filename, blob, environment = {}) {
@@ -15,16 +17,30 @@ export function downloadBlob(filename, blob, environment = {}) {
 
   const documentRef = environment.document ?? globalThis.document;
   const urlApi = environment.url ?? globalThis.URL;
-  if (!documentRef || !urlApi?.createObjectURL) throw new Error("downloadBlob requires a browser-like environment.");
+  const schedule = environment.schedule ?? ((callback) => globalThis.setTimeout(callback, 0));
+  if (!documentRef?.createElement || !urlApi?.createObjectURL || !urlApi?.revokeObjectURL) {
+    throw new Error("downloadBlob requires a browser-like environment.");
+  }
+  if (typeof schedule !== "function") throw new TypeError("schedule must be a function.");
 
   const objectUrl = urlApi.createObjectURL(blob);
+  let clicked = false;
+  let revokeScheduled = false;
+  /** @type {HTMLAnchorElement | undefined} */
+  let anchor;
   try {
-    const anchor = documentRef.createElement("a");
+    anchor = documentRef.createElement("a");
     anchor.href = objectUrl;
     anchor.download = filename;
+    anchor.style.display = "none";
+    documentRef.body?.append(anchor);
     anchor.click();
+    clicked = true;
+    schedule(() => urlApi.revokeObjectURL(objectUrl));
+    revokeScheduled = true;
   } finally {
-    urlApi.revokeObjectURL(objectUrl);
+    anchor?.remove();
+    if (!clicked || !revokeScheduled) urlApi.revokeObjectURL(objectUrl);
   }
 }
 
@@ -33,7 +49,7 @@ export function downloadBlob(filename, blob, environment = {}) {
  *
  * @param {string} filename
  * @param {string} content
- * @param {{contentType?: string, document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">}} [options]
+ * @param {{contentType?: string, document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">, schedule?: (callback: () => void) => unknown}} [options]
  * @returns {void}
  */
 export function downloadTextFile(filename, content, { contentType = "text/plain;charset=utf-8", ...environment } = {}) {
@@ -46,13 +62,14 @@ export function downloadTextFile(filename, content, { contentType = "text/plain;
  *
  * @param {string} filename
  * @param {unknown} value
- * @param {{space?: number | string, document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">}} [options]
+ * @param {{space?: number | string, document?: Document, url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">, schedule?: (callback: () => void) => unknown}} [options]
  * @returns {void}
  */
 export function downloadJson(filename, value, { space = 2, ...environment } = {}) {
   const serialized = JSON.stringify(value, null, space);
   if (serialized === undefined) throw new TypeError("value is not JSON-serializable.");
-  downloadTextFile(`${safeFilename(filename)}.json`, serialized, {
+  const stem = filename.trim().toLowerCase().endsWith(".json") ? filename.trim().slice(0, -5) : filename;
+  downloadTextFile(`${safeFilename(stem)}.json`, serialized, {
     contentType: "application/json;charset=utf-8",
     ...environment,
   });

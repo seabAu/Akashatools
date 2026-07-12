@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 59 tests currently pass.
+- [x] Add dependency-free Node tests; 62 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -332,10 +332,10 @@ Acceptance criteria:
 
 ### 4.1 Browser
 
-- [ ] Test browser downloads with injected DOM/URL objects and a real browser.
-- [ ] Handle filename extensions without duplicate suffixes.
-- [ ] Define object URL revocation timing for synchronous and deferred clicks.
-- [ ] Evaluate clipboard, file reading, storage, and DOM helpers individually;
+- [x] Test browser downloads with injected DOM/URL objects and a real browser.
+- [x] Handle filename extensions without duplicate suffixes.
+- [x] Define object URL revocation timing for synchronous and deferred clicks.
+- [x] Evaluate clipboard, file reading, storage, and DOM helpers individually;
   avoid a miscellaneous browser dumping ground.
 - [x] Keep React hooks and rendered DOM construction outside the core library.
 

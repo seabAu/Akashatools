@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Akashatools browser download fixture</title>
+  </head>
+  <body>
+    <button id="download" type="button">Download JSON fixture</button>
+    <output id="status">ready</output>
+    <script type="module">
+      import { downloadJson } from "/src/browser.js";
+
+      const fixture = { filename: "", revocations: 0 };
+      const revokeObjectURL = URL.revokeObjectURL.bind(URL);
+      URL.revokeObjectURL = (value) => {
+        fixture.revocations += 1;
+        revokeObjectURL(value);
+      };
+      document.addEventListener("click", (event) => {
+        if (event.target instanceof HTMLAnchorElement) fixture.filename = event.target.download;
+      }, { capture: true });
+
+      document.querySelector("#download").addEventListener("click", () => {
+        downloadJson("Browser Fixture.json", { browser: true, library: "akashatools" });
+        document.querySelector("#status").value = "clicked";
+        setTimeout(() => {
+          document.querySelector("#status").value = `${fixture.filename}|revoked:${fixture.revocations}`;
+        }, 20);
+      });
+    </script>
+  </body>
+</html>

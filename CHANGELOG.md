@@ -77,3 +77,5 @@
   validation, and DST gap/overlap local-calendar tests.
 - Hardened bounded all-settled mapping and cancellable delay edge cases, timer
   limits, and abort-listener cleanup; recorded function-control deferrals.
+- Hardened browser downloads with temporary-anchor cleanup, deferred URL
+  revocation, single JSON extensions, injected tests, and a real-browser fixture.
