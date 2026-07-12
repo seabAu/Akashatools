@@ -103,7 +103,7 @@ conflicts are summarized here.
 | CSV | multiple Mindspace serializers/parsers | Reject naive implementations; evaluate a maintained grammar/dependency and formula-injection policy. |
 | Numeric distribution summaries | COMPOSR transition percentile/statistics helper | Adopted strict finite-input `number.summarizeNumbers`; null statistics distinguish empty data from observed zero. |
 | Security redaction/target checks | Mindspace error redaction and COMPOSR security package | Deferred threat-modeled security surface; HTTP transport must pin validated addresses and revalidate redirects. |
-| Debugging | legacy and portfolio console helpers | Deferred/inert injectable diagnostics; unconditional logging rejected. |
+| Debugging | legacy/portfolio console helpers, Mindspace runtime diagnostics, COMPOSR profilers | No 2.0 `debug` category: console wrappers are rejected, active diagnostics are app coordinators, and COMPOSR owns profiler records; future operation-specific callbacks must be inert by default. |
 | Prototype extensions | Mindspace prototype modules and time side effects | Rejected categorically; standalone functions only. |
 
 ## Canonical exports versus aliases

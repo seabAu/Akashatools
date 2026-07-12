@@ -1,0 +1,52 @@
+# Optional surface decisions
+
+This document closes the 2.0 category decisions for schema/data-model behavior
+and debug/diagnostic behavior. Neither becomes an Akashatools 2.0 category.
+
+## Schema and data models
+
+The reviewed projects do not share one schema language:
+
+- Mindspace import helpers mix coercion, defaults, required fields, nested rules,
+  custom classes, Mongoose behavior, and form-model generation.
+- Portfolio schema utilities expose admin, storage, navigation, and application
+  record policy.
+- COMPOSR schemas version tool profiles/results and are coupled to COMPOSR
+  contracts, migrations, and envelope formats.
+- Akashatools' generic `validateJsonContract` subset validates JSON-compatible
+  values without coercion and already fits the `validation` category.
+
+A `schema` namespace would imply interoperability that does not exist. Full JSON
+Schema support also brings reference resolution, dialect/version selection,
+formats, dependencies, and code-generation choices that should not be hidden in
+a general utility module. If multiple consumers eventually need that surface,
+evaluate a maintained validator dependency or a separately versioned add-on.
+Mongoose adapters, UI field definitions, application defaults, and data-model
+migrations remain application-owned.
+
+## Debug and diagnostics
+
+The legacy `lib/Debug.js` exports one formatter that writes directly to the
+console. The portfolio rebuild contains a copied, internally inconsistent
+version; its only import has no live call site (the sole reference is commented
+out). No current consumer depends on that API.
+
+Mindspace does have active diagnostics, but they collect application snapshots,
+coordinate React hooks, stores, local logs, toasts/modals, authentication state,
+and notification/data-load health. COMPOSR records timing and Performance API
+measurements as versioned profiler-domain results. Those are useful systems, not
+generic logging or timing functions.
+
+Akashatools 2.0 therefore has no `debug` category and no console-writing helper.
+Public modules remain inert at import time and compatible with
+`sideEffects: false`. A reusable operation may accept an explicitly documented
+diagnostic callback only when a real consumer needs observable progress; the
+default must do nothing, and callback failure behavior must be part of that
+operation's contract.
+
+Function timing remains a direct composition of the relevant platform clock and
+the work being measured. COMPOSR owns profiling that produces COMPOSR records.
+A future diagnostics abstraction would first need shared decisions for event
+shape, levels, redaction, context propagation, sink failure, sync/async delivery,
+and production removal. A generic wrapper around `console` or `performance.now()`
+does not justify a permanent category.

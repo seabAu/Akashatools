@@ -111,9 +111,9 @@ Acceptance criteria:
   `collection`, `date`, `function`, `http`, `number`, `object`, `random`, `sort`,
   `string`, and `validation`.
 - [x] Design a separate `node` surface for filesystem/path/runtime utilities.
-- [ ] Decide whether schema and data-model helpers are generic enough for a
+- [x] Decide whether schema and data-model helpers are generic enough for a
   `schema` category or belong in a separate package/add-on.
-- [ ] Decide whether debug helpers merit a `debug` category or should be replaced
+- [x] Decide whether debug helpers merit a `debug` category or should be replaced
   by application logging/diagnostic interfaces.
 - [x] Keep environment-specific modules out of universal entry points when merely
   importing them could reference unavailable globals.
@@ -367,10 +367,10 @@ Acceptance criteria:
 
 ### 4.4 Debug and diagnostics
 
-- [ ] Inventory legacy debug behavior and actual current consumers.
-- [ ] Prefer injectable diagnostic callbacks over unconditional console output.
-- [ ] Decide whether function timing/profiling belongs in Akashatools or COMPOSR.
-- [ ] Ensure debug helpers are removable by bundlers and inert by default.
+- [x] Inventory legacy debug behavior and actual current consumers.
+- [x] Prefer injectable diagnostic callbacks over unconditional console output.
+- [x] Decide whether function timing/profiling belongs in Akashatools or COMPOSR.
+- [x] Ensure debug helpers are removable by bundlers and inert by default.
 
 ## Phase 5 — documentation and types
 
@@ -550,6 +550,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Require provenance and license review for embedded third-party utility source. | Mindspace includes old global-style Markdown code and an unattributed large word list; location in a utility folder is not permission or evidence that copying is maintainable. |
 | 2026-07-11 | Keep removal metadata out of `removeFromArray`. | Reviewed consumers only need the resulting array; a future `extractFromArray` can return values/indices without changing the established return type if demand appears. |
 | 2026-07-11 | Keep the generic HTTP surface to one bounded, non-retrying Fetch attempt. | Transport parsing, cancellation, size limits, redaction, and typed errors are reusable; authentication, envelopes, SSRF policy, retries, and UI effects depend on the consuming application. |
+| 2026-07-11 | Do not create `schema` or `debug` categories for 2.0. | Reviewed schemas are incompatible app/framework contracts, while diagnostics are unused console wrappers or active app/profiler coordinators; the generic JSON subset already belongs under `validation`. |
 
 ## Definition of done
 

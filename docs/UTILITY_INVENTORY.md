@@ -212,7 +212,7 @@ Runtime: console and legacy namespace formatting. Export count: 1.
 
 | Legacy export | Behavior and finding | 2.x disposition | Evidence |
 | --- | --- | --- | --- |
-| `debug` | Formats and conditionally writes diagnostic values to the console. | Defer; prefer injectable diagnostics and keep logging inert by default. | Source reviewed; consumer inventory pending. |
+| `debug` | Formats and conditionally writes diagnostic values to the console. | Reject generic helper and omit a 2.0 `debug` category; diagnostics stay operation/app-specific and inert by default. | Source reviewed; the portfolio copy is imported once but has no live call, while active Mindspace/COMPOSR diagnostics are app-owned coordinators/profilers. |
 
 ## Legacy inventory coverage
 

@@ -82,3 +82,5 @@
 - Added bounded `http.request` with composed cancellation/timeouts, explicit
   response modes, typed and redacted errors, local-server tests, and a documented
   no-retry/application-policy boundary.
+- Closed the optional category review: schema/model adapters and diagnostics stay
+  app-owned, while generic JSON contract checks remain under `validation`.

@@ -52,10 +52,13 @@ import { chunk as chunkArray } from "akashatools/array";
 | `http` | implemented | Bounded Fetch, cancellation, parsing, redaction, and typed HTTP errors. |
 | `node` | reserved subpath | Node-only filesystem, path, and runtime operations; never flattened into the universal root. |
 
-`schema` and `debug` remain candidate categories rather than reserved API names.
-They will be adopted only if the source inventory demonstrates coherent generic
-contracts. Environment-specific code must be safe to import: browser globals are
-resolved only when an effect runs, and Node-only modules stay under `akashatools/node`.
+`schema` and `debug` are explicitly not 2.0 categories. The reviewed schema
+languages are app/framework contracts, and reviewed diagnostics are console
+wrappers or application coordinators. The generic JSON-contract subset remains
+under `validation`; detailed rationale is in
+[`OPTIONAL_SURFACE_DECISIONS.md`](./OPTIONAL_SURFACE_DECISIONS.md). Environment-
+specific code must be safe to import: browser globals are resolved only when an
+effect runs, and Node-only modules stay under `akashatools/node`.
 
 ## Naming
 
