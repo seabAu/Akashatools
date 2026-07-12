@@ -166,6 +166,19 @@ test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
   assert.equal(formatNanpPhone("+1 555 123 4567"), "(555) 123-4567");
 });
 
+test("email and NANP helpers enforce bounded syntax without identity claims", () => {
+  assert.equal(isEmail("first.last+tag@example-domain.com"), true);
+  assert.equal(isEmail(".first@example.com"), false);
+  assert.equal(isEmail("first..last@example.com"), false);
+  assert.equal(isEmail("first@-example.com"), false);
+  assert.equal(isEmail(`first@${"a".repeat(64)}.com`), false);
+  assert.equal(isEmail(`${"a".repeat(100_000)}@example.com`), false);
+  assert.equal(formatNanpPhone("555.123.4567"), "(555) 123-4567");
+  assert.equal(formatNanpPhone("call 555-123-4567"), null);
+  assert.equal(formatNanpPhone("1".repeat(100_000)), null);
+  assert.equal(formatNanpPhone(Number.MAX_VALUE), null);
+});
+
 test("type guards are literal, cross-realm aware, and browser-global safe", () => {
   const foreign = runInNewContext("({ object: {}, date: new Date(0), map: new Map(), set: new Set(), typed: new Uint16Array(2) })");
   assert.equal(isFiniteNumber(0), true);

@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 46 tests currently pass.
+- [x] Add dependency-free Node tests; 47 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -266,11 +266,11 @@ Acceptance criteria:
   exposes both predicates under distinct names.
 - [x] Expand JSON contract support only with documented schema keywords and tests;
   do not grow an accidental partial JSON Schema implementation indefinitely.
-- [ ] Evaluate email/phone/password functions as syntax helpers, not claims of
+- [x] Evaluate email/phone/password functions as syntax helpers, not claims of
   identity, ownership, or deliverability.
-- [ ] Add configurable validation-result objects where callers need multiple
+- [x] Add configurable validation-result objects where callers need multiple
   errors; keep simple predicates boolean.
-- [ ] Review ReDoS and pathological-input behavior for every public regex.
+- [x] Review ReDoS and pathological-input behavior for every public regex.
 
 ### 3.4 Strings
 

@@ -36,6 +36,7 @@ conflicts are summarized here.
 | --- | --- | --- | --- |
 | Email syntax | both `isValidEmail` | Client has more length/syntax checks; server is older. Neither proves ownership/deliverability. | `validation.isEmail` remains a pragmatic syntax helper; merge only tested improvements. |
 | Phone validity | both `isValidPhoneNumber` | Client uses `libphonenumber-js` with US default; server uses regex/length approximation. | Explicit NANP helpers today; international API deferred with dependency/default-region contract. |
+| Password policy/results | Mindspace configurable password validator, labels, messages, and strength classes | Keep application-owned. Akashatools makes no credential-security claim and has no second consumer establishing shared policy or result metadata. |
 | Phone formatting | both `formatPhoneNumber` | Client library and server manual branches accept/format different sets. | `formatNanpPhone`; international formatting deferred. |
 | Form error copy | both `getValidationErrorMessage` | Older/newer English UI copy, not validation behavior. | App-local presentation. |
 | Array validity | client data/array helpers and server `isValidArray` | “Valid” can mean array, nonempty, first slot defined, or all values pass an umbrella predicate. | Native `Array.isArray`, `isNonEmptyArray`, or explicit `every(predicate)`. |

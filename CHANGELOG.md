@@ -65,3 +65,5 @@
   array, Blob, and File guards with cross-realm or safe-global behavior.
 - Made the JSON-contract subset reject unknown keywords/malformed schemas and
   enforce finite JSON numbers, plain records, sparse items, and own-only refs.
+- Reworked email/NANP checks as bounded syntax and normalization helpers, and
+  documented the public regular-expression complexity review.

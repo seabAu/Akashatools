@@ -13,6 +13,9 @@ const supportedContractKeywords = new Set([
   "definitions",
 ]);
 const supportedJsonTypes = new Set(["array", "object", "integer", "null", "string", "number", "boolean"]);
+const emailLocalPattern = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
+const domainLabelPattern = /^[A-Za-z0-9-]+$/;
+const nanpInputPattern = /^[\d\s()+.-]+$/;
 
 /**
  * Checks whether a value is neither null nor undefined.
@@ -183,8 +186,20 @@ export function isJson(value) {
  * @returns {value is string}
  */
 export function isEmail(value) {
-  if (typeof value !== "string" || value.length > 254) return false;
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  if (typeof value !== "string" || value.length < 5 || value.length > 254) return false;
+  const separator = value.indexOf("@");
+  if (separator < 1 || separator !== value.lastIndexOf("@")) return false;
+
+  const local = value.slice(0, separator);
+  const domain = value.slice(separator + 1);
+  if (local.length > 64 || local.startsWith(".") || local.endsWith(".") || local.includes("..")) return false;
+  if (!emailLocalPattern.test(local) || domain.length > 253 || !domain.includes(".")) return false;
+
+  const labels = domain.split(".");
+  return labels.every((label) =>
+    label.length > 0 && label.length <= 63 &&
+    !label.startsWith("-") && !label.endsWith("-") &&
+    domainLabelPattern.test(label));
 }
 
 /**
@@ -196,7 +211,10 @@ export function isEmail(value) {
  */
 export function normalizeNanpPhone(value) {
   if (typeof value !== "string" && typeof value !== "number") return null;
-  let digits = String(value).replace(/\D/g, "");
+  if (typeof value === "number" && (!Number.isSafeInteger(value) || value < 0)) return null;
+  const input = String(value);
+  if (input.length > 64 || !nanpInputPattern.test(input)) return null;
+  let digits = input.replace(/\D/g, "");
   if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
   return digits.length === 10 ? digits : null;
 }
