@@ -429,7 +429,9 @@ Acceptance criteria:
   focused public-contract additions is 96.65% / 82.20% / 94.14%, respectively;
   branch accounting can vary slightly with random-source execution; see
   `docs/TESTING.md`.
-- [ ] Run tests on supported Node LTS lines and target browsers.
+- [ ] Run tests on supported Node LTS lines and target browsers. The six-test
+  Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are
+  configured and await their first hosted workflow run before this is complete.
 
 ### 7.2 Security review
 
@@ -466,9 +468,12 @@ Acceptance criteria:
   bundle measurements; do not create separate npm packages.
 - [x] Ensure export maps expose types, import targets, and environment targets
   consistently.
-- [ ] Add reproducible scripts for type-check, lint/format, test, coverage,
-  benchmarks, build if needed, and package verification.
-- [ ] Add CI for supported runtimes and package smoke tests.
+- [ ] Add reproducible scripts for type-check, lint/format, test, browser test,
+  coverage, benchmarks, build if needed, and package verification. Everything
+  except an agreed formatter/linter gate is now scripted.
+- [x] Add CI for Node 22/24 LTS, source coverage, package smoke/content checks,
+  and Chromium/Firefox/WebKit browser contracts. First hosted execution remains
+  an evidence gate under Phase 7.
 - [x] Add an API-surface snapshot so accidental exports fail CI.
 - [x] Add an exports-resolution test generated from `package.json`.
 - [x] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.

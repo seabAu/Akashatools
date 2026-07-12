@@ -110,6 +110,8 @@ exports or category subpaths.
 
 ```sh
 npm test
+npm run test:browser:install
+npm run test:browser
 npm run test:coverage
 npm run check
 npm run pack:check

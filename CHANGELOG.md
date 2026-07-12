@@ -112,3 +112,6 @@
   namespace, package, compatibility, and cross-category invariant suites.
 - Extended the real-browser fixture with native Blob/File and iframe-realm
   Map/Set/typed-array guard checks, verified without browser console errors.
+- Added Playwright automation for six Chromium, Firefox, and WebKit contracts,
+  a Node 22/24 LTS GitHub Actions matrix, browser CI, and a package-wide
+  JavaScript syntax scanner.

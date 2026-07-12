@@ -20,6 +20,10 @@ browser warnings/errors. Blob and File intentionally use the current realm's
 platform constructors; Map, Set, Date, plain-object, and typed-array contracts
 explicitly accept foreign realms.
 
+`npm run test:browser` now repeats the guard and download lifecycle contracts in
+Chromium, Firefox, and WebKit. GitHub Actions installs matching browser builds
+and runs the same six-test matrix on every push and pull request.
+
 Other browser candidates remain separately deferred:
 
 - Clipboard access is already exposed by `navigator.clipboard` and requires a

@@ -10,15 +10,17 @@ compatibility paths.
 
 ```sh
 npm test
+npm run test:browser:install
+npm run test:browser
 npm run test:coverage
 npm run check
 npm run audit:release
 ```
 
 `npm test` runs the dependency-free Node test suite. `npm run check` also checks
-syntax, generated artifacts, JSDoc/TypeScript declarations, JavaScript and
-TypeScript consumers, editor completions, and a clean installation of the exact
-packed artifact.
+syntax across package JavaScript, generated artifacts, JSDoc/TypeScript
+declarations, JavaScript and TypeScript consumers, editor completions, and a
+clean installation of the exact packed artifact.
 
 `npm run test:coverage` uses Node's built-in coverage support and includes only
 shipped `src/**/*.js` code. Tests, scripts, benchmarks, fixtures, generated
@@ -48,5 +50,13 @@ The current package contract is ESM on Node.js 22 or newer. Browser-dependent
 functions use injected DOM and URL capabilities in unit tests. The retained
 `fixtures/browser/download.html` fixture also verifies native Blob/File guards,
 iframe-realm Map/Set/typed-array guards, download cleanup, and browser console
-health in a real browser. A repeatable multi-browser and Node-version matrix
-remains release work and is tracked in the living checklist.
+health. `npm run test:browser` automates six contracts across Playwright's
+Chromium, Firefox, and WebKit engines; install their matching binaries once with
+`npm run test:browser:install`.
+
+The GitHub Actions workflow runs the unified check, source coverage gate, and
+package-content check on the currently supported Node 22 and 24 LTS lines. A
+separate Node 24 job installs all three browser engines and runs the browser
+suite. The matrix follows the [official Node release status](https://nodejs.org/en/about/previous-releases)
+and [Playwright browser support](https://playwright.dev/docs/browsers); update it
+when those support windows change.

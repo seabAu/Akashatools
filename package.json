@@ -47,7 +47,7 @@
     "check": "node --run check:syntax && node --run check:docs && node --run check:generated && node --run check:types && node --run test:types && node --run test:completions && node --run test:package && node --run test",
     "check:docs": "node scripts/check-api-docs.mjs",
     "check:generated": "node scripts/generate-api-reference.mjs --check && node scripts/generate-migration-index.mjs --check && node scripts/generate-api-snapshot.mjs --check",
-    "check:syntax": "node --check src/index.js && node --check src/node.js && node --check src/internal/contained-path.js && node --check lib/index.js",
+    "check:syntax": "node scripts/check-syntax.mjs",
     "docs:api": "node scripts/generate-api-reference.mjs",
     "docs:migration": "node scripts/generate-migration-index.mjs",
     "api:snapshot": "node scripts/generate-api-snapshot.mjs",
@@ -58,6 +58,8 @@
     "test:completions": "node scripts/check-editor-completions.mjs",
     "test:package": "node scripts/package-smoke.mjs",
     "test": "node --test",
+    "test:browser": "playwright test",
+    "test:browser:install": "playwright install chromium firefox webkit",
     "test:coverage": "node --experimental-test-coverage --test --test-coverage-include=\"src/**/*.js\" --test-coverage-lines=95 --test-coverage-branches=80 --test-coverage-functions=90",
     "pack:check": "npm pack --dry-run"
   },
@@ -79,6 +81,7 @@
   "author": "Sean Brown",
   "license": "ISC",
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.20.1",
     "typescript": "^7.0.2"
   }
