@@ -203,3 +203,16 @@ test("JSON contract validation reports paths and supports local references", () 
   assert.equal(assertJsonContract({ id: 1, name: "Akasha" }, schema).id, 1);
   assert.throws(() => assertJsonContract({}, schema), TypeError);
 });
+
+test("JSON contract validation rejects undeclared schema behavior and non-JSON values", () => {
+  assert.throws(() => validateJsonContract("short", { type: "string", minLength: 10 }), /unsupported keyword minLength/);
+  assert.throws(() => validateJsonContract(1, { type: "decimal" }), /unsupported JSON type/);
+  assert.throws(() => validateJsonContract(1, { enum: [] }), /non-empty array/);
+  assert.throws(() => validateJsonContract({}, { properties: { value: null } }), /plain schema object/);
+  assert.deepEqual(validateJsonContract(new Date(), { type: "object" }), ["$: expected object"]);
+  assert.deepEqual(validateJsonContract(Number.NaN, { type: "number" }), ["$: expected number"]);
+  assert.deepEqual(validateJsonContract([, 1], { type: "array", items: { type: "integer" } }), ["$[0]: expected integer"]);
+  assert.equal(isJson("false"), true);
+  assert.equal(isJson("null"), true);
+  assert.equal(isJson("1"), true);
+});

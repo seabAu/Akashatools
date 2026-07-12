@@ -63,3 +63,5 @@
 - Added a dependency-free Node test suite and JSDoc for public functions.
 - Added literal finite-number, safe-integer, Map, Set, typed-array, plain-object
   array, Blob, and File guards with cross-realm or safe-global behavior.
+- Made the JSON-contract subset reject unknown keywords/malformed schemas and
+  enforce finite JSON numbers, plain records, sparse items, and own-only refs.

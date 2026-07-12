@@ -1,3 +1,19 @@
+import { isPlainObject } from "./object.js";
+
+const brandCheckKey = Object.freeze({});
+const supportedContractKeywords = new Set([
+  "$ref",
+  "type",
+  "const",
+  "enum",
+  "required",
+  "properties",
+  "items",
+  "additionalProperties",
+  "definitions",
+]);
+const supportedJsonTypes = new Set(["array", "object", "integer", "null", "string", "number", "boolean"]);
+
 /**
  * Checks whether a value is neither null nor undefined.
  *
@@ -198,15 +214,16 @@ export function formatNanpPhone(value) {
 
 /**
  * Validates a value against a useful JSON Schema subset. Supported keywords are
- * `$ref`, `type`, `const`, `enum`, `required`, `properties`, `items`, and
- * `additionalProperties: false`.
+ * `$ref`, `type`, `const`, `enum`, `required`, `properties`, `items`,
+ * `additionalProperties`, and `definitions`. Unsupported keywords and malformed
+ * schemas throw instead of being silently ignored.
  *
  * @param {unknown} value
  * @param {Record<string, any>} schema
  * @returns {string[]}
  */
 export function validateJsonContract(value, schema) {
-  if (schema === null || typeof schema !== "object") throw new TypeError("schema must be an object.");
+  assertSupportedSchema(schema);
   return validateContractNode(value, schema, schema, "$");
 }
 
@@ -237,7 +254,7 @@ function validateContractNode(value, schema, root, path) {
   const errors = [];
 
   if (Object.hasOwn(contract, "const") && !Object.is(value, contract.const)) errors.push(`${path}: unexpected constant value`);
-  if (Array.isArray(contract.enum) && !contract.enum.some((entry) => Object.is(entry, value))) errors.push(`${path}: unsupported enum value`);
+  if (Array.isArray(contract.enum) && !contract.enum.some((/** @type {unknown} */ entry) => Object.is(entry, value))) errors.push(`${path}: unsupported enum value`);
   if (contract.type && !matchesJsonType(value, contract.type)) {
     errors.push(`${path}: expected ${contract.type}`);
     return errors;
@@ -261,7 +278,9 @@ function validateContractNode(value, schema, root, path) {
 
   if (contract.type === "array" && contract.items) {
     const arrayValue = /** @type {unknown[]} */ (value);
-    arrayValue.forEach((item, index) => errors.push(...validateContractNode(item, contract.items, root, `${path}[${index}]`)));
+    for (let index = 0; index < arrayValue.length; index += 1) {
+      errors.push(...validateContractNode(arrayValue[index], contract.items, root, `${path}[${index}]`));
+    }
   }
   return errors;
 }
@@ -271,18 +290,88 @@ function resolveReference(root, reference) {
   if (typeof reference !== "string" || !reference.startsWith("#/")) {
     throw new TypeError(`Unsupported contract reference: ${String(reference)}`);
   }
-  return reference.slice(2).split("/").reduce((current, segment) => current?.[segment.replace(/~1/g, "/").replace(/~0/g, "~")], root);
+  return reference.slice(2).split("/").reduce((current, segment) => {
+    if (current === null || typeof current !== "object") return undefined;
+    const key = segment.replace(/~1/g, "/").replace(/~0/g, "~");
+    return Object.hasOwn(current, key) ? current[key] : undefined;
+  }, /** @type {any} */ (root));
 }
 
 /** @param {unknown} value @param {string | string[]} expected @returns {boolean} */
 function matchesJsonType(value, expected) {
   if (Array.isArray(expected)) return expected.some((type) => matchesJsonType(value, type));
   if (expected === "array") return Array.isArray(value);
-  if (expected === "object") return value !== null && typeof value === "object" && !Array.isArray(value);
-  if (expected === "integer") return Number.isInteger(value);
+  if (expected === "object") return isPlainObject(value);
+  if (expected === "integer") return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value);
+  if (expected === "number") return isFiniteNumber(value);
   if (expected === "null") return value === null;
   return typeof value === expected;
 }
-import { isPlainObject } from "./object.js";
 
-const brandCheckKey = Object.freeze({});
+/** @param {unknown} schema */
+function assertSupportedSchema(schema) {
+  const visiting = new WeakSet();
+  const verified = new WeakSet();
+
+  /** @param {unknown} node @param {string} path */
+  const assertNode = (node, path) => {
+    if (!isPlainObject(node)) throw new TypeError(`${path} must be a plain schema object.`);
+    if (verified.has(node)) return;
+    if (visiting.has(node)) throw new TypeError(`${path} contains a circular schema object.`);
+    visiting.add(node);
+
+    /** @type {Record<string, unknown>} */
+    const values = {};
+    for (const key of Reflect.ownKeys(node)) {
+      const descriptor = Object.getOwnPropertyDescriptor(node, key);
+      if (!descriptor?.enumerable) continue;
+      if (typeof key === "symbol") throw new TypeError(`${path} cannot contain symbol keywords.`);
+      if (!supportedContractKeywords.has(key)) throw new TypeError(`${path} uses unsupported keyword ${key}.`);
+      if (!("value" in descriptor)) throw new TypeError(`${path}.${key} must be a data property.`);
+      values[key] = descriptor.value;
+    }
+
+    if (Object.hasOwn(values, "$ref")) {
+      if (typeof values.$ref !== "string" || !values.$ref.startsWith("#/")) {
+        throw new TypeError(`${path}.$ref must be a local JSON Pointer.`);
+      }
+      const siblings = Object.keys(values).filter((key) => key !== "$ref" && key !== "definitions");
+      if (siblings.length > 0) throw new TypeError(`${path} cannot combine $ref with validation keywords.`);
+    }
+
+    if (Object.hasOwn(values, "type")) {
+      const types = Array.isArray(values.type) ? values.type : [values.type];
+      if (types.length === 0 || [...types].some((type) => typeof type !== "string" || !supportedJsonTypes.has(type))) {
+        throw new TypeError(`${path}.type contains an unsupported JSON type.`);
+      }
+    }
+    if (Object.hasOwn(values, "enum") && (!Array.isArray(values.enum) || values.enum.length === 0)) {
+      throw new TypeError(`${path}.enum must be a non-empty array.`);
+    }
+    if (Object.hasOwn(values, "required") && (
+      !Array.isArray(values.required) || [...values.required].some((key) => typeof key !== "string")
+    )) throw new TypeError(`${path}.required must be an array of strings.`);
+    if (Object.hasOwn(values, "additionalProperties") && typeof values.additionalProperties !== "boolean") {
+      throw new TypeError(`${path}.additionalProperties must be a boolean.`);
+    }
+
+    for (const keyword of ["properties", "definitions"]) {
+      if (!Object.hasOwn(values, keyword)) continue;
+      const children = values[keyword];
+      if (!isPlainObject(children)) throw new TypeError(`${path}.${keyword} must be a plain object.`);
+      for (const key of Reflect.ownKeys(children)) {
+        const descriptor = Object.getOwnPropertyDescriptor(children, key);
+        if (!descriptor?.enumerable) continue;
+        if (typeof key === "symbol") throw new TypeError(`${path}.${keyword} cannot contain symbol keys.`);
+        if (!("value" in descriptor)) throw new TypeError(`${path}.${keyword}.${key} must be a data property.`);
+        assertNode(descriptor.value, `${path}.${keyword}.${key}`);
+      }
+    }
+    if (Object.hasOwn(values, "items")) assertNode(values.items, `${path}.items`);
+
+    visiting.delete(node);
+    verified.add(node);
+  };
+
+  assertNode(schema, "schema");
+}
