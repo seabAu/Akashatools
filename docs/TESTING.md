@@ -13,6 +13,7 @@ npm test
 npm run test:browser:install
 npm run test:browser
 npm run test:coverage
+npm run bundle:check
 npm run check
 npm run audit:release
 ```
@@ -55,7 +56,9 @@ Chromium, Firefox, and WebKit engines; install their matching binaries once with
 `npm run test:browser:install`.
 
 The GitHub Actions workflow runs the unified check, source coverage gate, and
-package-content check on the currently supported Node 22 and 24 LTS lines. A
+package-content check on the currently supported Node 22 and 24 LTS lines. The
+unified check includes focused/default bundle budgets and side-effect
+elimination. A
 separate Node 24 job installs all three browser engines and runs the browser
 suite. The matrix follows the [official Node release status](https://nodejs.org/en/about/previous-releases)
 and [Playwright browser support](https://playwright.dev/docs/browsers); update it

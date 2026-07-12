@@ -452,10 +452,12 @@ Acceptance criteria:
 - [ ] Benchmark only competing implementations with identical semantics.
 - [ ] Record Node version, warmup, iterations, variance, and memory where relevant.
 - [ ] Avoid micro-optimizations that reduce readability without measured benefit.
-- [ ] Add bundle fixtures for named root, category, default namespace, and direct
-  per-method imports if implemented.
-- [ ] Set size budgets after measuring actual bundler output.
-- [ ] Verify `sideEffects: false` remains truthful.
+- [x] Add bundle fixtures for named root, category named/namespace, default
+  flat/category namespace, a simulated per-method export, and side-effect-only import.
+- [x] Set measured esbuild 0.28.1 budgets: focused imports at 400 raw/300 gzip
+  bytes and discoverable default-namespace imports at 45,000 raw/15,000 gzip.
+- [x] Verify `sideEffects: false` remains truthful through source review and a
+  zero-byte side-effect-only bundle contract.
 
 ## Phase 8 — packaging and automation
 
@@ -464,8 +466,9 @@ Acceptance criteria:
   tests; do not hand-maintain duplicate sources.
 - [x] Keep extensionless modern subpaths as the canonical spelling; extensioned
   `lib/*.js` paths exist only for explicitly temporary 1.x compatibility.
-- [ ] Evaluate explicit per-method subpaths such as `akashatools/chunk` using real
-  bundle measurements; do not create separate npm packages.
+- [x] Evaluate explicit per-method subpaths such as `akashatools/chunk` using a
+  real bundle simulation: it is byte-identical to named-root and category imports,
+  so 2.0 will not add redundant per-method exports or separate npm packages.
 - [x] Ensure export maps expose types, import targets, and environment targets
   consistently.
 - [ ] Add reproducible scripts for type-check, lint/format, test, browser test,

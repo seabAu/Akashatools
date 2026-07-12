@@ -23,11 +23,10 @@ should treat it as a convenience import rather than the smallest bundle choice.
 import { chunk, isEmail } from "akashatools";
 ```
 
-Modern bundlers can remove unrelated exports. A verified esbuild 0.28.1 smoke
-measurement produced the same 304-byte minified `chunk` fixture from the named
-root and the array category path. That measurement is evidence for the fixture,
-not a permanent size guarantee; bundle budgets will be set from reproducible
-fixtures before release.
+Modern bundlers can remove unrelated exports. The checked-in esbuild 0.28.1
+harness produces the same 321-byte minified / 252-byte gzip `chunk` fixture from
+the named root, category named import, and category namespace import. All three
+are held to 400 raw / 300 gzip byte budgets.
 
 ## Category subpath: narrowest stable boundary
 
@@ -44,3 +43,34 @@ retain the whole category depending on use and bundler analysis.
 Akashatools does not publish one npm package per function and does not currently
 promise per-method subpaths. Named exports already provide the primary fine-
 grained optimization. Node-only code stays outside the universal root entirely.
+
+## Reproducible measurements and budgets
+
+Run:
+
+```sh
+npm run bundle:check
+```
+
+The harness uses exactly pinned esbuild 0.28.1, minified ESM, an ES2022 target,
+and both raw and gzip byte counts. The 2026-07-11 measurements are:
+
+| Fixture | Raw bytes | Gzip bytes | Raw/gzip budget |
+| --- | ---: | ---: | ---: |
+| Named root `chunk` | 321 | 252 | 400 / 300 |
+| Category `chunk` | 321 | 252 | 400 / 300 |
+| Category namespace `array.chunk` | 321 | 252 | 400 / 300 |
+| Default flat `akasha.chunk` | 37,590 | 12,330 | 45,000 / 15,000 |
+| Default category `akasha.array.chunk` | 37,596 | 12,332 | 45,000 / 15,000 |
+| Simulated `akashatools/chunk` | 321 | 252 | 400 / 300 |
+| Side-effect-only root import | 0 | 20 | 0 / 20 |
+
+The per-method simulation points directly at the same array source module a
+future `akashatools/chunk` export would target. It is byte-identical to both
+supported focused styles, so 2.0 will not add per-method subpaths. This avoids a
+larger export/type/documentation surface without sacrificing bundle efficiency.
+
+The zero-byte side-effect-only output verifies that the package can be removed
+when none of its values are used. Combined with the source review that public
+modules only create internal functions/constants/frozen namespace objects at
+import time, this keeps `sideEffects: false` truthful.

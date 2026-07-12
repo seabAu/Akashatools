@@ -113,6 +113,7 @@ npm test
 npm run test:browser:install
 npm run test:browser
 npm run test:coverage
+npm run bundle:check
 npm run check
 npm run pack:check
 npm run audit:release

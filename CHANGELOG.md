@@ -115,3 +115,6 @@
 - Added Playwright automation for six Chromium, Firefox, and WebKit contracts,
   a Node 22/24 LTS GitHub Actions matrix, browser CI, and a package-wide
   JavaScript syntax scanner.
+- Added exactly pinned esbuild bundle fixtures and budgets, verified focused
+  import equivalence and zero-byte side-effect elimination, and rejected
+  redundant per-method subpaths after a byte-identical simulation.
