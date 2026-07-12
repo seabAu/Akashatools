@@ -72,7 +72,7 @@ conflicts are summarized here.
 | Array compaction | `cleanArray`, `clean`, legacy variants | `array.compact` removes nullish values only; other filtering uses predicates. |
 | Flattening | legacy recursive helpers and native-style candidates | `array.flatten` with native depth/sparse semantics. |
 | Reordering | `reorder`, `reorderArray`, move variants | Immutable `array.moveItem` with strict indices. |
-| Removal | index/value/predicate legacy variants | One `removeFromArray` with explicit mode/options; removal-metadata API still open. |
+| Removal | index/value/predicate legacy variants | One `removeFromArray` with explicit mode/options; metadata belongs in a separate future `extractFromArray` only if demanded. |
 | Uniqueness/exclusion | prototype `unique`, legacy unique, COMPOSR `excludeIds` | `array.unique`, generic `collection.excludeBy`, and native `Set`. |
 | Nested paths | many `deep*`, `safeGet`, portfolio field paths | Secure `object.parsePath`, `getAtPath`, `hasAtPath`, `setAtPath`. |
 | Picking/allow-listing | server `pick`, portfolio `pickOwnAllowed`, legacy filters | `pick`, `omit`, `pickAllowed`; unsafe segments rejected. |

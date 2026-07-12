@@ -32,6 +32,30 @@ test("removeFromArray unifies index, value, and predicate removal", () => {
   assert.deepEqual(removeFromArray([1, 2], 10), [1, 2]);
 });
 
+test("move, insert, and removal treat sparse slots as undefined sequence items", () => {
+  const sparse = ["a", , "c"];
+  assert.deepEqual(moveItem(sparse, 1, 2), ["a", "c", undefined]);
+  assert.deepEqual(insertItem(sparse, -10, "start"), ["start", "a", undefined, "c"]);
+  assert.deepEqual(insertItem(sparse, 99, "end"), ["a", undefined, "c", "end"]);
+  assert.deepEqual(removeFromArray(sparse, "missing"), ["a", undefined, "c"]);
+
+  /** @type {Array<[unknown, number]>} */
+  const visited = [];
+  assert.deepEqual(removeFromArray(sparse, (value, index) => {
+    visited.push([value, index]);
+    return false;
+  }), ["a", undefined, "c"]);
+  assert.deepEqual(visited, [["a", 0], [undefined, 1], ["c", 2]]);
+});
+
+test("array movement and removal options reject invalid contracts", () => {
+  const source = [1, 2];
+  assert.notEqual(moveItem(source, 0, 0), source);
+  assert.throws(() => insertItem([], 0.5, "x"), TypeError);
+  assert.throws(() => removeFromArray([1], 1, { mode: /** @type {any} */ ("unknown") }), TypeError);
+  assert.throws(() => removeFromArray([1], 1, { all: /** @type {any} */ ("yes") }), TypeError);
+});
+
 test("array set, grouping, range, zip, and shuffle helpers are deterministic", () => {
   assert.deepEqual(unique([{ id: 1 }, { id: 1 }, { id: 2 }], ({ id }) => id).map(({ id }) => id), [1, 2]);
   assert.deepEqual(intersection([1, 1, 2, 3], [3, 2], [2, 4]), [2]);

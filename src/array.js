@@ -100,7 +100,8 @@ export function flatten(values, depth = Infinity) {
 }
 
 /**
- * Moves one item to another position without mutating the input.
+ * Moves one item to another position without mutating the input. Sparse slots
+ * are treated as `undefined` items and the returned array is dense.
  *
  * @template T
  * @param {readonly T[]} values
@@ -120,7 +121,9 @@ export function moveItem(values, fromIndex, toIndex) {
 }
 
 /**
- * Inserts an item at a bounded index without mutating the input.
+ * Inserts an item at a bounded index without mutating the input. Indices below
+ * zero insert at the start and indices beyond the length append. Sparse slots
+ * are treated as `undefined` items and the returned array is dense.
  *
  * @template T
  * @param {readonly T[]} values
@@ -140,7 +143,8 @@ export function insertItem(values, index, item) {
  * Removes array items by index, value, or predicate. The input is never mutated.
  * In `auto` mode a function is a predicate, an integer is an index, and every
  * other selector is compared by `Object.is`. Use `mode: "value"` to remove a
- * numeric value instead of treating it as an index.
+ * numeric value instead of treating it as an index. Sparse slots are treated as
+ * `undefined` items; predicates receive a dense copy of the input.
  *
  * @template T
  * @param {readonly T[]} values
@@ -153,6 +157,9 @@ export function removeFromArray(values, selector, { mode = "auto", all = false }
   if (!["auto", "index", "value", "predicate"].includes(mode)) {
     throw new TypeError(`Unsupported removal mode: ${mode}`);
   }
+  if (typeof all !== "boolean") throw new TypeError("all must be a boolean.");
+
+  const denseValues = [...values];
 
   const resolvedMode = mode === "auto"
     ? typeof selector === "function" ? "predicate" : Number.isInteger(selector) ? "index" : "value"
@@ -161,8 +168,8 @@ export function removeFromArray(values, selector, { mode = "auto", all = false }
   if (resolvedMode === "index") {
     if (!Number.isSafeInteger(selector)) throw new TypeError("An index selector must be a safe integer.");
     const index = /** @type {number} */ (selector);
-    if (index < 0 || index >= values.length) return [...values];
-    return [...values.slice(0, index), ...values.slice(index + 1)];
+    if (index < 0 || index >= denseValues.length) return denseValues;
+    return [...denseValues.slice(0, index), ...denseValues.slice(index + 1)];
   }
 
   if (resolvedMode === "predicate" && typeof selector !== "function") {
@@ -171,9 +178,9 @@ export function removeFromArray(values, selector, { mode = "auto", all = false }
 
   let removed = false;
   const predicate = /** @type {(value: T, index: number, values: readonly T[]) => boolean} */ (selector);
-  return values.filter((value, index) => {
+  return denseValues.filter((value, index) => {
     const matches = resolvedMode === "predicate"
-      ? predicate(value, index, values)
+      ? predicate(value, index, denseValues)
       : Object.is(value, selector);
     if (!matches || (removed && !all)) return true;
     removed = true;

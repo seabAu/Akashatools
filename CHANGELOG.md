@@ -33,6 +33,8 @@
 - Added modern array, async, browser, collection, date, number, object, random,
   sort, string, and validation modules.
 - Unified immutable array removal behind `removeFromArray`.
+- Defined dense sparse-array behavior for move/insert/remove operations and
+  validated the `all` removal option.
 - Adopted native `structuredClone`, `Object.hasOwn`, `Intl.DateTimeFormat`,
   `Map`, `Set`, `String.prototype.replaceAll`, and `Math.hypot` where appropriate.
 - Added prototype-pollution protection to nested paths and deep object merging.

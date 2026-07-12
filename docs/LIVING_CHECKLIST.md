@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 32 tests currently pass.
+- [x] Add dependency-free Node tests; 34 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -228,8 +228,8 @@ Acceptance criteria:
 - [x] Add and test `flatten` with explicit depth semantics.
 - [ ] Evaluate `difference`, `union`, `partition`, `keyBy`, `countBy`, `sample`,
   `take`, and `drop` from actual consumer usage.
-- [ ] Consolidate reorder/move/insert/remove variants around immutable contracts.
-- [ ] Decide whether `removeFromArray` should optionally return removal metadata
+- [x] Consolidate reorder/move/insert/remove variants around immutable contracts.
+- [x] Decide whether `removeFromArray` should optionally return removal metadata
   or whether a separate `extractFromArray` function is clearer.
 - [ ] Add key-based remove/update helpers without conflating index and numeric
   value selectors.
@@ -548,6 +548,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep filesystem containment on a Node-only surface. | Lexical and realpath containment are valuable, but importing Node modules cannot leak into universal entry points and path resolution alone does not authorize a later filesystem mutation. |
 | 2026-07-11 | Separate lexical containment from existing realpath containment. | Pure resolution is useful for destination planning, while symlink-aware checks require existing paths and filesystem I/O; neither is permanent authorization against later path changes. |
 | 2026-07-11 | Require provenance and license review for embedded third-party utility source. | Mindspace includes old global-style Markdown code and an unattributed large word list; location in a utility folder is not permission or evidence that copying is maintainable. |
+| 2026-07-11 | Keep removal metadata out of `removeFromArray`. | Reviewed consumers only need the resulting array; a future `extractFromArray` can return values/indices without changing the established return type if demand appears. |
 
 ## Definition of done
 
