@@ -421,7 +421,9 @@ Acceptance criteria:
 - [x] Add deterministic randomized/property-style invariant tests for paths, ranges, sorting,
   deduplication, and date conversions.
 - [ ] Add regression tests for every source bug found during migration.
-- [ ] Add cross-realm/browser tests for Blob, File, Map, Set, and typed arrays.
+- [x] Add cross-realm/browser tests: Node VM realms cover Date, plain objects,
+  Map, Set, and typed arrays; the real-browser fixture covers native Blob/File
+  plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-11 observed baseline after
   focused public-contract additions is 96.65% / 82.20% / 94.14%, respectively;

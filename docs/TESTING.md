@@ -45,6 +45,8 @@ seed explicitly instead of depending on ambient randomness.
 ## Runtime boundaries
 
 The current package contract is ESM on Node.js 22 or newer. Browser-dependent
-functions use injected DOM and URL capabilities in unit tests. Real supported
-browser and Node-version matrices remain release work and are tracked in the
-living checklist.
+functions use injected DOM and URL capabilities in unit tests. The retained
+`fixtures/browser/download.html` fixture also verifies native Blob/File guards,
+iframe-realm Map/Set/typed-array guards, download cleanup, and browser console
+health in a real browser. A repeatable multi-browser and Node-version matrix
+remains release work and is tracked in the living checklist.

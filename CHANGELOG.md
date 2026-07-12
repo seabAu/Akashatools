@@ -110,3 +110,5 @@
 - Reorganized all runtime contracts by canonical public category, removing the
   historical mixed core/object-validation test files while retaining explicit
   namespace, package, compatibility, and cross-category invariant suites.
+- Extended the real-browser fixture with native Blob/File and iframe-realm
+  Map/Set/typed-array guard checks, verified without browser console errors.

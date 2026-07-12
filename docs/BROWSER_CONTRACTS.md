@@ -13,9 +13,12 @@ The 2.x browser surface currently contains download composition only:
 
 Injected unit tests cover operation order, deferred and failure cleanup, Blob
 media/content, and duplicate-extension prevention. The retained browser fixture
-was run in the Codex in-app browser on 2026-07-11 and observed the actual anchor
-click as `browser-fixture.json`, one deferred native object-URL revocation, and no
-browser warnings/errors.
+was run in the Codex in-app browser on 2026-07-11. It observed the actual anchor
+click as `browser-fixture.json`, one deferred native object-URL revocation,
+browser-native Blob/File guards, iframe-realm Map/Set/typed-array guards, and no
+browser warnings/errors. Blob and File intentionally use the current realm's
+platform constructors; Map, Set, Date, plain-object, and typed-array contracts
+explicitly accept foreign realms.
 
 Other browser candidates remain separately deferred:
 

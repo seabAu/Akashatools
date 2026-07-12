@@ -9,8 +9,9 @@
     <output id="status">ready</output>
     <script type="module">
       import { downloadJson } from "/src/browser.js";
+      import { isBlob, isFile, isMap, isSet, isTypedArray } from "/src/validation.js";
 
-      const fixture = { filename: "", revocations: 0 };
+      const fixture = { filename: "", guards: false, revocations: 0 };
       const revokeObjectURL = URL.revokeObjectURL.bind(URL);
       URL.revokeObjectURL = (value) => {
         fixture.revocations += 1;
@@ -20,11 +21,29 @@
         if (event.target instanceof HTMLAnchorElement) fixture.filename = event.target.download;
       }, { capture: true });
 
+      const foreignFrame = document.createElement("iframe");
+      foreignFrame.hidden = true;
+      document.body.append(foreignFrame);
+      const foreign = foreignFrame.contentWindow;
+      const guardResults = {
+        blob: isBlob(new Blob(["browser"])),
+        file: isFile(new File(["browser"], "browser.txt")),
+        map: isMap(new foreign.Map()),
+        set: isSet(new foreign.Set()),
+        typedArray: isTypedArray(new foreign.Uint16Array(2)),
+      };
+      foreignFrame.remove();
+      if (Object.values(guardResults).some((result) => result !== true)) {
+        throw new Error(`Browser guard fixture failed: ${JSON.stringify(guardResults)}`);
+      }
+      fixture.guards = true;
+      document.querySelector("#status").value = "guards:pass";
+
       document.querySelector("#download").addEventListener("click", () => {
         downloadJson("Browser Fixture.json", { browser: true, library: "akashatools" });
         document.querySelector("#status").value = "clicked";
         setTimeout(() => {
-          document.querySelector("#status").value = `${fixture.filename}|revoked:${fixture.revocations}`;
+          document.querySelector("#status").value = `${fixture.filename}|revoked:${fixture.revocations}|guards:pass`;
         }, 20);
       });
     </script>
