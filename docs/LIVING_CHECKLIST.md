@@ -424,14 +424,16 @@ Acceptance criteria:
 
 ### 7.2 Security review
 
-- [ ] Threat-model nested paths and object merges for prototype pollution.
-- [ ] Threat-model filesystem containment and symlink escape.
+- [x] Threat-model nested paths and object merges for prototype pollution,
+  accessor side effects, cycles, depth, and work limits.
+- [x] Threat-model filesystem containment, symlink escape, and TOCTOU limits.
 - [x] Threat-model HTTP redirects, secret leakage, decompression/body size, and
   unsafe parsing.
-- [ ] Review regex complexity and input size limits.
-- [ ] Review random helpers for misleading security claims.
-- [ ] Review HTML/text helpers for sanitization ambiguity.
-- [ ] Run dependency and package-content audits before each prerelease.
+- [x] Review regex complexity and input size limits.
+- [x] Review random helpers for misleading security claims.
+- [x] Review HTML/text helpers for sanitization ambiguity.
+- [x] Add a reproducible dependency/package-content prerelease audit and verify
+  the current alpha has no reported dependency vulnerabilities.
 
 ### 7.3 Benchmarks and bundle size
 
@@ -563,6 +565,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Generate and commit declarations from strict JSDoc. | Explicit conditional type targets give TypeScript and editors deterministic subpath resolution, while source comments remain authoritative and drift is mechanically checked. |
 | 2026-07-11 | Use extensionless canonical 2.0 subpaths. | `akashatools/array`-style imports are concise and stable; extensioned `lib/*.js` spellings remain solely to avoid prematurely breaking 1.x consumers. |
 | 2026-07-11 | Retain only existing `lib` compatibility paths through 2.x. | A new `/legacy` namespace would duplicate and legitimize incoherent or broken 1.x behavior; removal waits for 3.0, real-consumer evidence, and explicit approval. |
+| 2026-07-11 | Bound hostile nested-data work in canonical object helpers. | Blocking prototype names is insufficient if paths or mutually recursive merges can exhaust the stack; fixed path, depth, cycle, and object-pair limits provide deterministic failure. |
 
 ## Definition of done
 

@@ -81,6 +81,8 @@ test("slug and filename helpers normalize unsafe cross-platform names", () => {
   assert.equal(safeFilename("***", { fallback: "NUL" }), "file-nul");
   assert.equal(safeFilename("abcdefgh", { maximumLength: 5 }), "abcde");
   assert.equal(escapeHtml('<script src="x">&</script>'), "&lt;script src=&quot;x&quot;&gt;&amp;&lt;/script&gt;");
+  assert.equal(escapeHtml("javascript:alert(1)"), "javascript:alert(1)", "text escaping is intentionally not URL sanitization");
+  assert.equal(escapeHtml("&lt;already encoded&gt;"), "&amp;lt;already encoded&amp;gt;");
 });
 
 test("number helpers validate ranges and avoid recursive conversions", () => {

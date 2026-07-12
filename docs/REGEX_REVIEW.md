@@ -11,7 +11,7 @@ arbitrarily large inputs are inexpensive.
 | Email syntax | ASCII local-part and domain-label character classes | Input is rejected above 254 characters before splitting or regex evaluation. Labels are checked independently at 63 characters maximum. |
 | NANP normalization | Allowed formatting characters and non-digit removal | Input is rejected above 64 characters; numeric input must be a non-negative safe integer. The helper normalizes syntax and does not prove assignment or ownership. |
 | Clock parsing | Anchored fixed-width 12-hour/24-hour patterns | `trim` is linear; the anchored expressions accept at most a small fixed result and have no ambiguous branches. |
-| Property paths | Numeric bracket replacement, bracket detection, segment grammar | All scans are linear. Parsed segments are additionally checked for safe integers and prototype-mutating names. |
+| Property paths | Numeric bracket replacement, bracket detection, segment grammar | All scans are linear. Input is capped at 10,000 code units and 100 segments, which are additionally checked for safe integers and prototype-mutating names. |
 | Filename normalization | Combining-mark, non-ASCII-safe-character, edge-hyphen scans | Each replacement is linear. Very large filenames still require proportional normalization memory; callers handling untrusted bulk content should impose request/body limits before this presentation helper. |
 | Case conversion | Two boundary scans plus Unicode letter/number tokenization | Linear passes with no nested repetition. Output allocation remains proportional to input. |
 | HTTP methods | Anchored HTTP token character class | One linear pass rejects whitespace, separators, control characters, and empty methods before Fetch. |

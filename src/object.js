@@ -1,4 +1,8 @@
 const blockedPathSegments = new Set(["__proto__", "prototype", "constructor"]);
+const maximumPathLength = 10_000;
+const maximumPathSegments = 100;
+const maximumMergeDepth = 100;
+const maximumMergeNodes = 10_000;
 
 /**
  * @typedef {object} ObjectTraversalEntry
@@ -38,17 +42,25 @@ export function isPlainObject(value) {
  *
  * @param {string | readonly (string | number)[]} path
  * @returns {(string | number)[]}
+ * @throws {TypeError} If syntax or a segment is invalid or prototype-mutating.
+ * @throws {RangeError} If the path exceeds the length or segment limits.
  * @since 2.0.0
  */
 export function parsePath(path) {
-  if (Array.isArray(path)) return path.map(normalizePathSegment);
+  if (Array.isArray(path)) {
+    if (path.length > maximumPathSegments) throw new RangeError(`path cannot contain more than ${maximumPathSegments} segments.`);
+    return path.map(normalizePathSegment);
+  }
   if (typeof path !== "string" || path.trim() === "") {
     throw new TypeError("path must be a non-empty string or segment array.");
   }
+  if (path.length > maximumPathLength) throw new RangeError(`path cannot exceed ${maximumPathLength} code units.`);
 
   const normalized = path.trim().replace(/\[(\d+)\]/g, ".$1");
   if (/[\[\]]/.test(normalized)) throw new TypeError(`Invalid property path: ${path}`);
-  return normalized.split(".").map(normalizePathSegment);
+  const segments = normalized.split(".");
+  if (segments.length > maximumPathSegments) throw new RangeError(`path cannot contain more than ${maximumPathSegments} segments.`);
+  return segments.map(normalizePathSegment);
 }
 
 /**
@@ -60,6 +72,7 @@ export function parsePath(path) {
  * @param {string | readonly (string | number)[]} path
  * @param {T} [fallback]
  * @returns {unknown | T}
+ * @throws {TypeError | RangeError} If the path contract is invalid.
  * @since 2.0.0
  */
 export function getAtPath(value, path, fallback) {
@@ -78,6 +91,7 @@ export function getAtPath(value, path, fallback) {
  * @param {unknown} value
  * @param {string | readonly (string | number)[]} path
  * @returns {boolean}
+ * @throws {TypeError | RangeError} If the path contract is invalid.
  * @since 2.0.0
  */
 export function hasAtPath(value, path) {
@@ -96,6 +110,7 @@ export function hasAtPath(value, path) {
  * @param {string | readonly (string | number)[]} path
  * @param {unknown} nextValue
  * @returns {T}
+ * @throws {TypeError | RangeError} If the path contract is invalid.
  * @since 2.0.0
  */
 export function setAtPath(value, path, nextValue) {
@@ -234,6 +249,8 @@ export function deepClone(value, options) {
  * @param {T} base
  * @param {U} override
  * @returns {T & U}
+ * @throws {TypeError} If inputs are not plain data objects or contain unsafe property semantics/cycles.
+ * @throws {RangeError} If merge depth or object-pair work exceeds the fixed limits.
  * @since 2.0.0
  */
 export function deepMerge(base, override) {
@@ -241,15 +258,44 @@ export function deepMerge(base, override) {
     throw new TypeError("deepMerge expects two plain objects.");
   }
 
-  /** @type {Record<PropertyKey, unknown>} */
-  const output = Object.create(Object.getPrototypeOf(base));
-  for (const [key, value] of ownEnumerableDataEntries(base, "base")) output[key] = value;
-  for (const [key, value] of ownEnumerableDataEntries(override, "override")) {
-    output[key] = isPlainObject(value) && isPlainObject(output[key])
-      ? deepMerge(output[key], value)
-      : value;
+  return /** @type {T & U} */ (mergePlainObjects(base, override, {
+    nodes: 0,
+    activePairs: new WeakMap(),
+  }, 0));
+}
+
+/**
+ * @param {Record<PropertyKey, unknown>} base
+ * @param {Record<PropertyKey, unknown>} override
+ * @param {{nodes: number, activePairs: WeakMap<object, WeakSet<object>>}} state
+ * @param {number} depth
+ */
+function mergePlainObjects(base, override, state, depth) {
+  if (depth > maximumMergeDepth) throw new RangeError(`deepMerge cannot exceed ${maximumMergeDepth} nested merge levels.`);
+  state.nodes += 1;
+  if (state.nodes > maximumMergeNodes) throw new RangeError(`deepMerge cannot merge more than ${maximumMergeNodes} object pairs.`);
+
+  let pairedOverrides = state.activePairs.get(base);
+  if (!pairedOverrides) {
+    pairedOverrides = new WeakSet();
+    state.activePairs.set(base, pairedOverrides);
   }
-  return /** @type {T & U} */ (output);
+  if (pairedOverrides.has(override)) throw new TypeError("deepMerge cannot merge mutually circular object branches.");
+  pairedOverrides.add(override);
+
+  try {
+    /** @type {Record<PropertyKey, unknown>} */
+    const output = Object.create(Object.getPrototypeOf(base));
+    for (const [key, value] of ownEnumerableDataEntries(base, "base")) output[key] = value;
+    for (const [key, value] of ownEnumerableDataEntries(override, "override")) {
+      output[key] = isPlainObject(value) && isPlainObject(output[key])
+        ? mergePlainObjects(output[key], value, state, depth + 1)
+        : value;
+    }
+    return output;
+  } finally {
+    pairedOverrides.delete(override);
+  }
 }
 
 /**

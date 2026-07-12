@@ -99,3 +99,6 @@
   and compiles TypeScript against the exact installed tarball.
 - Added executable representative 1.x compatibility coverage and documented the
   behavioral migration, no-new-legacy-namespace, and 3.0-earliest removal policy.
+- Bounded nested path and deep-merge complexity, rejected mutually circular merge
+  pairs, and consolidated object/filesystem/regex/random/HTML threat models with
+  a reproducible prerelease dependency and package audit.

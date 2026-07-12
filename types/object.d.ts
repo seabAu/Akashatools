@@ -36,6 +36,8 @@ export declare function isPlainObject(value: unknown): value is Record<PropertyK
  *
  * @param {string | readonly (string | number)[]} path
  * @returns {(string | number)[]}
+ * @throws {TypeError} If syntax or a segment is invalid or prototype-mutating.
+ * @throws {RangeError} If the path exceeds the length or segment limits.
  * @since 2.0.0
  */
 export declare function parsePath(path: string | readonly (string | number)[]): (string | number)[];
@@ -48,6 +50,7 @@ export declare function parsePath(path: string | readonly (string | number)[]): 
  * @param {string | readonly (string | number)[]} path
  * @param {T} [fallback]
  * @returns {unknown | T}
+ * @throws {TypeError | RangeError} If the path contract is invalid.
  * @since 2.0.0
  */
 export declare function getAtPath<T>(value: unknown, path: string | readonly (string | number)[], fallback?: T): unknown | T;
@@ -57,6 +60,7 @@ export declare function getAtPath<T>(value: unknown, path: string | readonly (st
  * @param {unknown} value
  * @param {string | readonly (string | number)[]} path
  * @returns {boolean}
+ * @throws {TypeError | RangeError} If the path contract is invalid.
  * @since 2.0.0
  */
 export declare function hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
@@ -71,6 +75,7 @@ export declare function hasAtPath(value: unknown, path: string | readonly (strin
  * @param {string | readonly (string | number)[]} path
  * @param {unknown} nextValue
  * @returns {T}
+ * @throws {TypeError | RangeError} If the path contract is invalid.
  * @since 2.0.0
  */
 export declare function setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
@@ -145,6 +150,8 @@ export declare function deepClone<T>(value: T, options?: StructuredSerializeOpti
  * @param {T} base
  * @param {U} override
  * @returns {T & U}
+ * @throws {TypeError} If inputs are not plain data objects or contain unsafe property semantics/cycles.
+ * @throws {RangeError} If merge depth or object-pair work exceeds the fixed limits.
  * @since 2.0.0
  */
 export declare function deepMerge<T extends Record<PropertyKey, unknown>, U extends Record<PropertyKey, unknown>>(base: T, override: U): T & U;

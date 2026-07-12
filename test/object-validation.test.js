@@ -45,6 +45,8 @@ test("nested paths are safe, own-property based, and immutable", () => {
   assert.notEqual(updated.profile, source.profile);
   assert.throws(() => parsePath("__proto__.polluted"), TypeError);
   assert.throws(() => setAtPath({}, ["constructor", "prototype", "polluted"], true), TypeError);
+  assert.throws(() => parsePath("a".repeat(10_001)), RangeError);
+  assert.throws(() => parsePath(Array.from({ length: 101 }, () => "item")), RangeError);
 });
 
 test("setAtPath structurally shares untouched branches and elides identical writes", () => {
@@ -114,6 +116,24 @@ test("deep merge replaces non-plain values and rejects active property semantics
   assert.throws(() => deepMerge({}, accessor), TypeError);
   assert.equal(getterCalls, 0);
   assert.throws(() => deepMerge({}, { [Symbol("key")]: true }), TypeError);
+
+  const circularBase = {};
+  const circularOverride = {};
+  circularBase.self = circularBase;
+  circularOverride.self = circularOverride;
+  assert.throws(() => deepMerge(circularBase, circularOverride), /circular/);
+
+  const deepBase = {};
+  const deepOverride = {};
+  let baseCursor = deepBase;
+  let overrideCursor = deepOverride;
+  for (let depth = 0; depth < 102; depth += 1) {
+    baseCursor.child = {};
+    overrideCursor.child = {};
+    baseCursor = baseCursor.child;
+    overrideCursor = overrideCursor.child;
+  }
+  assert.throws(() => deepMerge(deepBase, deepOverride), RangeError);
 });
 
 test("object traversal returns deterministic path-aware entries", () => {

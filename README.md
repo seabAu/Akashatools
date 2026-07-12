@@ -112,6 +112,7 @@ exports or category subpaths.
 npm test
 npm run check
 npm run pack:check
+npm run audit:release
 ```
 
 The package has no runtime dependencies. Runtime tests use Node's built-in test
@@ -131,3 +132,5 @@ and bundle tradeoffs in
 [docs/IMPORTS_AND_BUNDLING.md](docs/IMPORTS_AND_BUNDLING.md).
 Declaration and editor guarantees are documented in
 [docs/TYPES.md](docs/TYPES.md).
+Security boundaries and threat models are collected in
+[docs/SECURITY.md](docs/SECURITY.md).

@@ -943,6 +943,10 @@ Parses a safe dot/bracket property path. Prototype-mutating segments are rejecte
 | --- | --- | --- |
 | `path` | `string \| readonly (string \| number)[]` | Not documented. |
 
+Throws:
+- `TypeError` — If syntax or a segment is invalid or prototype-mutating.
+- `RangeError` — If the path exceeds the length or segment limits.
+
 ### getAtPath
 
 Reads an own property at a nested path, returning a fallback only when the path is absent. An existing `undefined` value is returned as-is.
@@ -959,6 +963,9 @@ Reads an own property at a nested path, returning a fallback only when the path 
 | `path` | `string \| readonly (string \| number)[]` | Not documented. |
 | `[fallback]` | `T` | Not documented. |
 
+Throws:
+- `TypeError | RangeError` — If the path contract is invalid.
+
 ### hasAtPath
 
 Checks whether every segment of a nested own-property path exists.
@@ -973,6 +980,9 @@ Checks whether every segment of a nested own-property path exists.
 | --- | --- | --- |
 | `value` | `unknown` | Not documented. |
 | `path` | `string \| readonly (string \| number)[]` | Not documented. |
+
+Throws:
+- `TypeError | RangeError` — If the path contract is invalid.
 
 ### setAtPath
 
@@ -989,6 +999,9 @@ Sets a nested value while structurally sharing untouched objects and arrays. Mis
 | `value` | `T` | Not documented. |
 | `path` | `string \| readonly (string \| number)[]` | Not documented. |
 | `nextValue` | `unknown` | Not documented. |
+
+Throws:
+- `TypeError | RangeError` — If the path contract is invalid.
 
 ### traverseObject
 
@@ -1088,6 +1101,10 @@ Recursively merges own enumerable string-keyed data properties of plain objects 
 | --- | --- | --- |
 | `base` | `T` | Not documented. |
 | `override` | `U` | Not documented. |
+
+Throws:
+- `TypeError` — If inputs are not plain data objects or contain unsafe property semantics/cycles.
+- `RangeError` — If merge depth or object-pair work exceeds the fixed limits.
 
 ### pickAllowed
 
