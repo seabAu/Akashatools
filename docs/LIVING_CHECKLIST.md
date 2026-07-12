@@ -378,8 +378,8 @@ Acceptance criteria:
   parameters, return type, thrown errors, examples, and important edge cases.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
   115 public declarations by `npm run check:docs`.
-- [ ] Generate an API reference grouped by category from source comments or a
-  single authoritative manifest.
+- [x] Generate an API reference grouped by category from source comments or a
+  single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [ ] Add a searchable function index with old name, new name, category, runtime,
   mutation behavior, and direct import path.
 - [ ] Add recipes for common array/object/data/date workflows.

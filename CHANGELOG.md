@@ -86,3 +86,5 @@
   app-owned, while generic JSON contract checks remain under `validation`.
 - Added consistent `@since 2.0.0` metadata to every public declaration and a
   reproducible API-documentation check for summaries, types, and deprecations.
+- Added a source-generated API reference grouped by category and a drift check
+  integrated into the normal project verification command.
