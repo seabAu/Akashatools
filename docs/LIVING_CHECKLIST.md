@@ -235,12 +235,12 @@ Acceptance criteria:
   value selectors.
 - [x] Define sparse-array behavior for every array transform.
 - [x] Benchmark Set/Map strategies against nested `includes` for large inputs.
-- [ ] Add generic iterable support only where it improves real consumers without
+- [x] Add generic iterable support only where it improves real consumers without
   making return types surprising.
 
 ### 3.2 Objects and nested data
 
-- [ ] Add a well-specified deep equality function or explicitly defer to a
+- [x] Add a well-specified deep equality function or explicitly defer to a
   dedicated library/native future API.
 - [ ] Design deep traversal/search results with `{ value, key, path, parent }`.
 - [ ] Consolidate `deepSearch`, `deepSearchItems`, `findByKey`, `findByValue`, and

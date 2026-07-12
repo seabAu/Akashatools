@@ -158,6 +158,17 @@ resolved only when an effect runs, and Node-only modules stay under `akashatools
 - A utility that differs from these rules must state the exception in JSDoc and
   include sparse-input tests.
 
+## Arrays and generic iterables
+
+- Array-category functions require arrays when their contracts expose indices,
+  sparse-slot behavior, bounded insertion, or array return types.
+- The reviewed Mindspace, portfolio, and COMPOSR consumers do not pass Sets,
+  Maps, generators, or other iterables to these positions. Generic iterable
+  overloads are therefore deferred until a real consumer benefits without a
+  surprising return type or one-shot-consumption rule.
+- APIs that naturally consume another collection kind name and type it directly,
+  such as the `Set` accepted by `collection.excludeBy`.
+
 ## Public JSDoc
 
 Every public utility includes:

@@ -77,6 +77,8 @@ conflicts are summarized here.
 | Reordering | `reorder`, `reorderArray`, move variants | Immutable `array.moveItem` with strict indices. |
 | Removal | index/value/predicate legacy variants | One `removeFromArray` with explicit mode/options; metadata belongs in a separate future `extractFromArray` only if demanded. |
 | Identity replacement/exclusion | COMPOSR `upsertById`/`excludeIds`, Mindspace bulk pending-scrap removal | Generic immutable `collection.upsertBy`/`excludeBy`; `Object.is`/`Set` compare derived keys, so numeric keys are never interpreted as array indices. Database updates remain app-owned. |
+| Generic iterable transforms | Evaluated Set/Map/generator input across all requested consumers | Deferred: active call sites use arrays, and array indices/sparse slots/fresh array returns are intentional contracts. Collection-specific arguments remain explicitly typed. |
+| Deep equality | Mindspace `obj.isDeepEqual` and a private client copy | Deferred to a dedicated dependency or future constrained contract. The copies are unused or unproven and omit cycles, prototypes, built-in collections, typed arrays, accessors, and symbols. |
 | Nested paths | many `deep*`, `safeGet`, portfolio field paths | Secure `object.parsePath`, `getAtPath`, `hasAtPath`, `setAtPath`. |
 | Picking/allow-listing | server `pick`, portfolio `pickOwnAllowed`, legacy filters | `pick`, `omit`, `pickAllowed`; unsafe segments rejected. |
 | Cloning | JSON clone helpers and COMPOSR/app copies | Native `structuredClone` through `object.deepClone`. |
