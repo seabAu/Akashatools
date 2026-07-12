@@ -1,3 +1,5 @@
+import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
+
 /**
  * Returns a random float in the half-open range [minimum, maximum).
  *
@@ -8,7 +10,7 @@
  */
 export function randomFloat(minimum = 0, maximum = 1, random = Math.random) {
   validateRange(minimum, maximum, random);
-  return sample(random) * (maximum - minimum) + minimum;
+  return sampleRandom(random) * (maximum - minimum) + minimum;
 }
 
 /**
@@ -27,7 +29,7 @@ export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = 
   validateRange(minimum, maximum, random);
   const width = maximum - minimum + (inclusiveMaximum ? 1 : 0);
   if (width <= 0) throw new RangeError("The random integer range is empty.");
-  return Math.floor(sample(random) * width) + minimum;
+  return Math.floor(sampleRandom(random) * width) + minimum;
 }
 
 /**
@@ -37,8 +39,8 @@ export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = 
  * @returns {boolean}
  */
 export function randomBoolean(random = Math.random) {
-  assertRandom(random);
-  return sample(random) >= 0.5;
+  assertRandomSource(random);
+  return sampleRandom(random) >= 0.5;
 }
 
 /**
@@ -53,8 +55,8 @@ export function randomBoolean(random = Math.random) {
 export function randomString(length, characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", random = Math.random) {
   if (!Number.isSafeInteger(length) || length < 0) throw new RangeError("length must be a non-negative safe integer.");
   if (typeof characters !== "string" || characters.length === 0) throw new TypeError("characters must be a non-empty string.");
-  assertRandom(random);
-  return Array.from({ length }, () => characters[Math.floor(sample(random) * characters.length)]).join("");
+  assertRandomSource(random);
+  return Array.from({ length }, () => characters[Math.floor(sampleRandom(random) * characters.length)]).join("");
 }
 
 /**
@@ -76,19 +78,5 @@ export function randomDate(start, end = new Date(), random = Math.random) {
 function validateRange(minimum, maximum, random) {
   if (!Number.isFinite(minimum) || !Number.isFinite(maximum)) throw new TypeError("Bounds must be finite numbers.");
   if (minimum > maximum) throw new RangeError("minimum cannot exceed maximum.");
-  assertRandom(random);
-}
-
-/** @param {unknown} random */
-function assertRandom(random) {
-  if (typeof random !== "function") throw new TypeError("random must be a function.");
-}
-
-/** @param {() => number} random */
-function sample(random) {
-  const value = random();
-  if (!Number.isFinite(value) || value < 0 || value >= 1) {
-    throw new RangeError("random must return a finite number in the range [0, 1).");
-  }
-  return value;
+  assertRandomSource(random);
 }

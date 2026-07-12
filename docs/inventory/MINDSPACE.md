@@ -261,9 +261,12 @@ The module installs more than twenty methods on `Array.prototype`, adds static
 `Array.range`/`Array.removeExtensions`, logs caught callback errors, implements a
 custom chain, and mutates globals merely by being imported. Canonical disposition:
 **Reject the module and all prototype extension behavior.** Its useful operations
-are already represented by standalone array functions or tracked candidates such
-as `flatten`, `countBy`, and `partition`. This evidence reinforces the 2.0 rule
-that importing Akashatools never modifies global prototypes.
+are represented by standalone array functions. `countBy` and `partition` were
+redesigned as strict, immutable functions after a cross-project usage audit;
+`sample` remains deferred because its legacy and feature-local versions have no
+active callers and disagree with a clear single-versus-many contract. This
+evidence reinforces the 2.0 rule that importing Akashatools never modifies
+global prototypes.
 
 ### Client `obj.js` (16 exports)
 

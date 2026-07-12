@@ -4,11 +4,13 @@ import test from "node:test";
 import {
   chunk,
   compact,
+  countBy,
   flatten,
   groupBy,
   insertItem,
   intersection,
   moveItem,
+  partition,
   range,
   removeFromArray,
   shuffle,
@@ -64,6 +66,37 @@ test("array set, grouping, range, zip, and shuffle helpers are deterministic", (
   assert.deepEqual(zip([1, 2], ["a", "b", "c"]), [[1, "a"], [2, "b"]]);
   assert.deepEqual(groupBy([1, 2, 3], (value) => value % 2).get(1), [1, 3]);
   assert.deepEqual(shuffle([1, 2, 3], () => 0), [2, 3, 1]);
+});
+
+test("countBy preserves key identity and treats sparse slots as undefined", () => {
+  const objectKey = {};
+  const sparse = [objectKey, , objectKey, undefined];
+  const counts = countBy(sparse);
+
+  assert.deepEqual([...counts.entries()], [[objectKey, 2], [undefined, 2]]);
+  assert.deepEqual([...countBy(["one", "two", "four"], (value) => value.length).entries()], [[3, 2], [4, 1]]);
+});
+
+test("partition is immutable, ordered, dense for sparse input, and fail-fast", () => {
+  const sparse = [1, , 2, 3];
+  /** @type {Array<[unknown, number]>} */
+  const visited = [];
+  const result = partition(sparse, (value, index) => {
+    visited.push([value, index]);
+    return typeof value === "number" && value % 2 === 1;
+  });
+
+  assert.deepEqual(result, [[1, 3], [undefined, 2]]);
+  assert.deepEqual(visited, [[1, 0], [undefined, 1], [2, 2], [3, 3]]);
+  assert.equal(1 in sparse, false);
+  assert.throws(() => partition([1], () => { throw new Error("predicate failed"); }), /predicate failed/);
+});
+
+test("array callbacks and random sources reject invalid contracts", () => {
+  assert.throws(() => countBy([1], /** @type {any} */ ("id")), TypeError);
+  assert.throws(() => partition([1], /** @type {any} */ (null)), TypeError);
+  assert.throws(() => shuffle([1, 2], () => 1), RangeError);
+  assert.throws(() => shuffle([1, 2], () => Number.NaN), RangeError);
 });
 
 test("flatten follows native depth semantics without mutating its input", () => {

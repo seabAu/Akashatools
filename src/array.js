@@ -1,3 +1,5 @@
+import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
+
 /** @typedef {"auto" | "index" | "value" | "predicate"} RemovalMode */
 
 /**
@@ -211,6 +213,64 @@ export function groupBy(values, toKey) {
 }
 
 /**
+ * Counts items by a derived key without coercing keys to object properties.
+ * Sparse slots are treated as `undefined` items. Callback errors propagate.
+ *
+ * @template T
+ * @overload
+ * @param {readonly T[]} values
+ * @returns {Map<T, number>}
+ */
+/**
+ * @template T, K
+ * @overload
+ * @param {readonly T[]} values
+ * @param {(value: T, index: number, values: readonly T[]) => K} toKey
+ * @returns {Map<K, number>}
+ */
+/**
+ * @param {readonly unknown[]} values
+ * @param {(value: unknown, index: number, values: readonly unknown[]) => unknown} [toKey]
+ * @returns {Map<unknown, number>}
+ */
+export function countBy(values, toKey = (value) => value) {
+  assertArray(values, "values");
+  if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
+
+  const denseValues = [...values];
+  const counts = new Map();
+  denseValues.forEach((value, index) => {
+    const key = toKey(value, index, denseValues);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  });
+  return counts;
+}
+
+/**
+ * Splits items into matching and non-matching arrays while preserving order.
+ * Sparse slots are treated as `undefined` items. Callback errors propagate.
+ *
+ * @template T
+ * @param {readonly T[]} values
+ * @param {(value: T, index: number, values: readonly T[]) => boolean} predicate
+ * @returns {[T[], T[]]}
+ */
+export function partition(values, predicate) {
+  assertArray(values, "values");
+  if (typeof predicate !== "function") throw new TypeError("predicate must be a function.");
+
+  const denseValues = [...values];
+  /** @type {T[]} */
+  const matching = [];
+  /** @type {T[]} */
+  const nonMatching = [];
+  denseValues.forEach((value, index) => {
+    (predicate(value, index, denseValues) ? matching : nonMatching).push(value);
+  });
+  return [matching, nonMatching];
+}
+
+/**
  * Returns unique values present in every input array.
  *
  * @template T
@@ -270,11 +330,11 @@ export function zip(...arrays) {
  */
 export function shuffle(values, random = Math.random) {
   assertArray(values, "values");
-  if (typeof random !== "function") throw new TypeError("random must be a function.");
+  assertRandomSource(random);
 
   const result = [...values];
   for (let index = result.length - 1; index > 0; index -= 1) {
-    const target = Math.floor(random() * (index + 1));
+    const target = Math.floor(sampleRandom(random) * (index + 1));
     [result[index], result[target]] = [result[target], result[index]];
   }
   return result;

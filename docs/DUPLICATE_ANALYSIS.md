@@ -71,6 +71,9 @@ conflicts are summarized here.
 | Array normalization | `safeArray`, `isArrSafe`, `arrSafeTernary*` | `array.asArray`; reject boolean/array return ambiguity. |
 | Array compaction | `cleanArray`, `clean`, legacy variants | `array.compact` removes nullish values only; other filtering uses predicates. |
 | Flattening | legacy recursive helpers and native-style candidates | `array.flatten` with native depth/sparse semantics. |
+| Counting and partitioning | Mindspace prototype `countBy`/`partition` | Standalone `array.countBy` returns an identity-safe `Map`; `array.partition` returns an ordered tuple. Both validate callbacks and propagate failures. |
+| Array set/slice conveniences | legacy `mergeArray` plus evaluated `difference`, `union`, `keyBy`, `take`, and `drop` names | No active consumer calls were found. Prefer native `Set`, `slice`, and existing `unique`/`groupBy` until a repeated contract warrants wrappers. |
+| Random array selection | Mindspace prototype `sample` and feature-local Heatmap sampler | Deferred: neither implementation has an active caller, the feature helper uses biased random sorting, and the name does not establish single-item versus multi-item return behavior. |
 | Reordering | `reorder`, `reorderArray`, move variants | Immutable `array.moveItem` with strict indices. |
 | Removal | index/value/predicate legacy variants | One `removeFromArray` with explicit mode/options; metadata belongs in a separate future `extractFromArray` only if demanded. |
 | Uniqueness/exclusion | prototype `unique`, legacy unique, COMPOSR `excludeIds` | `array.unique`, generic `collection.excludeBy`, and native `Set`. |

@@ -35,6 +35,10 @@
 - Unified immutable array removal behind `removeFromArray`.
 - Defined dense sparse-array behavior for move/insert/remove operations and
   validated the `all` removal option.
+- Added strict standalone `countBy` and `partition` array helpers with dense
+  sparse-slot behavior, identity-safe keys, and fail-fast callbacks.
+- Centralized and enforced the finite `[0, 1)` injected-random contract for
+  array shuffling and primitive random helpers.
 - Adopted native `structuredClone`, `Object.hasOwn`, `Intl.DateTimeFormat`,
   `Map`, `Set`, `String.prototype.replaceAll`, and `Math.hypot` where appropriate.
 - Added prototype-pollution protection to nested paths and deep object merging.
