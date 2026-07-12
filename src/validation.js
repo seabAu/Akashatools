@@ -1,5 +1,20 @@
 import { isPlainObject } from "./object.js";
 
+/** @typedef {"array" | "object" | "integer" | "null" | "string" | "number" | "boolean"} JsonContractType */
+
+/**
+ * @typedef {object} JsonContract
+ * @property {string} [$ref]
+ * @property {JsonContractType | readonly JsonContractType[]} [type]
+ * @property {unknown} [const]
+ * @property {readonly unknown[]} [enum]
+ * @property {readonly string[]} [required]
+ * @property {Record<string, JsonContract>} [properties]
+ * @property {JsonContract} [items]
+ * @property {boolean} [additionalProperties]
+ * @property {Record<string, JsonContract>} [definitions]
+ */
+
 const brandCheckKey = Object.freeze({});
 const supportedContractKeywords = new Set([
   "$ref",
@@ -253,7 +268,7 @@ export function formatNanpPhone(value) {
  * schemas throw instead of being silently ignored.
  *
  * @param {unknown} value
- * @param {Record<string, any>} schema
+ * @param {JsonContract} schema
  * @returns {string[]}
  * @since 2.0.0
  */
@@ -267,7 +282,7 @@ export function validateJsonContract(value, schema) {
  *
  * @template T
  * @param {T} value
- * @param {Record<string, any>} schema
+ * @param {JsonContract} schema
  * @returns {T}
  * @since 2.0.0
  */
@@ -279,8 +294,8 @@ export function assertJsonContract(value, schema) {
 
 /**
  * @param {unknown} value
- * @param {Record<string, any>} schema
- * @param {Record<string, any>} root
+ * @param {JsonContract} schema
+ * @param {JsonContract} root
  * @param {string} path
  * @returns {string[]}
  */
@@ -321,7 +336,7 @@ function validateContractNode(value, schema, root, path) {
   return errors;
 }
 
-/** @param {Record<string, any>} root @param {string} reference */
+/** @param {JsonContract} root @param {string} reference */
 function resolveReference(root, reference) {
   if (typeof reference !== "string" || !reference.startsWith("#/")) {
     throw new TypeError(`Unsupported contract reference: ${String(reference)}`);

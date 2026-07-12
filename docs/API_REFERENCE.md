@@ -1758,7 +1758,7 @@ Validates a value against a useful JSON Schema subset. Supported keywords are `$
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `value` | `unknown` | Not documented. |
-| `schema` | `Record<string, any>` | Not documented. |
+| `schema` | `JsonContract` | Not documented. |
 
 ### assertJsonContract
 
@@ -1773,7 +1773,7 @@ Asserts a value against the supported JSON Schema subset.
 | Parameter | Type | Description |
 | --- | --- | --- |
 | `value` | `T` | Not documented. |
-| `schema` | `Record<string, any>` | Not documented. |
+| `schema` | `JsonContract` | Not documented. |
 
 ## node
 

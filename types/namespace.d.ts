@@ -1,0 +1,571 @@
+import * as arrayModule from "./array.js";
+import * as asyncModule from "./async.js";
+import * as browserModule from "./browser.js";
+import * as collectionModule from "./collection.js";
+import * as dateModule from "./date.js";
+import * as httpModule from "./http.js";
+import * as numberModule from "./number.js";
+import * as objectModule from "./object.js";
+import * as randomModule from "./random.js";
+import * as sortModule from "./sort.js";
+import * as stringModule from "./string.js";
+import * as validationModule from "./validation.js";
+/** Frozen array utilities for namespace-style discovery. */
+export declare const array: Readonly<{
+    asArray<T>(value: unknown, fallback?: readonly T[]): T[];
+    isNonEmptyArray<T>(value: unknown): value is T[];
+    compact<T>(values: readonly (T | null | undefined)[]): T[];
+    chunk<T>(values: readonly T[], size: number): T[][];
+    unique<T>(values: readonly T[], toKey?: (value: T, index: number) => unknown): T[];
+    flatten<T>(values: readonly T[], depth?: number): unknown[];
+    moveItem<T>(values: readonly T[], fromIndex: number, toIndex: number): T[];
+    insertItem<T>(values: readonly T[], index: number, item: T): T[];
+    removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), { mode, all }?: {
+        mode?: arrayModule.RemovalMode;
+        all?: boolean;
+    }): T[];
+    groupBy<T, K>(values: readonly T[], toKey: (value: T, index: number) => K): Map<K, T[]>;
+    countBy<T>(values: readonly T[]): Map<T, number>;
+    countBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K): Map<K, number>;
+    partition<T>(values: readonly T[], predicate: (value: T, index: number, values: readonly T[]) => boolean): [T[], T[]];
+    intersection<T>(...arrays: (readonly T[])[]): T[];
+    range(start: number, end?: number, step?: number): number[];
+    zip(...arrays: (readonly unknown[])[]): unknown[][];
+    shuffle<T>(values: readonly T[], random?: () => number): T[];
+}>;
+/** Frozen asynchronous utilities for namespace-style discovery. */
+export declare const asyncUtils: Readonly<{
+    mapSettledWithConcurrency<T, R>(values: readonly T[], concurrency: number, mapper: (value: T, index: number) => R | PromiseLike<R>): Promise<PromiseSettledResult<R>[]>;
+    fulfilledValues<T>(results: readonly PromiseSettledResult<T>[]): T[];
+    delay(milliseconds: number, { signal }?: {
+        signal?: AbortSignal;
+    }): Promise<void>;
+}>;
+/** Frozen browser utilities for namespace-style discovery. */
+export declare const browser: Readonly<{
+    downloadBlob(filename: string, blob: Blob, environment?: {
+        document?: Document;
+        url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
+        schedule?: (callback: () => void) => unknown;
+    }): void;
+    downloadTextFile(filename: string, content: string, { contentType, ...environment }?: {
+        contentType?: string;
+        document?: Document;
+        url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
+        schedule?: (callback: () => void) => unknown;
+    }): void;
+    downloadJson(filename: string, value: unknown, { space, ...environment }?: {
+        space?: number | string;
+        document?: Document;
+        url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
+        schedule?: (callback: () => void) => unknown;
+    }): void;
+}>;
+/** Frozen collection utilities for namespace-style discovery. */
+export declare const collection: Readonly<{
+    upsertBy<T, K>(values: readonly T[], nextValue: T, toKey?: (value: T) => K, { prepend }?: {
+        prepend?: boolean;
+    }): T[];
+    excludeBy<T, K>(values: readonly T[], excluded: ReadonlySet<K>, toKey?: (value: T) => K): T[];
+    upsertById: <T extends {
+        id: unknown;
+    }>(values: readonly T[], nextValue: T) => T[];
+    excludeIds: <T extends {
+        id: K;
+    }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
+}>;
+/** Frozen date and time utilities for namespace-style discovery. */
+export declare const date: Readonly<{
+    isValidDate(value: unknown): value is Date;
+    toDate(value: Date | string | number | null | undefined): Date | null;
+    daysInMonth(yearOrDate: number | Date, monthIndex?: number): number;
+    startOfLocalDay(value: Date | string | number): Date;
+    localDateKey(value: Date | string | number): string;
+    differenceInLocalDays(later: Date | string | number, earlier: Date | string | number): number;
+    isSameLocalDay(left: Date | string | number, right: Date | string | number): boolean;
+    isToday(value: Date | string | number, now?: Date): boolean;
+    toUnixSeconds(value: Date | string | number): number;
+    fromUnixSeconds(seconds: number): Date;
+    normalizeInstantRange(start: Date | string | number, end: Date | string | number): {
+        start: Date;
+        end: Date;
+    };
+    isWithinInstantRange(value: Date | string | number, start: Date | string | number, end: Date | string | number, { startInclusive, endInclusive }?: {
+        startInclusive?: boolean;
+        endInclusive?: boolean;
+    }): boolean;
+    clockTimeToMinutes(value: string): number | null;
+    minutesToClockTime(minutes: number): string;
+    clock12To24(value: string): string | null;
+    clock24To12(value: string): string | null;
+    formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+}>;
+/** Frozen HTTP request and error utilities. */
+export declare const http: Readonly<{
+    HttpError: typeof httpModule.HttpError;
+    request<T>(input: string | URL, options?: RequestInit & {
+        responseType?: "auto" | "json" | "text" | "blob" | "arrayBuffer" | "response";
+        timeoutMs?: number;
+        maxResponseBytes?: number;
+        includeErrorBody?: boolean;
+        sensitiveHeaderNames?: readonly string[];
+        fetchFn?: typeof fetch;
+    }): Promise<T>;
+    redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+}>;
+/** Frozen numeric utilities for namespace-style discovery. */
+export declare const number: Readonly<{
+    clamp(value: number, minimum: number, maximum: number): number;
+    wrap(value: number, minimum: number, maximum: number): number;
+    roundTo(value: number, digits?: number): number;
+    sum(...values: number[]): number;
+    subtract(first: number, ...rest: number[]): number;
+    distance(left: number, right: number): number;
+    distance2d(left: readonly [number, number], right: readonly [number, number]): number;
+    fibonacci(index: number): number;
+    toBinary(value: number): string;
+    summarizeNumbers(values: readonly number[]): {
+        count: number;
+        minimum: number | null;
+        maximum: number | null;
+        median: number | null;
+        p75: number | null;
+        p95: number | null;
+        mean: number | null;
+        standardDeviation: number | null;
+    };
+}>;
+/** Frozen object utilities for namespace-style discovery. */
+export declare const object: Readonly<{
+    isPlainObject(value: unknown): value is Record<PropertyKey, unknown>;
+    parsePath(path: string | readonly (string | number)[]): (string | number)[];
+    getAtPath<T>(value: unknown, path: string | readonly (string | number)[], fallback?: T): unknown | T;
+    hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
+    setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
+    traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry[];
+    findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry | undefined;
+    pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
+    omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
+    deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
+    deepMerge<T extends Record<PropertyKey, unknown>, U extends Record<PropertyKey, unknown>>(base: T, override: U): T & U;
+    pickAllowed(value: unknown, allowedKeys: readonly string[], { rejectUnknown }?: {
+        rejectUnknown?: boolean;
+    }): Record<string, unknown>;
+}>;
+/** Frozen pseudo-random utilities for namespace-style discovery. */
+export declare const random: Readonly<{
+    randomFloat(minimum?: number, maximum?: number, random?: () => number): number;
+    randomInt(minimum: number, maximum: number, { inclusiveMaximum, random }?: {
+        inclusiveMaximum?: boolean;
+        random?: () => number;
+    }): number;
+    randomBoolean(random?: () => number): boolean;
+    randomString(length: number, characters?: string, random?: () => number): string;
+    secureRandomUuid(): string;
+    secureRandomString(length: number, alphabet?: string): string;
+    randomDate(start: Date | string | number, end?: Date | string | number, random?: () => number): Date;
+}>;
+/** Frozen sorting utilities for namespace-style discovery. */
+export declare const sort: Readonly<{
+    sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, { direction, nulls, compare }?: {
+        direction?: sortModule.SortDirection;
+        nulls?: sortModule.NullPlacement;
+        compare?: (left: K, right: K) => number;
+    }): T[];
+    sortByMany<T>(values: readonly T[], criteria: ReadonlyArray<{
+        toKey: (value: T, index: number) => unknown;
+        direction?: sortModule.SortDirection;
+        nulls?: sortModule.NullPlacement;
+        compare?: (left: any, right: any) => number;
+    }>): T[];
+    createCollatorComparator(locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): (left: unknown, right: unknown) => number;
+    compareValues(left: unknown, right: unknown): number;
+    compareNumericOrder(left: Record<string, unknown>, right: Record<string, unknown>, keys?: readonly string[]): number;
+    sortByNumericOrder<T extends Record<string, unknown>>(values: readonly T[], keys?: readonly string[]): T[];
+}>;
+/** Frozen string utilities for namespace-style discovery. */
+export declare const string: Readonly<{
+    capitalize(value: string, locales?: string | string[]): string;
+    kebabCase(value: string): string;
+    camelCase(value: string): string;
+    pascalCase(value: string): string;
+    sentenceCase(value: string): string;
+    includesText(value: string, search: string, { caseSensitive, locales }?: {
+        caseSensitive?: boolean;
+        locales?: string | string[];
+    }): boolean;
+    replaceMany(value: string, replacements: ReadonlyMap<string, string> | Record<string, string>): string;
+    replaceRegex(value: string, pattern: RegExp, replacement: string | ((substring: string, ...args: any[]) => string)): string;
+    longestStringLength(value: unknown): number;
+    safeFilename(value: string, { fallback, maximumLength }?: {
+        fallback?: string;
+        maximumLength?: number;
+    }): string;
+    slugify(value: string, { fallback, maximumLength }?: {
+        fallback?: string;
+        maximumLength?: number;
+    }): string;
+    escapeHtml(value: unknown): string;
+    prettyJson(value: unknown, space?: number | string): string;
+}>;
+/** Frozen validation utilities for namespace-style discovery. */
+export declare const validation: Readonly<{
+    isDefined<T>(value: T | null | undefined): value is T;
+    isBlank(value: unknown): boolean;
+    isEmpty(value: unknown): boolean;
+    isFiniteNumber(value: unknown): value is number;
+    isSafeInteger(value: unknown): value is number;
+    isMap(value: unknown): value is Map<unknown, unknown>;
+    isSet(value: unknown): value is Set<unknown>;
+    isTypedArray(value: unknown): value is Exclude<ArrayBufferView, DataView>;
+    isPlainObjectArray(value: unknown): value is Record<PropertyKey, unknown>[];
+    isBlob(value: unknown): value is Blob;
+    isFile(value: unknown): value is File;
+    typeOf(value: unknown): string;
+    isJson(value: unknown): value is string;
+    isEmail(value: unknown): value is string;
+    normalizeNanpPhone(value: unknown): string | null;
+    formatNanpPhone(value: unknown): string | null;
+    validateJsonContract(value: unknown, schema: validationModule.JsonContract): string[];
+    assertJsonContract<T>(value: T, schema: validationModule.JsonContract): T;
+}>;
+/**
+ * Akashatools' discoverable convenience namespace.
+ *
+ * Utilities appear both as flat properties (`akasha.chunk`) and within frozen
+ * categories (`akasha.array.chunk`). Focused named and subpath imports remain the
+ * recommended choice when bundle size is the primary concern.
+ *
+ * @example
+ * import akasha from "akashatools";
+ * akasha.array.chunk([1, 2, 3], 2);
+ * akasha.chunk([1, 2, 3], 2);
+ */
+export declare const akasha: Readonly<{
+    asArray: typeof arrayModule.asArray;
+    isNonEmptyArray: typeof arrayModule.isNonEmptyArray;
+    compact: typeof arrayModule.compact;
+    chunk: typeof arrayModule.chunk;
+    unique: typeof arrayModule.unique;
+    flatten: typeof arrayModule.flatten;
+    moveItem: typeof arrayModule.moveItem;
+    insertItem: typeof arrayModule.insertItem;
+    removeFromArray: typeof arrayModule.removeFromArray;
+    groupBy: typeof arrayModule.groupBy;
+    countBy: typeof arrayModule.countBy;
+    partition: typeof arrayModule.partition;
+    intersection: typeof arrayModule.intersection;
+    range: typeof arrayModule.range;
+    zip: typeof arrayModule.zip;
+    shuffle: typeof arrayModule.shuffle;
+    mapSettledWithConcurrency: typeof asyncModule.mapSettledWithConcurrency;
+    fulfilledValues: typeof asyncModule.fulfilledValues;
+    delay: typeof asyncModule.delay;
+    capitalize: typeof stringModule.capitalize;
+    kebabCase: typeof stringModule.kebabCase;
+    camelCase: typeof stringModule.camelCase;
+    pascalCase: typeof stringModule.pascalCase;
+    sentenceCase: typeof stringModule.sentenceCase;
+    includesText: typeof stringModule.includesText;
+    replaceMany: typeof stringModule.replaceMany;
+    replaceRegex: typeof stringModule.replaceRegex;
+    longestStringLength: typeof stringModule.longestStringLength;
+    safeFilename: typeof stringModule.safeFilename;
+    slugify: typeof stringModule.slugify;
+    escapeHtml: typeof stringModule.escapeHtml;
+    prettyJson: typeof stringModule.prettyJson;
+    downloadBlob: typeof browserModule.downloadBlob;
+    downloadTextFile: typeof browserModule.downloadTextFile;
+    downloadJson: typeof browserModule.downloadJson;
+    upsertBy: typeof collectionModule.upsertBy;
+    excludeBy: typeof collectionModule.excludeBy;
+    upsertById: <T extends {
+        id: unknown;
+    }>(values: readonly T[], nextValue: T) => T[];
+    excludeIds: <T extends {
+        id: K;
+    }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
+    isValidDate: typeof dateModule.isValidDate;
+    toDate: typeof dateModule.toDate;
+    daysInMonth: typeof dateModule.daysInMonth;
+    startOfLocalDay: typeof dateModule.startOfLocalDay;
+    localDateKey: typeof dateModule.localDateKey;
+    differenceInLocalDays: typeof dateModule.differenceInLocalDays;
+    isSameLocalDay: typeof dateModule.isSameLocalDay;
+    isToday: typeof dateModule.isToday;
+    toUnixSeconds: typeof dateModule.toUnixSeconds;
+    fromUnixSeconds: typeof dateModule.fromUnixSeconds;
+    normalizeInstantRange: typeof dateModule.normalizeInstantRange;
+    isWithinInstantRange: typeof dateModule.isWithinInstantRange;
+    clockTimeToMinutes: typeof dateModule.clockTimeToMinutes;
+    minutesToClockTime: typeof dateModule.minutesToClockTime;
+    clock12To24: typeof dateModule.clock12To24;
+    clock24To12: typeof dateModule.clock24To12;
+    formatDate: typeof dateModule.formatDate;
+    formatDateTime: typeof dateModule.formatDateTime;
+    HttpError: typeof httpModule.HttpError;
+    request: typeof httpModule.request;
+    redactHeaders: typeof httpModule.redactHeaders;
+    clamp: typeof numberModule.clamp;
+    wrap: typeof numberModule.wrap;
+    roundTo: typeof numberModule.roundTo;
+    sum: typeof numberModule.sum;
+    subtract: typeof numberModule.subtract;
+    distance: typeof numberModule.distance;
+    distance2d: typeof numberModule.distance2d;
+    fibonacci: typeof numberModule.fibonacci;
+    toBinary: typeof numberModule.toBinary;
+    summarizeNumbers: typeof numberModule.summarizeNumbers;
+    isPlainObject: typeof objectModule.isPlainObject;
+    parsePath: typeof objectModule.parsePath;
+    getAtPath: typeof objectModule.getAtPath;
+    hasAtPath: typeof objectModule.hasAtPath;
+    setAtPath: typeof objectModule.setAtPath;
+    traverseObject: typeof objectModule.traverseObject;
+    findDeep: typeof objectModule.findDeep;
+    pick: typeof objectModule.pick;
+    omit: typeof objectModule.omit;
+    deepClone: typeof objectModule.deepClone;
+    deepMerge: typeof objectModule.deepMerge;
+    pickAllowed: typeof objectModule.pickAllowed;
+    randomFloat: typeof randomModule.randomFloat;
+    randomInt: typeof randomModule.randomInt;
+    randomBoolean: typeof randomModule.randomBoolean;
+    randomString: typeof randomModule.randomString;
+    secureRandomUuid: typeof randomModule.secureRandomUuid;
+    secureRandomString: typeof randomModule.secureRandomString;
+    randomDate: typeof randomModule.randomDate;
+    sortBy: typeof sortModule.sortBy;
+    sortByMany: typeof sortModule.sortByMany;
+    createCollatorComparator: typeof sortModule.createCollatorComparator;
+    compareValues: typeof sortModule.compareValues;
+    compareNumericOrder: typeof sortModule.compareNumericOrder;
+    sortByNumericOrder: typeof sortModule.sortByNumericOrder;
+    isDefined: typeof validationModule.isDefined;
+    isBlank: typeof validationModule.isBlank;
+    isEmpty: typeof validationModule.isEmpty;
+    isFiniteNumber: typeof validationModule.isFiniteNumber;
+    isSafeInteger: typeof validationModule.isSafeInteger;
+    isMap: typeof validationModule.isMap;
+    isSet: typeof validationModule.isSet;
+    isTypedArray: typeof validationModule.isTypedArray;
+    isPlainObjectArray: typeof validationModule.isPlainObjectArray;
+    isBlob: typeof validationModule.isBlob;
+    isFile: typeof validationModule.isFile;
+    typeOf: typeof validationModule.typeOf;
+    isJson: typeof validationModule.isJson;
+    isEmail: typeof validationModule.isEmail;
+    normalizeNanpPhone: typeof validationModule.normalizeNanpPhone;
+    formatNanpPhone: typeof validationModule.formatNanpPhone;
+    validateJsonContract: typeof validationModule.validateJsonContract;
+    assertJsonContract: typeof validationModule.assertJsonContract;
+    array: Readonly<{
+        asArray<T>(value: unknown, fallback?: readonly T[]): T[];
+        isNonEmptyArray<T>(value: unknown): value is T[];
+        compact<T>(values: readonly (T | null | undefined)[]): T[];
+        chunk<T>(values: readonly T[], size: number): T[][];
+        unique<T>(values: readonly T[], toKey?: (value: T, index: number) => unknown): T[];
+        flatten<T>(values: readonly T[], depth?: number): unknown[];
+        moveItem<T>(values: readonly T[], fromIndex: number, toIndex: number): T[];
+        insertItem<T>(values: readonly T[], index: number, item: T): T[];
+        removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), { mode, all }?: {
+            mode?: arrayModule.RemovalMode;
+            all?: boolean;
+        }): T[];
+        groupBy<T, K>(values: readonly T[], toKey: (value: T, index: number) => K): Map<K, T[]>;
+        countBy<T>(values: readonly T[]): Map<T, number>;
+        countBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K): Map<K, number>;
+        partition<T>(values: readonly T[], predicate: (value: T, index: number, values: readonly T[]) => boolean): [T[], T[]];
+        intersection<T>(...arrays: (readonly T[])[]): T[];
+        range(start: number, end?: number, step?: number): number[];
+        zip(...arrays: (readonly unknown[])[]): unknown[][];
+        shuffle<T>(values: readonly T[], random?: () => number): T[];
+    }>;
+    async: Readonly<{
+        mapSettledWithConcurrency<T, R>(values: readonly T[], concurrency: number, mapper: (value: T, index: number) => R | PromiseLike<R>): Promise<PromiseSettledResult<R>[]>;
+        fulfilledValues<T>(results: readonly PromiseSettledResult<T>[]): T[];
+        delay(milliseconds: number, { signal }?: {
+            signal?: AbortSignal;
+        }): Promise<void>;
+    }>;
+    browser: Readonly<{
+        downloadBlob(filename: string, blob: Blob, environment?: {
+            document?: Document;
+            url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
+            schedule?: (callback: () => void) => unknown;
+        }): void;
+        downloadTextFile(filename: string, content: string, { contentType, ...environment }?: {
+            contentType?: string;
+            document?: Document;
+            url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
+            schedule?: (callback: () => void) => unknown;
+        }): void;
+        downloadJson(filename: string, value: unknown, { space, ...environment }?: {
+            space?: number | string;
+            document?: Document;
+            url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
+            schedule?: (callback: () => void) => unknown;
+        }): void;
+    }>;
+    collection: Readonly<{
+        upsertBy<T, K>(values: readonly T[], nextValue: T, toKey?: (value: T) => K, { prepend }?: {
+            prepend?: boolean;
+        }): T[];
+        excludeBy<T, K>(values: readonly T[], excluded: ReadonlySet<K>, toKey?: (value: T) => K): T[];
+        upsertById: <T extends {
+            id: unknown;
+        }>(values: readonly T[], nextValue: T) => T[];
+        excludeIds: <T extends {
+            id: K;
+        }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
+    }>;
+    date: Readonly<{
+        isValidDate(value: unknown): value is Date;
+        toDate(value: Date | string | number | null | undefined): Date | null;
+        daysInMonth(yearOrDate: number | Date, monthIndex?: number): number;
+        startOfLocalDay(value: Date | string | number): Date;
+        localDateKey(value: Date | string | number): string;
+        differenceInLocalDays(later: Date | string | number, earlier: Date | string | number): number;
+        isSameLocalDay(left: Date | string | number, right: Date | string | number): boolean;
+        isToday(value: Date | string | number, now?: Date): boolean;
+        toUnixSeconds(value: Date | string | number): number;
+        fromUnixSeconds(seconds: number): Date;
+        normalizeInstantRange(start: Date | string | number, end: Date | string | number): {
+            start: Date;
+            end: Date;
+        };
+        isWithinInstantRange(value: Date | string | number, start: Date | string | number, end: Date | string | number, { startInclusive, endInclusive }?: {
+            startInclusive?: boolean;
+            endInclusive?: boolean;
+        }): boolean;
+        clockTimeToMinutes(value: string): number | null;
+        minutesToClockTime(minutes: number): string;
+        clock12To24(value: string): string | null;
+        clock24To12(value: string): string | null;
+        formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+        formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    }>;
+    http: Readonly<{
+        HttpError: typeof httpModule.HttpError;
+        request<T>(input: string | URL, options?: RequestInit & {
+            responseType?: "auto" | "json" | "text" | "blob" | "arrayBuffer" | "response";
+            timeoutMs?: number;
+            maxResponseBytes?: number;
+            includeErrorBody?: boolean;
+            sensitiveHeaderNames?: readonly string[];
+            fetchFn?: typeof fetch;
+        }): Promise<T>;
+        redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+    }>;
+    number: Readonly<{
+        clamp(value: number, minimum: number, maximum: number): number;
+        wrap(value: number, minimum: number, maximum: number): number;
+        roundTo(value: number, digits?: number): number;
+        sum(...values: number[]): number;
+        subtract(first: number, ...rest: number[]): number;
+        distance(left: number, right: number): number;
+        distance2d(left: readonly [number, number], right: readonly [number, number]): number;
+        fibonacci(index: number): number;
+        toBinary(value: number): string;
+        summarizeNumbers(values: readonly number[]): {
+            count: number;
+            minimum: number | null;
+            maximum: number | null;
+            median: number | null;
+            p75: number | null;
+            p95: number | null;
+            mean: number | null;
+            standardDeviation: number | null;
+        };
+    }>;
+    object: Readonly<{
+        isPlainObject(value: unknown): value is Record<PropertyKey, unknown>;
+        parsePath(path: string | readonly (string | number)[]): (string | number)[];
+        getAtPath<T>(value: unknown, path: string | readonly (string | number)[], fallback?: T): unknown | T;
+        hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
+        setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
+        traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry[];
+        findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry | undefined;
+        pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
+        omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
+        deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
+        deepMerge<T extends Record<PropertyKey, unknown>, U extends Record<PropertyKey, unknown>>(base: T, override: U): T & U;
+        pickAllowed(value: unknown, allowedKeys: readonly string[], { rejectUnknown }?: {
+            rejectUnknown?: boolean;
+        }): Record<string, unknown>;
+    }>;
+    random: Readonly<{
+        randomFloat(minimum?: number, maximum?: number, random?: () => number): number;
+        randomInt(minimum: number, maximum: number, { inclusiveMaximum, random }?: {
+            inclusiveMaximum?: boolean;
+            random?: () => number;
+        }): number;
+        randomBoolean(random?: () => number): boolean;
+        randomString(length: number, characters?: string, random?: () => number): string;
+        secureRandomUuid(): string;
+        secureRandomString(length: number, alphabet?: string): string;
+        randomDate(start: Date | string | number, end?: Date | string | number, random?: () => number): Date;
+    }>;
+    sort: Readonly<{
+        sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, { direction, nulls, compare }?: {
+            direction?: sortModule.SortDirection;
+            nulls?: sortModule.NullPlacement;
+            compare?: (left: K, right: K) => number;
+        }): T[];
+        sortByMany<T>(values: readonly T[], criteria: ReadonlyArray<{
+            toKey: (value: T, index: number) => unknown;
+            direction?: sortModule.SortDirection;
+            nulls?: sortModule.NullPlacement;
+            compare?: (left: any, right: any) => number;
+        }>): T[];
+        createCollatorComparator(locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): (left: unknown, right: unknown) => number;
+        compareValues(left: unknown, right: unknown): number;
+        compareNumericOrder(left: Record<string, unknown>, right: Record<string, unknown>, keys?: readonly string[]): number;
+        sortByNumericOrder<T extends Record<string, unknown>>(values: readonly T[], keys?: readonly string[]): T[];
+    }>;
+    string: Readonly<{
+        capitalize(value: string, locales?: string | string[]): string;
+        kebabCase(value: string): string;
+        camelCase(value: string): string;
+        pascalCase(value: string): string;
+        sentenceCase(value: string): string;
+        includesText(value: string, search: string, { caseSensitive, locales }?: {
+            caseSensitive?: boolean;
+            locales?: string | string[];
+        }): boolean;
+        replaceMany(value: string, replacements: ReadonlyMap<string, string> | Record<string, string>): string;
+        replaceRegex(value: string, pattern: RegExp, replacement: string | ((substring: string, ...args: any[]) => string)): string;
+        longestStringLength(value: unknown): number;
+        safeFilename(value: string, { fallback, maximumLength }?: {
+            fallback?: string;
+            maximumLength?: number;
+        }): string;
+        slugify(value: string, { fallback, maximumLength }?: {
+            fallback?: string;
+            maximumLength?: number;
+        }): string;
+        escapeHtml(value: unknown): string;
+        prettyJson(value: unknown, space?: number | string): string;
+    }>;
+    validation: Readonly<{
+        isDefined<T>(value: T | null | undefined): value is T;
+        isBlank(value: unknown): boolean;
+        isEmpty(value: unknown): boolean;
+        isFiniteNumber(value: unknown): value is number;
+        isSafeInteger(value: unknown): value is number;
+        isMap(value: unknown): value is Map<unknown, unknown>;
+        isSet(value: unknown): value is Set<unknown>;
+        isTypedArray(value: unknown): value is Exclude<ArrayBufferView, DataView>;
+        isPlainObjectArray(value: unknown): value is Record<PropertyKey, unknown>[];
+        isBlob(value: unknown): value is Blob;
+        isFile(value: unknown): value is File;
+        typeOf(value: unknown): string;
+        isJson(value: unknown): value is string;
+        isEmail(value: unknown): value is string;
+        normalizeNanpPhone(value: unknown): string | null;
+        formatNanpPhone(value: unknown): string | null;
+        validateJsonContract(value: unknown, schema: validationModule.JsonContract): string[];
+        assertJsonContract<T>(value: T, schema: validationModule.JsonContract): T;
+    }>;
+}>;

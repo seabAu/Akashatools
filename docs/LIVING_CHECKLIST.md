@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free Node tests; 65 tests currently pass.
+- [x] Add dependency-free runtime tests; 68 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -386,9 +386,11 @@ Acceptance criteria:
 - [x] Document convenience namespace versus focused import bundle tradeoffs.
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
-- [ ] Evaluate generated `.d.ts` files from checked JavaScript.
-- [ ] Add declaration tests proving default, named, namespace, and subpath imports.
-- [ ] Verify VS Code completion manually in JavaScript and TypeScript consumers.
+- [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
+  byte-for-byte drift check across 17 declaration files.
+- [x] Add declaration tests proving default, named, namespace, and subpath imports.
+- [x] Verify VS Code-compatible completion through the TypeScript 7 language
+  service in JavaScript and TypeScript consumers.
 - [x] Keep README concise and route detailed material into `docs/`.
 
 ## Phase 6 — compatibility and migration experience
@@ -448,13 +450,13 @@ Acceptance criteria:
   spelling per export.
 - [ ] Evaluate explicit per-method subpaths such as `akashatools/chunk` using real
   bundle measurements; do not create separate npm packages.
-- [ ] Ensure export maps expose types, import targets, and environment targets
+- [x] Ensure export maps expose types, import targets, and environment targets
   consistently.
 - [ ] Add reproducible scripts for type-check, lint/format, test, coverage,
   benchmarks, build if needed, and package verification.
 - [ ] Add CI for supported runtimes and package smoke tests.
-- [ ] Add an API-surface snapshot so accidental exports fail CI.
-- [ ] Add an exports-resolution test generated from `package.json`.
+- [x] Add an API-surface snapshot so accidental exports fail CI.
+- [x] Add an exports-resolution test generated from `package.json`.
 - [ ] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.
 - [ ] Add npm provenance/release automation only when publishing is authorized.
 
@@ -516,7 +518,8 @@ edits. When authorized, migrate one bounded area at a time.
   Recommendation: legacy-only with JSDoc migration guidance.
 - [ ] Whether per-method package subpaths materially improve bundles beyond named
   exports and category subpaths.
-- [ ] Whether generated declarations are needed beyond JSDoc for downstream IDEs.
+- [x] Whether generated declarations are needed beyond JSDoc for downstream IDEs:
+  yes, expose deterministic conditional type targets generated from source.
 - [ ] Whether ESM-only is acceptable for all active consumers.
 - [ ] Which advanced date/timezone and schema helpers are truly generic.
 - [ ] Whether HTTP retry and filesystem globbing justify dependencies.
@@ -554,6 +557,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Keep the generic HTTP surface to one bounded, non-retrying Fetch attempt. | Transport parsing, cancellation, size limits, redaction, and typed errors are reusable; authentication, envelopes, SSRF policy, retries, and UI effects depend on the consuming application. |
 | 2026-07-11 | Do not create `schema` or `debug` categories for 2.0. | Reviewed schemas are incompatible app/framework contracts, while diagnostics are unused console wrappers or active app/profiler coordinators; the generic JSON subset already belongs under `validation`. |
 | 2026-07-11 | Generate migration lookup data without runtime deprecation warnings. | A deterministic manifest can distinguish replacements from merely related APIs without adding import-time logging, global warning state, or production bundle effects. |
+| 2026-07-11 | Generate and commit declarations from strict JSDoc. | Explicit conditional type targets give TypeScript and editors deterministic subpath resolution, while source comments remain authoritative and drift is mechanically checked. |
 
 ## Definition of done
 

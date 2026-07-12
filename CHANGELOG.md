@@ -92,3 +92,6 @@
   canonical/legacy function index with runtime, mutation, and import metadata.
 - Added workflow recipes, namespace migration examples, and explicit guidance on
   default, named, category, and wildcard import bundle tradeoffs.
+- Added generated declarations with conditional type exports, strict JavaScript
+  and TypeScript consumer fixtures, language-service completion tests, export
+  resolution coverage, and a reviewed API-surface snapshot.

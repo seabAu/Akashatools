@@ -114,10 +114,9 @@ npm run check
 npm run pack:check
 ```
 
-The test suite uses Node's built-in test runner, so the package has no runtime or
-development dependencies. `jsconfig.json` enables strict JavaScript checking in
-VS Code. Public functions include JSDoc parameter, return, and generic annotations
-for editor IntelliSense.
+The package has no runtime dependencies. Runtime tests use Node's built-in test
+runner, while TypeScript is a development dependency used to check JSDoc,
+generate declarations, compile consumer fixtures, and verify editor completions.
 
 See [docs/LIVING_CHECKLIST.md](docs/LIVING_CHECKLIST.md) for the authoritative
 work plan and [docs/MIGRATION.md](docs/MIGRATION.md) for the first-alpha source
@@ -130,3 +129,5 @@ ledger remains [docs/UTILITY_INVENTORY.md](docs/UTILITY_INVENTORY.md).
 Practical compositions live in [docs/RECIPES.md](docs/RECIPES.md), with import
 and bundle tradeoffs in
 [docs/IMPORTS_AND_BUNDLING.md](docs/IMPORTS_AND_BUNDLING.md).
+Declaration and editor guarantees are documented in
+[docs/TYPES.md](docs/TYPES.md).
