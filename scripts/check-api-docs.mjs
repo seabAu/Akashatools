@@ -16,6 +16,7 @@ const completeSchemaModules = new Set([
   "src/string.js",
   "src/date.js",
   "src/object.js",
+  "src/validation.js",
 ]);
 
 if (process.argv.includes("--fix-since")) {

@@ -36,8 +36,10 @@ const nanpInputPattern = /^[\d\s()+.-]+$/;
  * Checks whether a value is neither null nor undefined.
  *
  * @template T
- * @param {T | null | undefined} value
- * @returns {value is T}
+ * @param {T | null | undefined} value Candidate that may be nullish.
+ * @returns {value is T} Whether value is neither null nor undefined; other falsy values pass.
+ * @example
+ * isDefined(0); // true
  * @since 2.0.0
  */
 export function isDefined(value) {
@@ -47,8 +49,10 @@ export function isDefined(value) {
 /**
  * Checks for nullish values or strings containing only whitespace.
  *
- * @param {unknown} value
- * @returns {boolean}
+ * @param {unknown} value Candidate for absence/whitespace semantics.
+ * @returns {boolean} True only for null, undefined, or whitespace-only strings.
+ * @example
+ * isBlank("  "); // true
  * @since 2.0.0
  */
 export function isBlank(value) {
@@ -59,23 +63,27 @@ export function isBlank(value) {
  * Checks common empty values: blank strings, empty arrays, empty Maps/Sets, and
  * plain objects without enumerable own properties. Zero and false are not empty.
  *
- * @param {unknown} value
- * @returns {boolean}
+ * @param {unknown} value Candidate collection, string, or plain object.
+ * @returns {boolean} Whether value matches one explicitly supported empty shape.
+ * @example
+ * isEmpty(new Map()); // true
  * @since 2.0.0
  */
 export function isEmpty(value) {
   if (isBlank(value)) return true;
   if (Array.isArray(value) || typeof value === "string") return value.length === 0;
-  if (value instanceof Map || value instanceof Set) return value.size === 0;
-  if (value !== null && typeof value === "object") return Object.keys(value).length === 0;
+  if (isMap(value) || isSet(value)) return value.size === 0;
+  if (isPlainObject(value)) return Object.keys(value).length === 0;
   return false;
 }
 
 /**
  * Checks whether a value is a finite primitive number.
  *
- * @param {unknown} value
- * @returns {value is number}
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is number} Whether value is a primitive finite number without coercion.
+ * @example
+ * isFiniteNumber(0); // true
  * @since 2.0.0
  */
 export function isFiniteNumber(value) {
@@ -85,8 +93,10 @@ export function isFiniteNumber(value) {
 /**
  * Checks whether a value is a safe primitive integer.
  *
- * @param {unknown} value
- * @returns {value is number}
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is number} Whether value is a primitive safe integer without coercion.
+ * @example
+ * isSafeInteger(1); // true
  * @since 2.0.0
  */
 export function isSafeInteger(value) {
@@ -96,8 +106,10 @@ export function isSafeInteger(value) {
 /**
  * Checks for a Map, including Maps created in another JavaScript realm.
  *
- * @param {unknown} value
- * @returns {value is Map<unknown, unknown>}
+ * @param {unknown} value Candidate from any JavaScript realm.
+ * @returns {value is Map<unknown, unknown>} Whether the intrinsic Map brand accepts value.
+ * @example
+ * isMap(new Map()); // true
  * @since 2.0.0
  */
 export function isMap(value) {
@@ -112,8 +124,10 @@ export function isMap(value) {
 /**
  * Checks for a Set, including Sets created in another JavaScript realm.
  *
- * @param {unknown} value
- * @returns {value is Set<unknown>}
+ * @param {unknown} value Candidate from any JavaScript realm.
+ * @returns {value is Set<unknown>} Whether the intrinsic Set brand accepts value.
+ * @example
+ * isSet(new Set()); // true
  * @since 2.0.0
  */
 export function isSet(value) {
@@ -129,8 +143,10 @@ export function isSet(value) {
  * Checks for any typed-array view while excluding DataView. Cross-realm typed
  * arrays are accepted.
  *
- * @param {unknown} value
- * @returns {value is Exclude<ArrayBufferView, DataView>}
+ * @param {unknown} value Candidate view from any JavaScript realm.
+ * @returns {value is Exclude<ArrayBufferView, DataView>} Whether value is a typed array rather than DataView.
+ * @example
+ * isTypedArray(new Uint16Array(2)); // true
  * @since 2.0.0
  */
 export function isTypedArray(value) {
@@ -141,8 +157,10 @@ export function isTypedArray(value) {
  * Checks whether every item in an array is a plain object. Empty arrays satisfy
  * the contract; use `isNonEmptyArray` as an additional condition when needed.
  *
- * @param {unknown} value
- * @returns {value is Record<PropertyKey, unknown>[]}
+ * @param {unknown} value Candidate array.
+ * @returns {value is Record<PropertyKey, unknown>[]} Whether every item is a plain object; empty arrays pass.
+ * @example
+ * isPlainObjectArray([{}, Object.create(null)]); // true
  * @since 2.0.0
  */
 export function isPlainObjectArray(value) {
@@ -153,8 +171,10 @@ export function isPlainObjectArray(value) {
  * Checks for a Blob when the current runtime exposes `globalThis.Blob`.
  * Returns false instead of throwing in runtimes without Blob support.
  *
- * @param {unknown} value
- * @returns {value is Blob}
+ * @param {unknown} value Candidate in the current runtime realm.
+ * @returns {value is Blob} Whether current global Blob exists and value is its instance.
+ * @example
+ * isBlob(new Blob(["data"])); // true in Blob-capable runtimes
  * @since 2.0.0
  */
 export function isBlob(value) {
@@ -166,8 +186,10 @@ export function isBlob(value) {
  * Checks for a File when the current runtime exposes `globalThis.File`.
  * Returns false instead of throwing in runtimes without File support.
  *
- * @param {unknown} value
- * @returns {value is File}
+ * @param {unknown} value Candidate in the current runtime realm.
+ * @returns {value is File} Whether current global File exists and value is its instance.
+ * @example
+ * isFile(new File(["data"], "data.txt")); // true in File-capable runtimes
  * @since 2.0.0
  */
 export function isFile(value) {
@@ -178,8 +200,10 @@ export function isFile(value) {
 /**
  * Returns a precise, lowercase runtime type name.
  *
- * @param {unknown} value
- * @returns {string}
+ * @param {unknown} value Runtime value to brand without coercive parsing.
+ * @returns {string} Lowercase intrinsic brand, with explicit null/array/nan names.
+ * @example
+ * typeOf(new Uint8Array()); // "uint8array"
  * @since 2.0.0
  */
 export function typeOf(value) {
@@ -192,8 +216,10 @@ export function typeOf(value) {
 /**
  * Checks whether a string contains valid JSON. Valid scalar JSON is accepted.
  *
- * @param {unknown} value
- * @returns {value is string}
+ * @param {unknown} value Candidate JSON source text.
+ * @returns {value is string} Whether value is a string accepted by JSON.parse, including scalar JSON.
+ * @example
+ * isJson("false"); // true
  * @since 2.0.0
  */
 export function isJson(value) {
@@ -210,8 +236,10 @@ export function isJson(value) {
  * Performs pragmatic email syntax validation. It does not attempt deliverability
  * or full RFC mailbox validation.
  *
- * @param {unknown} value
- * @returns {value is string}
+ * @param {unknown} value Candidate ASCII mailbox syntax.
+ * @returns {value is string} Whether value satisfies bounded pragmatic syntax only.
+ * @example
+ * isEmail("person@example.com"); // true
  * @since 2.0.0
  */
 export function isEmail(value) {
@@ -235,8 +263,10 @@ export function isEmail(value) {
  * Normalizes a North American phone number into ten digits, or returns null.
  * A leading country code of 1 is accepted.
  *
- * @param {unknown} value
- * @returns {string | null}
+ * @param {unknown} value String or non-negative safe integer containing NANP digits/punctuation.
+ * @returns {string | null} Ten normalized digits, or null for unsupported syntax/ranges.
+ * @example
+ * normalizeNanpPhone("+1 555 123 4567"); // "5551234567"
  * @since 2.0.0
  */
 export function normalizeNanpPhone(value) {
@@ -252,8 +282,10 @@ export function normalizeNanpPhone(value) {
 /**
  * Formats a valid North American phone number as `(555) 123-4567`.
  *
- * @param {unknown} value
- * @returns {string | null}
+ * @param {unknown} value Candidate accepted by normalizeNanpPhone.
+ * @returns {string | null} `(555) 123-4567` text, or null when normalization fails.
+ * @example
+ * formatNanpPhone("555.123.4567"); // "(555) 123-4567"
  * @since 2.0.0
  */
 export function formatNanpPhone(value) {
@@ -267,9 +299,12 @@ export function formatNanpPhone(value) {
  * `additionalProperties`, and `definitions`. Unsupported keywords and malformed
  * schemas throw instead of being silently ignored.
  *
- * @param {unknown} value
- * @param {JsonContract} schema
- * @returns {string[]}
+ * @param {unknown} value JSON-compatible candidate to validate without coercion.
+ * @param {JsonContract} schema Supported, well-formed local JSON contract schema.
+ * @returns {string[]} Deterministic path-prefixed validation errors; empty means valid.
+ * @throws {TypeError} If schema uses unsupported/malformed behavior.
+ * @example
+ * validateJsonContract({ id: 1 }, { type: "object", required: ["id"] }); // []
  * @since 2.0.0
  */
 export function validateJsonContract(value, schema) {
@@ -281,9 +316,12 @@ export function validateJsonContract(value, schema) {
  * Asserts a value against the supported JSON Schema subset.
  *
  * @template T
- * @param {T} value
- * @param {JsonContract} schema
- * @returns {T}
+ * @param {T} value JSON-compatible candidate returned unchanged on success.
+ * @param {JsonContract} schema Supported, well-formed local JSON contract schema.
+ * @returns {T} Original value after successful validation.
+ * @throws {TypeError} If schema is invalid or value violates one or more contracts.
+ * @example
+ * const payload = assertJsonContract(input, { type: "object" });
  * @since 2.0.0
  */
 export function assertJsonContract(value, schema) {

@@ -135,3 +135,5 @@
   instant, Unix-second, clock-string, DST, range, and Intl formatting semantics.
 - Completed and enforced object API documentation; `pickAllowed` now requires
   string allow-list entries and a literal boolean unknown-property policy.
+- Completed and enforced validation API documentation; `isEmpty` now uses
+  literal plain-object and cross-realm Map/Set guards instead of key-counting any object.

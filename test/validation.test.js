@@ -28,6 +28,10 @@ test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
   assert.equal(isBlank(0), false);
   assert.equal(isEmpty({}), true);
   assert.equal(isEmpty(false), false);
+  assert.equal(isEmpty(new Date()), false);
+  const foreignCollections = runInNewContext("({ map: new Map([['key', 1]]), set: new Set([1]) })");
+  assert.equal(isEmpty(foreignCollections.map), false);
+  assert.equal(isEmpty(foreignCollections.set), false);
   assert.equal(typeOf(new Uint8Array()), "uint8array");
   assert.equal(isJson("false"), true);
   assert.equal(isJson("undefined"), false);

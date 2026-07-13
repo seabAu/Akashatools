@@ -1351,255 +1351,187 @@ Focused import: `akashatools/validation`
 
 Checks whether a value is neither null nor undefined.
 
-- Signature: `isDefined(value)`
+- Signature: `isDefined()`
 - Import: `import { isDefined } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is T`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `T \| null \| undefined` | Not documented. |
+- Returns: `value is T` — Whether value is neither null nor undefined; other falsy values pass.
 
 ### isBlank
 
 Checks for nullish values or strings containing only whitespace.
 
-- Signature: `isBlank(value)`
+- Signature: `isBlank()`
 - Import: `import { isBlank } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `boolean` — True only for null, undefined, or whitespace-only strings.
 
 ### isEmpty
 
 Checks common empty values: blank strings, empty arrays, empty Maps/Sets, and plain objects without enumerable own properties. Zero and false are not empty.
 
-- Signature: `isEmpty(value)`
+- Signature: `isEmpty()`
 - Import: `import { isEmpty } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `boolean` — Whether value matches one explicitly supported empty shape.
 
 ### isFiniteNumber
 
 Checks whether a value is a finite primitive number.
 
-- Signature: `isFiniteNumber(value)`
+- Signature: `isFiniteNumber()`
 - Import: `import { isFiniteNumber } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is number`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is number` — Whether value is a primitive finite number without coercion.
 
 ### isSafeInteger
 
 Checks whether a value is a safe primitive integer.
 
-- Signature: `isSafeInteger(value)`
+- Signature: `isSafeInteger()`
 - Import: `import { isSafeInteger } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is number`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is number` — Whether value is a primitive safe integer without coercion.
 
 ### isMap
 
 Checks for a Map, including Maps created in another JavaScript realm.
 
-- Signature: `isMap(value)`
+- Signature: `isMap()`
 - Import: `import { isMap } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Map<unknown, unknown>`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Map<unknown, unknown>` — Whether the intrinsic Map brand accepts value.
 
 ### isSet
 
 Checks for a Set, including Sets created in another JavaScript realm.
 
-- Signature: `isSet(value)`
+- Signature: `isSet()`
 - Import: `import { isSet } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Set<unknown>`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Set<unknown>` — Whether the intrinsic Set brand accepts value.
 
 ### isTypedArray
 
 Checks for any typed-array view while excluding DataView. Cross-realm typed arrays are accepted.
 
-- Signature: `isTypedArray(value)`
+- Signature: `isTypedArray()`
 - Import: `import { isTypedArray } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Exclude<ArrayBufferView, DataView>`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Exclude<ArrayBufferView, DataView>` — Whether value is a typed array rather than DataView.
 
 ### isPlainObjectArray
 
 Checks whether every item in an array is a plain object. Empty arrays satisfy the contract; use `isNonEmptyArray` as an additional condition when needed.
 
-- Signature: `isPlainObjectArray(value)`
+- Signature: `isPlainObjectArray()`
 - Import: `import { isPlainObjectArray } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Record<PropertyKey, unknown>[]`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Record<PropertyKey, unknown>[]` — Whether every item is a plain object; empty arrays pass.
 
 ### isBlob
 
 Checks for a Blob when the current runtime exposes `globalThis.Blob`. Returns false instead of throwing in runtimes without Blob support.
 
-- Signature: `isBlob(value)`
+- Signature: `isBlob()`
 - Import: `import { isBlob } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Blob`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Blob` — Whether current global Blob exists and value is its instance.
 
 ### isFile
 
 Checks for a File when the current runtime exposes `globalThis.File`. Returns false instead of throwing in runtimes without File support.
 
-- Signature: `isFile(value)`
+- Signature: `isFile()`
 - Import: `import { isFile } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is File`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is File` — Whether current global File exists and value is its instance.
 
 ### typeOf
 
 Returns a precise, lowercase runtime type name.
 
-- Signature: `typeOf(value)`
+- Signature: `typeOf()`
 - Import: `import { typeOf } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `string` — Lowercase intrinsic brand, with explicit null/array/nan names.
 
 ### isJson
 
 Checks whether a string contains valid JSON. Valid scalar JSON is accepted.
 
-- Signature: `isJson(value)`
+- Signature: `isJson()`
 - Import: `import { isJson } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is string`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is string` — Whether value is a string accepted by JSON.parse, including scalar JSON.
 
 ### isEmail
 
 Performs pragmatic email syntax validation. It does not attempt deliverability or full RFC mailbox validation.
 
-- Signature: `isEmail(value)`
+- Signature: `isEmail()`
 - Import: `import { isEmail } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is string`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is string` — Whether value satisfies bounded pragmatic syntax only.
 
 ### normalizeNanpPhone
 
 Normalizes a North American phone number into ten digits, or returns null. A leading country code of 1 is accepted.
 
-- Signature: `normalizeNanpPhone(value)`
+- Signature: `normalizeNanpPhone()`
 - Import: `import { normalizeNanpPhone } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string | null`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `string | null` — Ten normalized digits, or null for unsupported syntax/ranges.
 
 ### formatNanpPhone
 
 Formats a valid North American phone number as `(555) 123-4567`.
 
-- Signature: `formatNanpPhone(value)`
+- Signature: `formatNanpPhone()`
 - Import: `import { formatNanpPhone } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string | null`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `string | null` — `(555) 123-4567` text, or null when normalization fails.
 
 ### validateJsonContract
 
 Validates a value against a useful JSON Schema subset. Supported keywords are `$ref`, `type`, `const`, `enum`, `required`, `properties`, `items`, `additionalProperties`, and `definitions`. Unsupported keywords and malformed schemas throw instead of being silently ignored.
 
-- Signature: `validateJsonContract(value, schema)`
+- Signature: `validateJsonContract()`
 - Import: `import { validateJsonContract } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string[]`
+- Returns: `string[]` — Deterministic path-prefixed validation errors; empty means valid.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
-| `schema` | `JsonContract` | Not documented. |
+Throws:
+- `TypeError` — If schema uses unsupported/malformed behavior.
 
 ### assertJsonContract
 
 Asserts a value against the supported JSON Schema subset.
 
-- Signature: `assertJsonContract(value, schema)`
+- Signature: `assertJsonContract()`
 - Import: `import { assertJsonContract } from "akashatools/validation"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T`
+- Returns: `T` — Original value after successful validation.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | Not documented. |
-| `schema` | `JsonContract` | Not documented. |
+Throws:
+- `TypeError` — If schema is invalid or value violates one or more contracts.
 
 ## node
 
