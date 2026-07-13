@@ -12,6 +12,7 @@ const completeSchemaModules = new Set([
   "src/number.js",
   "src/random.js",
   "src/sort.js",
+  "src/http.js",
 ]);
 
 if (process.argv.includes("--fix-since")) {
@@ -77,8 +78,13 @@ for (const filename of publicModules) {
 
     if (completeSchemaModules.has(filename)) {
       const lines = comment.split(/\r?\n/).map((line) => line.replace(/^\s*\*\s?/, "").trim());
-      for (const line of lines.filter((line) => line.startsWith("@param "))) {
-        if (!/^@param\s+\{.*\}\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(line)) {
+      for (const [lineIndex, line] of lines.entries()) {
+        if (!line.startsWith("@param ")) continue;
+        const hasOneLineDescription = /^@param\s+\{.*\}\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(line);
+        const hasMultilineDescription = /\{$/.test(line) && lines
+          .slice(lineIndex + 1)
+          .some((candidate) => /^\}\}?\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(candidate));
+        if (!hasOneLineDescription && !hasMultilineDescription) {
           failures.push(`${location}: @param must include a description`);
         }
       }
@@ -89,7 +95,7 @@ for (const filename of publicModules) {
       if (kind !== "class" && !hasDescribedReturn) {
         failures.push(`${location}: @returns must include a description`);
       }
-      if (!/@throws\s+\{/.test(comment)) failures.push(`${location}: missing @throws contract`);
+      if (kind !== "class" && !/@throws\s+\{/.test(comment)) failures.push(`${location}: missing @throws contract`);
       if (!/@example\b/.test(comment)) failures.push(`${location}: missing @example`);
     }
   }

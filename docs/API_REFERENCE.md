@@ -701,34 +701,28 @@ A stable HTTP/network error with redacted response metadata.
 
 Performs one HTTP(S) request without application auth, envelopes, delays, or automatic retries. Bodies are size-bounded unless `responseType: "response"` transfers raw response ownership to the caller. Empty JSON bodies return null.
 
-- Signature: `request(input, options?)`
+- Signature: `request()`
 - Import: `import { request } from "akashatools/http"`
 - Input mutation: Does not mutate inputs; performs one network request.
 - Since: 2.0.0
-- Returns: `Promise<T>`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `input` | `string \| URL` | Not documented. |
-| `[options]` | `RequestInit & { responseType?: "auto" \| "json" \| "text" \| "blob" \| "arrayBuffer" \| "response", timeoutMs?: number, maxResponseBytes?: number, includeErrorBody?: boolean, sensitiveHeaderNames?: readonly string[], fetchFn?: typeof fetch }` | Not documented. |
+- Returns: `Promise<T>` — Parsed response value, Blob/ArrayBuffer, or raw Response according to responseType.
 
 Throws:
+- `TypeError | RangeError` — If URL, method, options, or limits do not match the request contract.
 - `HttpError` — For HTTP status, network, abort, timeout, size, or JSON parsing failures.
 
 ### redactHeaders
 
 Copies headers while replacing common credential/cookie values with `[REDACTED]`. Names are normalized by the platform Headers implementation.
 
-- Signature: `redactHeaders(headers, additionalSensitiveNames?)`
+- Signature: `redactHeaders()`
 - Import: `import { redactHeaders } from "akashatools/http"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Record<string, string>`
+- Returns: `Record<string, string>` — Plain copied record with sensitive values replaced by `[REDACTED]`.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `headers` | `HeadersInit` | Not documented. |
-| `[additionalSensitiveNames]` | `readonly string[]` | Not documented. |
+Throws:
+- `TypeError` — If additionalSensitiveNames is not an array of strings or Headers rejects the input.
 
 ## number
 

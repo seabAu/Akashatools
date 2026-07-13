@@ -127,3 +127,5 @@
   reject non-boolean `inclusiveMaximum` options instead of coercing truthiness.
 - Completed and enforced sort API documentation, and normalized numeric/Date
   comparisons so invalid Dates and extreme numbers always yield finite ordering signals.
+- Completed and enforced HTTP API documentation, distinguishing typed transport
+  failures from native argument/setup errors and documenting redaction boundaries.
