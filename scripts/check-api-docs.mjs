@@ -5,6 +5,7 @@ const publicModules = [
   "object", "random", "sort", "string", "validation", "node",
 ].map((category) => `src/${category}.js`);
 const completeSchemaModules = new Set([
+  "src/array.js",
   "src/async.js",
   "src/browser.js",
   "src/collection.js",

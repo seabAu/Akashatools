@@ -137,3 +137,5 @@
   string allow-list entries and a literal boolean unknown-property policy.
 - Completed and enforced validation API documentation; `isEmpty` now uses
   literal plain-object and cross-realm Map/Set guards instead of key-counting any object.
+- Completed and enforced array API documentation; array fallbacks and removal
+  options now reject invalid container types instead of coercing or ignoring them.

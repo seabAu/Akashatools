@@ -17,89 +17,74 @@ Focused import: `akashatools/array`
 
 Returns the input when it is an array, preserving its identity and sparse slots, or a fresh dense copy of the fallback otherwise.
 
-- Signature: `asArray(value, fallback?)`
+- Signature: `asArray()`
 - Import: `import { asArray } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Original array value, or a fresh dense fallback copy.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
-| `[fallback=[]]` | `readonly T[]` | Not documented. |
+Throws:
+- `TypeError` — If fallback is not an array.
 
 ### isNonEmptyArray
 
 Checks whether a value is an array containing at least one item.
 
-- Signature: `isNonEmptyArray(value)`
+- Signature: `isNonEmptyArray()`
 - Import: `import { isNonEmptyArray } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is T[]`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is T[]` — Whether value is an array with length greater than zero.
 
 ### compact
 
 Removes nullish values from an array without removing `0`, `false`, or `""`. Sparse slots are treated as `undefined` and therefore removed.
 
-- Signature: `compact(values)`
+- Signature: `compact()`
 - Import: `import { compact } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense copy containing every non-nullish value in order.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly (T \| null \| undefined)[]` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array.
 
 ### chunk
 
 Splits an array into same-sized chunks. The final chunk may be shorter. Sparse slots are treated as `undefined` items and returned chunks are dense.
 
-- Signature: `chunk(values, size)`
+- Signature: `chunk()`
 - Import: `import { chunk } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[][]`
+- Returns: `T[][]` — Ordered dense chunks; an empty input produces an empty array.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `size` | `number` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array.
+- `RangeError` — If size is not a positive safe integer.
 
 ### unique
 
 Returns the first item for each unique key, preserving input order. Sparse slots are treated as `undefined` items and the returned array is dense.
 
-- Signature: `unique(values, toKey?)`
+- Signature: `unique()`
 - Import: `import { unique } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense, ordered copy containing the first value for each SameValueZero key.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `[toKey]` | `(value: T, index: number) => unknown` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or toKey is not a function.
 
 ### flatten
 
 Flattens nested arrays to a requested depth without mutating the input. Semantics match `Array.prototype.flat`: `Infinity` flattens every level and sparse slots are removed at levels that are flattened.
 
-- Signature: `flatten(values, depth?)`
+- Signature: `flatten()`
 - Import: `import { flatten } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `unknown[]`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `[depth=Infinity]` | `number` | Not documented. |
+- Returns: `unknown[]` — Native-flat result with flattened sparse slots removed.
 
 Throws:
 - `TypeError` — If `values` is not an array or depth is not an integer.
@@ -109,153 +94,134 @@ Throws:
 
 Moves one item to another position without mutating the input. Sparse slots are treated as `undefined` items and the returned array is dense.
 
-- Signature: `moveItem(values, fromIndex, toIndex)`
+- Signature: `moveItem()`
 - Import: `import { moveItem } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense reordered copy, including when both indices are equal.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `fromIndex` | `number` | Not documented. |
-| `toIndex` | `number` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array.
+- `RangeError` — If either index does not identify an existing item.
 
 ### insertItem
 
 Inserts an item at a bounded index without mutating the input. Indices below zero insert at the start and indices beyond the length append. Sparse slots are treated as `undefined` items and the returned array is dense.
 
-- Signature: `insertItem(values, index, item)`
+- Signature: `insertItem()`
 - Import: `import { insertItem } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense copy containing item at the bounded index.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `index` | `number` | Not documented. |
-| `item` | `T` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or index is not a safe integer.
 
 ### removeFromArray
 
 Removes array items by index, value, or predicate. The input is never mutated. In `auto` mode a function is a predicate, an integer is an index, and every other selector is compared by `Object.is`. Use `mode: "value"` to remove a numeric value instead of treating it as an index. Sparse slots are treated as `undefined` items; predicates receive a dense copy of the input.
 
-- Signature: `removeFromArray(values, selector, options?)`
+- Signature: `removeFromArray()`
 - Import: `import { removeFromArray } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense copy with the requested item or matches removed.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `selector` | `number \| T \| ((value: T, index: number, values: readonly T[]) => boolean)` | Not documented. |
-| `[options]` | `{mode?: RemovalMode, all?: boolean}` | Not documented. |
+Throws:
+- `TypeError` — If values, options, mode, all, or the selected selector contract is invalid.
 
 ### groupBy
 
 Groups items in a Map, avoiding object-key coercion and prototype collisions. Sparse slots are treated as `undefined` items and group arrays are dense.
 
-- Signature: `groupBy(values, toKey)`
+- Signature: `groupBy()`
 - Import: `import { groupBy } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Map<K, T[]>`
+- Returns: `Map<K, T[]>` — Insertion-ordered keys mapped to dense, ordered value arrays.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `toKey` | `(value: T, index: number) => K` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or toKey is not a function.
 
 ### countBy
 
 Counts items by a derived key without coercing key identity.
 
-- Signature: `countBy(values, toKey?)`
+- Signature: `countBy()`
 - Import: `import { countBy } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Map<unknown, number>`
+- Returns: `Map<unknown, number>` — Insertion-ordered SameValueZero key counts.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly unknown[]` | Not documented. |
-| `[toKey]` | `(value: unknown, index: number, values: readonly unknown[]) => unknown` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or toKey is not a function.
 
 ### partition
 
 Splits items into matching and non-matching arrays while preserving order. Sparse slots are treated as `undefined` items. Callback errors propagate.
 
-- Signature: `partition(values, predicate)`
+- Signature: `partition()`
 - Import: `import { partition } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `[T[], T[]]`
+- Returns: `[T[], T[]]` — Pair of dense arrays: matches first, non-matches second.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `predicate` | `(value: T, index: number, values: readonly T[]) => boolean` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or predicate is not a function.
 
 ### intersection
 
 Returns unique values present in every input array. Sparse slots are treated as `undefined` items and the returned array is dense.
 
-- Signature: `intersection(arrays)`
+- Signature: `intersection()`
 - Import: `import { intersection } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense unique values from the first array present in every later array.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `arrays` | `...readonly T[]` | Not documented. |
+Throws:
+- `TypeError` — If any argument is not an array.
 
 ### range
 
 Creates an end-exclusive numeric range, like Python's `range`.
 
-- Signature: `range(start, end?, step?)`
+- Signature: `range()`
 - Import: `import { range } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number[]`
+- Returns: `number[]` — Arithmetic sequence containing at most one million values.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `start` | `number` | Not documented. |
-| `[end]` | `number` | Not documented. |
-| `[step]` | `number` | Not documented. |
+Throws:
+- `TypeError` — If either bound is not a finite number.
+- `RangeError` — If step is zero/non-finite or the result would exceed allocation limits.
 
 ### zip
 
 Combines arrays by position, stopping at the shortest input. Sparse slots are read as `undefined` and every returned row is dense.
 
-- Signature: `zip(arrays)`
+- Signature: `zip()`
 - Import: `import { zip } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `unknown[][]`
+- Returns: `unknown[][]` — Dense positional rows through the shortest input length.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `arrays` | `...readonly unknown[]` | Not documented. |
+Throws:
+- `TypeError` — If any argument is not an array.
 
 ### shuffle
 
 Returns a shuffled copy using Fisher-Yates. A random source can be injected for deterministic tests or seeded applications. Sparse slots are treated as `undefined` items and the returned array is dense.
 
-- Signature: `shuffle(values, random?)`
+- Signature: `shuffle()`
 - Import: `import { shuffle } from "akashatools/array"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T[]`
+- Returns: `T[]` — Dense Fisher-Yates shuffled copy.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `values` | `readonly T[]` | Not documented. |
-| `[random=Math.random]` | `() => number` | Not documented. |
+Throws:
+- `TypeError` — If values is not an array or random is not a function.
+- `RangeError` — If random returns a value outside [0, 1) or a non-finite number.
 
 ## async
 

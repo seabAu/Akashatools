@@ -20,7 +20,7 @@ export declare const array: Readonly<{
     flatten<T>(values: readonly T[], depth?: number): unknown[];
     moveItem<T>(values: readonly T[], fromIndex: number, toIndex: number): T[];
     insertItem<T>(values: readonly T[], index: number, item: T): T[];
-    removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), { mode, all }?: {
+    removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), options?: {
         mode?: arrayModule.RemovalMode;
         all?: boolean;
     }): T[];
@@ -243,6 +243,18 @@ export declare const validation: Readonly<{
  * akasha.chunk([1, 2, 3], 2);
  */
 export declare const akasha: Readonly<{
+    isPlainObject: typeof objectModule.isPlainObject;
+    parsePath: typeof objectModule.parsePath;
+    getAtPath: typeof objectModule.getAtPath;
+    hasAtPath: typeof objectModule.hasAtPath;
+    setAtPath: typeof objectModule.setAtPath;
+    traverseObject: typeof objectModule.traverseObject;
+    findDeep: typeof objectModule.findDeep;
+    pick: typeof objectModule.pick;
+    omit: typeof objectModule.omit;
+    deepClone: typeof objectModule.deepClone;
+    deepMerge: typeof objectModule.deepMerge;
+    pickAllowed: typeof objectModule.pickAllowed;
     asArray: typeof arrayModule.asArray;
     isNonEmptyArray: typeof arrayModule.isNonEmptyArray;
     compact: typeof arrayModule.compact;
@@ -317,18 +329,6 @@ export declare const akasha: Readonly<{
     fibonacci: typeof numberModule.fibonacci;
     toBinary: typeof numberModule.toBinary;
     summarizeNumbers: typeof numberModule.summarizeNumbers;
-    isPlainObject: typeof objectModule.isPlainObject;
-    parsePath: typeof objectModule.parsePath;
-    getAtPath: typeof objectModule.getAtPath;
-    hasAtPath: typeof objectModule.hasAtPath;
-    setAtPath: typeof objectModule.setAtPath;
-    traverseObject: typeof objectModule.traverseObject;
-    findDeep: typeof objectModule.findDeep;
-    pick: typeof objectModule.pick;
-    omit: typeof objectModule.omit;
-    deepClone: typeof objectModule.deepClone;
-    deepMerge: typeof objectModule.deepMerge;
-    pickAllowed: typeof objectModule.pickAllowed;
     randomFloat: typeof randomModule.randomFloat;
     randomInt: typeof randomModule.randomInt;
     randomBoolean: typeof randomModule.randomBoolean;
@@ -369,7 +369,7 @@ export declare const akasha: Readonly<{
         flatten<T>(values: readonly T[], depth?: number): unknown[];
         moveItem<T>(values: readonly T[], fromIndex: number, toIndex: number): T[];
         insertItem<T>(values: readonly T[], index: number, item: T): T[];
-        removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), { mode, all }?: {
+        removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), options?: {
             mode?: arrayModule.RemovalMode;
             all?: boolean;
         }): T[];

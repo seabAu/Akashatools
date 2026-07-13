@@ -54,7 +54,10 @@ test("move, insert, and removal treat sparse slots as undefined sequence items",
 test("array movement and removal options reject invalid contracts", () => {
   const source = [1, 2];
   assert.notEqual(moveItem(source, 0, 0), source);
+  assert.throws(() => asArray(null, /** @type {any} */ ("fallback")), TypeError);
   assert.throws(() => insertItem([], 0.5, "x"), TypeError);
+  assert.throws(() => removeFromArray([1], 1, /** @type {any} */ ("options")), TypeError);
+  assert.throws(() => removeFromArray([1], 1, /** @type {any} */ (null)), TypeError);
   assert.throws(() => removeFromArray([1], 1, { mode: /** @type {any} */ ("unknown") }), TypeError);
   assert.throws(() => removeFromArray([1], 1, { all: /** @type {any} */ ("yes") }), TypeError);
 });

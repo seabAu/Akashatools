@@ -374,12 +374,10 @@ Acceptance criteria:
 
 ## Phase 5 — documentation and types
 
-- [ ] Give every public function a complete JSDoc summary, generic types,
+- [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  Async, browser, collection, date, HTTP, Node, number, object, random, sort,
-  string, and validation are complete (99 of 115 public
-  declarations), with parameter/return prose, throws, and examples enforced by
-  `npm run check:docs`; continue category by category.
+  All 115 public declarations are complete, with parameter/return prose,
+  documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
   115 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a

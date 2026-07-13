@@ -4,9 +4,12 @@ export type RemovalMode = "auto" | "index" | "value" | "predicate";
  * slots, or a fresh dense copy of the fallback otherwise.
  *
  * @template T
- * @param {unknown} value
- * @param {readonly T[]} [fallback=[]]
- * @returns {T[]}
+ * @param {unknown} value Candidate returned unchanged when it is an array.
+ * @param {readonly T[]} [fallback=[]] Array copied when value is not an array.
+ * @returns {T[]} Original array value, or a fresh dense fallback copy.
+ * @throws {TypeError} If fallback is not an array.
+ * @example
+ * asArray(null, ["fallback"]); // ["fallback"]
  * @since 2.0.0
  */
 export declare function asArray<T>(value: unknown, fallback?: readonly T[]): T[];
@@ -14,8 +17,10 @@ export declare function asArray<T>(value: unknown, fallback?: readonly T[]): T[]
  * Checks whether a value is an array containing at least one item.
  *
  * @template T
- * @param {unknown} value
- * @returns {value is T[]}
+ * @param {unknown} value Candidate of any type.
+ * @returns {value is T[]} Whether value is an array with length greater than zero.
+ * @example
+ * isNonEmptyArray([0]); // true
  * @since 2.0.0
  */
 export declare function isNonEmptyArray<T>(value: unknown): value is T[];
@@ -24,8 +29,11 @@ export declare function isNonEmptyArray<T>(value: unknown): value is T[];
  * Sparse slots are treated as `undefined` and therefore removed.
  *
  * @template T
- * @param {readonly (T | null | undefined)[]} values
- * @returns {T[]}
+ * @param {readonly (T | null | undefined)[]} values Array to copy and compact.
+ * @returns {T[]} Dense copy containing every non-nullish value in order.
+ * @throws {TypeError} If values is not an array.
+ * @example
+ * compact([0, null, false, undefined]); // [0, false]
  * @since 2.0.0
  */
 export declare function compact<T>(values: readonly (T | null | undefined)[]): T[];
@@ -34,9 +42,13 @@ export declare function compact<T>(values: readonly (T | null | undefined)[]): T
  * Sparse slots are treated as `undefined` items and returned chunks are dense.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {number} size
- * @returns {T[][]}
+ * @param {readonly T[]} values Array to split without mutation.
+ * @param {number} size Positive safe-integer maximum size of each chunk.
+ * @returns {T[][]} Ordered dense chunks; an empty input produces an empty array.
+ * @throws {TypeError} If values is not an array.
+ * @throws {RangeError} If size is not a positive safe integer.
+ * @example
+ * chunk([1, 2, 3], 2); // [[1, 2], [3]]
  * @since 2.0.0
  */
 export declare function chunk<T>(values: readonly T[], size: number): T[][];
@@ -45,9 +57,12 @@ export declare function chunk<T>(values: readonly T[], size: number): T[][];
  * slots are treated as `undefined` items and the returned array is dense.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {(value: T, index: number) => unknown} [toKey]
- * @returns {T[]}
+ * @param {readonly T[]} values Array whose first value for each key is retained.
+ * @param {(value: T, index: number) => unknown} [toKey] Key selector; identity is the default.
+ * @returns {T[]} Dense, ordered copy containing the first value for each SameValueZero key.
+ * @throws {TypeError} If values is not an array or toKey is not a function.
+ * @example
+ * unique(["a", "A", "b"], (value) => value.toLowerCase()); // ["a", "b"]
  * @since 2.0.0
  */
 export declare function unique<T>(values: readonly T[], toKey?: (value: T, index: number) => unknown): T[];
@@ -57,11 +72,13 @@ export declare function unique<T>(values: readonly T[], toKey?: (value: T, index
  * sparse slots are removed at levels that are flattened.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {number} [depth=Infinity]
- * @returns {unknown[]}
+ * @param {readonly T[]} values Nested array to flatten without mutation.
+ * @param {number} [depth=Infinity] Non-negative safe-integer depth, or Infinity.
+ * @returns {unknown[]} Native-flat result with flattened sparse slots removed.
  * @throws {TypeError} If `values` is not an array or depth is not an integer.
  * @throws {RangeError} If depth is negative or exceeds the safe-integer range.
+ * @example
+ * flatten([1, [2, [3]]], 1); // [1, 2, [3]]
  * @since 2.0.0
  */
 export declare function flatten<T>(values: readonly T[], depth?: number): unknown[];
@@ -70,10 +87,14 @@ export declare function flatten<T>(values: readonly T[], depth?: number): unknow
  * are treated as `undefined` items and the returned array is dense.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {number} fromIndex
- * @param {number} toIndex
- * @returns {T[]}
+ * @param {readonly T[]} values Array containing the item to move.
+ * @param {number} fromIndex Existing zero-based source index.
+ * @param {number} toIndex Existing zero-based destination index.
+ * @returns {T[]} Dense reordered copy, including when both indices are equal.
+ * @throws {TypeError} If values is not an array.
+ * @throws {RangeError} If either index does not identify an existing item.
+ * @example
+ * moveItem(["a", "b", "c"], 0, 2); // ["b", "c", "a"]
  * @since 2.0.0
  */
 export declare function moveItem<T>(values: readonly T[], fromIndex: number, toIndex: number): T[];
@@ -83,10 +104,13 @@ export declare function moveItem<T>(values: readonly T[], fromIndex: number, toI
  * are treated as `undefined` items and the returned array is dense.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {number} index
- * @param {T} item
- * @returns {T[]}
+ * @param {readonly T[]} values Array to copy before insertion.
+ * @param {number} index Safe integer clamped into the inclusive 0..length range.
+ * @param {T} item Value to insert exactly once.
+ * @returns {T[]} Dense copy containing item at the bounded index.
+ * @throws {TypeError} If values is not an array or index is not a safe integer.
+ * @example
+ * insertItem([1, 3], 1, 2); // [1, 2, 3]
  * @since 2.0.0
  */
 export declare function insertItem<T>(values: readonly T[], index: number, item: T): T[];
@@ -98,13 +122,16 @@ export declare function insertItem<T>(values: readonly T[], index: number, item:
  * `undefined` items; predicates receive a dense copy of the input.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {number | T | ((value: T, index: number, values: readonly T[]) => boolean)} selector
- * @param {{mode?: RemovalMode, all?: boolean}} [options]
- * @returns {T[]}
+ * @param {readonly T[]} values Array to copy before removal.
+ * @param {number | T | ((value: T, index: number, values: readonly T[]) => boolean)} selector Index, SameValue value, or predicate selected according to mode.
+ * @param {{mode?: RemovalMode, all?: boolean}} [options] Plain options object; all removes every value/predicate match but never changes index mode.
+ * @returns {T[]} Dense copy with the requested item or matches removed.
+ * @throws {TypeError} If values, options, mode, all, or the selected selector contract is invalid.
+ * @example
+ * removeFromArray([1, 2, 1], 1, { mode: "value", all: true }); // [2]
  * @since 2.0.0
  */
-export declare function removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), { mode, all }?: {
+export declare function removeFromArray<T>(values: readonly T[], selector: number | T | ((value: T, index: number, values: readonly T[]) => boolean), options?: {
     mode?: RemovalMode;
     all?: boolean;
 }): T[];
@@ -113,9 +140,12 @@ export declare function removeFromArray<T>(values: readonly T[], selector: numbe
  * Sparse slots are treated as `undefined` items and group arrays are dense.
  *
  * @template T, K
- * @param {readonly T[]} values
- * @param {(value: T, index: number) => K} toKey
- * @returns {Map<K, T[]>}
+ * @param {readonly T[]} values Array to group without mutation.
+ * @param {(value: T, index: number) => K} toKey Key selector called once per dense input item.
+ * @returns {Map<K, T[]>} Insertion-ordered keys mapped to dense, ordered value arrays.
+ * @throws {TypeError} If values is not an array or toKey is not a function.
+ * @example
+ * groupBy([1, 2, 3], (value) => value % 2); // Map { 1 => [1, 3], 0 => [2] }
  * @since 2.0.0
  */
 export declare function groupBy<T, K>(values: readonly T[], toKey: (value: T, index: number) => K): Map<K, T[]>;
@@ -126,9 +156,12 @@ export declare function countBy<T, K>(values: readonly T[], toKey: (value: T, in
  * Sparse slots are treated as `undefined` items. Callback errors propagate.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {(value: T, index: number, values: readonly T[]) => boolean} predicate
- * @returns {[T[], T[]]}
+ * @param {readonly T[]} values Array to split without mutation.
+ * @param {(value: T, index: number, values: readonly T[]) => boolean} predicate Test receiving each value, index, and dense input copy.
+ * @returns {[T[], T[]]} Pair of dense arrays: matches first, non-matches second.
+ * @throws {TypeError} If values is not an array or predicate is not a function.
+ * @example
+ * partition([1, 2, 3], (value) => value % 2 === 1); // [[1, 3], [2]]
  * @since 2.0.0
  */
 export declare function partition<T>(values: readonly T[], predicate: (value: T, index: number, values: readonly T[]) => boolean): [T[], T[]];
@@ -137,18 +170,25 @@ export declare function partition<T>(values: readonly T[], predicate: (value: T,
  * as `undefined` items and the returned array is dense.
  *
  * @template T
- * @param {...readonly T[]} arrays
- * @returns {T[]}
+ * @param {...readonly T[]} arrays Arrays compared using SameValueZero key identity.
+ * @returns {T[]} Dense unique values from the first array present in every later array.
+ * @throws {TypeError} If any argument is not an array.
+ * @example
+ * intersection([1, 1, 2], [2, 3]); // [2]
  * @since 2.0.0
  */
 export declare function intersection<T>(...arrays: (readonly T[])[]): T[];
 /**
  * Creates an end-exclusive numeric range, like Python's `range`.
  *
- * @param {number} start
- * @param {number} [end]
- * @param {number} [step]
- * @returns {number[]}
+ * @param {number} start Start value, or exclusive end when end is omitted.
+ * @param {number} [end] Exclusive finite end bound.
+ * @param {number} [step] Non-zero finite increment; defaults to the bound direction.
+ * @returns {number[]} Arithmetic sequence containing at most one million values.
+ * @throws {TypeError} If either bound is not a finite number.
+ * @throws {RangeError} If step is zero/non-finite or the result would exceed allocation limits.
+ * @example
+ * range(4, 0, -2); // [4, 2]
  * @since 2.0.0
  */
 export declare function range(start: number, end?: number, step?: number): number[];
@@ -156,8 +196,11 @@ export declare function range(start: number, end?: number, step?: number): numbe
  * Combines arrays by position, stopping at the shortest input. Sparse slots are
  * read as `undefined` and every returned row is dense.
  *
- * @param {...readonly unknown[]} arrays
- * @returns {unknown[][]}
+ * @param {...readonly unknown[]} arrays Arrays to combine without mutation.
+ * @returns {unknown[][]} Dense positional rows through the shortest input length.
+ * @throws {TypeError} If any argument is not an array.
+ * @example
+ * zip([1, 2], ["a", "b"]); // [[1, "a"], [2, "b"]]
  * @since 2.0.0
  */
 export declare function zip(...arrays: (readonly unknown[])[]): unknown[][];
@@ -167,9 +210,13 @@ export declare function zip(...arrays: (readonly unknown[])[]): unknown[][];
  * `undefined` items and the returned array is dense.
  *
  * @template T
- * @param {readonly T[]} values
- * @param {() => number} [random=Math.random]
- * @returns {T[]}
+ * @param {readonly T[]} values Array to shuffle without mutation.
+ * @param {() => number} [random=Math.random] Source returning a finite value in the half-open interval [0, 1).
+ * @returns {T[]} Dense Fisher-Yates shuffled copy.
+ * @throws {TypeError} If values is not an array or random is not a function.
+ * @throws {RangeError} If random returns a value outside [0, 1) or a non-finite number.
+ * @example
+ * shuffle([1, 2, 3], () => 0); // [2, 3, 1]
  * @since 2.0.0
  */
 export declare function shuffle<T>(values: readonly T[], random?: () => number): T[];

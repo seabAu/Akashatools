@@ -53,15 +53,15 @@ npm run bundle:check
 ```
 
 The harness uses exactly pinned esbuild 0.28.1, minified ESM, an ES2022 target,
-and both raw and gzip byte counts. The 2026-07-11 measurements are:
+and both raw and gzip byte counts. The 2026-07-12 measurements are:
 
 | Fixture | Raw bytes | Gzip bytes | Raw/gzip budget |
 | --- | ---: | ---: | ---: |
 | Named root `chunk` | 321 | 252 | 400 / 300 |
 | Category `chunk` | 321 | 252 | 400 / 300 |
 | Category namespace `array.chunk` | 321 | 252 | 400 / 300 |
-| Default flat `akasha.chunk` | 38,189 | 12,457 | 45,000 / 15,000 |
-| Default category `akasha.array.chunk` | 38,195 | 12,459 | 45,000 / 15,000 |
+| Default flat `akasha.chunk` | 38,276 | 12,485 | 45,000 / 15,000 |
+| Default category `akasha.array.chunk` | 38,282 | 12,487 | 45,000 / 15,000 |
 | Simulated `akashatools/chunk` | 321 | 252 | 400 / 300 |
 | Side-effect-only root import | 0 | 20 | 0 / 20 |
 
