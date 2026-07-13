@@ -14,6 +14,7 @@ const completeSchemaModules = new Set([
   "src/sort.js",
   "src/http.js",
   "src/string.js",
+  "src/date.js",
 ]);
 
 if (process.argv.includes("--fix-since")) {

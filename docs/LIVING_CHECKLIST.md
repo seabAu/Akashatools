@@ -376,7 +376,7 @@ Acceptance criteria:
 
 - [ ] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  Async, browser, collection, HTTP, Node, number, random, sort, and string are complete (51 of 115 public
+  Async, browser, collection, date, HTTP, Node, number, random, sort, and string are complete (69 of 115 public
   declarations), with parameter/return prose, throws, and examples enforced by
   `npm run check:docs`; continue category by category.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all

@@ -422,265 +422,222 @@ Focused import: `akashatools/date`
 
 Checks whether a value represents a valid Date object.
 
-- Signature: `isValidDate(value)`
+- Signature: `isValidDate()`
 - Import: `import { isValidDate } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Date`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Date` — Whether Date.prototype can read a finite timestamp from value.
 
 ### toDate
 
 Converts a Date-compatible value to a fresh Date or returns null.
 
-- Signature: `toDate(value)`
+- Signature: `toDate()`
 - Import: `import { toDate } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Date | null`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number \| null \| undefined` | Not documented. |
+- Returns: `Date | null` — Fresh valid Date, or null for absent/invalid input.
 
 ### daysInMonth
 
 Returns the number of days in a local calendar month.
 
-- Signature: `daysInMonth(yearOrDate, monthIndex?)`
+- Signature: `daysInMonth()`
 - Import: `import { daysInMonth } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Number of local calendar days in the selected month.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `yearOrDate` | `number \| Date` | Not documented. |
-| `[monthIndex]` | `number` | Not documented. |
+Throws:
+- `RangeError` — If year/month fields are invalid or outside 0-11 for the month.
 
 ### startOfLocalDay
 
 Returns a new Date at the beginning of the local calendar day.
 
-- Signature: `startOfLocalDay(value)`
+- Signature: `startOfLocalDay()`
 - Import: `import { startOfLocalDay } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Date`
+- Returns: `Date` — Fresh Date set to 00:00:00.000 in the local timezone.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
+Throws:
+- `TypeError` — If value does not represent a valid Date.
 
 ### localDateKey
 
 Returns a stable local date key in YYYY-MM-DD format.
 
-- Signature: `localDateKey(value)`
+- Signature: `localDateKey()`
 - Import: `import { localDateKey } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Local calendar key formatted `YYYY-MM-DD`.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
+Throws:
+- `TypeError` — If value does not represent a valid Date.
 
 ### differenceInLocalDays
 
 Calculates whole local calendar-day boundaries between two values. This uses UTC representations of local calendar fields to avoid daylight-saving shifts.
 
-- Signature: `differenceInLocalDays(later, earlier)`
+- Signature: `differenceInLocalDays()`
 - Import: `import { differenceInLocalDays } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Signed count of crossed local calendar-day boundaries.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `later` | `Date \| string \| number` | Not documented. |
-| `earlier` | `Date \| string \| number` | Not documented. |
+Throws:
+- `TypeError` — If either value does not represent a valid Date.
 
 ### isSameLocalDay
 
 Checks whether two values fall on the same local calendar day.
 
-- Signature: `isSameLocalDay(left, right)`
+- Signature: `isSameLocalDay()`
 - Import: `import { isSameLocalDay } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
+- Returns: `boolean` — Whether both values share one local calendar date.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `left` | `Date \| string \| number` | Not documented. |
-| `right` | `Date \| string \| number` | Not documented. |
+Throws:
+- `TypeError` — If either value does not represent a valid Date.
 
 ### isToday
 
 Checks whether a value falls on today's local calendar day.
 
-- Signature: `isToday(value, now?)`
+- Signature: `isToday()`
 - Import: `import { isToday } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
+- Returns: `boolean` — Whether value shares now's local calendar date.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
-| `[now=new Date()]` | `Date` | Not documented. |
+Throws:
+- `TypeError` — If either value does not represent a valid Date.
 
 ### toUnixSeconds
 
 Converts a date value to whole Unix seconds.
 
-- Signature: `toUnixSeconds(value)`
+- Signature: `toUnixSeconds()`
 - Import: `import { toUnixSeconds } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
+- Returns: `number` — Truncated whole seconds since the Unix epoch.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
+Throws:
+- `TypeError` — If value does not represent a valid Date.
 
 ### fromUnixSeconds
 
 Converts Unix seconds to a Date.
 
-- Signature: `fromUnixSeconds(seconds)`
+- Signature: `fromUnixSeconds()`
 - Import: `import { fromUnixSeconds } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Date`
+- Returns: `Date` — Fresh Date at seconds times 1,000 milliseconds.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `seconds` | `number` | Not documented. |
+Throws:
+- `TypeError` — If seconds is not finite.
+- `RangeError` — If the resulting timestamp is outside the Date range.
 
 ### normalizeInstantRange
 
 Normalizes two Date-compatible boundaries into fresh Date objects. Boundaries represent absolute instants and are never swapped implicitly.
 
-- Signature: `normalizeInstantRange(start, end)`
+- Signature: `normalizeInstantRange()`
 - Import: `import { normalizeInstantRange } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `{start: Date, end: Date}`
+- Returns: `{start: Date, end: Date}` — Fresh normalized boundary Dates.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `start` | `Date \| string \| number` | Not documented. |
-| `end` | `Date \| string \| number` | Not documented. |
+Throws:
+- `TypeError` — If either boundary does not represent a valid Date.
+- `RangeError` — If start is after end.
 
 ### isWithinInstantRange
 
 Checks whether a Date-compatible value is within an absolute instant range. The default range is start-inclusive and end-exclusive.
 
-- Signature: `isWithinInstantRange(value, start, end, options?)`
+- Signature: `isWithinInstantRange()`
 - Import: `import { isWithinInstantRange } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
+- Returns: `boolean` — Whether value satisfies both range boundaries.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
-| `start` | `Date \| string \| number` | Not documented. |
-| `end` | `Date \| string \| number` | Not documented. |
-| `[options]` | `{startInclusive?: boolean, endInclusive?: boolean}` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If options or Date/range boundaries are invalid.
 
 ### clockTimeToMinutes
 
 Parses a 24-hour `HH:mm` clock time into minutes after midnight.
 
-- Signature: `clockTimeToMinutes(value)`
+- Signature: `clockTimeToMinutes()`
 - Import: `import { clockTimeToMinutes } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number | null`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+- Returns: `number | null` — Minutes after midnight, or null for invalid syntax/ranges.
 
 ### minutesToClockTime
 
 Formats minutes after midnight as 24-hour `HH:mm`, wrapping across days.
 
-- Signature: `minutesToClockTime(minutes)`
+- Signature: `minutesToClockTime()`
 - Import: `import { minutesToClockTime } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Zero-padded 24-hour `HH:mm` clock text.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `minutes` | `number` | Not documented. |
+Throws:
+- `TypeError` — If minutes is not finite.
 
 ### clock12To24
 
 Converts a 12-hour clock string such as `2:05 PM` to `14:05`.
 
-- Signature: `clock12To24(value)`
+- Signature: `clock12To24()`
 - Import: `import { clock12To24 } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string | null`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+- Returns: `string | null` — Zero-padded 24-hour text, or null for invalid input.
 
 ### clock24To12
 
 Converts a `HH:mm` clock string to a 12-hour form such as `2:05 PM`.
 
-- Signature: `clock24To12(value)`
+- Signature: `clock24To12()`
 - Import: `import { clock24To12 } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string | null`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+- Returns: `string | null` — 12-hour clock text, or null for invalid input.
 
 ### formatDate
 
 Formats a date using `Intl.DateTimeFormat`.
 
-- Signature: `formatDate(value, locales?, options?)`
+- Signature: `formatDate()`
 - Import: `import { formatDate } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Locale-formatted date text.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
-| `[locales]` | `Intl.LocalesArgument` | Not documented. |
-| `[options]` | `Intl.DateTimeFormatOptions` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If value, locales, or options are invalid.
 
 ### formatDateTime
 
 Formats a date and time using `Intl.DateTimeFormat`.
 
-- Signature: `formatDateTime(value, locales?, options?)`
+- Signature: `formatDateTime()`
 - Import: `import { formatDateTime } from "akashatools/date"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Locale-formatted date-and-time text.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Date \| string \| number` | Not documented. |
-| `[locales]` | `Intl.LocalesArgument` | Not documented. |
-| `[options]` | `Intl.DateTimeFormatOptions` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If value, locales, or options are invalid.
 
 ## http
 

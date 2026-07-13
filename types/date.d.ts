@@ -1,41 +1,54 @@
 /**
  * Checks whether a value represents a valid Date object.
  *
- * @param {unknown} value
- * @returns {value is Date}
+ * @param {unknown} value Candidate from any JavaScript realm.
+ * @returns {value is Date} Whether Date.prototype can read a finite timestamp from value.
+ * @example
+ * isValidDate(new Date()); // true
  * @since 2.0.0
  */
 export declare function isValidDate(value: unknown): value is Date;
 /**
  * Converts a Date-compatible value to a fresh Date or returns null.
  *
- * @param {Date | string | number | null | undefined} value
- * @returns {Date | null}
+ * @param {Date | string | number | null | undefined} value Date-compatible input; nullish/empty string means absent.
+ * @returns {Date | null} Fresh valid Date, or null for absent/invalid input.
+ * @example
+ * toDate("2026-07-12T00:00:00Z");
  * @since 2.0.0
  */
 export declare function toDate(value: Date | string | number | null | undefined): Date | null;
 /**
  * Returns the number of days in a local calendar month.
  *
- * @param {number | Date} yearOrDate
- * @param {number} [monthIndex]
- * @returns {number}
+ * @param {number | Date} yearOrDate Safe-integer year or valid local-calendar Date.
+ * @param {number} [monthIndex] Zero-based month required when the first argument is a year.
+ * @returns {number} Number of local calendar days in the selected month.
+ * @throws {RangeError} If year/month fields are invalid or outside 0-11 for the month.
+ * @example
+ * daysInMonth(2024, 1); // 29
  * @since 2.0.0
  */
 export declare function daysInMonth(yearOrDate: number | Date, monthIndex?: number): number;
 /**
  * Returns a new Date at the beginning of the local calendar day.
  *
- * @param {Date | string | number} value
- * @returns {Date}
+ * @param {Date | string | number} value Valid Date-compatible local instant.
+ * @returns {Date} Fresh Date set to 00:00:00.000 in the local timezone.
+ * @throws {TypeError} If value does not represent a valid Date.
+ * @example
+ * startOfLocalDay(new Date());
  * @since 2.0.0
  */
 export declare function startOfLocalDay(value: Date | string | number): Date;
 /**
  * Returns a stable local date key in YYYY-MM-DD format.
  *
- * @param {Date | string | number} value
- * @returns {string}
+ * @param {Date | string | number} value Valid Date-compatible local instant.
+ * @returns {string} Local calendar key formatted `YYYY-MM-DD`.
+ * @throws {TypeError} If value does not represent a valid Date.
+ * @example
+ * localDateKey(new Date(2026, 6, 12)); // "2026-07-12"
  * @since 2.0.0
  */
 export declare function localDateKey(value: Date | string | number): string;
@@ -43,43 +56,59 @@ export declare function localDateKey(value: Date | string | number): string;
  * Calculates whole local calendar-day boundaries between two values. This uses
  * UTC representations of local calendar fields to avoid daylight-saving shifts.
  *
- * @param {Date | string | number} later
- * @param {Date | string | number} earlier
- * @returns {number}
+ * @param {Date | string | number} later Later valid local-calendar instant.
+ * @param {Date | string | number} earlier Earlier valid local-calendar instant.
+ * @returns {number} Signed count of crossed local calendar-day boundaries.
+ * @throws {TypeError} If either value does not represent a valid Date.
+ * @example
+ * differenceInLocalDays(new Date(2026, 6, 12), new Date(2026, 6, 10)); // 2
  * @since 2.0.0
  */
 export declare function differenceInLocalDays(later: Date | string | number, earlier: Date | string | number): number;
 /**
  * Checks whether two values fall on the same local calendar day.
  *
- * @param {Date | string | number} left
- * @param {Date | string | number} right
- * @returns {boolean}
+ * @param {Date | string | number} left First valid local-calendar instant.
+ * @param {Date | string | number} right Second valid local-calendar instant.
+ * @returns {boolean} Whether both values share one local calendar date.
+ * @throws {TypeError} If either value does not represent a valid Date.
+ * @example
+ * isSameLocalDay(new Date(), new Date()); // true
  * @since 2.0.0
  */
 export declare function isSameLocalDay(left: Date | string | number, right: Date | string | number): boolean;
 /**
  * Checks whether a value falls on today's local calendar day.
  *
- * @param {Date | string | number} value
- * @param {Date} [now=new Date()]
- * @returns {boolean}
+ * @param {Date | string | number} value Valid local-calendar instant to compare.
+ * @param {Date} [now=new Date()] Injectable valid current instant.
+ * @returns {boolean} Whether value shares now's local calendar date.
+ * @throws {TypeError} If either value does not represent a valid Date.
+ * @example
+ * isToday(new Date()); // true
  * @since 2.0.0
  */
 export declare function isToday(value: Date | string | number, now?: Date): boolean;
 /**
  * Converts a date value to whole Unix seconds.
  *
- * @param {Date | string | number} value
- * @returns {number}
+ * @param {Date | string | number} value Valid absolute instant.
+ * @returns {number} Truncated whole seconds since the Unix epoch.
+ * @throws {TypeError} If value does not represent a valid Date.
+ * @example
+ * toUnixSeconds(new Date("1970-01-01T00:00:01Z")); // 1
  * @since 2.0.0
  */
 export declare function toUnixSeconds(value: Date | string | number): number;
 /**
  * Converts Unix seconds to a Date.
  *
- * @param {number} seconds
- * @returns {Date}
+ * @param {number} seconds Finite Unix seconds, including fractional seconds.
+ * @returns {Date} Fresh Date at seconds times 1,000 milliseconds.
+ * @throws {TypeError} If seconds is not finite.
+ * @throws {RangeError} If the resulting timestamp is outside the Date range.
+ * @example
+ * fromUnixSeconds(1).toISOString(); // "1970-01-01T00:00:01.000Z"
  * @since 2.0.0
  */
 export declare function fromUnixSeconds(seconds: number): Date;
@@ -87,9 +116,13 @@ export declare function fromUnixSeconds(seconds: number): Date;
  * Normalizes two Date-compatible boundaries into fresh Date objects. Boundaries
  * represent absolute instants and are never swapped implicitly.
  *
- * @param {Date | string | number} start
- * @param {Date | string | number} end
- * @returns {{start: Date, end: Date}}
+ * @param {Date | string | number} start Valid absolute starting instant.
+ * @param {Date | string | number} end Valid absolute ending instant at or after start.
+ * @returns {{start: Date, end: Date}} Fresh normalized boundary Dates.
+ * @throws {TypeError} If either boundary does not represent a valid Date.
+ * @throws {RangeError} If start is after end.
+ * @example
+ * normalizeInstantRange("2026-01-01", "2026-02-01");
  * @since 2.0.0
  */
 export declare function normalizeInstantRange(start: Date | string | number, end: Date | string | number): {
@@ -100,11 +133,14 @@ export declare function normalizeInstantRange(start: Date | string | number, end
  * Checks whether a Date-compatible value is within an absolute instant range.
  * The default range is start-inclusive and end-exclusive.
  *
- * @param {Date | string | number} value
- * @param {Date | string | number} start
- * @param {Date | string | number} end
- * @param {{startInclusive?: boolean, endInclusive?: boolean}} [options]
- * @returns {boolean}
+ * @param {Date | string | number} value Valid absolute instant to test.
+ * @param {Date | string | number} start Valid absolute starting boundary.
+ * @param {Date | string | number} end Valid absolute ending boundary.
+ * @param {{startInclusive?: boolean, endInclusive?: boolean}} [options] Literal boundary-inclusion policy.
+ * @returns {boolean} Whether value satisfies both range boundaries.
+ * @throws {TypeError | RangeError} If options or Date/range boundaries are invalid.
+ * @example
+ * isWithinInstantRange(value, start, end); // start-inclusive, end-exclusive
  * @since 2.0.0
  */
 export declare function isWithinInstantRange(value: Date | string | number, start: Date | string | number, end: Date | string | number, { startInclusive, endInclusive }?: {
@@ -114,52 +150,67 @@ export declare function isWithinInstantRange(value: Date | string | number, star
 /**
  * Parses a 24-hour `HH:mm` clock time into minutes after midnight.
  *
- * @param {string} value
- * @returns {number | null}
+ * @param {string} value Trimmed 24-hour clock text in `H:mm` or `HH:mm` form.
+ * @returns {number | null} Minutes after midnight, or null for invalid syntax/ranges.
+ * @example
+ * clockTimeToMinutes("23:59"); // 1439
  * @since 2.0.0
  */
 export declare function clockTimeToMinutes(value: string): number | null;
 /**
  * Formats minutes after midnight as 24-hour `HH:mm`, wrapping across days.
  *
- * @param {number} minutes
- * @returns {string}
+ * @param {number} minutes Finite minute count, truncated and wrapped across days.
+ * @returns {string} Zero-padded 24-hour `HH:mm` clock text.
+ * @throws {TypeError} If minutes is not finite.
+ * @example
+ * minutesToClockTime(-1); // "23:59"
  * @since 2.0.0
  */
 export declare function minutesToClockTime(minutes: number): string;
 /**
  * Converts a 12-hour clock string such as `2:05 PM` to `14:05`.
  *
- * @param {string} value
- * @returns {string | null}
+ * @param {string} value Trimmed 12-hour `h:mm AM/PM` clock text.
+ * @returns {string | null} Zero-padded 24-hour text, or null for invalid input.
+ * @example
+ * clock12To24("2:05 PM"); // "14:05"
  * @since 2.0.0
  */
 export declare function clock12To24(value: string): string | null;
 /**
  * Converts a `HH:mm` clock string to a 12-hour form such as `2:05 PM`.
  *
- * @param {string} value
- * @returns {string | null}
+ * @param {string} value Valid 24-hour `H:mm` or `HH:mm` clock text.
+ * @returns {string | null} 12-hour clock text, or null for invalid input.
+ * @example
+ * clock24To12("14:05"); // "2:05 PM"
  * @since 2.0.0
  */
 export declare function clock24To12(value: string): string | null;
 /**
  * Formats a date using `Intl.DateTimeFormat`.
  *
- * @param {Date | string | number} value
- * @param {Intl.LocalesArgument} [locales]
- * @param {Intl.DateTimeFormatOptions} [options]
- * @returns {string}
+ * @param {Date | string | number} value Valid Date-compatible instant.
+ * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.DateTimeFormat.
+ * @param {Intl.DateTimeFormatOptions} [options] Date formatting policy; defaults to long date style.
+ * @returns {string} Locale-formatted date text.
+ * @throws {TypeError | RangeError} If value, locales, or options are invalid.
+ * @example
+ * formatDate("2026-07-12T00:00:00Z", "en-US", { timeZone: "UTC" });
  * @since 2.0.0
  */
 export declare function formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
 /**
  * Formats a date and time using `Intl.DateTimeFormat`.
  *
- * @param {Date | string | number} value
- * @param {Intl.LocalesArgument} [locales]
- * @param {Intl.DateTimeFormatOptions} [options]
- * @returns {string}
+ * @param {Date | string | number} value Valid Date-compatible instant.
+ * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.DateTimeFormat.
+ * @param {Intl.DateTimeFormatOptions} [options] Date/time policy; defaults to medium date and short time.
+ * @returns {string} Locale-formatted date-and-time text.
+ * @throws {TypeError | RangeError} If value, locales, or options are invalid.
+ * @example
+ * formatDateTime(new Date(), "en-US");
  * @since 2.0.0
  */
 export declare function formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;

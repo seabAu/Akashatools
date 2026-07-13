@@ -131,3 +131,5 @@
   failures from native argument/setup errors and documenting redaction boundaries.
 - Completed and enforced string API documentation; `includesText` now rejects
   non-boolean case policy and `replaceMany` rejects coercive containers/pairs.
+- Completed and enforced date API documentation across local-calendar, absolute
+  instant, Unix-second, clock-string, DST, range, and Intl formatting semantics.
