@@ -133,3 +133,5 @@
   non-boolean case policy and `replaceMany` rejects coercive containers/pairs.
 - Completed and enforced date API documentation across local-calendar, absolute
   instant, Unix-second, clock-string, DST, range, and Intl formatting semantics.
+- Completed and enforced object API documentation; `pickAllowed` now requires
+  string allow-list entries and a literal boolean unknown-property policy.

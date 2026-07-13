@@ -1,32 +1,55 @@
 export type ObjectTraversalEntry = {
+    /**
+     * Value found at this traversal position.
+     */
     value: unknown;
+    /**
+     * Own-property key, or undefined for the root.
+     */
     key: string | number | undefined;
+    /**
+     * Fresh path from the root.
+     */
     path: (string | number)[];
+    /**
+     * Immediate containing object/array.
+     */
     parent: Record<PropertyKey, unknown> | unknown[] | undefined;
 };
 export type ObjectTraversalOptions = {
+    /**
+     * Whether to emit the root entry.
+     */
     includeRoot?: boolean;
+    /**
+     * Maximum entered depth, or Infinity.
+     */
     maxDepth?: number;
+    /**
+     * Maximum emitted entries before failure.
+     */
     maxNodes?: number;
 };
 /**
  * @typedef {object} ObjectTraversalEntry
- * @property {unknown} value
- * @property {string | number | undefined} key
- * @property {(string | number)[]} path
- * @property {Record<PropertyKey, unknown> | unknown[] | undefined} parent
+ * @property {unknown} value Value found at this traversal position.
+ * @property {string | number | undefined} key Own-property key, or undefined for the root.
+ * @property {(string | number)[]} path Fresh path from the root.
+ * @property {Record<PropertyKey, unknown> | unknown[] | undefined} parent Immediate containing object/array.
  */
 /**
  * @typedef {object} ObjectTraversalOptions
- * @property {boolean} [includeRoot=false]
- * @property {number} [maxDepth=100]
- * @property {number} [maxNodes=10000]
+ * @property {boolean} [includeRoot=false] Whether to emit the root entry.
+ * @property {number} [maxDepth=100] Maximum entered depth, or Infinity.
+ * @property {number} [maxNodes=10000] Maximum emitted entries before failure.
  */
 /**
  * Checks whether a value is an object with Object.prototype or a null prototype.
  *
- * @param {unknown} value
- * @returns {value is Record<PropertyKey, unknown>}
+ * @param {unknown} value Candidate from any JavaScript realm.
+ * @returns {value is Record<PropertyKey, unknown>} Whether value has the intrinsic Object constructor or null prototype.
+ * @example
+ * isPlainObject(Object.create(null)); // true
  * @since 2.0.0
  */
 export declare function isPlainObject(value: unknown): value is Record<PropertyKey, unknown>;
@@ -34,10 +57,12 @@ export declare function isPlainObject(value: unknown): value is Record<PropertyK
  * Parses a safe dot/bracket property path. Prototype-mutating segments are
  * rejected to prevent prototype-pollution vulnerabilities.
  *
- * @param {string | readonly (string | number)[]} path
- * @returns {(string | number)[]}
+ * @param {string | readonly (string | number)[]} path Dot/bracket text or explicit safe segments.
+ * @returns {(string | number)[]} Fresh normalized string/number segment array.
  * @throws {TypeError} If syntax or a segment is invalid or prototype-mutating.
  * @throws {RangeError} If the path exceeds the length or segment limits.
+ * @example
+ * parsePath("profile.names[0]"); // ["profile", "names", 0]
  * @since 2.0.0
  */
 export declare function parsePath(path: string | readonly (string | number)[]): (string | number)[];
@@ -46,21 +71,25 @@ export declare function parsePath(path: string | readonly (string | number)[]): 
  * path is absent. An existing `undefined` value is returned as-is.
  *
  * @template T
- * @param {unknown} value
- * @param {string | readonly (string | number)[]} path
- * @param {T} [fallback]
- * @returns {unknown | T}
+ * @param {unknown} value Root value read through own properties only.
+ * @param {string | readonly (string | number)[]} path Safe nested property path.
+ * @param {T} [fallback] Value returned only when the path is absent.
+ * @returns {unknown | T} Existing leaf value (including undefined) or fallback.
  * @throws {TypeError | RangeError} If the path contract is invalid.
+ * @example
+ * getAtPath({ user: { id: 1 } }, "user.id"); // 1
  * @since 2.0.0
  */
 export declare function getAtPath<T>(value: unknown, path: string | readonly (string | number)[], fallback?: T): unknown | T;
 /**
  * Checks whether every segment of a nested own-property path exists.
  *
- * @param {unknown} value
- * @param {string | readonly (string | number)[]} path
- * @returns {boolean}
+ * @param {unknown} value Root value inspected through own properties only.
+ * @param {string | readonly (string | number)[]} path Safe nested property path.
+ * @returns {boolean} Whether every path segment exists, even if the leaf is undefined.
  * @throws {TypeError | RangeError} If the path contract is invalid.
+ * @example
+ * hasAtPath({ value: undefined }, "value"); // true
  * @since 2.0.0
  */
 export declare function hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
@@ -71,11 +100,13 @@ export declare function hasAtPath(value: unknown, path: string | readonly (strin
  * returned without allocating replacement ancestors.
  *
  * @template T
- * @param {T} value
- * @param {string | readonly (string | number)[]} path
- * @param {unknown} nextValue
- * @returns {T}
+ * @param {T} value Root value left unmodified.
+ * @param {string | readonly (string | number)[]} path Safe nested property path to write.
+ * @param {unknown} nextValue Replacement leaf value.
+ * @returns {T} Structurally shared root, or the original root for an identical leaf.
  * @throws {TypeError | RangeError} If the path contract is invalid.
+ * @example
+ * setAtPath(profile, "name.first", "Akasha");
  * @since 2.0.0
  */
 export declare function setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
@@ -86,11 +117,13 @@ export declare function setAtPath<T>(value: T, path: string | readonly (string |
  * Accessors and symbols are skipped; built-in collections, typed arrays, Dates,
  * and class instances are leaf values. Sparse array slots are absent properties.
  *
- * @param {Record<PropertyKey, unknown> | unknown[]} value
- * @param {ObjectTraversalOptions} [options]
- * @returns {ObjectTraversalEntry[]}
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {ObjectTraversalOptions} [options] Root inclusion and traversal work bounds.
+ * @returns {ObjectTraversalEntry[]} Deterministic preorder entries with fresh paths.
  * @throws {TypeError} If the root or options do not match the contract.
  * @throws {RangeError} If traversal would exceed `maxNodes`.
+ * @example
+ * traverseObject({ user: { id: 1 } }).map(({ path }) => path);
  * @since 2.0.0
  */
 export declare function traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: ObjectTraversalOptions): ObjectTraversalEntry[];
@@ -99,12 +132,14 @@ export declare function traverseObject(value: Record<PropertyKey, unknown> | unk
  * `undefined`. Traversal uses the same cycle, property, and limit rules as
  * `traverseObject`, and stops as soon as a match is found.
  *
- * @param {Record<PropertyKey, unknown> | unknown[]} value
- * @param {(entry: ObjectTraversalEntry) => boolean} predicate
- * @param {ObjectTraversalOptions} [options]
- * @returns {ObjectTraversalEntry | undefined}
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {(entry: ObjectTraversalEntry) => boolean} predicate Fail-fast match predicate.
+ * @param {ObjectTraversalOptions} [options] Root inclusion and traversal work bounds.
+ * @returns {ObjectTraversalEntry | undefined} First accepted entry or undefined.
  * @throws {TypeError} If the root, predicate, or options are invalid.
  * @throws {RangeError} If traversal would exceed `maxNodes` before a match.
+ * @example
+ * findDeep(data, ({ key }) => key === "id");
  * @since 2.0.0
  */
 export declare function findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions): ObjectTraversalEntry | undefined;
@@ -112,9 +147,12 @@ export declare function findDeep(value: Record<PropertyKey, unknown> | unknown[]
  * Returns an object containing selected own properties.
  *
  * @template {object} T
- * @param {T} value
- * @param {readonly (keyof T)[]} keys
- * @returns {Partial<T>}
+ * @param {T} value Object read through own properties.
+ * @param {readonly (keyof T)[]} keys Keys copied in requested order when present.
+ * @returns {Partial<T>} New ordinary object containing selected own values.
+ * @throws {TypeError} If value is not object-like or keys is not an array.
+ * @example
+ * pick({ id: 1, secret: true }, ["id"]); // { id: 1 }
  * @since 2.0.0
  */
 export declare function pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
@@ -122,9 +160,12 @@ export declare function pick<T extends object>(value: T, keys: readonly (keyof T
  * Returns a shallow copy without the selected own properties.
  *
  * @template {object} T
- * @param {T} value
- * @param {readonly (keyof T)[]} keys
- * @returns {Partial<T>}
+ * @param {T} value Object whose enumerable string properties are copied.
+ * @param {readonly (keyof T)[]} keys Keys excluded from the shallow copy.
+ * @returns {Partial<T>} New ordinary object without selected enumerable string keys.
+ * @throws {TypeError} If value is not object-like or keys is not an array.
+ * @example
+ * omit({ id: 1, secret: true }, ["secret"]); // { id: 1 }
  * @since 2.0.0
  */
 export declare function omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
@@ -133,9 +174,12 @@ export declare function omit<T extends object>(value: T, keys: readonly (keyof T
  * Maps, Sets, Dates, typed arrays, and transferable values.
  *
  * @template T
- * @param {T} value
- * @param {StructuredSerializeOptions} [options]
- * @returns {T}
+ * @param {T} value Structured-cloneable value to copy.
+ * @param {StructuredSerializeOptions} [options] Native transfer options; transferred inputs may be detached.
+ * @returns {T} Independent structured clone preserving supported built-in types/cycles.
+ * @throws {DOMException} If value or transfer options cannot be structured-cloned.
+ * @example
+ * const clone = deepClone({ date: new Date(), map: new Map() });
  * @since 2.0.0
  */
 export declare function deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
@@ -147,11 +191,13 @@ export declare function deepClone<T>(value: T, options?: StructuredSerializeOpti
  *
  * @template {Record<PropertyKey, unknown>} T
  * @template {Record<PropertyKey, unknown>} U
- * @param {T} base
- * @param {U} override
- * @returns {T & U}
+ * @param {T} base Plain-object defaults left unmodified; its prototype is retained.
+ * @param {U} override Plain-object replacements left unmodified.
+ * @returns {T & U} New recursively merged plain object.
  * @throws {TypeError} If inputs are not plain data objects or contain unsafe property semantics/cycles.
  * @throws {RangeError} If merge depth or object-pair work exceeds the fixed limits.
+ * @example
+ * deepMerge({ nested: { one: 1 } }, { nested: { two: 2 } });
  * @since 2.0.0
  */
 export declare function deepMerge<T extends Record<PropertyKey, unknown>, U extends Record<PropertyKey, unknown>>(base: T, override: U): T & U;
@@ -159,10 +205,13 @@ export declare function deepMerge<T extends Record<PropertyKey, unknown>, U exte
  * Returns a new object containing only allowed own properties. Unknown or
  * prototype-mutating properties can be rejected or skipped.
  *
- * @param {unknown} value
- * @param {readonly string[]} allowedKeys
- * @param {{rejectUnknown?: boolean}} [options]
- * @returns {Record<string, unknown>}
+ * @param {unknown} value Plain object inspected through enumerable string keys.
+ * @param {readonly string[]} allowedKeys Literal string keys allowed in output.
+ * @param {{rejectUnknown?: boolean}} [options] Whether unknown/unsafe keys throw instead of being skipped.
+ * @returns {Record<string, unknown>} New ordinary object containing allowed own properties.
+ * @throws {TypeError} If value, allowedKeys, rejectUnknown, or an encountered key is invalid.
+ * @example
+ * pickAllowed(payload, ["name", "email"]);
  * @since 2.0.0
  */
 export declare function pickAllowed(value: unknown, allowedKeys: readonly string[], { rejectUnknown }?: {

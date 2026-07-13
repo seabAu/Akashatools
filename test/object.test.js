@@ -83,6 +83,8 @@ test("deep clone and deep merge use modern safe semantics", () => {
     keep: true,
   });
   assert.deepEqual(pickAllowed({ one: 1, two: 2 }, ["one"], { rejectUnknown: false }), { one: 1 });
+  assert.throws(() => pickAllowed({}, /** @type {any} */ ([1])), TypeError);
+  assert.throws(() => pickAllowed({}, [], { rejectUnknown: /** @type {any} */ ("no") }), TypeError);
 });
 
 test("deep merge replaces non-plain values and rejects active property semantics", () => {

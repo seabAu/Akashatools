@@ -831,29 +831,21 @@ Focused import: `akashatools/object`
 
 Checks whether a value is an object with Object.prototype or a null prototype.
 
-- Signature: `isPlainObject(value)`
+- Signature: `isPlainObject()`
 - Import: `import { isPlainObject } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `value is Record<PropertyKey, unknown>`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `value is Record<PropertyKey, unknown>` — Whether value has the intrinsic Object constructor or null prototype.
 
 ### parsePath
 
 Parses a safe dot/bracket property path. Prototype-mutating segments are rejected to prevent prototype-pollution vulnerabilities.
 
-- Signature: `parsePath(path)`
+- Signature: `parsePath()`
 - Import: `import { parsePath } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `(string | number)[]`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `path` | `string \| readonly (string \| number)[]` | Not documented. |
+- Returns: `(string | number)[]` — Fresh normalized string/number segment array.
 
 Throws:
 - `TypeError` — If syntax or a segment is invalid or prototype-mutating.
@@ -863,17 +855,11 @@ Throws:
 
 Reads an own property at a nested path, returning a fallback only when the path is absent. An existing `undefined` value is returned as-is.
 
-- Signature: `getAtPath(value, path, fallback?)`
+- Signature: `getAtPath()`
 - Import: `import { getAtPath } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `unknown | T`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
-| `path` | `string \| readonly (string \| number)[]` | Not documented. |
-| `[fallback]` | `T` | Not documented. |
+- Returns: `unknown | T` — Existing leaf value (including undefined) or fallback.
 
 Throws:
 - `TypeError | RangeError` — If the path contract is invalid.
@@ -882,16 +868,11 @@ Throws:
 
 Checks whether every segment of a nested own-property path exists.
 
-- Signature: `hasAtPath(value, path)`
+- Signature: `hasAtPath()`
 - Import: `import { hasAtPath } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
-| `path` | `string \| readonly (string \| number)[]` | Not documented. |
+- Returns: `boolean` — Whether every path segment exists, even if the leaf is undefined.
 
 Throws:
 - `TypeError | RangeError` — If the path contract is invalid.
@@ -900,17 +881,11 @@ Throws:
 
 Sets a nested value while structurally sharing untouched objects and arrays. Missing containers are inferred from the following path segment. If an existing leaf is `Object.is`-identical to `nextValue`, the original root is returned without allocating replacement ancestors.
 
-- Signature: `setAtPath(value, path, nextValue)`
+- Signature: `setAtPath()`
 - Import: `import { setAtPath } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | Not documented. |
-| `path` | `string \| readonly (string \| number)[]` | Not documented. |
-| `nextValue` | `unknown` | Not documented. |
+- Returns: `T` — Structurally shared root, or the original root for an identical leaf.
 
 Throws:
 - `TypeError | RangeError` — If the path contract is invalid.
@@ -919,16 +894,11 @@ Throws:
 
 Traverses own enumerable data properties of plain objects and arrays in deterministic depth-first preorder. Results include paths and parents. Repeated/circular objects appear as entries but are not entered again. Accessors and symbols are skipped; built-in collections, typed arrays, Dates, and class instances are leaf values. Sparse array slots are absent properties.
 
-- Signature: `traverseObject(value, options?)`
+- Signature: `traverseObject()`
 - Import: `import { traverseObject } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `ObjectTraversalEntry[]`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Record<PropertyKey, unknown> \| unknown[]` | Not documented. |
-| `[options]` | `ObjectTraversalOptions` | Not documented. |
+- Returns: `ObjectTraversalEntry[]` — Deterministic preorder entries with fresh paths.
 
 Throws:
 - `TypeError` — If the root or options do not match the contract.
@@ -938,17 +908,11 @@ Throws:
 
 Returns the first deep traversal entry accepted by a predicate, or `undefined`. Traversal uses the same cycle, property, and limit rules as `traverseObject`, and stops as soon as a match is found.
 
-- Signature: `findDeep(value, predicate, options?)`
+- Signature: `findDeep()`
 - Import: `import { findDeep } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `ObjectTraversalEntry | undefined`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `Record<PropertyKey, unknown> \| unknown[]` | Not documented. |
-| `predicate` | `(entry: ObjectTraversalEntry) => boolean` | Not documented. |
-| `[options]` | `ObjectTraversalOptions` | Not documented. |
+- Returns: `ObjectTraversalEntry | undefined` — First accepted entry or undefined.
 
 Throws:
 - `TypeError` — If the root, predicate, or options are invalid.
@@ -958,61 +922,50 @@ Throws:
 
 Returns an object containing selected own properties.
 
-- Signature: `pick(value, keys)`
+- Signature: `pick()`
 - Import: `import { pick } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Partial<T>`
+- Returns: `Partial<T>` — New ordinary object containing selected own values.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | Not documented. |
-| `keys` | `readonly (keyof T)[]` | Not documented. |
+Throws:
+- `TypeError` — If value is not object-like or keys is not an array.
 
 ### omit
 
 Returns a shallow copy without the selected own properties.
 
-- Signature: `omit(value, keys)`
+- Signature: `omit()`
 - Import: `import { omit } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Partial<T>`
+- Returns: `Partial<T>` — New ordinary object without selected enumerable string keys.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | Not documented. |
-| `keys` | `readonly (keyof T)[]` | Not documented. |
+Throws:
+- `TypeError` — If value is not object-like or keys is not an array.
 
 ### deepClone
 
 Deeply clones structured-cloneable values, including circular references, Maps, Sets, Dates, typed arrays, and transferable values.
 
-- Signature: `deepClone(value, options?)`
+- Signature: `deepClone()`
 - Import: `import { deepClone } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T`
+- Returns: `T` — Independent structured clone preserving supported built-in types/cycles.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `T` | Not documented. |
-| `[options]` | `StructuredSerializeOptions` | Not documented. |
+Throws:
+- `DOMException` — If value or transfer options cannot be structured-cloned.
 
 ### deepMerge
 
 Recursively merges own enumerable string-keyed data properties of plain objects without mutating either input. Arrays and non-plain objects are replaced by reference. Unsafe names, enumerable symbols, and enumerable accessors are rejected without invoking getters. The base prototype is kept.
 
-- Signature: `deepMerge(base, override)`
+- Signature: `deepMerge()`
 - Import: `import { deepMerge } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `T & U`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `base` | `T` | Not documented. |
-| `override` | `U` | Not documented. |
+- Returns: `T & U` — New recursively merged plain object.
 
 Throws:
 - `TypeError` — If inputs are not plain data objects or contain unsafe property semantics/cycles.
@@ -1022,17 +975,14 @@ Throws:
 
 Returns a new object containing only allowed own properties. Unknown or prototype-mutating properties can be rejected or skipped.
 
-- Signature: `pickAllowed(value, allowedKeys, options?)`
+- Signature: `pickAllowed()`
 - Import: `import { pickAllowed } from "akashatools/object"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Record<string, unknown>`
+- Returns: `Record<string, unknown>` — New ordinary object containing allowed own properties.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
-| `allowedKeys` | `readonly string[]` | Not documented. |
-| `[options]` | `{rejectUnknown?: boolean}` | Not documented. |
+Throws:
+- `TypeError` — If value, allowedKeys, rejectUnknown, or an encountered key is invalid.
 
 ## random
 
