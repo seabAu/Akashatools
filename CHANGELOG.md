@@ -129,3 +129,5 @@
   comparisons so invalid Dates and extreme numbers always yield finite ordering signals.
 - Completed and enforced HTTP API documentation, distinguishing typed transport
   failures from native argument/setup errors and documenting redaction boundaries.
+- Completed and enforced string API documentation; `includesText` now rejects
+  non-boolean case policy and `replaceMany` rejects coercive containers/pairs.

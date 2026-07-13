@@ -1275,192 +1275,164 @@ Focused import: `akashatools/string`
 
 Uppercases the first Unicode-aware character of a string.
 
-- Signature: `capitalize(value, locales?)`
+- Signature: `capitalize()`
 - Import: `import { capitalize } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — New string, or an empty string for empty input.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
-| `[locales]` | `string \| string[]` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If value or locales is invalid.
 
 ### kebabCase
 
 Converts words and common identifier styles to kebab-case.
 
-- Signature: `kebabCase(value)`
+- Signature: `kebabCase()`
 - Import: `import { kebabCase } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Lowercase hyphen-delimited words.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+Throws:
+- `TypeError` — If value is not a string.
 
 ### camelCase
 
 Converts words and common identifier styles to camelCase.
 
-- Signature: `camelCase(value)`
+- Signature: `camelCase()`
 - Import: `import { camelCase } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Lower camel-cased identifier.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+Throws:
+- `TypeError` — If value is not a string.
 
 ### pascalCase
 
 Converts words and common identifier styles to PascalCase.
 
-- Signature: `pascalCase(value)`
+- Signature: `pascalCase()`
 - Import: `import { pascalCase } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Upper camel-cased identifier.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+Throws:
+- `TypeError` — If value is not a string.
 
 ### sentenceCase
 
 Converts an identifier into a human-readable sentence.
 
-- Signature: `sentenceCase(value)`
+- Signature: `sentenceCase()`
 - Import: `import { sentenceCase } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Space-delimited lowercase words with the first code point uppercased.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
+Throws:
+- `TypeError` — If value is not a string.
 
 ### includesText
 
 Checks for literal text with optional case sensitivity.
 
-- Signature: `includesText(value, search, options?)`
+- Signature: `includesText()`
 - Import: `import { includesText } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `boolean`
+- Returns: `boolean` — Whether search occurs in value.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
-| `search` | `string` | Not documented. |
-| `[options]` | `{caseSensitive?: boolean, locales?: string \| string[]}` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If strings, caseSensitive, or locales are invalid.
 
 ### replaceMany
 
 Applies literal string replacements in insertion order. Unlike a RegExp-based implementation, replacement keys are never interpreted as regex syntax.
 
-- Signature: `replaceMany(value, replacements)`
+- Signature: `replaceMany()`
 - Import: `import { replaceMany } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — String after every ordered literal replacement.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
-| `replacements` | `ReadonlyMap<string, string> \| Record<string, string>` | Not documented. |
+Throws:
+- `TypeError` — If value, the replacement container, or any pair is not string-based.
 
 ### replaceRegex
 
 Applies a caller-provided regular expression without mutating its `lastIndex`. The expression is cloned with the same source and flags. This function does not make an unsafe or backtracking-prone caller pattern safe.
 
-- Signature: `replaceRegex(value, pattern, replacement)`
+- Signature: `replaceRegex()`
 - Import: `import { replaceRegex } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Replaced string without changing pattern.lastIndex.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
-| `pattern` | `RegExp` | Not documented. |
-| `replacement` | `string \| ((substring: string, ...args: any[]) => string)` | Not documented. |
+Throws:
+- `TypeError | SyntaxError` — If arguments are invalid or the cloned expression cannot be constructed.
 
 ### longestStringLength
 
 Returns the greatest string length among values, object keys, or a scalar.
 
-- Signature: `longestStringLength(value)`
+- Signature: `longestStringLength()`
 - Import: `import { longestStringLength } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `number`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `number` — Greatest UTF-16 code-unit length; nullish scalar entries count as empty.
 
 ### safeFilename
 
 Creates a conservative lowercase filename stem. Output is ASCII, NFKD normalized, bounded, free of trailing punctuation/control characters, and prefixed when it would equal a reserved Windows device name.
 
-- Signature: `safeFilename(value, options?)`
+- Signature: `safeFilename()`
 - Import: `import { safeFilename } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Non-empty conservative ASCII filename stem.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
-| `[options]` | `{fallback?: string, maximumLength?: number}` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If strings or maximumLength are invalid.
 
 ### slugify
 
 Creates a bounded ASCII URL/path slug with Unicode compatibility normalization. Empty normalized input returns a normalized fallback.
 
-- Signature: `slugify(value, options?)`
+- Signature: `slugify()`
 - Import: `import { slugify } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Non-empty lowercase ASCII slug.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `string` | Not documented. |
-| `[options]` | `{fallback?: string, maximumLength?: number}` | Not documented. |
+Throws:
+- `TypeError | RangeError` — If strings or maximumLength are invalid.
 
 ### escapeHtml
 
 Encodes five HTML-significant characters for an HTML text context. This is not HTML sanitization and does not make markup, URLs, CSS, or scripts safe.
 
-- Signature: `escapeHtml(value)`
+- Signature: `escapeHtml()`
 - Import: `import { escapeHtml } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
-
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
+- Returns: `string` — Text with ampersand, brackets, quotes, and apostrophes encoded.
 
 ### prettyJson
 
 Serializes a JSON-compatible value with human-readable indentation.
 
-- Signature: `prettyJson(value, space?)`
+- Signature: `prettyJson()`
 - Import: `import { prettyJson } from "akashatools/string"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string`
+- Returns: `string` — Serialized JSON text.
 
-| Parameter | Type | Description |
-| --- | --- | --- |
-| `value` | `unknown` | Not documented. |
-| `[space=2]` | `number \| string` | Not documented. |
+Throws:
+- `TypeError` — If serialization fails or returns undefined.
 
 ## validation
 

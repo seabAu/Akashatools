@@ -5,6 +5,7 @@ import {
   camelCase,
   capitalize,
   escapeHtml,
+  includesText,
   kebabCase,
   pascalCase,
   replaceMany,
@@ -24,6 +25,7 @@ test("string helpers normalize identifiers and replace literal text", () => {
   assert.equal(kebabCase("APIResponse2_value d\u00e9j\u00e0"), "api-response2-value-d\u00e9j\u00e0");
   assert.equal(camelCase("XML_HTTP response2Value"), "xmlHttpResponse2Value");
   assert.equal(pascalCase("version2-api"), "Version2Api");
+  assert.throws(() => includesText("value", "v", { caseSensitive: /** @type {any} */ ("yes") }), TypeError);
 });
 
 test("literal and regular-expression replacements have separate contracts", () => {
@@ -34,6 +36,8 @@ test("literal and regular-expression replacements have separate contracts", () =
   assert.equal(pattern.lastIndex, 2);
   assert.equal(replaceRegex("a1 b2", /([a-z])(\d)/g, (_, letter, digit) => `${digit}${letter}`), "1a 2b");
   assert.throws(() => replaceRegex("value", /** @type {any} */ ("value"), "x"), TypeError);
+  assert.throws(() => replaceMany("value", /** @type {any} */ (null)), TypeError);
+  assert.throws(() => replaceMany("value", new Map([["value", /** @type {any} */ (1)]])), TypeError);
 });
 
 test("slug and filename helpers normalize unsafe cross-platform names", () => {

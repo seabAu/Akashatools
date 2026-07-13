@@ -13,6 +13,7 @@ const completeSchemaModules = new Set([
   "src/random.js",
   "src/sort.js",
   "src/http.js",
+  "src/string.js",
 ]);
 
 if (process.argv.includes("--fix-since")) {
@@ -95,7 +96,9 @@ for (const filename of publicModules) {
       if (kind !== "class" && !hasDescribedReturn) {
         failures.push(`${location}: @returns must include a description`);
       }
-      if (kind !== "class" && !/@throws\s+\{/.test(comment)) failures.push(`${location}: missing @throws contract`);
+      for (const line of lines.filter((line) => line.startsWith("@throws "))) {
+        if (!/^@throws\s+\{.*\}\s+\S/.test(line)) failures.push(`${location}: @throws must include a description`);
+      }
       if (!/@example\b/.test(comment)) failures.push(`${location}: missing @example`);
     }
   }
