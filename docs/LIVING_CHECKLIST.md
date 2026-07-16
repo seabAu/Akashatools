@@ -75,7 +75,8 @@ would add API and type complexity and require demonstrated consumer value.
   esbuild 0.28.1 produced 304-byte minified bundles for both named-root and
   category `chunk` imports versus 20,373 bytes for the complete namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
-  portfolio rebuild, and COMPOSR.
+  portfolio rebuild, COMPOSR, and SPLICR. A 2026-07-16 delta refresh is active
+  because all four consumer source trees changed after the original snapshot.
 
 ## Phase 1 — lock the public API architecture
 
@@ -220,6 +221,21 @@ Acceptance criteria:
 - [x] Record aliases separately from canonical exports.
 - [x] Record native replacements such as `structuredClone`, `Object.hasOwn`,
   `Array.prototype.toSorted`, `Intl`, `Set`, `Map`, and `URL`.
+
+### 2.6 Active-source refresh and SPLICR
+
+- [x] Locate and preserve the current Mindspace, portfolio rebuild, COMPOSR, and
+  SPLICR app trees as read-only source references.
+- [x] Create a dated delta ledger at
+  `docs/inventory/SOURCE_REFRESH_2026-07-16.md` so post-snapshot findings do not
+  silently invalidate the original inventories.
+- [ ] Complete a symbol-level delta audit of changed and untracked utility-like
+  modules in all four consumer apps.
+- [ ] Inventory SPLICR's provider-neutral text measurement, semantic chunking,
+  preprocessing, planning, delivery, storage, and error-classification
+  algorithms, including Python-to-JavaScript semantic differences.
+- [ ] Implement and verify the independently reusable candidates selected by the
+  refresh ledger; do not migrate app contracts merely to increase API size.
 
 ## Phase 3 — finish the universal core
 
@@ -493,6 +509,8 @@ edits. When authorized, migrate one bounded area at a time.
 - [ ] Create a Mindspace compatibility fixture for server utilities.
 - [ ] Create a portfolio rebuild compatibility fixture.
 - [ ] Create a COMPOSR compatibility fixture.
+- [ ] Create a SPLICR algorithm-compatibility fixture for any ported
+  provider-neutral text helpers.
 - [ ] Measure bundle/runtime impact before and after focused imports.
 - [ ] Record missing ergonomics discovered through real usage.
 - [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
@@ -592,7 +610,8 @@ edits. When authorized, migrate one bounded area at a time.
 
 Akashatools 2.0 is done when:
 
-- every candidate in the four source sets has a recorded disposition;
+- every candidate in Akashatools and the four current consumer source sets has a
+  recorded disposition;
 - the canonical API is coherent, collision-free, documented, and discoverable;
 - default, flat, named, category, and approved compatibility imports are tested;
 - all public functions have strict types/JSDoc and behavioral tests;

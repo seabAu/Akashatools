@@ -9,6 +9,7 @@ Large source-set appendices provide full module classification and feed their
 export-level dispositions back into this ledger:
 
 - [Mindspace inventory](inventory/MINDSPACE.md)
+- [2026-07-16 active-source refresh, including SPLICR](inventory/SOURCE_REFRESH_2026-07-16.md)
 
 ## Disposition vocabulary
 

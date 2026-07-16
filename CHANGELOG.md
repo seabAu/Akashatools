@@ -139,3 +139,5 @@
   literal plain-object and cross-realm Map/Set guards instead of key-counting any object.
 - Completed and enforced array API documentation; array fallbacks and removal
   options now reject invalid container types instead of coercing or ignoring them.
+- Began the 2026-07-16 active-source refresh across Mindspace, the portfolio
+  rebuild, COMPOSR, and SPLICR with a dated delta ledger and implementation queue.
