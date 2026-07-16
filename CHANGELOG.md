@@ -173,3 +173,5 @@
   families while keeping rejected application/framework defects out of scope.
 - Added a checked representative consumer bundle comparison; focused imports
   save 46.6-50.1 KB raw and 14.4-15.3 KB gzip versus the default namespace.
+- Added bounded deterministic Node-only `globPaths` on the stable native Node
+  filesystem glob API and raised the Node engine floor to 22.17.

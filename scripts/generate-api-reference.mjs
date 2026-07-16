@@ -81,7 +81,7 @@ function renderCategory(category, declarations) {
     category === "browser"
       ? "Modern browser at effect time; safe to import universally."
       : category === "node"
-        ? "Node.js 22+."
+        ? "Node.js 22.17+."
         : "Universal JavaScript on the supported runtime floor.";
   const importPath = category === "node" ? "akashatools/node" : `akashatools/${category}`;
   const entries = declarations.map((declaration) => renderDeclaration(declaration, importPath, category));

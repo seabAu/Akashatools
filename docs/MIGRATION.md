@@ -48,9 +48,9 @@ security, and modern native equivalents before entering the public API.
   Mindspace-specific scheduling or recurrence policy.
 - Portfolio admin/session behavior, storage policy, and COMPOSR profiler bundle
   contracts that depend on application-owned types.
-- General file reads, writes, deletion, and discovery until their Node-only
-  encoding, abort, atomicity, glob, and operation-time containment contracts are
-  designed. Lexical and existing-realpath containment are now available.
+- General file reads, writes, and deletion until their Node-only encoding,
+  abort, atomicity, and operation-time containment contracts are designed.
+  Lexical/realpath containment and bounded native path discovery are available.
 - Application HTTP authentication, response envelopes, UI effects, SSRF policy,
   and retries. The generic bounded one-attempt transport is now `http.request`.
 

@@ -16,7 +16,7 @@ it is not a safe basis for the planned `node` surface.
 
 | Mindspace export | Finding | Akashatools disposition |
 | --- | --- | --- |
-| `findFilesByPattern` | Calls undeclared `glob`, so every call throws; result paths depend on an unstated glob dependency. | Reject implementation; defer Node glob API and dependency decision. |
+| `findFilesByPattern` | Calls undeclared `glob`, so every call throws; result paths depend on an unstated glob dependency. | Replaced by Node-only `globPaths`, now that native globbing is stable in the supported Node 22.17+ runtime; canonical results are bounded, deduplicated, and sorted. |
 | `saveFile` | Thin synchronous `writeFileSync` wrapper returns undefined and defines no encoding, atomicity, or directory policy. | Native Node API; future file writer must state overwrite/atomic behavior. |
 | `getFile` | Reads a Mindspace media record synchronously as base64, logs paths, and decodes only `%20`. | App-local media adapter; reject as generic file read. |
 | `getFiles` | Sequential-looking wrapper around `getFile`; uses unnecessary async callbacks and preserves the media-record contract. | App-local. |

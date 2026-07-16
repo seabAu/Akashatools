@@ -189,7 +189,7 @@ independent reasons to preserve broken behavior.
 
 | Portfolio export | Akashatools disposition |
 | --- | --- |
-| `findFilesByPattern` | Reject undeclared-`glob` implementation; defer deliberate Node glob API. |
+| `findFilesByPattern` | Replace with bounded deterministic Node-only `globPaths`; native globbing removes the old dependency blocker. |
 | `saveFile` | Native Node write API or future explicit atomic/overwrite helper. |
 | `getFile` | App-local Mindspace media adapter. |
 | `getFiles` | App-local media adapter composition. |

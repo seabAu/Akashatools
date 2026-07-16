@@ -207,6 +207,7 @@
       "request"
     ],
     "./node": [
+      "globPaths",
       "resolveContainedPath",
       "resolveExistingContainedPath"
     ],

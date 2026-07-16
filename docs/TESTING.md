@@ -53,7 +53,7 @@ seed explicitly instead of depending on ambient randomness.
 
 ## Runtime boundaries
 
-The current package contract is ESM on Node.js 22 or newer. Browser-dependent
+The current package contract is ESM on Node.js 22.17 or newer. Browser-dependent
 functions use injected DOM and URL capabilities in unit tests. The retained
 `fixtures/browser/download.html` fixture also verifies native Blob/File guards,
 iframe-realm Map/Set/typed-array guards, download cleanup, and browser console

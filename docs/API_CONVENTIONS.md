@@ -50,7 +50,7 @@ import { chunk as chunkArray } from "akashatools/array";
 | `validation` | implemented | Literal predicates, normalization, and contract checks. |
 | `function` | reserved | Function control such as once/debounce/throttle if adopted. |
 | `http` | implemented | Bounded Fetch, cancellation, parsing, redaction, and typed HTTP errors. |
-| `node` | reserved subpath | Node-only filesystem, path, and runtime operations; never flattened into the universal root. |
+| `node` | implemented subpath | Node-only filesystem, path, and runtime operations; never flattened into the universal root. |
 
 `schema` and `debug` are explicitly not 2.0 categories. The reviewed schema
 languages are app/framework contracts, and reviewed diagnostics are console

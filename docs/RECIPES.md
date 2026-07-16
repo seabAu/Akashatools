@@ -97,3 +97,21 @@ const items = fulfilledValues(settled);
 
 Results retain input order and individual failures remain available in
 `settled` for diagnostics or recovery.
+
+## Discover Node paths with bounded native globbing
+
+```js
+import { globPaths } from "akashatools/node";
+
+const sourcePattern = ["src", "**", "*.js"].join("/");
+const files = await globPaths(sourcePattern, {
+  cwd: projectRoot,
+  exclude: ["**/*.generated.js"],
+  absolute: true,
+  maximumMatches: 20_000,
+});
+```
+
+Results are deduplicated and sorted. Patterns retain native Node semantics, and
+matches may be files or directories according to the pattern. Discovery does
+not authorize later filesystem mutation or provide symlink containment.

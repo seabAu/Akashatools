@@ -5,7 +5,7 @@ import path, { posix, win32 } from "node:path";
 import test from "node:test";
 
 import * as root from "akashatools";
-import { resolveContainedPath, resolveExistingContainedPath } from "akashatools/node";
+import { globPaths, resolveContainedPath, resolveExistingContainedPath } from "akashatools/node";
 import { resolveContainedPathWith } from "../src/internal/contained-path.js";
 
 test("Node-only paths resolve lexically without leaking into the universal root", () => {
@@ -52,4 +52,41 @@ test("existing-path containment follows symlinks and rejects an outside target",
 
   await symlink(outsideRoot, path.join(storageRoot, "escape"), process.platform === "win32" ? "junction" : "dir");
   await assert.rejects(resolveExistingContainedPath(storageRoot, path.join("escape", "outside.txt")), RangeError);
+});
+
+test("native glob paths are deterministic, bounded, excludable, and optionally absolute", async (context) => {
+  const root = await mkdtemp(path.join(tmpdir(), "akashatools-glob-"));
+  context.after(() => rm(root, { recursive: true, force: true }));
+  await Promise.all([
+    mkdir(path.join(root, "src"), { recursive: true }),
+    mkdir(path.join(root, "ignored"), { recursive: true }),
+  ]);
+  await Promise.all([
+    writeFile(path.join(root, "src", "alpha.js"), "export default 1;"),
+    writeFile(path.join(root, "src", "notes.txt"), "notes"),
+    writeFile(path.join(root, "config.json"), "{}"),
+    writeFile(path.join(root, "ignored", "hidden.js"), "export default 2;"),
+  ]);
+
+  const matches = await globPaths(["**/*.js", "**/*.json", "src/*.js"], {
+    cwd: root,
+    exclude: ["ignored/**"],
+  });
+  assert.deepEqual(
+    matches.map((value) => value.replaceAll(path.sep, "/")),
+    ["config.json", "src/alpha.js"],
+  );
+  assert.deepEqual(await globPaths("src/*.js", { cwd: root, absolute: true }), [path.join(root, "src", "alpha.js")]);
+  await assert.rejects(globPaths("**/*", { cwd: root, maximumMatches: 1 }), RangeError);
+});
+
+test("native glob paths reject ambiguous and excessive discovery contracts", async () => {
+  await assert.rejects(globPaths([]), TypeError);
+  await assert.rejects(globPaths(""), TypeError);
+  await assert.rejects(globPaths("*.js", { cwd: "" }), TypeError);
+  await assert.rejects(globPaths("*.js", { exclude: [""] }), TypeError);
+  await assert.rejects(globPaths("*.js", { absolute: /** @type {any} */ (1) }), TypeError);
+  await assert.rejects(globPaths("*.js", { maximumMatches: 0 }), RangeError);
+  await assert.rejects(globPaths("x".repeat(10_001)), RangeError);
+  await assert.rejects(globPaths(Array.from({ length: 101 }, () => "*.js")), RangeError);
 });

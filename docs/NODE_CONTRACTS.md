@@ -1,12 +1,14 @@
 # Node filesystem and path decisions
 
-The selected Node-only 2.x surface is containment, exposed only through
-`akashatools/node`:
+The selected Node-only 2.x surface is containment and bounded path discovery,
+exposed only through `akashatools/node`:
 
 - `resolveContainedPath` performs a lexical plan for a nonempty relative path;
 - `resolveExistingContainedPath` additionally resolves existing symlinks and
   verifies the real target remains under the real root;
-- neither function performs I/O mutation or claims that a later operation is
+- `globPaths` collects native Node glob matches with explicit cwd/exclusions,
+  deduplication, deterministic code-unit ordering, and a maximum-result bound;
+- none of these functions performs I/O mutation or claims that a later operation is
   race-free. Callers must still account for path replacement between checking
   and use.
 
@@ -25,10 +27,11 @@ unique temporary file in the same verified directory, exclusive creation,
 write/close (and optional file/directory sync), rename semantics per supported
 OS, mode/ownership policy, and cleanup that never hides the primary failure.
 
-File discovery/globbing is deferred. A future API must specify pattern grammar,
-base containment, files versus directories, symlink traversal, hidden entries,
-case sensitivity, stable ordering, maximum results/depth, abort behavior,
-permission errors, and whether a maintained glob dependency is justified.
+`globPaths` delegates pattern grammar, file/directory matching, symlink behavior,
+hidden entries, case sensitivity, and permission errors to stable native
+`fsPromises.glob` in Node 22.17+. It deliberately returns paths rather than
+claiming files, adds no dependency, does not imply containment, and does not
+silently swallow iterator errors. Deeper traversal/abort policy remains native.
 
 The rejected legacy save/delete/glob helpers swallow failures, use unrestricted
 paths, rely on undeclared dependencies, or report false success. Akashatools

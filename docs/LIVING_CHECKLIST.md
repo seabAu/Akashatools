@@ -64,7 +64,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Initialize Git inside `akashatools2026`.
 - [x] Preserve copied Akashatools 1.0.2 in baseline commit `3a245be`.
 - [x] Commit the first 2.0 alpha foundation in `3b0fe6c`.
-- [x] Set the package to ESM and Node.js 22+.
+- [x] Set the package to ESM and Node.js 22.17+, the stable native-glob floor.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
@@ -393,10 +393,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 126 public declarations are complete, with parameter/return prose,
+  All 127 public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  126 public declarations by `npm run check:docs`.
+  127 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -447,7 +447,7 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions and regression fixtures is 97.53% / 86.14% / 96.04%, respectively; branch
+  the active-source additions and regression fixtures is 97.56% / 86.18% / 96.10%, respectively; branch
   accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers. The six-test
   Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are
@@ -580,8 +580,14 @@ edits. When authorized, migrate one bounded area at a time.
   yes, expose deterministic conditional type targets generated from source.
 - [x] Whether ESM-only is acceptable for all active consumers: yes; retain ESM
   for 2.0 unless a future real consumer supplies contrary evidence.
-- [ ] Which advanced date/timezone and schema helpers are truly generic.
-- [ ] Whether HTTP retry and filesystem globbing justify dependencies.
+- [x] Which advanced date/timezone and schema helpers are truly generic: keep
+  incompatible Mongoose/form/product schemas app-local; retain strict JSON
+  contracts, Intl formatting, and explicit instant/local-date primitives while
+  deferring ambiguous zoned-local conversion until the runtime floor supports a
+  stable Temporal contract.
+- [x] Whether HTTP retry and filesystem globbing justify dependencies: neither.
+  Retry remains application policy; stable Node 22.17 native globbing underpins
+  bounded `globPaths` without adding a dependency.
 
 ## Decision log
 
@@ -623,6 +629,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Bound hostile nested-data work in canonical object helpers. | Blocking prototype names is insufficient if paths or mutually recursive merges can exhaust the stack; fixed path, depth, cycle, and object-pair limits provide deterministic failure. |
 | 2026-07-16 | Raise only the full default-namespace bundle guardrail to 55,000 raw/18,000 gzip. | The source refresh intentionally expands the discoverable convenience namespace; focused imports remain 321 raw/252 gzip, while the new limit retains roughly 18% measured headroom for regression detection. |
 | 2026-07-16 | Keep Akashatools 2.0 ESM-only after active-consumer fixture review. | Mindspace client/server, portfolio server, and COMPOSR declare ESM; portfolio web and COMPOSR TypeScript use ESNext bundler resolution; SPLICR is Python, so no active CommonJS requirement justifies a dual build. |
+| 2026-07-16 | Raise the Node floor to 22.17 and adopt native glob path discovery. | `fsPromises.glob` is stable at that floor, resolving the broken Mindspace wrapper without a dependency; bounded deterministic discovery stays separate from containment and mutation authorization. |
 
 ## Definition of done
 

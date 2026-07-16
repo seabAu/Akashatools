@@ -30,3 +30,26 @@ export declare function resolveContainedPath(root: string, relativePath: string)
  * @since 2.0.0
  */
 export declare function resolveExistingContainedPath(root: string, relativePath: string): Promise<string>;
+/**
+ * Collects paths matching one or more native Node glob patterns in deterministic
+ * code-unit order. Duplicate matches are removed and collection stops at an
+ * explicit work bound. Matches may be files or directories according to the
+ * patterns; this discovery helper performs no filesystem mutation or security
+ * containment check.
+ *
+ * @param {string | readonly string[]} pattern One nonblank native Node glob pattern or a nonempty array of at most 100 patterns.
+ * @param {{cwd?: string, exclude?: readonly string[], absolute?: boolean, maximumMatches?: number}} [options] Search directory, up to 100 exclusion patterns, absolute-output choice, and positive unique-match bound.
+ * @returns {Promise<string[]>} Deduplicated matching paths sorted deterministically.
+ * @throws {TypeError} If patterns, cwd, or options do not match their literal contracts.
+ * @throws {RangeError} If a pattern/input bound or maximumMatches is exceeded.
+ * @example
+ * const sourceJavaScript = ["src", "**", "*.js"].join("/");
+ * await globPaths(sourceJavaScript);
+ * @since 2.0.0
+ */
+export declare function globPaths(pattern: string | readonly string[], options?: {
+    cwd?: string;
+    exclude?: readonly string[];
+    absolute?: boolean;
+    maximumMatches?: number;
+}): Promise<string[]>;

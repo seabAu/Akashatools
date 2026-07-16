@@ -106,6 +106,11 @@ external Git metadata:
 This completes the active refresh audit without treating file location or a
 generic-sounding name as evidence that product policy belongs in Akashatools.
 
+The later platform review also resolves the old filesystem-glob dependency
+question: Node 22.17 marks native `fsPromises.glob` stable, so the broken
+Mindspace wrapper is replaced by bounded deterministic `node.globPaths` without
+adding a package dependency.
+
 ## Implementation queue from this refresh
 
 - [x] Add and test bounded expiring single-flight helpers as

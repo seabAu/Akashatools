@@ -4,7 +4,7 @@ Akashatools is a dependency-free collection of focused JavaScript utilities for
 arrays, objects, strings, numbers, dates, validation, asynchronous workflows,
 collections, and browser file downloads.
 
-Version 2 is an ES module package for Node.js 22+ and modern browsers. Functions
+Version 2 is an ES module package for Node.js 22.17+ and modern browsers. Functions
 are side-effect free unless their names explicitly describe an effect.
 
 ## Install

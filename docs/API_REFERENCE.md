@@ -1652,7 +1652,7 @@ Throws:
 
 ## node
 
-Runtime: Node.js 22+.
+Runtime: Node.js 22.17+.
 
 Focused import: `akashatools/node`
 
@@ -1683,3 +1683,17 @@ Resolves an existing path beneath an existing root, following symlinks for both 
 Throws:
 - `TypeError` — If either argument is not a supported path string.
 - `RangeError` — If the lexical or real target escapes the root.
+
+### globPaths
+
+Collects paths matching one or more native Node glob patterns in deterministic code-unit order. Duplicate matches are removed and collection stops at an explicit work bound. Matches may be files or directories according to the patterns; this discovery helper performs no filesystem mutation or security containment check.
+
+- Signature: `globPaths()`
+- Import: `import { globPaths } from "akashatools/node"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Promise<string[]>` — Deduplicated matching paths sorted deterministically.
+
+Throws:
+- `TypeError` — If patterns, cwd, or options do not match their literal contracts.
+- `RangeError` — If a pattern/input bound or maximumMatches is exceeded.

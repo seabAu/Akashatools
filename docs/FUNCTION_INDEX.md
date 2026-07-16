@@ -55,6 +55,7 @@ drop-in compatibility.
 | `fromUnixSeconds` | date | universal | no input mutation | `akashatools/date` | None |
 | `fulfilledValues` | async | universal | no input mutation | `akashatools/async` | None |
 | `getAtPath` | object | universal | no input mutation | `akashatools/object` | None |
+| `globPaths` | node | node | no input mutation | `akashatools/node` | None |
 | `groupBy` | array | universal | no input mutation | `akashatools/array` | None |
 | `hasAtPath` | object | universal | no input mutation | `akashatools/object` | `AO.has` |
 | `HttpError` | http | universal | no input mutation | `akashatools/http` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
