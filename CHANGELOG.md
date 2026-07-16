@@ -164,3 +164,5 @@
   fixtures, scripts, and root configuration files.
 - Added executable focused-import compatibility fixtures for current Mindspace
   client/server, portfolio, COMPOSR, and SPLICR utility contracts.
+- Confirmed the 2.0 package remains ESM-only from current consumer manifests and
+  compiler settings; no active CommonJS requirement was found.

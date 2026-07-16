@@ -479,7 +479,9 @@ Acceptance criteria:
 
 ## Phase 8 — packaging and automation
 
-- [ ] Decide whether ESM-only remains appropriate after consumer fixture testing.
+- [x] Decide whether ESM-only remains appropriate after consumer fixture testing:
+  yes. Active JavaScript consumers are ESM or bundler-resolved ESNext, while
+  SPLICR is Python and creates no CommonJS requirement.
 - [ ] If CommonJS is required, use generated dual outputs with identity/interop
   tests; do not hand-maintain duplicate sources.
 - [x] Keep extensionless modern subpaths as the canonical spelling; extensioned
@@ -565,7 +567,8 @@ edits. When authorized, migrate one bounded area at a time.
   321 raw / 252 gzip bytes, so 2.0 will not add redundant per-method exports.
 - [x] Whether generated declarations are needed beyond JSDoc for downstream IDEs:
   yes, expose deterministic conditional type targets generated from source.
-- [ ] Whether ESM-only is acceptable for all active consumers.
+- [x] Whether ESM-only is acceptable for all active consumers: yes; retain ESM
+  for 2.0 unless a future real consumer supplies contrary evidence.
 - [ ] Which advanced date/timezone and schema helpers are truly generic.
 - [ ] Whether HTTP retry and filesystem globbing justify dependencies.
 
@@ -608,6 +611,7 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-11 | Retain only existing `lib` compatibility paths through 2.x. | A new `/legacy` namespace would duplicate and legitimize incoherent or broken 1.x behavior; removal waits for 3.0, real-consumer evidence, and explicit approval. |
 | 2026-07-11 | Bound hostile nested-data work in canonical object helpers. | Blocking prototype names is insufficient if paths or mutually recursive merges can exhaust the stack; fixed path, depth, cycle, and object-pair limits provide deterministic failure. |
 | 2026-07-16 | Raise only the full default-namespace bundle guardrail to 55,000 raw/18,000 gzip. | The source refresh intentionally expands the discoverable convenience namespace; focused imports remain 321 raw/252 gzip, while the new limit retains roughly 18% measured headroom for regression detection. |
+| 2026-07-16 | Keep Akashatools 2.0 ESM-only after active-consumer fixture review. | Mindspace client/server, portfolio server, and COMPOSR declare ESM; portfolio web and COMPOSR TypeScript use ESNext bundler resolution; SPLICR is Python, so no active CommonJS requirement justifies a dual build. |
 
 ## Definition of done
 

@@ -45,3 +45,12 @@ The unified `npm test` and `npm run check` gates include the same suite. Passing
 these representative fixtures does not establish whole-application drop-in
 compatibility; that requires bounded migrations and application-owned tests in
 each source project.
+
+## Module-format evidence
+
+Akashatools 2.0 remains ESM-only. Current Mindspace client/server, portfolio
+server, and COMPOSR manifests declare `"type": "module"`; the portfolio web and
+COMPOSR TypeScript configurations use ESNext with bundler resolution. SPLICR is
+a Python application and supplies no CommonJS consumer requirement. A generated
+dual build would therefore add identity, export, and release complexity without
+a demonstrated active consumer.
