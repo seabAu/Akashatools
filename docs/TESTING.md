@@ -4,7 +4,9 @@ Akashatools tests public behavior, not implementation shape. Every implemented
 public category has a focused test file that imports its canonical subpath;
 dedicated integration files cover cross-category invariants, the root namespace,
 export map, installed package, declarations, editor completion, and retained 1.x
-compatibility paths.
+compatibility paths. `test/consumer-compatibility.test.js` executes focused-import
+adapters based on the current Mindspace, portfolio, COMPOSR, and SPLICR utility
+contracts; see `docs/CONSUMER_COMPATIBILITY.md` for its scope and limits.
 
 ## Commands
 

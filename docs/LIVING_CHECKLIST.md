@@ -444,7 +444,7 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions is 97.23% / 85.56% / 95.68%, respectively; branch
+  the active-source additions and consumer fixtures is 97.53% / 85.91% / 96.04%, respectively; branch
   accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers. The six-test
   Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are
@@ -505,14 +505,16 @@ Acceptance criteria:
 These projects are read-only references until the user explicitly authorizes
 edits. When authorized, migrate one bounded area at a time.
 
-- [ ] Create a Mindspace compatibility fixture for client/shared utilities.
-- [ ] Create a Mindspace compatibility fixture for server utilities.
-- [ ] Create a portfolio rebuild compatibility fixture.
-- [ ] Create a COMPOSR compatibility fixture.
-- [ ] Create a SPLICR algorithm-compatibility fixture for any ported
-  provider-neutral text helpers.
+- [x] Create a Mindspace compatibility fixture for client/shared utilities.
+- [x] Create a Mindspace compatibility fixture for server utilities.
+- [x] Create a portfolio rebuild compatibility fixture.
+- [x] Create a COMPOSR compatibility fixture.
+- [x] Create a SPLICR algorithm-compatibility fixture for ported
+  provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [ ] Measure bundle/runtime impact before and after focused imports.
-- [ ] Record missing ergonomics discovered through real usage.
+- [x] Record missing ergonomics discovered through real usage. The fixtures need
+  only thin application adapters for positional options, prefixes, blank-input
+  policy, and domain envelopes; no additional generic primitive surfaced.
 - [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
   or environment globals accidentally.
 - [ ] Feed validated improvements back into the canonical API before 2.0 RC.

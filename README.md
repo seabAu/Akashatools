@@ -141,4 +141,6 @@ Declaration and editor guarantees are documented in
 Security boundaries and threat models are collected in
 [docs/SECURITY.md](docs/SECURITY.md).
 Test organization, invariant seeds, and coverage policy are documented in
-[docs/TESTING.md](docs/TESTING.md).
+[docs/TESTING.md](docs/TESTING.md), and the real-source representative fixture
+scope is recorded in
+[docs/CONSUMER_COMPATIBILITY.md](docs/CONSUMER_COMPATIBILITY.md).

@@ -162,3 +162,5 @@
   from repeated Mindspace time-display evidence.
 - Added pinned ESLint 10 and Prettier 3 checks for maintained source, tests,
   fixtures, scripts, and root configuration files.
+- Added executable focused-import compatibility fixtures for current Mindspace
+  client/server, portfolio, COMPOSR, and SPLICR utility contracts.

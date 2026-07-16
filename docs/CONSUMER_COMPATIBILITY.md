@@ -1,0 +1,47 @@
+# Consumer compatibility fixtures
+
+The fixtures under `fixtures/consumers/` are executable migration evidence from
+the current Mindspace, portfolio rebuild, COMPOSR, and SPLICR utility surfaces.
+They import Akashatools through its public package name and export map, rather
+than reaching into `src/`, so they exercise the same focused imports a consumer
+would use.
+
+The source projects remain read-only. These fixtures cover portable utility
+contracts and their deliberately thin application adapters; they do not import
+frameworks, databases, UI components, provider SDKs, or application state.
+
+## Covered contracts
+
+| Consumer | Current source evidence | Executable compatibility surface |
+| --- | --- | --- |
+| Mindspace client/shared | Array utilities, secure client IDs, time-grid duration labels, and relative-time presentation. | Immutable dedupe/reorder/group/page composition; compact durations; Intl relative time; app-owned ID prefixes composed with `secureRandomUuid`. |
+| Mindspace server | `pick`, mutating deep merge, bounded JSON sanitation, and media-path helpers. | Bounded `cloneJson` followed by an app allowlist; immutable `deepMerge` that preserves falsy overrides; lexical Node path containment. |
+| Portfolio rebuild | Expiring and keyed single-flight loaders, file-size formatting, and response-download filename tests. | Positional-to-options adapters around bounded single-flight controllers; exact current decimal size cases; encoded/quoted/path-bearing Content-Disposition cases. |
+| COMPOSR | Bounded settled mapping, fulfilled projection, ID collections, canonical checkpoints, profiler summaries, and filename slugs. | Ordered settled work, immutable record updates, strict deterministic JSON, interpolated finite-number summaries, and lowercase filename slugs. |
+| SPLICR | Provider-neutral Python UTF-8/word measurement, semantic chunking, and planning offsets. | Lossless JavaScript chunks with source offsets, UTF-8 and word limits, Unicode code-point fallback, provider-cost estimates, and app-owned blank-input rejection. |
+
+## Intentional boundaries
+
+- Mindspace Mongo/Express/Mongoose policy, key restrictions, storage-root
+  selection, and prefix vocabulary remain application code.
+- Portfolio retry, response streaming, session, media, and navigation behavior
+  remains application code; only reusable loader/header/size primitives moved.
+- COMPOSR profiler envelopes, checkpoint schemas, and transition aggregation
+  records remain product contracts composed from generic primitives.
+- SPLICR normalization, heading strategies, TTS markers, provider estimates,
+  document import, audio, and storage remain SPLICR-owned. The generic splitter
+  preserves the original text byte-for-byte when chunks are joined.
+- Stricter argument failures are intentional. The fixtures do not preserve
+  swallowed callback errors, silent coercion, mutation, prototype extension, or
+  path traversal behavior from legacy helpers.
+
+Run the focused evidence with:
+
+```sh
+node --test test/consumer-compatibility.test.js
+```
+
+The unified `npm test` and `npm run check` gates include the same suite. Passing
+these representative fixtures does not establish whole-application drop-in
+compatibility; that requires bounded migrations and application-owned tests in
+each source project.
