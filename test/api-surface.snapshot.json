@@ -23,6 +23,8 @@
       "compareValues",
       "countBy",
       "createCollatorComparator",
+      "createKeyedSingleFlight",
+      "createSingleFlight",
       "date",
       "daysInMonth",
       "deepClone",
@@ -150,6 +152,8 @@
       "zip"
     ],
     "./async": [
+      "createKeyedSingleFlight",
+      "createSingleFlight",
       "delay",
       "fulfilledValues",
       "mapSettledWithConcurrency"

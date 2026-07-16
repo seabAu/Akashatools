@@ -35,6 +35,25 @@ export declare const array: Readonly<{
 }>;
 /** Frozen asynchronous utilities for namespace-style discovery. */
 export declare const asyncUtils: Readonly<{
+    createSingleFlight<T>(loader: () => T | PromiseLike<T>, options?: {
+        ttl?: number;
+        now?: () => number;
+        shouldCache?: (value: T) => boolean;
+    }): Readonly<{
+        load: () => Promise<T>;
+        invalidate: () => void;
+    }>;
+    createKeyedSingleFlight<K, V>(loader: (key: K) => V | PromiseLike<V>, options?: {
+        ttl?: number;
+        now?: () => number;
+        shouldCache?: (value: V) => boolean;
+        maximumSize?: number;
+    }): Readonly<{
+        load: (key: K) => Promise<V>;
+        invalidate: (key: K) => boolean;
+        invalidateAll: () => number;
+        readonly size: number;
+    }>;
     mapSettledWithConcurrency<T, R>(values: readonly T[], concurrency: number, mapper: (value: T, index: number) => R | PromiseLike<R>): Promise<PromiseSettledResult<R>[]>;
     fulfilledValues<T>(results: readonly PromiseSettledResult<T>[]): T[];
     delay(milliseconds: number, { signal }?: {
@@ -271,6 +290,8 @@ export declare const akasha: Readonly<{
     range: typeof arrayModule.range;
     zip: typeof arrayModule.zip;
     shuffle: typeof arrayModule.shuffle;
+    createSingleFlight: typeof asyncModule.createSingleFlight;
+    createKeyedSingleFlight: typeof asyncModule.createKeyedSingleFlight;
     mapSettledWithConcurrency: typeof asyncModule.mapSettledWithConcurrency;
     fulfilledValues: typeof asyncModule.fulfilledValues;
     delay: typeof asyncModule.delay;
@@ -383,6 +404,25 @@ export declare const akasha: Readonly<{
         shuffle<T>(values: readonly T[], random?: () => number): T[];
     }>;
     async: Readonly<{
+        createSingleFlight<T>(loader: () => T | PromiseLike<T>, options?: {
+            ttl?: number;
+            now?: () => number;
+            shouldCache?: (value: T) => boolean;
+        }): Readonly<{
+            load: () => Promise<T>;
+            invalidate: () => void;
+        }>;
+        createKeyedSingleFlight<K, V>(loader: (key: K) => V | PromiseLike<V>, options?: {
+            ttl?: number;
+            now?: () => number;
+            shouldCache?: (value: V) => boolean;
+            maximumSize?: number;
+        }): Readonly<{
+            load: (key: K) => Promise<V>;
+            invalidate: (key: K) => boolean;
+            invalidateAll: () => number;
+            readonly size: number;
+        }>;
         mapSettledWithConcurrency<T, R>(values: readonly T[], concurrency: number, mapper: (value: T, index: number) => R | PromiseLike<R>): Promise<PromiseSettledResult<R>[]>;
         fulfilledValues<T>(results: readonly PromiseSettledResult<T>[]): T[];
         delay(milliseconds: number, { signal }?: {

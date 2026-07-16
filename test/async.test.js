@@ -1,7 +1,92 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { delay, fulfilledValues, mapSettledWithConcurrency } from "akashatools/async";
+import {
+  createKeyedSingleFlight,
+  createSingleFlight,
+  delay,
+  fulfilledValues,
+  mapSettledWithConcurrency,
+} from "akashatools/async";
+
+test("single-flight coalesces requests, caches accepted values, and isolates generations", async () => {
+  let calls = 0;
+  let currentTime = 1_000;
+  /** @type {Array<(value: number) => void>} */
+  const resolvers = [];
+  const resolveNext = (value) => {
+    const resolve = resolvers.shift();
+    assert.ok(resolve);
+    resolve(value);
+  };
+  const flight = createSingleFlight(
+    () => new Promise((resolve) => {
+      calls += 1;
+      resolvers.push(resolve);
+    }),
+    { ttl: 100, now: () => currentTime, shouldCache: (value) => value > 0 },
+  );
+
+  const first = flight.load();
+  assert.equal(flight.load(), first);
+  await Promise.resolve();
+  resolveNext(1);
+  assert.equal(await first, 1);
+  assert.equal(await flight.load(), 1);
+  assert.equal(calls, 1);
+
+  currentTime += 101;
+  const expired = flight.load();
+  await Promise.resolve();
+  resolveNext(-1);
+  assert.equal(await expired, -1);
+  const uncached = flight.load();
+  flight.invalidate();
+  const nextGeneration = flight.load();
+  await Promise.resolve();
+  resolveNext(2);
+  resolveNext(3);
+  assert.equal(await uncached, 2);
+  assert.equal(await nextGeneration, 3);
+  assert.equal(await flight.load(), 3);
+});
+
+test("single-flight normalizes synchronous errors and validates cache contracts", async () => {
+  const failed = createSingleFlight(() => { throw new Error("sync"); });
+  await assert.rejects(failed.load(), /sync/);
+  assert.throws(() => createSingleFlight(/** @type {any} */ (null)), TypeError);
+  assert.throws(() => createSingleFlight(() => 1, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => createSingleFlight(() => 1, { ttl: -1 }), RangeError);
+
+  const badClock = createSingleFlight(() => 1, { ttl: 1, now: () => Number.NaN });
+  await assert.rejects(badClock.load(), RangeError);
+  const badPredicate = createSingleFlight(() => 1, {
+    ttl: 1,
+    shouldCache: /** @type {any} */ (() => "yes"),
+  });
+  await assert.rejects(badPredicate.load(), TypeError);
+});
+
+test("keyed single-flight bounds least-recently used entries without allocating on invalidation", async () => {
+  const calls = new Map();
+  const flight = createKeyedSingleFlight(async (key) => {
+    calls.set(key, (calls.get(key) ?? 0) + 1);
+    return `${key}-${calls.get(key)}`;
+  }, { ttl: Infinity, maximumSize: 2 });
+
+  assert.deepEqual(await Promise.all([flight.load("a"), flight.load("a")]), ["a-1", "a-1"]);
+  assert.equal(await flight.load("b"), "b-1");
+  assert.equal(await flight.load("a"), "a-1"); // refresh a as most recently accessed
+  assert.equal(await flight.load("c"), "c-1"); // evicts b
+  assert.equal(flight.size, 2);
+  assert.equal(flight.invalidate("missing"), false);
+  assert.equal(flight.size, 2);
+  assert.equal(await flight.load("b"), "b-2");
+  assert.equal(flight.invalidate("b"), true);
+  assert.equal(flight.invalidateAll(), 1);
+  assert.equal(flight.size, 0);
+  assert.throws(() => createKeyedSingleFlight(async () => 1, { maximumSize: 0 }), RangeError);
+});
 
 test("bounded async mapping preserves order and filters fulfilled values", async () => {
   let active = 0;

@@ -92,7 +92,8 @@ external-converter security contracts better owned by a dedicated package.
 
 ## Implementation queue from this refresh
 
-- [ ] Add and test bounded expiring single-flight helpers.
+- [x] Add and test bounded expiring single-flight helpers as
+  `createSingleFlight` and `createKeyedSingleFlight`.
 - [ ] Add and test deterministic bounded plain-JSON serialization.
 - [ ] Add and test strict byte-size formatting.
 - [ ] Add UTF-8 byte measurement and decide the lossless-versus-normalized text
@@ -103,4 +104,3 @@ external-converter security contracts better owned by a dedicated package.
 - [ ] Finish the symbol-level delta audit of newly changed Mindspace
   feature-local files and COMPOSR packages; record only independently reusable
   primitives rather than domain adapters.
-

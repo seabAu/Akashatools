@@ -229,6 +229,34 @@ Runtime: Universal JavaScript on the supported runtime floor.
 
 Focused import: `akashatools/async`
 
+### createSingleFlight
+
+Coalesces concurrent loader calls and optionally caches an accepted result. Invalidation starts a new generation: an older in-flight request still settles for its callers but cannot repopulate the cache. Synchronous loader errors are exposed as Promise rejections.
+
+- Signature: `createSingleFlight()`
+- Import: `import { createSingleFlight } from "akashatools/async"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Readonly<{load: () => Promise<T>, invalidate: () => void}>` — Frozen controller with a shared load Promise and synchronous cache invalidation.
+
+Throws:
+- `TypeError` — If loader/options/callbacks are invalid or shouldCache does not return a boolean.
+- `RangeError` — If ttl or a clock result is outside its documented range.
+
+### createKeyedSingleFlight
+
+Creates bounded per-key single-flight controllers. Entries use least-recently accessed eviction when maximumSize is reached. Evicting or invalidating an in-flight key does not cancel its Promise, but its result cannot enter the retained cache.
+
+- Signature: `createKeyedSingleFlight()`
+- Import: `import { createKeyedSingleFlight } from "akashatools/async"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Readonly<{load: (key: K) => Promise<V>, invalidate: (key: K) => boolean, invalidateAll: () => number, readonly size: number}>` — Frozen keyed controller; invalidation reports whether/count of retained entries removed.
+
+Throws:
+- `TypeError` — If loader/options/callbacks are invalid or shouldCache does not return a boolean.
+- `RangeError` — If ttl, maximumSize, or a clock result is outside its documented range.
+
 ### mapSettledWithConcurrency
 
 Maps values with a fixed concurrency ceiling. Results retain input order and individual failures are represented like `Promise.allSettled`.

@@ -26,6 +26,8 @@ drop-in compatibility.
 | `compareValues` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `countBy` | array | universal | no input mutation | `akashatools/array` | None |
 | `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort` | None |
+| `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async` | None |
+| `createSingleFlight` | async | universal | no input mutation | `akashatools/async` | None |
 | `daysInMonth` | date | universal | no input mutation | `akashatools/date` | None |
 | `deepClone` | object | universal | no input mutation | `akashatools/object` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
 | `deepMerge` | object | universal | no input mutation | `akashatools/object` | None |
