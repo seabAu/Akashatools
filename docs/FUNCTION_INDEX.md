@@ -114,6 +114,7 @@ drop-in compatibility.
 | `sortBy` | sort | universal | no input mutation | `akashatools/sort` | `AO.keySortData`, `AO.sortObjArray` |
 | `sortByMany` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `sortByNumericOrder` | sort | universal | no input mutation | `akashatools/sort` | `AO.sortObjArray` |
+| `stableJson` | string | universal | no input mutation | `akashatools/string` | None |
 | `startOfLocalDay` | date | universal | no input mutation | `akashatools/date` | None |
 | `subtract` | number | universal | no input mutation | `akashatools/number` | `Math.sub` |
 | `sum` | number | universal | no input mutation | `akashatools/number` | `Math.add` |

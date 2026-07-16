@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 
 import {
   camelCase,
@@ -13,6 +14,7 @@ import {
   safeFilename,
   sentenceCase,
   slugify,
+  stableJson,
 } from "akashatools/string";
 
 test("string helpers normalize identifiers and replace literal text", () => {
@@ -50,4 +52,49 @@ test("slug and filename helpers normalize unsafe cross-platform names", () => {
   assert.equal(escapeHtml('<script src="x">&</script>'), "&lt;script src=&quot;x&quot;&gt;&amp;&lt;/script&gt;");
   assert.equal(escapeHtml("javascript:alert(1)"), "javascript:alert(1)", "text escaping is intentionally not URL sanitization");
   assert.equal(escapeHtml("&lt;already encoded&gt;"), "&amp;lt;already encoded&amp;gt;");
+});
+
+test("stableJson orders strict plain JSON without invoking active properties", () => {
+  const shared = { z: 2, a: 1 };
+  assert.equal(
+    stableJson({ z: shared, a: [true, null, "text"], duplicate: shared }),
+    '{"a":[true,null,"text"],"duplicate":{"a":1,"z":2},"z":{"a":1,"z":2}}',
+  );
+  assert.equal(stableJson(runInNewContext("({ z: 2, a: 1 })")), '{"a":1,"z":2}');
+  assert.equal(stableJson({ nested: { b: 2, a: 1 } }), stableJson({ nested: { a: 1, b: 2 } }));
+
+  let getterCalls = 0;
+  const active = Object.defineProperty({}, "secret", {
+    enumerable: true,
+    get() {
+      getterCalls += 1;
+      return "value";
+    },
+  });
+  assert.throws(() => stableJson(active), TypeError);
+  assert.equal(getterCalls, 0);
+});
+
+test("stableJson rejects non-JSON shapes, cycles, sparse arrays, and excessive work", () => {
+  const circular = {};
+  circular.self = circular;
+  const customArray = [1];
+  customArray.extra = true;
+  const symbolObject = { [Symbol("private")]: true };
+
+  for (const value of [
+    circular,
+    [, 1],
+    customArray,
+    symbolObject,
+    { missing: undefined },
+    { invalid: Number.NaN },
+    new Date(),
+  ]) {
+    assert.throws(() => stableJson(value), TypeError);
+  }
+  assert.throws(() => stableJson({ nested: {} }, { maximumDepth: 0 }), RangeError);
+  assert.throws(() => stableJson([1, 2], { maximumNodes: 2 }), RangeError);
+  assert.throws(() => stableJson("escaped\ntext", { maximumLength: 5 }), RangeError);
+  assert.throws(() => stableJson({}, /** @type {any} */ ([])), TypeError);
 });

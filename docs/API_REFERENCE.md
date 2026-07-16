@@ -1335,6 +1335,20 @@ Serializes a JSON-compatible value with human-readable indentation.
 Throws:
 - `TypeError` — If serialization fails or returns undefined.
 
+### stableJson
+
+Serializes strict plain JSON with recursively sorted object keys. Key order is Unicode code-unit order and is therefore independent of locale and object insertion history. Enumerable accessors, symbol keys, sparse arrays, non-finite numbers, unsupported values, and cycles are rejected rather than coerced or invoked.
+
+- Signature: `stableJson()`
+- Import: `import { stableJson } from "akashatools/string"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string` — Compact deterministic JSON text.
+
+Throws:
+- `TypeError` — If value/options contain unsupported JSON shapes or active property semantics.
+- `RangeError` — If limits are invalid or serialization exceeds one of them.
+
 ## validation
 
 Runtime: Universal JavaScript on the supported runtime floor.

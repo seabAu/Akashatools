@@ -227,6 +227,11 @@ export declare const string: Readonly<{
     }): string;
     escapeHtml(value: unknown): string;
     prettyJson(value: unknown, space?: number | string): string;
+    stableJson(value: unknown, options?: {
+        maximumDepth?: number;
+        maximumNodes?: number;
+        maximumLength?: number;
+    }): string;
 }>;
 /** Frozen validation utilities for namespace-style discovery. */
 export declare const validation: Readonly<{
@@ -308,6 +313,7 @@ export declare const akasha: Readonly<{
     slugify: typeof stringModule.slugify;
     escapeHtml: typeof stringModule.escapeHtml;
     prettyJson: typeof stringModule.prettyJson;
+    stableJson: typeof stringModule.stableJson;
     downloadBlob: typeof browserModule.downloadBlob;
     downloadTextFile: typeof browserModule.downloadTextFile;
     downloadJson: typeof browserModule.downloadJson;
@@ -587,6 +593,11 @@ export declare const akasha: Readonly<{
         }): string;
         escapeHtml(value: unknown): string;
         prettyJson(value: unknown, space?: number | string): string;
+        stableJson(value: unknown, options?: {
+            maximumDepth?: number;
+            maximumNodes?: number;
+            maximumLength?: number;
+        }): string;
     }>;
     validation: Readonly<{
         isDefined<T>(value: T | null | undefined): value is T;

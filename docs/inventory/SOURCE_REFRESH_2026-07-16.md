@@ -94,7 +94,8 @@ external-converter security contracts better owned by a dedicated package.
 
 - [x] Add and test bounded expiring single-flight helpers as
   `createSingleFlight` and `createKeyedSingleFlight`.
-- [ ] Add and test deterministic bounded plain-JSON serialization.
+- [x] Add and test deterministic bounded plain-JSON serialization as
+  `stableJson`.
 - [ ] Add and test strict byte-size formatting.
 - [ ] Add UTF-8 byte measurement and decide the lossless-versus-normalized text
   chunking contract before porting SPLICR's semantic planner.

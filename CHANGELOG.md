@@ -144,3 +144,5 @@
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.
+- Added strict bounded `stableJson` serialization from COMPOSR checkpoint
+  comparison evidence, with deterministic keys and no accessor/cycle coercion.

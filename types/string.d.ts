@@ -164,3 +164,24 @@ export declare function escapeHtml(value: unknown): string;
  * @since 2.0.0
  */
 export declare function prettyJson(value: unknown, space?: number | string): string;
+/**
+ * Serializes strict plain JSON with recursively sorted object keys. Key order is
+ * Unicode code-unit order and is therefore independent of locale and object
+ * insertion history. Enumerable accessors, symbol keys, sparse arrays,
+ * non-finite numbers, unsupported values, and cycles are rejected rather than
+ * coerced or invoked.
+ *
+ * @param {unknown} value Plain JSON value to serialize deterministically.
+ * @param {{maximumDepth?: number, maximumNodes?: number, maximumLength?: number}} [options] Non-negative depth and positive node/output code-unit work limits.
+ * @returns {string} Compact deterministic JSON text.
+ * @throws {TypeError} If value/options contain unsupported JSON shapes or active property semantics.
+ * @throws {RangeError} If limits are invalid or serialization exceeds one of them.
+ * @example
+ * stableJson({ z: 1, a: { y: true, x: null } }); // '{"a":{"x":null,"y":true},"z":1}'
+ * @since 2.0.0
+ */
+export declare function stableJson(value: unknown, options?: {
+    maximumDepth?: number;
+    maximumNodes?: number;
+    maximumLength?: number;
+}): string;

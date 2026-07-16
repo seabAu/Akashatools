@@ -115,6 +115,7 @@
       "sortBy",
       "sortByMany",
       "sortByNumericOrder",
+      "stableJson",
       "startOfLocalDay",
       "string",
       "subtract",
@@ -254,7 +255,8 @@
       "replaceRegex",
       "safeFilename",
       "sentenceCase",
-      "slugify"
+      "slugify",
+      "stableJson"
     ],
     "./validation": [
       "assertJsonContract",
