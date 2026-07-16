@@ -71,9 +71,9 @@ and [Playwright browser support](https://playwright.dev/docs/browsers); update i
 when those support windows change.
 
 The local 2026-07-16 release matrix ran `npm run audit:release` successfully on
-Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed all 121 tests,
+Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed all 122 tests,
 fresh JavaScript/TypeScript tarball installation, generated-artifact checks,
 bundle budgets, and package inspection. Node 22 measured 97.61% lines, 86.32%
-branches, and 96.19% functions; Node 24 measured 97.61% / 86.13% / 96.19%.
+branches, and 96.19% functions; Node 24 measured 97.61% / 86.21% / 96.19%.
 Playwright separately passed all six contracts across Chromium, Firefox, and
 WebKit. The first hosted workflow result remains a distinct release gate.

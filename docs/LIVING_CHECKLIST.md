@@ -62,16 +62,18 @@ would add API and type complexity and require demonstrated consumer value.
 ## Current verified baseline
 
 - [x] Initialize Git inside `akashatools2026`.
-- [x] Preserve copied Akashatools 1.0.2 in baseline commit `3a245be`.
+- [x] Preserve copied Akashatools 1.0.2 in baseline commit `3a245be`. Its tree
+  `e63dcb763dc238023d48c1b85200731ce0a04da9` exactly matches public GitHub
+  commit `c52129b78e20b3d61f0c9765213264ffcda5180d`.
 - [x] Commit the first 2.0 alpha foundation in `3b0fe6c`.
 - [x] Set the package to ESM and Node.js 22.17+, the stable native-glob floor.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 121 tests currently pass.
+- [x] Add dependency-free runtime tests; 122 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the current alpha
-  selects 85 files at approximately 236 kB packed and 889 kB unpacked.
+  selects 86 files at approximately 240 kB packed and 901 kB unpacked.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
   esbuild 0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus
   54,330 raw/17,101 gzip bytes for the complete flat namespace.
@@ -449,7 +451,7 @@ Acceptance criteria:
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
   the active-source and live-usage additions is 97.61% / 86.32% / 96.19% on
-  Node 22; Node 24 reports 86.13% branches with the same line/function values.
+  Node 22; Node 24 reports 86.21% branches with the same line/function values.
   Branch accounting varies slightly by runtime; see `docs/TESTING.md`.
 - [x] Run the complete release audit locally on supported Node 22.18.0 and
   Node 24.18.0, and run all six Chromium/Firefox/WebKit browser contracts.
@@ -509,9 +511,15 @@ Acceptance criteria:
 - [x] Add CI for Node 22/24 LTS, source coverage, package smoke/content checks,
   and Chromium/Firefox/WebKit browser contracts. First hosted execution remains
   an evidence gate under Phase 7.
+- [x] Pin ordinary CI actions to verified full commit identities, bound job
+  runtimes, retain read-only permissions, parse its YAML in the format gate, and
+  test those workflow invariants.
 - [x] Add an API-surface snapshot so accidental exports fail CI.
 - [x] Add an exports-resolution test generated from `package.json`.
 - [x] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.
+- [x] Document a staged release runbook covering granular approval, exact
+  candidate identity, hosted gates, npm trusted publishing/provenance, explicit
+  dist-tags, registry-installed verification, and fix-forward recovery.
 - [ ] Add npm provenance/release automation only when publishing is authorized.
 
 ## Phase 9 — dogfood in real consumers
@@ -552,7 +560,7 @@ edits. When authorized, migrate one bounded area at a time.
   alongside the complete 1.0.2 legacy manifest.
 - [x] Stabilize default/named/category namespace architecture.
 - [x] Cover the universal core with contract tests and JSDoc. The reviewed
-  surface has 134 documented declarations and 121 passing contract tests.
+  surface has 134 documented declarations and 122 passing contract tests.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
@@ -649,6 +657,11 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-16 | Raise only the full default-namespace bundle guardrail to 55,000 raw/18,000 gzip. | The source refresh intentionally expands the discoverable convenience namespace; focused imports remain 321 raw/252 gzip, while the new limit retains roughly 18% measured headroom for regression detection. |
 | 2026-07-16 | Keep Akashatools 2.0 ESM-only after active-consumer fixture review. | Mindspace client/server, portfolio server, and COMPOSR declare ESM; portfolio web and COMPOSR TypeScript use ESNext bundler resolution; SPLICR is Python, so no active CommonJS requirement justifies a dual build. |
 | 2026-07-16 | Raise the Node floor to 22.17 and adopt native glob path discovery. | `fsPromises.glob` is stable at that floor, resolving the broken Mindspace wrapper without a dependency; bounded deterministic discovery stays separate from containment and mutation authorization. |
+| 2026-07-16 | Add only strict validation vocabulary justified by current call-site evidence. | The refreshed AST audit maps all 1,982 parsed legacy reads; seven literal predicates/default helpers address 559 reads without reviving ambiguous `valid` aliases. |
+| 2026-07-16 | Treat the existing public repository and registry as the untouched 1.x release state. | Read-only checks show GitHub `main` still at 2024 commit `c52129b` with no workflows or Actions runs and npm `latest` still at 1.0.2; pushing 2.0 or obtaining hosted evidence therefore requires explicit approval. |
+| 2026-07-16 | Verify the preserved 1.0.2 baseline by Git tree identity. | Local baseline `3a245be` and public release commit `c52129b` share tree `e63dcb7`, proving the rollback point is exact without rewriting either history. |
+| 2026-07-16 | Prepare a trusted-publishing runbook without adding release automation or credentials. | A precise candidate, provenance, dist-tag, verification, and recovery procedure improves readiness while preserving the user's approval boundary for every external write. |
+| 2026-07-16 | Pin hosted CI actions by full commit identity and enforce the workflow contract in tests. | Mutable major tags weaken reproducibility; ordinary CI needs only read access and must retain Node 22/24, coverage, package, and three-browser gates without silently broadening permissions. |
 
 ## Definition of done
 

@@ -70,3 +70,23 @@ string builders that interpolate unescaped values.
 
 The HTTP threat model is maintained separately in
 [`HTTP_CONTRACTS.md`](./HTTP_CONTRACTS.md).
+
+## Supply chain and release identity
+
+Runtime code has no third-party dependencies. Development dependencies are
+locked exactly or by an intentional compatible range in `package-lock.json`, and
+the release audit checks reported vulnerabilities and the complete packed file
+list.
+
+The ordinary CI workflow grants only `contents: read`, has bounded job runtimes,
+and pins GitHub-owned actions to verified 40-character commit identities rather
+than mutable major-version tags. A contract test rejects movable action
+references and loss of the supported Node, coverage, package, or browser gates.
+The format gate parses the workflow YAML. The human-readable version comments
+remain update hints; the commit identity is the executable trust boundary.
+
+The future npm publication workflow is deliberately absent until explicitly
+authorized. Its required OIDC permission, trusted-publisher scope, provenance,
+candidate identity checks, registry verification, and recovery procedure are
+specified in [`RELEASE_RUNBOOK.md`](./RELEASE_RUNBOOK.md). No long-lived npm
+credential belongs in source control or ordinary CI.

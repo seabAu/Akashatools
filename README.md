@@ -152,4 +152,6 @@ Test organization, invariant seeds, and coverage policy are documented in
 scope is recorded in
 [docs/CONSUMER_COMPATIBILITY.md](docs/CONSUMER_COMPATIBILITY.md).
 The current internal evidence and remaining external release gates are summarized
-in [docs/RELEASE_READINESS.md](docs/RELEASE_READINESS.md).
+in [docs/RELEASE_READINESS.md](docs/RELEASE_READINESS.md). The staged,
+approval-gated publication and recovery procedure is documented in
+[docs/RELEASE_RUNBOOK.md](docs/RELEASE_RUNBOOK.md).
