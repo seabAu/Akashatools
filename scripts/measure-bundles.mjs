@@ -6,8 +6,8 @@ const fixtures = [
   { name: "named root", filename: "named-root.js", maximumBytes: 400, maximumGzip: 300 },
   { name: "category", filename: "category.js", maximumBytes: 400, maximumGzip: 300 },
   { name: "category namespace", filename: "category-namespace.js", maximumBytes: 400, maximumGzip: 300 },
-  { name: "default flat", filename: "default-flat.js", maximumBytes: 45_000, maximumGzip: 15_000 },
-  { name: "default category", filename: "default-category.js", maximumBytes: 45_000, maximumGzip: 15_000 },
+  { name: "default flat", filename: "default-flat.js", maximumBytes: 55_000, maximumGzip: 18_000 },
+  { name: "default category", filename: "default-category.js", maximumBytes: 55_000, maximumGzip: 18_000 },
   { name: "per-method simulation", filename: "per-method-simulation.js", maximumBytes: 400, maximumGzip: 300 },
   { name: "side-effect only", filename: "side-effect-only.js", maximumBytes: 0, maximumGzip: 20 },
 ];

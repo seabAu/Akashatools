@@ -15,6 +15,7 @@ import {
   safeFilename,
   sentenceCase,
   slugify,
+  splitTextByLimits,
   stableJson,
   utf8ByteLength,
 } from "akashatools/string";
@@ -59,6 +60,68 @@ test("countWords explicitly counts Unicode-whitespace-delimited runs", () => {
   assert.equal(countWords("one\ttwo\nthree"), 3);
   assert.equal(countWords("hello-world ... \ud83d\ude42"), 3);
   assert.throws(() => countWords(/** @type {any} */ (null)), TypeError);
+});
+
+test("splitTextByLimits preserves source text while enforcing byte and word caps", () => {
+  const value = "  Alpha beta gamma.\r\n\r\nDelta \u00e9cho foxtrot.\nGolf hotel india.  ";
+  const chunks = splitTextByLimits(value, { maximumBytes: 32, maximumWords: 4 });
+  assert.equal(chunks.join(""), value);
+  assert.ok(chunks.length > 1);
+  assert.ok(chunks.every((chunk) => chunk.length > 0));
+  assert.ok(chunks.every((chunk) => utf8ByteLength(chunk) <= 32));
+  assert.ok(chunks.every((chunk) => countWords(chunk) <= 4));
+});
+
+test("splitTextByLimits prefers semantic boundaries without discarding separators", () => {
+  const value = "First sentence is here. Second sentence is here. Third sentence is here.";
+  assert.deepEqual(splitTextByLimits(value, { maximumBytes: 30, maximumWords: 20 }), [
+    "First sentence is here. ",
+    "Second sentence is here. ",
+    "Third sentence is here.",
+  ]);
+});
+
+test("splitTextByLimits falls back on intact Unicode code points", () => {
+  const value = "\ud83d\ude42".repeat(11);
+  const chunks = splitTextByLimits(value, { maximumBytes: 12, maximumWords: 10 });
+  assert.equal(chunks.join(""), value);
+  assert.deepEqual(chunks.map((chunk) => [...chunk].length), [3, 3, 3, 2]);
+  assert.ok(chunks.every((chunk) => utf8ByteLength(chunk) <= 12 && !chunk.includes("\ufffd")));
+});
+
+test("splitTextByLimits supports one explicit custom cost policy", () => {
+  const value = "Alpha beta. Gamma delta.";
+  const chunks = splitTextByLimits(value, {
+    maximumBytes: 1_000,
+    maximumWords: 1_000,
+    maximumCost: 22,
+    measureCost: (chunk) => utf8ByteLength(chunk) + 10,
+  });
+  assert.deepEqual(chunks, ["Alpha beta. ", "Gamma delta."]);
+  assert.throws(() => splitTextByLimits("value", {
+    maximumCost: 5,
+    measureCost: () => Number.NaN,
+  }), TypeError);
+  assert.throws(() => splitTextByLimits("value", {
+    maximumCost: 5,
+    measureCost: () => 6,
+  }), RangeError);
+});
+
+test("splitTextByLimits validates limits and bounds output work", () => {
+  assert.deepEqual(splitTextByLimits(""), []);
+  assert.equal(splitTextByLimits("        ", { maximumBytes: 4, maximumWords: 1 }).join(""), "        ");
+  assert.throws(() => splitTextByLimits(/** @type {any} */ (null)), TypeError);
+  assert.throws(() => splitTextByLimits("value", { maximumBytes: 3 }), RangeError);
+  assert.throws(() => splitTextByLimits("value", { maximumBytes: null, maximumWords: null }), RangeError);
+  assert.throws(() => splitTextByLimits("value", { maximumCost: 5 }), TypeError);
+  assert.throws(() => splitTextByLimits("value", { measureCost: () => 1 }), TypeError);
+  assert.throws(() => splitTextByLimits("value", { maximumInputLength: 4 }), RangeError);
+  assert.throws(() => splitTextByLimits("\ud83d\ude42".repeat(3), {
+    maximumBytes: 4,
+    maximumWords: 1,
+    maximumChunks: 2,
+  }), RangeError);
 });
 
 test("slug and filename helpers normalize unsafe cross-platform names", () => {

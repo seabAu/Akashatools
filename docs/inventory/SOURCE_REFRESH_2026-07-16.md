@@ -99,8 +99,8 @@ external-converter security contracts better owned by a dedicated package.
 - [x] Add and test strict byte-size formatting as `formatBytes` with decimal and
   IEC binary unit modes.
 - [x] Add strict `utf8ByteLength` and `countWords` measurement primitives.
-- [ ] Port SPLICR's semantic planner with lossless source preservation as the
-  generic default; expose whitespace normalization only as an explicit choice.
+- [x] Port SPLICR's semantic chunking core as `splitTextByLimits`, with lossless
+  source preservation as the generic default and no implicit normalization.
 - [ ] Design a bounded `Content-Disposition` filename parser before exposing it.
 - [ ] Design a generic bounded JSON clone separately from Mongo/application key
   policy and HTTP error metadata.

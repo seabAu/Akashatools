@@ -117,6 +117,7 @@
       "sortBy",
       "sortByMany",
       "sortByNumericOrder",
+      "splitTextByLimits",
       "stableJson",
       "startOfLocalDay",
       "string",
@@ -261,6 +262,7 @@
       "safeFilename",
       "sentenceCase",
       "slugify",
+      "splitTextByLimits",
       "stableJson",
       "utf8ByteLength"
     ],

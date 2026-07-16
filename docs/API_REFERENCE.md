@@ -1326,6 +1326,20 @@ Counts whitespace-delimited tokens without language-specific word-breaking guess
 Throws:
 - `TypeError` — If value is not a string.
 
+### splitTextByLimits
+
+Splits text under byte, word, and optional caller-defined cost limits while preferring paragraph, sentence, clause, and word boundaries in that order. The function never normalizes text: joining the returned chunks exactly recreates the input, including line endings and whitespace. An empty string returns an empty array.
+
+- Signature: `splitTextByLimits()`
+- Import: `import { splitTextByLimits } from "akashatools/string"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string[]` — Non-empty, ordered, lossless chunks satisfying every enabled limit.
+
+Throws:
+- `TypeError` — If value, options, or a custom cost result violates its literal contract.
+- `RangeError` — If limits are invalid, input exceeds a work bound, or one code point cannot fit.
+
 ### safeFilename
 
 Creates a conservative lowercase filename stem. Output is ASCII, NFKD normalized, bounded, free of trailing punctuation/control characters, and prefixed when it would equal a reserved Windows device name.

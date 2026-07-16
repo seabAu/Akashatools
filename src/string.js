@@ -1,6 +1,13 @@
 import { isPlainObject } from "./object.js";
 
 const windowsReservedFilename = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i;
+const whitespaceCodeUnit = /\s/u;
+const textChunkBoundaries = [
+  /(?:\r\n|\r|\n)[^\S\r\n]*(?:\r\n|\r|\n)(?:[^\S\r\n]*(?:\r\n|\r|\n))*/g,
+  /[.!?\u2026]+(?:["'\u2019\u201d)\]]+)?(?:\s+|$)/gu,
+  /[;:,\u2014\u2013]+(?:\s+|$)/gu,
+  /\S+\s*/gu,
+];
 
 /**
  * Uppercases the first Unicode-aware character of a string.
@@ -226,6 +233,122 @@ export function countWords(value) {
 }
 
 /**
+ * Splits text under byte, word, and optional caller-defined cost limits while
+ * preferring paragraph, sentence, clause, and word boundaries in that order.
+ * The function never normalizes text: joining the returned chunks exactly
+ * recreates the input, including line endings and whitespace. An empty string
+ * returns an empty array.
+ *
+ * @param {string} value Source text to split without coercion or normalization.
+ * @param {{maximumBytes?: number | null, maximumWords?: number | null, maximumCost?: number | null, measureCost?: (value: string) => number, maximumInputLength?: number, maximumChunks?: number}} [options] Enabled limits, optional monotonic custom cost estimator, and positive code-unit/output work bounds.
+ * @returns {string[]} Non-empty, ordered, lossless chunks satisfying every enabled limit.
+ * @throws {TypeError} If value, options, or a custom cost result violates its literal contract.
+ * @throws {RangeError} If limits are invalid, input exceeds a work bound, or one code point cannot fit.
+ * @example
+ * splitTextByLimits("First sentence. Second sentence.", { maximumBytes: 20 });
+ * @since 2.0.0
+ */
+export function splitTextByLimits(value, options = {}) {
+  assertString(value, "value");
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const {
+    maximumBytes = 3_800,
+    maximumWords = 350,
+    maximumCost = null,
+    measureCost,
+    maximumInputLength = 1_000_000,
+    maximumChunks = 10_000,
+  } = options;
+
+  assertNullableTextLimit(maximumBytes, "maximumBytes", 4);
+  assertNullableTextLimit(maximumWords, "maximumWords", 1);
+  if (maximumCost !== null && (!Number.isFinite(maximumCost) || maximumCost <= 0)) {
+    throw new RangeError("maximumCost must be null or a positive finite number.");
+  }
+  if ((maximumCost === null) !== (measureCost === undefined)) {
+    throw new TypeError("maximumCost and measureCost must be provided together.");
+  }
+  if (measureCost !== undefined && typeof measureCost !== "function") {
+    throw new TypeError("measureCost must be a function.");
+  }
+  assertPositiveSafeInteger(maximumInputLength, "maximumInputLength");
+  assertPositiveSafeInteger(maximumChunks, "maximumChunks");
+  if (maximumBytes === null && maximumWords === null && maximumCost === null) {
+    throw new RangeError("at least one text limit must be enabled.");
+  }
+  if (value.length > maximumInputLength) {
+    throw new RangeError("value exceeded maximumInputLength.");
+  }
+  if (value.length === 0) return [];
+
+  const { bytePrefix, wordPrefix } = buildTextMetricPrefixes(value);
+  /** @param {number} start @param {number} end */
+  const measureSpanCost = (start, end) => {
+    if (measureCost === undefined) return 0;
+    const cost = measureCost(value.slice(start, end));
+    if (!Number.isFinite(cost) || cost < 0) {
+      throw new TypeError("measureCost must return a non-negative finite number.");
+    }
+    return cost;
+  };
+  if (maximumCost !== null && measureSpanCost(0, 0) > maximumCost) {
+    throw new RangeError("the custom cost overhead cannot fit within maximumCost.");
+  }
+
+  /** @type {(start: number, end: number) => boolean} */
+  const accepts = (start, end) => {
+    if (maximumBytes !== null && bytePrefix[end] - bytePrefix[start] > maximumBytes) return false;
+    if (maximumWords !== null && countSpanWords(value, wordPrefix, start, end) > maximumWords) return false;
+    return maximumCost === null || measureSpanCost(start, end) <= maximumCost;
+  };
+
+  /** @type {Array<[number, number]>} */
+  const units = [];
+  /** @param {number} start @param {number} end @param {number} boundaryIndex */
+  const reduceSpan = (start, end, boundaryIndex) => {
+    if (accepts(start, end)) {
+      units.push([start, end]);
+      return;
+    }
+    if (boundaryIndex >= textChunkBoundaries.length) {
+      splitSpanAtCodePoints(value, start, end, accepts, units);
+      return;
+    }
+    const pieces = splitSpanAtBoundaries(value, start, end, textChunkBoundaries[boundaryIndex]);
+    if (pieces.length <= 1) {
+      reduceSpan(start, end, boundaryIndex + 1);
+      return;
+    }
+    for (const [pieceStart, pieceEnd] of pieces) {
+      reduceSpan(pieceStart, pieceEnd, boundaryIndex + 1);
+    }
+  };
+  reduceSpan(0, value.length, 0);
+
+  /** @type {string[]} */
+  const chunks = [];
+  let chunkStart = units[0][0];
+  let chunkEnd = units[0][1];
+  const append = () => {
+    if (chunks.length >= maximumChunks) throw new RangeError("splitTextByLimits exceeded maximumChunks.");
+    chunks.push(value.slice(chunkStart, chunkEnd));
+  };
+  for (let index = 1; index < units.length; index += 1) {
+    const [unitStart, unitEnd] = units[index];
+    if (unitStart !== chunkEnd) throw new TypeError("text chunk boundaries became discontinuous.");
+    if (accepts(chunkStart, unitEnd)) {
+      chunkEnd = unitEnd;
+    } else {
+      append();
+      chunkStart = unitStart;
+      chunkEnd = unitEnd;
+    }
+  }
+  append();
+  return chunks;
+}
+
+/**
  * Creates a conservative lowercase filename stem. Output is ASCII, NFKD
  * normalized, bounded, free of trailing punctuation/control characters, and
  * prefixed when it would equal a reserved Windows device name.
@@ -448,6 +571,96 @@ function assertPositiveSafeInteger(value, name) {
   if (!Number.isSafeInteger(value) || value < 1) {
     throw new RangeError(`${name} must be a positive safe integer.`);
   }
+}
+
+/** @param {unknown} value @param {string} name @param {number} minimum */
+function assertNullableTextLimit(value, name, minimum) {
+  if (value !== null && (typeof value !== "number" || !Number.isSafeInteger(value) || value < minimum)) {
+    throw new RangeError(`${name} must be null or a safe integer of at least ${minimum}.`);
+  }
+}
+
+/** @param {string} value */
+function buildTextMetricPrefixes(value) {
+  const bytePrefix = new Uint32Array(value.length + 1);
+  const wordPrefix = new Uint32Array(value.length + 1);
+  let bytes = 0;
+  let wordsSeen = 0;
+  let inWord = false;
+
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+    const next = value.charCodeAt(index + 1);
+    if (codeUnit <= 0x7f) bytes += 1;
+    else if (codeUnit <= 0x7ff) bytes += 2;
+    else if (codeUnit >= 0xd800 && codeUnit <= 0xdbff && next >= 0xdc00 && next <= 0xdfff) {
+      bytePrefix[index + 1] = bytes + 3;
+      bytes += 4;
+      index += 1;
+      bytePrefix[index + 1] = bytes;
+      if (!inWord) wordsSeen += 1;
+      inWord = true;
+      wordPrefix[index] = wordsSeen;
+      wordPrefix[index + 1] = wordsSeen;
+      continue;
+    } else bytes += 3;
+    bytePrefix[index + 1] = bytes;
+
+    const nonWhitespace = !whitespaceCodeUnit.test(value[index]);
+    if (nonWhitespace && !inWord) wordsSeen += 1;
+    inWord = nonWhitespace;
+    wordPrefix[index + 1] = wordsSeen;
+  }
+  return { bytePrefix, wordPrefix };
+}
+
+/** @param {string} value @param {Uint32Array} prefix @param {number} start @param {number} end */
+function countSpanWords(value, prefix, start, end) {
+  if (start === end) return 0;
+  const startsInsideWord = start > 0
+    && !whitespaceCodeUnit.test(value[start])
+    && !whitespaceCodeUnit.test(value[start - 1]);
+  return prefix[end] - prefix[start] + Number(startsInsideWord);
+}
+
+/** @param {string} value @param {number} start @param {number} end @param {RegExp} pattern */
+function splitSpanAtBoundaries(value, start, end, pattern) {
+  /** @type {Array<[number, number]>} */
+  const pieces = [];
+  let cursor = start;
+  for (const match of value.slice(start, end).matchAll(pattern)) {
+    const boundary = start + (match.index ?? 0) + match[0].length;
+    if (boundary > cursor) pieces.push([cursor, boundary]);
+    cursor = boundary;
+  }
+  if (cursor < end) pieces.push([cursor, end]);
+  return pieces;
+}
+
+/**
+ * @param {string} value
+ * @param {number} start
+ * @param {number} end
+ * @param {(start: number, end: number) => boolean} accepts
+ * @param {Array<[number, number]>} output
+ */
+function splitSpanAtCodePoints(value, start, end, accepts, output) {
+  let pieceStart = start;
+  let cursor = start;
+  while (cursor < end) {
+    const codeUnit = value.charCodeAt(cursor);
+    const next = value.charCodeAt(cursor + 1);
+    const width = codeUnit >= 0xd800 && codeUnit <= 0xdbff && next >= 0xdc00 && next <= 0xdfff ? 2 : 1;
+    const nextCursor = cursor + width;
+    if (accepts(pieceStart, nextCursor)) {
+      cursor = nextCursor;
+      continue;
+    }
+    if (cursor === pieceStart) throw new RangeError("a single input code point cannot fit within the enabled limits.");
+    output.push([pieceStart, cursor]);
+    pieceStart = cursor;
+  }
+  if (pieceStart < end) output.push([pieceStart, end]);
 }
 
 /** @param {unknown[]} value */

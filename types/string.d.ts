@@ -135,6 +135,30 @@ export declare function utf8ByteLength(value: string): number;
  */
 export declare function countWords(value: string): number;
 /**
+ * Splits text under byte, word, and optional caller-defined cost limits while
+ * preferring paragraph, sentence, clause, and word boundaries in that order.
+ * The function never normalizes text: joining the returned chunks exactly
+ * recreates the input, including line endings and whitespace. An empty string
+ * returns an empty array.
+ *
+ * @param {string} value Source text to split without coercion or normalization.
+ * @param {{maximumBytes?: number | null, maximumWords?: number | null, maximumCost?: number | null, measureCost?: (value: string) => number, maximumInputLength?: number, maximumChunks?: number}} [options] Enabled limits, optional monotonic custom cost estimator, and positive code-unit/output work bounds.
+ * @returns {string[]} Non-empty, ordered, lossless chunks satisfying every enabled limit.
+ * @throws {TypeError} If value, options, or a custom cost result violates its literal contract.
+ * @throws {RangeError} If limits are invalid, input exceeds a work bound, or one code point cannot fit.
+ * @example
+ * splitTextByLimits("First sentence. Second sentence.", { maximumBytes: 20 });
+ * @since 2.0.0
+ */
+export declare function splitTextByLimits(value: string, options?: {
+    maximumBytes?: number | null;
+    maximumWords?: number | null;
+    maximumCost?: number | null;
+    measureCost?: (value: string) => number;
+    maximumInputLength?: number;
+    maximumChunks?: number;
+}): string[];
+/**
  * Creates a conservative lowercase filename stem. Output is ASCII, NFKD
  * normalized, bounded, free of trailing punctuation/control characters, and
  * prefixed when it would equal a reserved Windows device name.

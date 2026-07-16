@@ -150,3 +150,7 @@
   presentation evidence.
 - Added allocation-free `utf8ByteLength` and explicit whitespace-delimited
   `countWords` primitives from SPLICR's live chunk-planning requirements.
+- Added bounded `splitTextByLimits` semantic chunking with exact source
+  preservation, Unicode-safe fallback, and an optional custom cost estimator.
+- Raised only the complete discoverable-namespace bundle guardrail after the
+  measured source expansion; focused import and side-effect budgets are unchanged.

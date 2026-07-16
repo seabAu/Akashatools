@@ -223,6 +223,14 @@ export declare const string: Readonly<{
     longestStringLength(value: unknown): number;
     utf8ByteLength(value: string): number;
     countWords(value: string): number;
+    splitTextByLimits(value: string, options?: {
+        maximumBytes?: number | null;
+        maximumWords?: number | null;
+        maximumCost?: number | null;
+        measureCost?: (value: string) => number;
+        maximumInputLength?: number;
+        maximumChunks?: number;
+    }): string[];
     safeFilename(value: string, { fallback, maximumLength }?: {
         fallback?: string;
         maximumLength?: number;
@@ -317,6 +325,7 @@ export declare const akasha: Readonly<{
     longestStringLength: typeof stringModule.longestStringLength;
     utf8ByteLength: typeof stringModule.utf8ByteLength;
     countWords: typeof stringModule.countWords;
+    splitTextByLimits: typeof stringModule.splitTextByLimits;
     safeFilename: typeof stringModule.safeFilename;
     slugify: typeof stringModule.slugify;
     escapeHtml: typeof stringModule.escapeHtml;
@@ -598,6 +607,14 @@ export declare const akasha: Readonly<{
         longestStringLength(value: unknown): number;
         utf8ByteLength(value: string): number;
         countWords(value: string): number;
+        splitTextByLimits(value: string, options?: {
+            maximumBytes?: number | null;
+            maximumWords?: number | null;
+            maximumCost?: number | null;
+            measureCost?: (value: string) => number;
+            maximumInputLength?: number;
+            maximumChunks?: number;
+        }): string[];
         safeFilename(value: string, { fallback, maximumLength }?: {
             fallback?: string;
             maximumLength?: number;
