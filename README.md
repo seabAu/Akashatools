@@ -149,3 +149,5 @@ Test organization, invariant seeds, and coverage policy are documented in
 [docs/TESTING.md](docs/TESTING.md), and the real-source representative fixture
 scope is recorded in
 [docs/CONSUMER_COMPATIBILITY.md](docs/CONSUMER_COMPATIBILITY.md).
+The current internal evidence and remaining external release gates are summarized
+in [docs/RELEASE_READINESS.md](docs/RELEASE_READINESS.md).

@@ -15,7 +15,9 @@ for (const file of files) {
   const path = fileURLToPath(file);
   const result = spawnSync(process.execPath, ["--check", path], { encoding: "utf8" });
   if (result.status !== 0) {
-    process.stderr.write(result.stderr || result.stdout);
+    const diagnostic =
+      result.stderr || result.stdout || result.error?.stack || result.error?.message || "Unknown syntax-check failure.";
+    process.stderr.write(`${diagnostic}\n`);
     process.exit(result.status ?? 1);
   }
 }

@@ -68,15 +68,16 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 103 tests currently pass.
+- [x] Add dependency-free runtime tests; 120 tests currently pass.
 - [x] Verify root, category, and legacy imports.
-- [x] Verify npm tarball contents with `npm pack --dry-run`.
+- [x] Verify npm tarball contents with `npm pack --dry-run`: the current alpha
+  selects 84 files at approximately 230 kB packed and 861 kB unpacked.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
-  esbuild 0.28.1 produced 304-byte minified bundles for both named-root and
-  category `chunk` imports versus 20,373 bytes for the complete namespace.
+  esbuild 0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus
+  53,877 raw/16,977 gzip bytes for the complete flat namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
-  portfolio rebuild, COMPOSR, and SPLICR. A 2026-07-16 delta refresh is active
-  because all four consumer source trees changed after the original snapshot.
+  portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
+  the changes made in all four consumer source trees after the first snapshot.
 
 ## Phase 1 — lock the public API architecture
 
@@ -530,31 +531,40 @@ edits. When authorized, migrate one bounded area at a time.
   policy, and domain envelopes; no additional generic primitive surfaced.
 - [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
   or environment globals accidentally.
-- [ ] Feed validated improvements back into the canonical API before 2.0 RC.
+- [x] Feed validated improvements back into the canonical API before 2.0 RC.
+  The refresh contributed bounded single-flight loaders, deterministic JSON,
+  text measurement/chunking, byte/duration/relative-time formatting, strict JSON
+  cloning, response filenames, and native glob discovery; no further portable
+  primitive survived the disposition review.
 
 ## Phase 10 — release gates
 
 ### Alpha exit
 
-- [ ] Complete the disposition ledger for all four source sets.
-- [ ] Stabilize default/named/category namespace architecture.
-- [ ] Cover the universal core with contract tests and JSDoc.
+- [x] Complete the disposition ledger for all four active consumer source sets,
+  alongside the complete 1.0.2 legacy manifest.
+- [x] Stabilize default/named/category namespace architecture.
+- [x] Cover the universal core with contract tests and JSDoc. The reviewed
+  surface has 127 documented declarations and 120 passing contract tests.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
-- [ ] Finish selected browser, Node, and HTTP surfaces.
-- [ ] Pass all consumer compatibility fixtures.
-- [ ] Freeze canonical names and option shapes except for critical corrections.
-- [ ] Complete security review and initial performance/bundle baselines.
+- [x] Finish selected browser, Node, and HTTP surfaces.
+- [x] Pass all representative consumer compatibility fixtures.
+- [x] Freeze canonical names and option shapes except for critical corrections.
+- [x] Complete security review and initial performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
 
 ### Release candidate exit
 
-- [ ] Complete API docs, migration guide, declarations, and package smoke tests.
-- [ ] Resolve all known breaking-change questions.
+- [x] Complete API docs, migration guide, declarations, and package smoke tests.
+- [x] Resolve all known breaking-change questions recorded in this checklist and
+  the decision documents.
 - [ ] Confirm clean install and supported-runtime matrix.
-- [ ] Confirm package contents, license, changelog, repository links, and version.
+- [x] Confirm package contents, license, changelog, repository links, and current
+  alpha version. See `docs/RELEASE_READINESS.md`; stable version promotion is
+  still part of the authorized publication gate.
 - [ ] Obtain explicit user approval before publishing an RC.
 
 ### Stable 2.0.0
