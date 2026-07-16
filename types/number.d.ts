@@ -109,6 +109,24 @@ export declare function fibonacci(index: number): number;
  */
 export declare function toBinary(value: number): string;
 /**
+ * Formats a non-negative byte quantity with deterministic decimal or IEC binary
+ * units. Values are rounded only for presentation and may promote into the next
+ * unit when rounding reaches its base.
+ *
+ * @param {number} bytes Finite non-negative byte quantity; no string coercion is performed.
+ * @param {{system?: "decimal" | "binary", maximumFractionDigits?: number}} [options] Unit system (base 1000 or 1024) and 0-20 displayed fractional digits.
+ * @returns {string} Compact value followed by B/KB/MB or B/KiB/MiB-style units.
+ * @throws {TypeError} If bytes or options do not match their literal contracts.
+ * @throws {RangeError} If bytes is negative or maximumFractionDigits is outside 0-20.
+ * @example
+ * formatBytes(1_500); // "1.5 KB"
+ * @since 2.0.0
+ */
+export declare function formatBytes(bytes: number, options?: {
+    system?: "decimal" | "binary";
+    maximumFractionDigits?: number;
+}): string;
+/**
  * Summarizes a finite numeric sample without mutating it. Percentiles use
  * linear interpolation at position `(length - 1) * percentile`, and standard
  * deviation is the population value. Empty samples have count zero and null

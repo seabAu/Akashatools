@@ -44,6 +44,7 @@ drop-in compatibility.
 | `fibonacci` | number | universal | no input mutation | `akashatools/number` | None |
 | `findDeep` | object | universal | no input mutation | `akashatools/object` | None |
 | `flatten` | array | universal | no input mutation | `akashatools/array` | `AO.flatten` |
+| `formatBytes` | number | universal | no input mutation | `akashatools/number` | None |
 | `formatDate` | date | universal | no input mutation | `akashatools/date` | `Time.convertDate`, `Time.formatDate` |
 | `formatDateTime` | date | universal | no input mutation | `akashatools/date` | None |
 | `formatNanpPhone` | validation | universal | no input mutation | `akashatools/validation` | None |

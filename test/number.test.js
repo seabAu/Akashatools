@@ -6,12 +6,26 @@ import {
   clamp,
   distance2d,
   fibonacci,
+  formatBytes,
   roundTo,
   summarizeNumbers as summarizeFromCategory,
   sum,
   toBinary,
   wrap,
 } from "akashatools/number";
+
+test("formatBytes uses explicit stable decimal and binary unit contracts", () => {
+  assert.equal(formatBytes(0), "0 B");
+  assert.equal(formatBytes(999), "999 B");
+  assert.equal(formatBytes(1_500), "1.5 KB");
+  assert.equal(formatBytes(12_000_000), "12 MB");
+  assert.equal(formatBytes(1_536, { system: "binary", maximumFractionDigits: 2 }), "1.5 KiB");
+  assert.equal(formatBytes(999_999, { maximumFractionDigits: 0 }), "1 MB");
+  assert.throws(() => formatBytes(-1), RangeError);
+  assert.throws(() => formatBytes(Number.NaN), TypeError);
+  assert.throws(() => formatBytes(1, { system: /** @type {any} */ ("metric") }), TypeError);
+  assert.throws(() => formatBytes(1, /** @type {any} */ ([])), TypeError);
+});
 
 test("number helpers validate ranges and avoid recursive conversions", () => {
   assert.equal(clamp(20, 0, 10), 10);

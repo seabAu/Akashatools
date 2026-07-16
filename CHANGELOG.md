@@ -146,3 +146,5 @@
   and least-recently accessed key eviction.
 - Added strict bounded `stableJson` serialization from COMPOSR checkpoint
   comparison evidence, with deterministic keys and no accessor/cycle coercion.
+- Added strict `formatBytes` decimal/IEC formatting from live portfolio media
+  presentation evidence.

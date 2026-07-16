@@ -96,7 +96,8 @@ external-converter security contracts better owned by a dedicated package.
   `createSingleFlight` and `createKeyedSingleFlight`.
 - [x] Add and test deterministic bounded plain-JSON serialization as
   `stableJson`.
-- [ ] Add and test strict byte-size formatting.
+- [x] Add and test strict byte-size formatting as `formatBytes` with decimal and
+  IEC binary unit modes.
 - [ ] Add UTF-8 byte measurement and decide the lossless-versus-normalized text
   chunking contract before porting SPLICR's semantic planner.
 - [ ] Design a bounded `Content-Disposition` filename parser before exposing it.

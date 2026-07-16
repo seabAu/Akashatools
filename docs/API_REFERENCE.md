@@ -801,6 +801,20 @@ Converts a safe integer to a binary string.
 Throws:
 - `TypeError` — If value is not a safe integer.
 
+### formatBytes
+
+Formats a non-negative byte quantity with deterministic decimal or IEC binary units. Values are rounded only for presentation and may promote into the next unit when rounding reaches its base.
+
+- Signature: `formatBytes()`
+- Import: `import { formatBytes } from "akashatools/number"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string` — Compact value followed by B/KB/MB or B/KiB/MiB-style units.
+
+Throws:
+- `TypeError` — If bytes or options do not match their literal contracts.
+- `RangeError` — If bytes is negative or maximumFractionDigits is outside 0-20.
+
 ### summarizeNumbers
 
 Summarizes a finite numeric sample without mutating it. Percentiles use linear interpolation at position `(length - 1) * percentile`, and standard deviation is the population value. Empty samples have count zero and null statistics so absence is not confused with observed zeroes.

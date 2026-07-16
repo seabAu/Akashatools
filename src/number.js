@@ -1,3 +1,8 @@
+import { isPlainObject } from "./object.js";
+
+const decimalByteUnits = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+const binaryByteUnits = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
+
 /**
  * Constrains a finite number to an inclusive range.
  *
@@ -170,6 +175,47 @@ export function toBinary(value) {
 }
 
 /**
+ * Formats a non-negative byte quantity with deterministic decimal or IEC binary
+ * units. Values are rounded only for presentation and may promote into the next
+ * unit when rounding reaches its base.
+ *
+ * @param {number} bytes Finite non-negative byte quantity; no string coercion is performed.
+ * @param {{system?: "decimal" | "binary", maximumFractionDigits?: number}} [options] Unit system (base 1000 or 1024) and 0-20 displayed fractional digits.
+ * @returns {string} Compact value followed by B/KB/MB or B/KiB/MiB-style units.
+ * @throws {TypeError} If bytes or options do not match their literal contracts.
+ * @throws {RangeError} If bytes is negative or maximumFractionDigits is outside 0-20.
+ * @example
+ * formatBytes(1_500); // "1.5 KB"
+ * @since 2.0.0
+ */
+export function formatBytes(bytes, options = {}) {
+  if (!Number.isFinite(bytes)) throw new TypeError("bytes must be a finite number.");
+  if (bytes < 0) throw new RangeError("bytes must be non-negative.");
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const { system = "decimal", maximumFractionDigits = 1 } = options;
+  if (system !== "decimal" && system !== "binary") {
+    throw new TypeError('system must be "decimal" or "binary".');
+  }
+  if (!Number.isSafeInteger(maximumFractionDigits) || maximumFractionDigits < 0 || maximumFractionDigits > 20) {
+    throw new RangeError("maximumFractionDigits must be a safe integer from 0 through 20.");
+  }
+
+  const base = system === "decimal" ? 1_000 : 1_024;
+  const units = system === "decimal" ? decimalByteUnits : binaryByteUnits;
+  let scaled = bytes;
+  let unitIndex = 0;
+  while (scaled >= base && unitIndex < units.length - 1) {
+    scaled /= base;
+    unitIndex += 1;
+  }
+  if (Number(scaled.toFixed(maximumFractionDigits)) >= base && unitIndex < units.length - 1) {
+    scaled /= base;
+    unitIndex += 1;
+  }
+  return `${trimFixed(scaled, maximumFractionDigits)} ${units[unitIndex]}`;
+}
+
+/**
  * Summarizes a finite numeric sample without mutating it. Percentiles use
  * linear interpolation at position `(length - 1) * percentile`, and standard
  * deviation is the population value. Empty samples have count zero and null
@@ -265,4 +311,9 @@ function assertFiniteNumbers(values) {
   for (const [name, value] of Object.entries(values)) {
     if (!Number.isFinite(value)) throw new TypeError(`${name} must be a finite number.`);
   }
+}
+
+/** @param {number} value @param {number} digits */
+function trimFixed(value, digits) {
+  return value.toFixed(digits).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
 }

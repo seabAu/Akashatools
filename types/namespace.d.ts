@@ -144,6 +144,10 @@ export declare const number: Readonly<{
     distance2d(left: readonly [number, number], right: readonly [number, number]): number;
     fibonacci(index: number): number;
     toBinary(value: number): string;
+    formatBytes(bytes: number, options?: {
+        system?: "decimal" | "binary";
+        maximumFractionDigits?: number;
+    }): string;
     summarizeNumbers(values: readonly number[]): {
         count: number;
         minimum: number | null;
@@ -355,6 +359,7 @@ export declare const akasha: Readonly<{
     distance2d: typeof numberModule.distance2d;
     fibonacci: typeof numberModule.fibonacci;
     toBinary: typeof numberModule.toBinary;
+    formatBytes: typeof numberModule.formatBytes;
     summarizeNumbers: typeof numberModule.summarizeNumbers;
     randomFloat: typeof randomModule.randomFloat;
     randomInt: typeof randomModule.randomInt;
@@ -514,6 +519,10 @@ export declare const akasha: Readonly<{
         distance2d(left: readonly [number, number], right: readonly [number, number]): number;
         fibonacci(index: number): number;
         toBinary(value: number): string;
+        formatBytes(bytes: number, options?: {
+            system?: "decimal" | "binary";
+            maximumFractionDigits?: number;
+        }): string;
         summarizeNumbers(values: readonly number[]): {
             count: number;
             minimum: number | null;
