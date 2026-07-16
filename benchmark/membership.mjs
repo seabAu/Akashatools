@@ -19,14 +19,18 @@ for (const { size, repetitions } of scenarios) {
   assert.deepEqual(setResult, includesResult);
 
   const includesMs = median(run(repetitions, () => values.filter((value) => candidates.includes(value))));
-  const setMs = median(run(repetitions, () => {
-    const candidatesSet = new Set(candidates);
-    return values.filter((value) => candidatesSet.has(value));
-  }));
-  const mapMs = median(run(repetitions, () => {
-    const candidatesMap = new Map(candidates.map((value) => [value, true]));
-    return values.filter((value) => candidatesMap.has(value));
-  }));
+  const setMs = median(
+    run(repetitions, () => {
+      const candidatesSet = new Set(candidates);
+      return values.filter((value) => candidatesSet.has(value));
+    }),
+  );
+  const mapMs = median(
+    run(repetitions, () => {
+      const candidatesMap = new Map(candidates.map((value) => [value, true]));
+      return values.filter((value) => candidatesMap.has(value));
+    }),
+  );
 
   row("Array.includes", size, includesMs, includesMs);
   row("Set.has", size, setMs, includesMs);
@@ -47,12 +51,12 @@ function run(repetitions, operation) {
 function median(values) {
   const ordered = values.toSorted((left, right) => left - right);
   const middle = Math.floor(ordered.length / 2);
-  return ordered.length % 2 === 0
-    ? (ordered[middle - 1] + ordered[middle]) / 2
-    : ordered[middle];
+  return ordered.length % 2 === 0 ? (ordered[middle - 1] + ordered[middle]) / 2 : ordered[middle];
 }
 
 /** @param {string} strategy @param {number} size @param {number} duration @param {number} baseline */
 function row(strategy, size, duration, baseline) {
-  console.log(`| ${strategy} | ${size.toLocaleString("en-US")} | ${duration.toFixed(3)} | ${(baseline / duration).toFixed(1)}x |`);
+  console.log(
+    `| ${strategy} | ${size.toLocaleString("en-US")} | ${duration.toFixed(3)} | ${(baseline / duration).toFixed(1)}x |`,
+  );
 }

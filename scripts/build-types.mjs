@@ -53,7 +53,7 @@ async function filesWithin(directory, relative = "") {
   const files = [];
   for (const entry of entries) {
     const child = path.join(relative, entry.name);
-    if (entry.isDirectory()) files.push(...await filesWithin(directory, child));
+    if (entry.isDirectory()) files.push(...(await filesWithin(directory, child)));
     else files.push(child.replaceAll(path.sep, "/"));
   }
   return files.sort();

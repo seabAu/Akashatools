@@ -1,8 +1,19 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const categories = [
-  "array", "async", "browser", "collection", "date", "http", "number",
-  "object", "random", "sort", "string", "validation", "node",
+  "array",
+  "async",
+  "browser",
+  "collection",
+  "date",
+  "http",
+  "number",
+  "object",
+  "random",
+  "sort",
+  "string",
+  "validation",
+  "node",
 ];
 const outputUrl = new URL("../docs/API_REFERENCE.md", import.meta.url);
 const checkOnly = process.argv.includes("--check");
@@ -20,7 +31,7 @@ for (const category of categories) {
     const comment = source.slice(commentStart + 3, commentEnd);
     const lines = comment.split(/\r?\n/).map((line) => line.replace(/^\s*\*\s?/, "").trim());
     const tagStart = lines.findIndex((line) => line.startsWith("@"));
-    const summaryLines = (tagStart < 0 ? lines : lines.slice(0, tagStart));
+    const summaryLines = tagStart < 0 ? lines : lines.slice(0, tagStart);
     const summary = paragraphs(summaryLines);
     const tags = tagStart < 0 ? [] : collapseTags(lines.slice(tagStart));
     const parameters = tags.flatMap((line) => {
@@ -66,9 +77,12 @@ if (checkOnly) {
 }
 
 function renderCategory(category, declarations) {
-  const runtime = category === "browser"
-    ? "Modern browser at effect time; safe to import universally."
-    : category === "node" ? "Node.js 22+." : "Universal JavaScript on the supported runtime floor.";
+  const runtime =
+    category === "browser"
+      ? "Modern browser at effect time; safe to import universally."
+      : category === "node"
+        ? "Node.js 22+."
+        : "Universal JavaScript on the supported runtime floor.";
   const importPath = category === "node" ? "akashatools/node" : `akashatools/${category}`;
   const entries = declarations.map((declaration) => renderDeclaration(declaration, importPath, category));
   return `## ${category}\n\nRuntime: ${runtime}\n\nFocused import: \`${importPath}\`\n\n${entries.join("\n\n")}`;
@@ -76,9 +90,8 @@ function renderCategory(category, declarations) {
 
 function renderDeclaration(declaration, importPath, category) {
   const names = declaration.parameters.map(({ name }) => normalizeParameterName(name));
-  const signature = declaration.kind === "class"
-    ? `class ${declaration.name}`
-    : `${declaration.name}(${names.join(", ")})`;
+  const signature =
+    declaration.kind === "class" ? `class ${declaration.name}` : `${declaration.name}(${names.join(", ")})`;
   const lines = [
     `### ${declaration.name}`,
     "",
@@ -89,17 +102,23 @@ function renderDeclaration(declaration, importPath, category) {
     `- Input mutation: ${mutationNote(category, declaration.name)}`,
     `- Since: ${declaration.since}`,
   ];
-  if (declaration.returns) lines.push(`- Returns: \`${declaration.returns[1]}\`${declaration.returns[2] ? ` — ${declaration.returns[2]}` : ""}`);
+  if (declaration.returns)
+    lines.push(
+      `- Returns: \`${declaration.returns[1]}\`${declaration.returns[2] ? ` — ${declaration.returns[2]}` : ""}`,
+    );
   if (declaration.deprecated) lines.push(`- Deprecated: ${declaration.deprecated}`);
   if (declaration.parameters.length > 0) {
     lines.push("", "| Parameter | Type | Description |", "| --- | --- | --- |");
     for (const parameter of declaration.parameters) {
-      lines.push(`| \`${escapeCell(parameter.name)}\` | \`${escapeCell(parameter.type)}\` | ${escapeCell(parameter.description || "Not documented.")} |`);
+      lines.push(
+        `| \`${escapeCell(parameter.name)}\` | \`${escapeCell(parameter.type)}\` | ${escapeCell(parameter.description || "Not documented.")} |`,
+      );
     }
   }
   if (declaration.thrown.length > 0) {
     lines.push("", "Throws:");
-    for (const error of declaration.thrown) lines.push(`- \`${error.type}\`${error.description ? ` — ${error.description}` : ""}`);
+    for (const error of declaration.thrown)
+      lines.push(`- \`${error.type}\`${error.description ? ` — ${error.description}` : ""}`);
   }
   return lines.join("\n");
 }
@@ -108,7 +127,8 @@ function mutationNote(category, name) {
   if (category === "browser") return "Does not mutate inputs; performs a browser download effect.";
   if (category === "http" && name === "request") return "Does not mutate inputs; performs one network request.";
   if (category === "async" && name === "delay") return "Does not mutate inputs; schedules a timer.";
-  if (category === "node" && name === "resolveExistingContainedPath") return "Does not mutate inputs; reads filesystem metadata.";
+  if (category === "node" && name === "resolveExistingContainedPath")
+    return "Does not mutate inputs; reads filesystem metadata.";
   return "Does not mutate inputs.";
 }
 

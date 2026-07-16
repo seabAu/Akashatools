@@ -17,21 +17,43 @@ function browserHarness({ clickError, scheduleError } = {}) {
       capturedFilename = this.download;
       if (clickError) throw clickError;
     },
-    remove() { events.push("remove"); },
+    remove() {
+      events.push("remove");
+    },
   };
   return {
     events,
     scheduled,
-    get blob() { return capturedBlob; },
-    get filename() { return capturedFilename; },
+    get blob() {
+      return capturedBlob;
+    },
+    get filename() {
+      return capturedFilename;
+    },
     environment: {
       document: /** @type {any} */ ({
-        body: { append(value) { assert.equal(value, anchor); events.push("append"); } },
-        createElement(name) { assert.equal(name, "a"); events.push("create-anchor"); return anchor; },
+        body: {
+          append(value) {
+            assert.equal(value, anchor);
+            events.push("append");
+          },
+        },
+        createElement(name) {
+          assert.equal(name, "a");
+          events.push("create-anchor");
+          return anchor;
+        },
       }),
       url: /** @type {any} */ ({
-        createObjectURL(blob) { capturedBlob = blob; events.push("create-url"); return "blob:test"; },
-        revokeObjectURL(value) { assert.equal(value, "blob:test"); events.push("revoke-url"); },
+        createObjectURL(blob) {
+          capturedBlob = blob;
+          events.push("create-url");
+          return "blob:test";
+        },
+        revokeObjectURL(value) {
+          assert.equal(value, "blob:test");
+          events.push("revoke-url");
+        },
       }),
       schedule(callback) {
         events.push("schedule");
@@ -66,8 +88,14 @@ test("browser downloads validate content and browser environment contracts", () 
   const harness = browserHarness();
   assert.throws(() => downloadBlob("", new Blob(), harness.environment), TypeError);
   assert.throws(() => downloadBlob("report.txt", /** @type {any} */ ("report"), harness.environment), TypeError);
-  assert.throws(() => downloadBlob("report.txt", new Blob(), { document: /** @type {any} */ ({}), url: harness.environment.url }), /browser-like environment/);
-  assert.throws(() => downloadBlob("report.txt", new Blob(), { ...harness.environment, schedule: /** @type {any} */ (1) }), TypeError);
+  assert.throws(
+    () => downloadBlob("report.txt", new Blob(), { document: /** @type {any} */ ({}), url: harness.environment.url }),
+    /browser-like environment/,
+  );
+  assert.throws(
+    () => downloadBlob("report.txt", new Blob(), { ...harness.environment, schedule: /** @type {any} */ (1) }),
+    TypeError,
+  );
   assert.throws(() => downloadTextFile("report.txt", /** @type {any} */ (1), harness.environment), TypeError);
   assert.throws(() => downloadJson("report", undefined, harness.environment), TypeError);
 });

@@ -48,7 +48,13 @@ export function toDate(value) {
 export function daysInMonth(yearOrDate, monthIndex) {
   const year = yearOrDate instanceof Date ? yearOrDate.getFullYear() : yearOrDate;
   const month = yearOrDate instanceof Date ? yearOrDate.getMonth() : monthIndex;
-  if (!Number.isSafeInteger(year) || typeof month !== "number" || !Number.isSafeInteger(month) || month < 0 || month > 11) {
+  if (
+    !Number.isSafeInteger(year) ||
+    typeof month !== "number" ||
+    !Number.isSafeInteger(month) ||
+    month < 0 ||
+    month > 11
+  ) {
     throw new RangeError("A valid year and zero-based month are required.");
   }
   return new Date(year, month + 1, 0).getDate();
@@ -209,8 +215,10 @@ export function isWithinInstantRange(value, start, end, { startInclusive = true,
   const range = normalizeInstantRange(start, end);
   const startTime = range.start.getTime();
   const endTime = range.end.getTime();
-  return (startInclusive ? instant >= startTime : instant > startTime) &&
-    (endInclusive ? instant <= endTime : instant < endTime);
+  return (
+    (startInclusive ? instant >= startTime : instant > startTime) &&
+    (endInclusive ? instant <= endTime : instant < endTime)
+  );
 }
 
 /**
@@ -360,8 +368,8 @@ export function formatDuration(minutes, options = {}) {
 export function formatRelativeTime(value, locales, options = {}) {
   if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
   const { base = new Date(), ...formatOptions } = options;
-  const difference = requiredDate(value).getTime()
-    - requiredDate(/** @type {Date | string | number} */ (base)).getTime();
+  const difference =
+    requiredDate(value).getTime() - requiredDate(/** @type {Date | string | number} */ (base)).getTime();
   const absolute = Math.abs(difference);
   let divisor;
   /** @type {Intl.RelativeTimeFormatUnit} */
@@ -391,9 +399,13 @@ function pad2(value) {
 /** @param {number} minutes @param {string} rounding */
 function roundDurationMinutes(minutes, rounding) {
   switch (rounding) {
-    case "floor": return Math.floor(minutes);
-    case "ceil": return Math.ceil(minutes);
-    case "trunc": return Math.trunc(minutes);
-    default: return Math.round(minutes);
+    case "floor":
+      return Math.floor(minutes);
+    case "ceil":
+      return Math.ceil(minutes);
+    case "trunc":
+      return Math.trunc(minutes);
+    default:
+      return Math.round(minutes);
   }
 }

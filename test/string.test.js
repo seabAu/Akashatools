@@ -39,7 +39,10 @@ test("literal and regular-expression replacements have separate contracts", () =
   assert.equal(replaceMany("a.b + a.b", { "a.b": "literal" }), "literal + literal");
   assert.equal(replaceRegex("ab ac", pattern, "x"), "x x");
   assert.equal(pattern.lastIndex, 2);
-  assert.equal(replaceRegex("a1 b2", /([a-z])(\d)/g, (_, letter, digit) => `${digit}${letter}`), "1a 2b");
+  assert.equal(
+    replaceRegex("a1 b2", /([a-z])(\d)/g, (_, letter, digit) => `${digit}${letter}`),
+    "1a 2b",
+  );
   assert.throws(() => replaceRegex("value", /** @type {any} */ ("value"), "x"), TypeError);
   assert.throws(() => replaceMany("value", /** @type {any} */ (null)), TypeError);
   assert.throws(() => replaceMany("value", new Map([["value", /** @type {any} */ (1)]])), TypeError);
@@ -85,7 +88,10 @@ test("splitTextByLimits falls back on intact Unicode code points", () => {
   const value = "\ud83d\ude42".repeat(11);
   const chunks = splitTextByLimits(value, { maximumBytes: 12, maximumWords: 10 });
   assert.equal(chunks.join(""), value);
-  assert.deepEqual(chunks.map((chunk) => [...chunk].length), [3, 3, 3, 2]);
+  assert.deepEqual(
+    chunks.map((chunk) => [...chunk].length),
+    [3, 3, 3, 2],
+  );
   assert.ok(chunks.every((chunk) => utf8ByteLength(chunk) <= 12 && !chunk.includes("\ufffd")));
 });
 
@@ -98,14 +104,22 @@ test("splitTextByLimits supports one explicit custom cost policy", () => {
     measureCost: (chunk) => utf8ByteLength(chunk) + 10,
   });
   assert.deepEqual(chunks, ["Alpha beta. ", "Gamma delta."]);
-  assert.throws(() => splitTextByLimits("value", {
-    maximumCost: 5,
-    measureCost: () => Number.NaN,
-  }), TypeError);
-  assert.throws(() => splitTextByLimits("value", {
-    maximumCost: 5,
-    measureCost: () => 6,
-  }), RangeError);
+  assert.throws(
+    () =>
+      splitTextByLimits("value", {
+        maximumCost: 5,
+        measureCost: () => Number.NaN,
+      }),
+    TypeError,
+  );
+  assert.throws(
+    () =>
+      splitTextByLimits("value", {
+        maximumCost: 5,
+        measureCost: () => 6,
+      }),
+    RangeError,
+  );
 });
 
 test("splitTextByLimits validates limits and bounds output work", () => {
@@ -117,11 +131,15 @@ test("splitTextByLimits validates limits and bounds output work", () => {
   assert.throws(() => splitTextByLimits("value", { maximumCost: 5 }), TypeError);
   assert.throws(() => splitTextByLimits("value", { measureCost: () => 1 }), TypeError);
   assert.throws(() => splitTextByLimits("value", { maximumInputLength: 4 }), RangeError);
-  assert.throws(() => splitTextByLimits("\ud83d\ude42".repeat(3), {
-    maximumBytes: 4,
-    maximumWords: 1,
-    maximumChunks: 2,
-  }), RangeError);
+  assert.throws(
+    () =>
+      splitTextByLimits("\ud83d\ude42".repeat(3), {
+        maximumBytes: 4,
+        maximumWords: 1,
+        maximumChunks: 2,
+      }),
+    RangeError,
+  );
 });
 
 test("slug and filename helpers normalize unsafe cross-platform names", () => {
@@ -132,7 +150,11 @@ test("slug and filename helpers normalize unsafe cross-platform names", () => {
   assert.equal(safeFilename("***", { fallback: "NUL" }), "file-nul");
   assert.equal(safeFilename("abcdefgh", { maximumLength: 5 }), "abcde");
   assert.equal(escapeHtml('<script src="x">&</script>'), "&lt;script src=&quot;x&quot;&gt;&amp;&lt;/script&gt;");
-  assert.equal(escapeHtml("javascript:alert(1)"), "javascript:alert(1)", "text escaping is intentionally not URL sanitization");
+  assert.equal(
+    escapeHtml("javascript:alert(1)"),
+    "javascript:alert(1)",
+    "text escaping is intentionally not URL sanitization",
+  );
   assert.equal(escapeHtml("&lt;already encoded&gt;"), "&amp;lt;already encoded&amp;gt;");
 });
 

@@ -1,17 +1,13 @@
 import { isPlainObject } from "./object.js";
 
-const sensitiveHeaderNames = new Set([
-  "authorization",
-  "proxy-authorization",
-  "cookie",
-  "set-cookie",
-  "x-api-key",
-]);
+const sensitiveHeaderNames = new Set(["authorization", "proxy-authorization", "cookie", "set-cookie", "x-api-key"]);
 const responseTypes = new Set(["auto", "json", "text", "blob", "arrayBuffer", "response"]);
 const maximumTimer = 2_147_483_647;
 const httpToken = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 const windowsReservedFilename = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i;
 const unsafeFilenameCharacters = /[<>:"|?*]/gu;
+// Header-supplied control and bidi characters are intentionally matched for removal.
+// eslint-disable-next-line no-control-regex
 const filenameControls = /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/gu;
 
 /**
@@ -188,11 +184,16 @@ export async function request(input, options = {}) {
  */
 export function redactHeaders(headers, additionalSensitiveNames = []) {
   validateSensitiveHeaderNames(additionalSensitiveNames);
-  const redactedNames = new Set([...sensitiveHeaderNames, ...additionalSensitiveNames.map((name) => name.toLowerCase())]);
-  return Object.fromEntries([...new Headers(headers).entries()].map(([name, value]) => [
-    name,
-    redactedNames.has(name.toLowerCase()) ? "[REDACTED]" : value,
-  ]));
+  const redactedNames = new Set([
+    ...sensitiveHeaderNames,
+    ...additionalSensitiveNames.map((name) => name.toLowerCase()),
+  ]);
+  return Object.fromEntries(
+    [...new Headers(headers).entries()].map(([name, value]) => [
+      name,
+      redactedNames.has(name.toLowerCase()) ? "[REDACTED]" : value,
+    ]),
+  );
 }
 
 /**
@@ -361,7 +362,10 @@ function normalizeSuggestedFilename(value, maximumLength) {
     .replace(/[. ]+$/u, "");
   if (filename === "" || filename === "." || filename === "..") return undefined;
   if (windowsReservedFilename.test(filename)) filename = `file-${filename}`;
-  filename = [...filename].slice(0, maximumLength).join("").replace(/[. ]+$/u, "");
+  filename = [...filename]
+    .slice(0, maximumLength)
+    .join("")
+    .replace(/[. ]+$/u, "");
   return filename === "" || filename === "." || filename === ".." ? undefined : filename;
 }
 
@@ -394,10 +398,14 @@ function composeRequestSignal(signal, timeoutMs) {
   if (!Number.isFinite(timeoutMs) || timeoutMs < 0 || timeoutMs > maximumTimer) {
     throw new RangeError(`timeoutMs must be between 0 and ${maximumTimer}.`);
   }
-  if (signal != null && (
-    typeof signal !== "object" || typeof signal.aborted !== "boolean" ||
-    typeof signal.addEventListener !== "function" || typeof signal.removeEventListener !== "function"
-  )) throw new TypeError("signal must be an AbortSignal.");
+  if (
+    signal != null &&
+    (typeof signal !== "object" ||
+      typeof signal.aborted !== "boolean" ||
+      typeof signal.addEventListener !== "function" ||
+      typeof signal.removeEventListener !== "function")
+  )
+    throw new TypeError("signal must be an AbortSignal.");
 
   const controller = new AbortController();
   const onAbort = () => controller.abort(signal?.reason);
@@ -434,7 +442,11 @@ async function readResponseBytes(response, maximumBytes) {
       if (done) break;
       length += value.byteLength;
       if (length > maximumBytes) {
-        try { await reader.cancel(); } catch { /* Preserve the size failure. */ }
+        try {
+          await reader.cancel();
+        } catch {
+          /* Preserve the size failure. */
+        }
         throw new ResponseTooLargeError();
       }
       chunks.push(value);
@@ -454,14 +466,17 @@ async function readResponseBytes(response, maximumBytes) {
 
 /** @param {Response} response */
 async function cancelResponseBody(response) {
-  try { await response.body?.cancel(); } catch { /* Cleanup must not replace the primary result. */ }
+  try {
+    await response.body?.cancel();
+  } catch {
+    /* Cleanup must not replace the primary result. */
+  }
 }
 
 /** @param {Uint8Array} bytes @param {string} responseType @param {string | null} contentType */
 function parseResponseBody(bytes, responseType, contentType) {
-  const resolvedType = responseType === "auto"
-    ? contentType?.toLowerCase().includes("json") ? "json" : "text"
-    : responseType;
+  const resolvedType =
+    responseType === "auto" ? (contentType?.toLowerCase().includes("json") ? "json" : "text") : responseType;
   const buffer = copyArrayBuffer(bytes);
   if (resolvedType === "arrayBuffer") return buffer;
   if (resolvedType === "blob") return new Blob([buffer], { type: contentType ?? "" });
@@ -482,7 +497,11 @@ function parseErrorBody(bytes, contentType) {
   const text = new TextDecoder().decode(bytes);
   if (text === "") return null;
   if (contentType?.toLowerCase().includes("json")) {
-    try { return JSON.parse(text); } catch { return text; }
+    try {
+      return JSON.parse(text);
+    } catch {
+      return text;
+    }
   }
   return text;
 }

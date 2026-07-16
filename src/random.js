@@ -79,9 +79,14 @@ export function randomBoolean(random = Math.random) {
  * randomString(8, "ABC123");
  * @since 2.0.0
  */
-export function randomString(length, characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", random = Math.random) {
+export function randomString(
+  length,
+  characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+  random = Math.random,
+) {
   assertRandomStringLength(length);
-  if (typeof characters !== "string" || characters.length === 0) throw new TypeError("characters must be a non-empty string.");
+  if (typeof characters !== "string" || characters.length === 0)
+    throw new TypeError("characters must be a non-empty string.");
   assertRandomSource(random);
   return Array.from({ length }, () => characters[Math.floor(sampleRandom(random) * characters.length)]).join("");
 }

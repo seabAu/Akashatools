@@ -49,10 +49,11 @@ export function createSingleFlight(loader, options = {}) {
         if (requestGeneration !== generation || ttl === 0) return value;
         const cacheResult = shouldCache(value);
         if (typeof cacheResult !== "boolean") throw new TypeError("shouldCache must return a boolean.");
-        if (cacheResult) cached = {
-          expiresAt: ttl === Infinity ? Infinity : readClock(now) + ttl,
-          value,
-        };
+        if (cacheResult)
+          cached = {
+            expiresAt: ttl === Infinity ? Infinity : readClock(now) + ttl,
+            value,
+          };
         return value;
       });
 
@@ -193,7 +194,7 @@ export async function mapSettledWithConcurrency(values, concurrency, mapper) {
  */
 export function fulfilledValues(results) {
   if (!Array.isArray(results)) throw new TypeError("results must be an array.");
-  return results.flatMap((result) => result.status === "fulfilled" ? [result.value] : []);
+  return results.flatMap((result) => (result.status === "fulfilled" ? [result.value] : []));
 }
 
 /**
@@ -212,12 +213,14 @@ export function delay(milliseconds, { signal } = {}) {
   if (!Number.isFinite(milliseconds) || milliseconds < 0 || milliseconds > 2_147_483_647) {
     throw new RangeError("milliseconds must be between 0 and 2147483647.");
   }
-  if (signal !== undefined && (
-    signal === null || typeof signal !== "object" ||
-    typeof signal.aborted !== "boolean" ||
-    typeof signal.addEventListener !== "function" ||
-    typeof signal.removeEventListener !== "function"
-  )) {
+  if (
+    signal !== undefined &&
+    (signal === null ||
+      typeof signal !== "object" ||
+      typeof signal.aborted !== "boolean" ||
+      typeof signal.addEventListener !== "function" ||
+      typeof signal.removeEventListener !== "function")
+  ) {
     throw new TypeError("signal must be an AbortSignal.");
   }
   if (signal?.aborted) return Promise.reject(signal.reason ?? new DOMException("Aborted", "AbortError"));

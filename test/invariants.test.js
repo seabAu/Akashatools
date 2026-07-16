@@ -1,23 +1,16 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import {
-  fromUnixSeconds,
-  getAtPath,
-  range,
-  setAtPath,
-  sortBy,
-  toUnixSeconds,
-  unique,
-} from "akashatools";
+import { fromUnixSeconds, getAtPath, range, setAtPath, sortBy, toUnixSeconds, unique } from "akashatools";
 import { assertDoesNotMutate, assertInvalidCallsThrow } from "../fixtures/test-support/contracts.js";
 
-const random = createDeterministicRandom(0xA5A5_2026);
+const random = createDeterministicRandom(0xa5a5_2026);
 
 test("randomized safe paths round-trip values without mutating their roots", () => {
   for (let iteration = 0; iteration < 250; iteration += 1) {
     const segments = Array.from({ length: randomInteger(1, 8) }, (_, index) =>
-      random() < 0.35 ? randomInteger(0, 4) : `field_${index}_${randomInteger(0, 20)}`);
+      random() < 0.35 ? randomInteger(0, 4) : `field_${index}_${randomInteger(0, 20)}`,
+    );
     const root = { retained: { iteration } };
     const value = { iteration, token: randomInteger(0, 1_000_000) };
     const updated = assertDoesNotMutate(root, (input) => setAtPath(input, segments, value));

@@ -45,10 +45,7 @@ test("relative time formatting delegates locale text with fixed automatic units"
   assert.equal(formatRelativeTime("2026-07-17T12:00:00.000Z", "en", { base }), "tomorrow");
   assert.equal(formatRelativeTime("2026-07-16T10:30:00.000Z", "en", { base, numeric: "always" }), "2 hours ago");
   assert.equal(formatRelativeTime(base, "en", { base }), "now");
-  assert.equal(
-    formatRelativeTime("2026-08-15T12:00:00.000Z", "en", { base, numeric: "always" }),
-    "in 1 month",
-  );
+  assert.equal(formatRelativeTime("2026-08-15T12:00:00.000Z", "en", { base, numeric: "always" }), "in 1 month");
   assert.throws(() => formatRelativeTime("invalid", "en", { base }), TypeError);
   assert.throws(() => formatRelativeTime(base, "en", /** @type {any} */ ([])), TypeError);
 });
@@ -94,8 +91,14 @@ test("Unix and Intl format helpers delegate with normalized valid dates", () => 
 
   const dateOptions = { timeZone: "UTC", year: "numeric", month: "2-digit", day: "2-digit" };
   const dateTimeOptions = { ...dateOptions, hour: "2-digit", minute: "2-digit", hourCycle: "h23" };
-  assert.equal(formatDate(instant, "en-US", dateOptions), new Intl.DateTimeFormat("en-US", dateOptions).format(instant));
-  assert.equal(formatDateTime(instant, "en-US", dateTimeOptions), new Intl.DateTimeFormat("en-US", dateTimeOptions).format(instant));
+  assert.equal(
+    formatDate(instant, "en-US", dateOptions),
+    new Intl.DateTimeFormat("en-US", dateOptions).format(instant),
+  );
+  assert.equal(
+    formatDateTime(instant, "en-US", dateTimeOptions),
+    new Intl.DateTimeFormat("en-US", dateTimeOptions).format(instant),
+  );
 });
 
 test("instant ranges use explicit start-inclusive and end-exclusive boundaries", () => {

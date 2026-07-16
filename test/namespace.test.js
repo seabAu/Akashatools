@@ -61,11 +61,19 @@ test("namespace collision validation rejects ambiguous categories and utilities"
   const second = () => "second";
 
   assert.throws(
-    () => assertNamespaceIsCollisionFree([["one", { duplicate: first }], ["two", { duplicate: second }]]),
+    () =>
+      assertNamespaceIsCollisionFree([
+        ["one", { duplicate: first }],
+        ["two", { duplicate: second }],
+      ]),
     /Ambiguous Akashatools utility/,
   );
   assert.throws(
-    () => assertNamespaceIsCollisionFree([["same", {}], ["same", {}]]),
+    () =>
+      assertNamespaceIsCollisionFree([
+        ["same", {}],
+        ["same", {}],
+      ]),
     /Duplicate Akashatools category/,
   );
   assert.throws(
@@ -73,13 +81,17 @@ test("namespace collision validation rejects ambiguous categories and utilities"
     /collides with an Akashatools category/,
   );
   assert.throws(
-    () => assertNamespaceIsCollisionFree([["first", { future: first }], ["future", {}]]),
+    () =>
+      assertNamespaceIsCollisionFree([
+        ["first", { future: first }],
+        ["future", {}],
+      ]),
     /collides with an Akashatools category/,
   );
 });
 
 test("the real public categories pass the namespace collision contract", () => {
-  assert.doesNotThrow(() => assertNamespaceIsCollisionFree(
-    categoryNames.map((categoryName) => [categoryName, root[categoryName]]),
-  ));
+  assert.doesNotThrow(() =>
+    assertNamespaceIsCollisionFree(categoryNames.map((categoryName) => [categoryName, root[categoryName]])),
+  );
 });

@@ -28,7 +28,10 @@ test("cloneJson safely clones strict plain JSON without invoking active properti
   let getterCalls = 0;
   const active = Object.defineProperty({}, "computed", {
     enumerable: true,
-    get() { getterCalls += 1; return true; },
+    get() {
+      getterCalls += 1;
+      return true;
+    },
   });
   assert.throws(() => cloneJson(active), TypeError);
   assert.equal(getterCalls, 0);
@@ -45,7 +48,7 @@ test("cloneJson preserves arbitrary JSON keys without prototype mutation", () =>
 });
 
 test("cloneJson enforces exact encoded size and structural work limits", () => {
-  const source = { escaped: "\"\n\\\ud800", unicode: "\u00e9\ud83d\ude42" };
+  const source = { escaped: '"\n\\\ud800', unicode: "\u00e9\ud83d\ude42" };
   const serializedBytes = new TextEncoder().encode(JSON.stringify(source)).byteLength;
   assert.deepEqual(cloneJson(source, { maximumBytes: serializedBytes }), source);
   assert.throws(() => cloneJson(source, { maximumBytes: serializedBytes - 1 }), RangeError);
@@ -60,7 +63,15 @@ test("cloneJson enforces exact encoded size and structural work limits", () => {
   circular.self = circular;
   const customArray = [1];
   customArray.extra = true;
-  for (const invalid of [circular, [, 1], customArray, { value: undefined }, { value: Number.NaN }, new Date(), { [Symbol("key")]: true }]) {
+  for (const invalid of [
+    circular,
+    [, 1],
+    customArray,
+    { value: undefined },
+    { value: Number.NaN },
+    new Date(),
+    { [Symbol("key")]: true },
+  ]) {
     assert.throws(() => cloneJson(invalid), TypeError);
   }
   assert.throws(() => cloneJson({}, /** @type {any} */ ([])), TypeError);
@@ -152,7 +163,10 @@ test("deep merge replaces non-plain values and rejects active property semantics
   const accessor = {};
   Object.defineProperty(accessor, "computed", {
     enumerable: true,
-    get() { getterCalls += 1; return true; },
+    get() {
+      getterCalls += 1;
+      return true;
+    },
   });
   assert.throws(() => deepMerge({}, accessor), TypeError);
   assert.equal(getterCalls, 0);
@@ -181,13 +195,16 @@ test("object traversal returns deterministic path-aware entries", () => {
   const source = { user: { name: "Akasha" }, items: [{ id: 1 }] };
   const entries = traverseObject(source);
 
-  assert.deepEqual(entries.map(({ key, path, value }) => ({ key, path, value })), [
-    { key: "user", path: ["user"], value: source.user },
-    { key: "name", path: ["user", "name"], value: "Akasha" },
-    { key: "items", path: ["items"], value: source.items },
-    { key: 0, path: ["items", 0], value: source.items[0] },
-    { key: "id", path: ["items", 0, "id"], value: 1 },
-  ]);
+  assert.deepEqual(
+    entries.map(({ key, path, value }) => ({ key, path, value })),
+    [
+      { key: "user", path: ["user"], value: source.user },
+      { key: "name", path: ["user", "name"], value: "Akasha" },
+      { key: "items", path: ["items"], value: source.items },
+      { key: 0, path: ["items", 0], value: source.items[0] },
+      { key: "id", path: ["items", 0, "id"], value: 1 },
+    ],
+  );
   assert.equal(entries[1].parent, source.user);
   assert.deepEqual(traverseObject(source, { includeRoot: true, maxDepth: 0 })[0].path, []);
   assert.deepEqual(findDeep(source, ({ key }) => key === "id")?.path, ["items", 0, "id"]);
@@ -198,16 +215,28 @@ test("object traversal is cycle-safe, bounded, and does not invoke accessors", (
   const source = { child: { value: 1 }, sparse: [, "present"], map: new Map([["one", 1]]) };
   Object.defineProperty(source, "computed", {
     enumerable: true,
-    get() { getterCalls += 1; return "unsafe"; },
+    get() {
+      getterCalls += 1;
+      return "unsafe";
+    },
   });
   source.self = source;
 
   const entries = traverseObject(source);
   assert.equal(getterCalls, 0);
-  assert.equal(entries.some(({ key }) => key === "computed"), false);
+  assert.equal(
+    entries.some(({ key }) => key === "computed"),
+    false,
+  );
   assert.equal(entries.filter(({ value }) => value === source).length, 1);
-  assert.equal(entries.some(({ path }) => path.join(".") === "map.one"), false);
-  assert.equal(entries.some(({ path }) => path.join(".") === "sparse.0"), false);
+  assert.equal(
+    entries.some(({ path }) => path.join(".") === "map.one"),
+    false,
+  );
+  assert.equal(
+    entries.some(({ path }) => path.join(".") === "sparse.0"),
+    false,
+  );
   assert.deepEqual(findDeep(source, ({ value }) => value === "present")?.path, ["sparse", 1]);
   assert.throws(() => traverseObject(source, { maxNodes: 2 }), RangeError);
   assert.throws(() => traverseObject(source, { maxDepth: -1 }), RangeError);

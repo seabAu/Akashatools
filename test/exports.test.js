@@ -24,8 +24,9 @@ test("every fixed export target resolves and modern surfaces expose declarations
 });
 
 test("legacy wildcard exports resolve every retained JavaScript module", async () => {
-  const filenames = (await readdir(new URL("../lib/", import.meta.url)))
-    .filter((filename) => filename.endsWith(".js") && filename !== "index.js");
+  const filenames = (await readdir(new URL("../lib/", import.meta.url))).filter(
+    (filename) => filename.endsWith(".js") && filename !== "index.js",
+  );
   for (const filename of filenames) {
     assert.ok(await import(`${packageJson.name}/lib/${filename}`));
   }

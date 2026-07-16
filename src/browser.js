@@ -17,7 +17,8 @@ import { safeFilename } from "./string.js";
  * @since 2.0.0
  */
 export function downloadBlob(filename, blob, environment = {}) {
-  if (typeof filename !== "string" || filename.trim() === "") throw new TypeError("filename must be a non-empty string.");
+  if (typeof filename !== "string" || filename.trim() === "")
+    throw new TypeError("filename must be a non-empty string.");
   if (!(blob instanceof Blob)) throw new TypeError("blob must be a Blob.");
 
   const documentRef = environment.document ?? globalThis.document;

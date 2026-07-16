@@ -26,20 +26,23 @@ try {
     }
   }
   const configFile = path.join(temporaryDirectory, "tsconfig.json");
-  await writeFile(configFile, JSON.stringify({
-    compilerOptions: {
-      allowJs: true,
-      checkJs: true,
-      strict: true,
-      noEmit: true,
-      target: "ES2023",
-      module: "NodeNext",
-      moduleResolution: "NodeNext",
-      types: ["node"],
-      lib: ["ES2023", "DOM"],
-    },
-    include: ["*.js", "*.ts"],
-  }));
+  await writeFile(
+    configFile,
+    JSON.stringify({
+      compilerOptions: {
+        allowJs: true,
+        checkJs: true,
+        strict: true,
+        noEmit: true,
+        target: "ES2023",
+        module: "NodeNext",
+        moduleResolution: "NodeNext",
+        types: ["node"],
+        lib: ["ES2023", "DOM"],
+      },
+      include: ["*.js", "*.ts"],
+    }),
+  );
 
   const api = new API({ cwd: root });
   let snapshot;
@@ -48,7 +51,9 @@ try {
     for (const { filename, position, expected, label } of files) {
       const project = snapshot.getDefaultProjectForFile(filename);
       assert.ok(project, `${label} did not resolve to a TypeScript project`);
-      const names = new Set(project.checker.getCompletionsAtPosition(filename, position, {})?.entries.map(({ name }) => name) ?? []);
+      const names = new Set(
+        project.checker.getCompletionsAtPosition(filename, position, {})?.entries.map(({ name }) => name) ?? [],
+      );
       for (const name of expected) assert.ok(names.has(name), `${label} completion is missing ${name}`);
     }
   } finally {

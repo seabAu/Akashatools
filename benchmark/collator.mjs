@@ -19,7 +19,9 @@ for (const { size, repetitions } of scenarios) {
   const collatorResult = values.toSorted(compareWithCollator);
   assert.deepEqual(collatorResult, localeResult);
 
-  const localeMs = median(run(repetitions, () => values.toSorted((left, right) => left.localeCompare(right, "en", options))));
+  const localeMs = median(
+    run(repetitions, () => values.toSorted((left, right) => left.localeCompare(right, "en", options))),
+  );
   const collatorMs = median(run(repetitions, () => values.toSorted(compareWithCollator)));
 
   row("localeCompare options", size, localeMs, localeMs);
@@ -40,12 +42,12 @@ function run(repetitions, operation) {
 function median(values) {
   const ordered = values.toSorted((left, right) => left - right);
   const middle = Math.floor(ordered.length / 2);
-  return ordered.length % 2 === 0
-    ? (ordered[middle - 1] + ordered[middle]) / 2
-    : ordered[middle];
+  return ordered.length % 2 === 0 ? (ordered[middle - 1] + ordered[middle]) / 2 : ordered[middle];
 }
 
 /** @param {string} strategy @param {number} size @param {number} duration @param {number} baseline */
 function row(strategy, size, duration, baseline) {
-  console.log(`| ${strategy} | ${size.toLocaleString("en-US")} | ${duration.toFixed(3)} | ${(baseline / duration).toFixed(1)}x |`);
+  console.log(
+    `| ${strategy} | ${size.toLocaleString("en-US")} | ${duration.toFixed(3)} | ${(baseline / duration).toFixed(1)}x |`,
+  );
 }

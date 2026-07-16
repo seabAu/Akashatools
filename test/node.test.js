@@ -22,20 +22,11 @@ test("Node-only paths resolve lexically without leaking into the universal root"
 });
 
 test("contained paths honor POSIX and Windows roots, separators, drives, UNC, and case rules", () => {
-  assert.equal(
-    resolveContainedPathWith("/srv/Media", "2026/07/file.pdf", posix),
-    "/srv/Media/2026/07/file.pdf",
-  );
+  assert.equal(resolveContainedPathWith("/srv/Media", "2026/07/file.pdf", posix), "/srv/Media/2026/07/file.pdf");
   assert.throws(() => resolveContainedPathWith("/srv/Media", "../media/file.pdf", posix), RangeError);
 
-  assert.equal(
-    resolveContainedPathWith("C:\\Media", "2026\\07\\file.pdf", win32),
-    "C:\\Media\\2026\\07\\file.pdf",
-  );
-  assert.equal(
-    resolveContainedPathWith("C:\\Media", "..\\MEDIA\\file.pdf", win32),
-    "C:\\MEDIA\\file.pdf",
-  );
+  assert.equal(resolveContainedPathWith("C:\\Media", "2026\\07\\file.pdf", win32), "C:\\Media\\2026\\07\\file.pdf");
+  assert.equal(resolveContainedPathWith("C:\\Media", "..\\MEDIA\\file.pdf", win32), "C:\\MEDIA\\file.pdf");
   for (const candidate of ["D:\\secret.txt", "C:drive-relative.txt", "\\\\server\\share\\file.pdf"]) {
     assert.throws(() => resolveContainedPathWith("C:\\Media", candidate, win32), TypeError);
   }
@@ -60,8 +51,5 @@ test("existing-path containment follows symlinks and rejects an outside target",
   );
 
   await symlink(outsideRoot, path.join(storageRoot, "escape"), process.platform === "win32" ? "junction" : "dir");
-  await assert.rejects(
-    resolveExistingContainedPath(storageRoot, path.join("escape", "outside.txt")),
-    RangeError,
-  );
+  await assert.rejects(resolveExistingContainedPath(storageRoot, path.join("escape", "outside.txt")), RangeError);
 });

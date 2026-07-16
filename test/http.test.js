@@ -27,162 +27,199 @@ test("content-disposition filenames prefer valid extended values", () => {
 
 test("content-disposition parsing handles quoted syntax and safe path stripping", () => {
   assert.equal(parseContentDispositionFilename('attachment; filename="quarter; final.txt"'), "quarter; final.txt");
-  assert.equal(parseContentDispositionFilename('attachment; filename="quarter\\\"final.txt"'), "quarter-final.txt");
+  assert.equal(parseContentDispositionFilename('attachment; filename="quarter\\"final.txt"'), "quarter-final.txt");
   assert.equal(parseContentDispositionFilename('attachment; filename="../../CON.txt"'), "file-CON.txt");
   assert.equal(parseContentDispositionFilename("attachment; filename=../unsafe.json"), "unsafe.json");
-  assert.equal(parseContentDispositionFilename('attachment; filename="bad\u202ename:\u0000file?.txt"'), "badname-file-.txt");
+  assert.equal(
+    parseContentDispositionFilename('attachment; filename="bad\u202ename:\u0000file?.txt"'),
+    "badname-file-.txt",
+  );
   assert.equal(parseContentDispositionFilename("attachment; filename=first.txt; filename=second.txt"), "first.txt");
 });
 
 test("content-disposition filenames validate bounds and use normalized fallbacks", () => {
   assert.equal(parseContentDispositionFilename(null, { fallback: "../Fallback Report.pdf" }), "Fallback Report.pdf");
-  assert.equal(parseContentDispositionFilename("attachment\r\nfilename=unsafe.txt", { fallback: "safe.txt" }), "safe.txt");
+  assert.equal(
+    parseContentDispositionFilename("attachment\r\nfilename=unsafe.txt", { fallback: "safe.txt" }),
+    "safe.txt",
+  );
   assert.equal(parseContentDispositionFilename("inline"), undefined);
   assert.equal(parseContentDispositionFilename("attachment; filename=abcdef", { maximumLength: 3 }), "abc");
   assert.throws(() => parseContentDispositionFilename(/** @type {any} */ (1)), TypeError);
   assert.throws(() => parseContentDispositionFilename(null, /** @type {any} */ ([])), TypeError);
   assert.throws(() => parseContentDispositionFilename(null, { fallback: /** @type {any} */ (1) }), TypeError);
-  assert.throws(() => parseContentDispositionFilename("attachment; filename=a", { maximumHeaderLength: 4 }), RangeError);
+  assert.throws(
+    () => parseContentDispositionFilename("attachment; filename=a", { maximumHeaderLength: 4 }),
+    RangeError,
+  );
   assert.throws(() => parseContentDispositionFilename(null, { maximumLength: 0 }), RangeError);
 });
 
 test("request parses bounded JSON, text, binary, Blob, empty, and raw responses", async () => {
-  await withServer((request, response) => {
-    switch (new URL(request.url, "http://localhost").pathname) {
-      case "/json":
-        response.setHeader("content-type", "application/json; charset=utf-8");
-        response.end(JSON.stringify({ ok: true }));
-        break;
-      case "/empty":
-        response.writeHead(204, { "content-type": "application/json" }).end();
-        break;
-      case "/binary":
-        response.setHeader("content-type", "application/octet-stream");
-        response.end(Buffer.from([0, 127, 255]));
-        break;
-      default:
-        response.setHeader("content-type", "text/plain; charset=utf-8");
-        response.end("hello");
-    }
-  }, async (baseUrl) => {
-    assert.deepEqual(await request(`${baseUrl}/json`), { ok: true });
-    assert.equal(await request(`${baseUrl}/empty`), null);
-    assert.equal(await request(`${baseUrl}/text`, { responseType: "text" }), "hello");
+  await withServer(
+    (request, response) => {
+      switch (new URL(request.url, "http://localhost").pathname) {
+        case "/json":
+          response.setHeader("content-type", "application/json; charset=utf-8");
+          response.end(JSON.stringify({ ok: true }));
+          break;
+        case "/empty":
+          response.writeHead(204, { "content-type": "application/json" }).end();
+          break;
+        case "/binary":
+          response.setHeader("content-type", "application/octet-stream");
+          response.end(Buffer.from([0, 127, 255]));
+          break;
+        default:
+          response.setHeader("content-type", "text/plain; charset=utf-8");
+          response.end("hello");
+      }
+    },
+    async (baseUrl) => {
+      assert.deepEqual(await request(`${baseUrl}/json`), { ok: true });
+      assert.equal(await request(`${baseUrl}/empty`), null);
+      assert.equal(await request(`${baseUrl}/text`, { responseType: "text" }), "hello");
 
-    const arrayBuffer = await request(`${baseUrl}/binary`, { responseType: "arrayBuffer" });
-    assert.deepEqual([...new Uint8Array(arrayBuffer)], [0, 127, 255]);
+      const arrayBuffer = await request(`${baseUrl}/binary`, { responseType: "arrayBuffer" });
+      assert.deepEqual([...new Uint8Array(arrayBuffer)], [0, 127, 255]);
 
-    const blob = await request(`${baseUrl}/binary`, { responseType: "blob" });
-    assert.equal(blob.type, "application/octet-stream");
-    assert.deepEqual([...new Uint8Array(await blob.arrayBuffer())], [0, 127, 255]);
+      const blob = await request(`${baseUrl}/binary`, { responseType: "blob" });
+      assert.equal(blob.type, "application/octet-stream");
+      assert.deepEqual([...new Uint8Array(await blob.arrayBuffer())], [0, 127, 255]);
 
-    const response = await request(`${baseUrl}/text`, { responseType: "response" });
-    assert.equal(response instanceof Response, true);
-    assert.equal(await response.text(), "hello");
-  });
+      const response = await request(`${baseUrl}/text`, { responseType: "response" });
+      assert.equal(response instanceof Response, true);
+      assert.equal(await response.text(), "hello");
+    },
+  );
 });
 
 test("request exposes typed, bounded, and redacted HTTP and JSON errors", async () => {
-  await withServer((request, response) => {
-    if (request.url?.startsWith("/invalid-json")) {
-      response.writeHead(200, { "content-type": "application/json" }).end("{not json}");
-      return;
-    }
-    response.writeHead(418, {
+  await withServer(
+    (request, response) => {
+      if (request.url?.startsWith("/invalid-json")) {
+        response.writeHead(200, { "content-type": "application/json" }).end("{not json}");
+        return;
+      }
+      response
+        .writeHead(418, {
+          "content-type": "application/json",
+          "set-cookie": "session=secret",
+          "x-api-key": "secret-key",
+          "x-private-id": "private-123",
+          "x-request-id": "request-123",
+        })
+        .end(JSON.stringify({ error: "teapot" }));
+    },
+    async (baseUrl) => {
+      let error;
+      try {
+        await request(`${baseUrl}/error?token=secret#private`, {
+          includeErrorBody: true,
+          sensitiveHeaderNames: ["x-private-id"],
+        });
+      } catch (caught) {
+        error = caught;
+      }
+      assert.equal(error instanceof HttpError, true);
+      assert.equal(error.code, "HTTP");
+      assert.equal(error.status, 418);
+      assert.equal(error.method, "GET");
+      assert.equal(error.url, `${baseUrl}/error`);
+      assert.equal(error.headers["set-cookie"], "[REDACTED]");
+      assert.equal(error.headers["x-api-key"], "[REDACTED]");
+      assert.equal(error.headers["x-private-id"], "[REDACTED]");
+      assert.equal(error.headers["x-request-id"], "request-123");
+      assert.deepEqual(error.body, { error: "teapot" });
+      assert.equal(Object.isFrozen(error.headers), true);
+
+      await assert.rejects(
+        request(`${baseUrl}/invalid-json`),
+        (caught) =>
+          caught instanceof HttpError && caught.code === "INVALID_JSON" && caught.cause instanceof SyntaxError,
+      );
+    },
+  );
+
+  assert.deepEqual(
+    redactHeaders(
+      {
+        Authorization: "Bearer secret",
+        "Content-Type": "application/json",
+        "X-Custom-Secret": "value",
+      },
+      ["x-custom-secret"],
+    ),
+    {
+      authorization: "[REDACTED]",
       "content-type": "application/json",
-      "set-cookie": "session=secret",
-      "x-api-key": "secret-key",
-      "x-private-id": "private-123",
-      "x-request-id": "request-123",
-    }).end(JSON.stringify({ error: "teapot" }));
-  }, async (baseUrl) => {
-    let error;
-    try {
-      await request(`${baseUrl}/error?token=secret#private`, {
-        includeErrorBody: true,
-        sensitiveHeaderNames: ["x-private-id"],
-      });
-    } catch (caught) {
-      error = caught;
-    }
-    assert.equal(error instanceof HttpError, true);
-    assert.equal(error.code, "HTTP");
-    assert.equal(error.status, 418);
-    assert.equal(error.method, "GET");
-    assert.equal(error.url, `${baseUrl}/error`);
-    assert.equal(error.headers["set-cookie"], "[REDACTED]");
-    assert.equal(error.headers["x-api-key"], "[REDACTED]");
-    assert.equal(error.headers["x-private-id"], "[REDACTED]");
-    assert.equal(error.headers["x-request-id"], "request-123");
-    assert.deepEqual(error.body, { error: "teapot" });
-    assert.equal(Object.isFrozen(error.headers), true);
-
-    await assert.rejects(
-      request(`${baseUrl}/invalid-json`),
-      (caught) => caught instanceof HttpError && caught.code === "INVALID_JSON" && caught.cause instanceof SyntaxError,
-    );
-  });
-
-  assert.deepEqual(redactHeaders({
-    Authorization: "Bearer secret",
-    "Content-Type": "application/json",
-    "X-Custom-Secret": "value",
-  }, ["x-custom-secret"]), {
-    authorization: "[REDACTED]",
-    "content-type": "application/json",
-    "x-custom-secret": "[REDACTED]",
-  });
+      "x-custom-secret": "[REDACTED]",
+    },
+  );
   assert.throws(() => redactHeaders({}, /** @type {any} */ (["authorization", 1])), TypeError);
 });
 
 test("request distinguishes timeout, caller abort, size, and network failures", async () => {
-  await withServer((_request, response) => {
-    response.writeHead(200, { "content-type": "text/plain" });
-    response.flushHeaders();
-    const timer = setTimeout(() => {
-      if (!response.destroyed) response.end("eventually");
-    }, 200);
-    response.on("close", () => clearTimeout(timer));
-  }, async (baseUrl) => {
-    await assert.rejects(
-      request(`${baseUrl}/slow`, { timeoutMs: 10 }),
-      (error) => error instanceof HttpError && error.code === "TIMEOUT",
-    );
+  await withServer(
+    (_request, response) => {
+      response.writeHead(200, { "content-type": "text/plain" });
+      response.flushHeaders();
+      const timer = setTimeout(() => {
+        if (!response.destroyed) response.end("eventually");
+      }, 200);
+      response.on("close", () => clearTimeout(timer));
+    },
+    async (baseUrl) => {
+      await assert.rejects(
+        request(`${baseUrl}/slow`, { timeoutMs: 10 }),
+        (error) => error instanceof HttpError && error.code === "TIMEOUT",
+      );
 
-    const controller = new AbortController();
-    const pending = request(`${baseUrl}/slow`, { signal: controller.signal });
-    controller.abort(new Error("caller stopped"));
-    await assert.rejects(
-      pending,
-      (error) => error instanceof HttpError && error.code === "ABORTED" && error.cause?.message === "caller stopped",
-    );
-  });
+      const controller = new AbortController();
+      const pending = request(`${baseUrl}/slow`, { signal: controller.signal });
+      controller.abort(new Error("caller stopped"));
+      await assert.rejects(
+        pending,
+        (error) => error instanceof HttpError && error.code === "ABORTED" && error.cause?.message === "caller stopped",
+      );
+    },
+  );
 
-  await withServer((request, response) => {
-    if (request.url === "/stream-large") {
-      response.write("x".repeat(6));
-      response.end("x".repeat(6));
-      return;
-    }
-    response.setHeader("content-length", "100");
-    response.end("x".repeat(100));
-  }, async (baseUrl) => {
-    await assert.rejects(
-      request(`${baseUrl}/large`, { maxResponseBytes: 10 }),
-      (error) => error instanceof HttpError && error.code === "RESPONSE_TOO_LARGE",
-    );
-    await assert.rejects(
-      request(`${baseUrl}/stream-large`, { maxResponseBytes: 10 }),
-      (error) => error instanceof HttpError && error.code === "RESPONSE_TOO_LARGE",
-    );
-  });
+  await withServer(
+    (request, response) => {
+      if (request.url === "/stream-large") {
+        response.write("x".repeat(6));
+        response.end("x".repeat(6));
+        return;
+      }
+      response.setHeader("content-length", "100");
+      response.end("x".repeat(100));
+    },
+    async (baseUrl) => {
+      await assert.rejects(
+        request(`${baseUrl}/large`, { maxResponseBytes: 10 }),
+        (error) => error instanceof HttpError && error.code === "RESPONSE_TOO_LARGE",
+      );
+      await assert.rejects(
+        request(`${baseUrl}/stream-large`, { maxResponseBytes: 10 }),
+        (error) => error instanceof HttpError && error.code === "RESPONSE_TOO_LARGE",
+      );
+    },
+  );
 
   await assert.rejects(
     request("https://example.invalid/private?token=secret", {
-      fetchFn: /** @type {typeof fetch} */ (async () => { throw new Error("offline"); }),
+      fetchFn: /** @type {typeof fetch} */ (
+        async () => {
+          throw new Error("offline");
+        }
+      ),
     }),
-    (error) => error instanceof HttpError && error.code === "NETWORK" &&
-      error.url === "https://example.invalid/private" && error.cause?.message === "offline",
+    (error) =>
+      error instanceof HttpError &&
+      error.code === "NETWORK" &&
+      error.url === "https://example.invalid/private" &&
+      error.cause?.message === "offline",
   );
 });
 

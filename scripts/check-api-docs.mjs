@@ -1,8 +1,19 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const publicModules = [
-  "array", "async", "browser", "collection", "date", "http", "number",
-  "object", "random", "sort", "string", "validation", "node",
+  "array",
+  "async",
+  "browser",
+  "collection",
+  "date",
+  "http",
+  "number",
+  "object",
+  "random",
+  "sort",
+  "string",
+  "validation",
+  "node",
 ].map((category) => `src/${category}.js`);
 const completeSchemaModules = new Set([
   "src/array.js",
@@ -77,7 +88,11 @@ for (const filename of publicModules) {
       failures.push(`${location}: @deprecated must identify a replacement or rationale`);
     }
 
-    if (fullDeclaration.includes("function") && !/@param\s*\{/.test(comment) && hasDeclaredParameters(source, declarationOffset)) {
+    if (
+      fullDeclaration.includes("function") &&
+      !/@param\s*\{/.test(comment) &&
+      hasDeclaredParameters(source, declarationOffset)
+    ) {
       failures.push(`${location}: parameterized function is missing @param types`);
     }
 
@@ -86,17 +101,17 @@ for (const filename of publicModules) {
       for (const [lineIndex, line] of lines.entries()) {
         if (!line.startsWith("@param ")) continue;
         const hasOneLineDescription = /^@param\s+\{.*\}\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(line);
-        const hasMultilineDescription = /\{$/.test(line) && lines
-          .slice(lineIndex + 1)
-          .some((candidate) => /^\}\}?\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(candidate));
+        const hasMultilineDescription =
+          /\{$/.test(line) &&
+          lines.slice(lineIndex + 1).some((candidate) => /^\}\}?\s+(?:\[[^\]]+\]|\S+)\s+\S/.test(candidate));
         if (!hasOneLineDescription && !hasMultilineDescription) {
           failures.push(`${location}: @param must include a description`);
         }
       }
       const returnsLine = lines.find((line) => /^@returns?\s/.test(line));
-      const hasDescribedReturn = /^@returns?\s+\{.*\}\s+\S/.test(returnsLine ?? "") || (
-        /^@returns?\s+\{\{$/.test(returnsLine ?? "") && lines.some((line) => /^\}\}\s+\S/.test(line))
-      );
+      const hasDescribedReturn =
+        /^@returns?\s+\{.*\}\s+\S/.test(returnsLine ?? "") ||
+        (/^@returns?\s+\{\{$/.test(returnsLine ?? "") && lines.some((line) => /^\}\}\s+\S/.test(line)));
       if (kind !== "class" && !hasDescribedReturn) {
         failures.push(`${location}: @returns must include a description`);
       }

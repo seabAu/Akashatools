@@ -39,10 +39,7 @@ export function resolveContainedPath(root, relativePath) {
  */
 export async function resolveExistingContainedPath(root, relativePath) {
   const target = resolveContainedPath(root, relativePath);
-  const [realRoot, realTarget] = await Promise.all([
-    realpath(path.resolve(root)),
-    realpath(target),
-  ]);
+  const [realRoot, realTarget] = await Promise.all([realpath(path.resolve(root)), realpath(target)]);
   assertContainedPath(realRoot, realTarget, path, "Existing path resolves outside root.");
   return realTarget;
 }

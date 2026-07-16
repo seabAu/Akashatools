@@ -40,7 +40,7 @@ export function wrap(value, minimum, maximum) {
   if (minimum >= maximum) throw new RangeError("minimum must be less than maximum.");
   const span = maximum - minimum;
   if (!Number.isFinite(span)) throw new RangeError("The wrap interval is outside the finite range.");
-  return ((value - minimum) % span + span) % span + minimum;
+  return ((((value - minimum) % span) + span) % span) + minimum;
 }
 
 /**
@@ -260,13 +260,10 @@ export function summarizeNumbers(values) {
 
   const sorted = values.toSorted((left, right) => left - right);
   const scale = sorted.reduce((largest, value) => Math.max(largest, Math.abs(value)), 0);
-  const normalizedMean = scale === 0
-    ? 0
-    : sorted.reduce((total, value) => total + value / scale / sorted.length, 0);
+  const normalizedMean = scale === 0 ? 0 : sorted.reduce((total, value) => total + value / scale / sorted.length, 0);
   const mean = normalizedMean * scale;
-  const normalizedVariance = scale === 0
-    ? 0
-    : sorted.reduce((total, value) => total + (value / scale - normalizedMean) ** 2 / sorted.length, 0);
+  const normalizedVariance =
+    scale === 0 ? 0 : sorted.reduce((total, value) => total + (value / scale - normalizedMean) ** 2 / sorted.length, 0);
   const standardDeviation = scale * Math.sqrt(normalizedVariance);
 
   const summary = {
@@ -315,5 +312,8 @@ function assertFiniteNumbers(values) {
 
 /** @param {number} value @param {number} digits */
 function trimFixed(value, digits) {
-  return value.toFixed(digits).replace(/(\.\d*?)0+$/, "$1").replace(/\.$/, "");
+  return value
+    .toFixed(digits)
+    .replace(/(\.\d*?)0+$/, "$1")
+    .replace(/\.$/, "");
 }

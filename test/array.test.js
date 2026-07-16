@@ -31,7 +31,10 @@ test("array transforms are immutable and preserve meaningful falsy values", () =
 test("removeFromArray unifies index, value, and predicate removal", () => {
   assert.deepEqual(removeFromArray(["a", "b", "c"], 1), ["a", "c"]);
   assert.deepEqual(removeFromArray([1, 2, 1], 1, { mode: "value", all: true }), [2]);
-  assert.deepEqual(removeFromArray([1, 2, 3, 4], (value) => value % 2 === 0, { all: true }), [1, 3]);
+  assert.deepEqual(
+    removeFromArray([1, 2, 3, 4], (value) => value % 2 === 0, { all: true }),
+    [1, 3],
+  );
   assert.deepEqual(removeFromArray([1, 2], 10), [1, 2]);
 });
 
@@ -44,11 +47,18 @@ test("move, insert, and removal treat sparse slots as undefined sequence items",
 
   /** @type {Array<[unknown, number]>} */
   const visited = [];
-  assert.deepEqual(removeFromArray(sparse, (value, index) => {
-    visited.push([value, index]);
-    return false;
-  }), ["a", undefined, "c"]);
-  assert.deepEqual(visited, [["a", 0], [undefined, 1], ["c", 2]]);
+  assert.deepEqual(
+    removeFromArray(sparse, (value, index) => {
+      visited.push([value, index]);
+      return false;
+    }),
+    ["a", undefined, "c"],
+  );
+  assert.deepEqual(visited, [
+    ["a", 0],
+    [undefined, 1],
+    ["c", 2],
+  ]);
 });
 
 test("array movement and removal options reject invalid contracts", () => {
@@ -63,13 +73,22 @@ test("array movement and removal options reject invalid contracts", () => {
 });
 
 test("array set, grouping, range, zip, and shuffle helpers are deterministic", () => {
-  assert.deepEqual(unique([{ id: 1 }, { id: 1 }, { id: 2 }], ({ id }) => id).map(({ id }) => id), [1, 2]);
+  assert.deepEqual(
+    unique([{ id: 1 }, { id: 1 }, { id: 2 }], ({ id }) => id).map(({ id }) => id),
+    [1, 2],
+  );
   assert.deepEqual(intersection([1, 1, 2, 3], [3, 2], [2, 4]), [2]);
   assert.deepEqual(range(4), [0, 1, 2, 3]);
   assert.deepEqual(range(4, 0, -2), [4, 2]);
-  assert.deepEqual(zip([1, 2], ["a", "b", "c"]), [[1, "a"], [2, "b"]]);
+  assert.deepEqual(zip([1, 2], ["a", "b", "c"]), [
+    [1, "a"],
+    [2, "b"],
+  ]);
   assert.deepEqual(groupBy([1, 2, 3], (value) => value % 2).get(1), [1, 3]);
-  assert.deepEqual(shuffle([1, 2, 3], () => 0), [2, 3, 1]);
+  assert.deepEqual(
+    shuffle([1, 2, 3], () => 0),
+    [2, 3, 1],
+  );
 });
 
 test("countBy preserves key identity and treats sparse slots as undefined", () => {
@@ -77,8 +96,20 @@ test("countBy preserves key identity and treats sparse slots as undefined", () =
   const sparse = [objectKey, , objectKey, undefined];
   const counts = countBy(sparse);
 
-  assert.deepEqual([...counts.entries()], [[objectKey, 2], [undefined, 2]]);
-  assert.deepEqual([...countBy(["one", "two", "four"], (value) => value.length).entries()], [[3, 2], [4, 1]]);
+  assert.deepEqual(
+    [...counts.entries()],
+    [
+      [objectKey, 2],
+      [undefined, 2],
+    ],
+  );
+  assert.deepEqual(
+    [...countBy(["one", "two", "four"], (value) => value.length).entries()],
+    [
+      [3, 2],
+      [4, 1],
+    ],
+  );
 });
 
 test("partition is immutable, ordered, dense for sparse input, and fail-fast", () => {
@@ -90,10 +121,24 @@ test("partition is immutable, ordered, dense for sparse input, and fail-fast", (
     return typeof value === "number" && value % 2 === 1;
   });
 
-  assert.deepEqual(result, [[1, 3], [undefined, 2]]);
-  assert.deepEqual(visited, [[1, 0], [undefined, 1], [2, 2], [3, 3]]);
+  assert.deepEqual(result, [
+    [1, 3],
+    [undefined, 2],
+  ]);
+  assert.deepEqual(visited, [
+    [1, 0],
+    [undefined, 1],
+    [2, 2],
+    [3, 3],
+  ]);
   assert.equal(1 in sparse, false);
-  assert.throws(() => partition([1], () => { throw new Error("predicate failed"); }), /predicate failed/);
+  assert.throws(
+    () =>
+      partition([1], () => {
+        throw new Error("predicate failed");
+      }),
+    /predicate failed/,
+  );
 });
 
 test("array callbacks and random sources reject invalid contracts", () => {
@@ -127,10 +172,16 @@ test("array transforms apply the documented sparse-slot policy", () => {
   assert.deepEqual(compact(sparse), ["a", "c"]);
   assert.deepEqual(chunk(sparse, 2), [["a", undefined], ["c"]]);
   assert.deepEqual(unique(["a", , undefined]), ["a", undefined]);
-  assert.deepEqual(groupBy(sparse, (value) => value === undefined ? "missing" : "value").get("missing"), [undefined]);
+  assert.deepEqual(groupBy(sparse, (value) => (value === undefined ? "missing" : "value")).get("missing"), [undefined]);
   assert.deepEqual(intersection([, "a"], [undefined, "b"]), [undefined]);
-  assert.deepEqual(zip([, "a"], [1, 2]), [[undefined, 1], ["a", 2]]);
-  assert.deepEqual(shuffle([, "a"], () => 0), ["a", undefined]);
+  assert.deepEqual(zip([, "a"], [1, 2]), [
+    [undefined, 1],
+    ["a", 2],
+  ]);
+  assert.deepEqual(
+    shuffle([, "a"], () => 0),
+    ["a", undefined],
+  );
 });
 
 test("invalid array arguments fail visibly", () => {

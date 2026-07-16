@@ -14,7 +14,7 @@ const output = `${JSON.stringify({ schemaVersion: 1, packageVersion: packageJson
 const outputUrl = new URL("test/api-surface.snapshot.json", root);
 
 if (process.argv.includes("--check")) {
-  if (await readFile(outputUrl, "utf8").catch(() => "") !== output) {
+  if ((await readFile(outputUrl, "utf8").catch(() => "")) !== output) {
     console.error("API surface snapshot is stale; run npm run api:snapshot.");
     process.exitCode = 1;
   } else {

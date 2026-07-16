@@ -1,12 +1,30 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const categories = [
-  "array", "async", "browser", "collection", "date", "http", "number",
-  "object", "random", "sort", "string", "validation", "node",
+  "array",
+  "async",
+  "browser",
+  "collection",
+  "date",
+  "http",
+  "number",
+  "object",
+  "random",
+  "sort",
+  "string",
+  "validation",
+  "node",
 ];
 const expectedModules = new Map([
-  ["AO.js", 49], ["Val.js", 30], ["Time.js", 14], ["String.js", 6],
-  ["Math.js", 9], ["Rand.js", 2], ["Http.js", 6], ["File.js", 2], ["Debug.js", 1],
+  ["AO.js", 49],
+  ["Val.js", 30],
+  ["Time.js", 14],
+  ["String.js", 6],
+  ["Math.js", 9],
+  ["Rand.js", 2],
+  ["Http.js", 6],
+  ["File.js", 2],
+  ["Debug.js", 1],
 ]);
 const inventory = await readFile(new URL("../docs/UTILITY_INVENTORY.md", import.meta.url), "utf8");
 const canonical = new Map();
@@ -53,12 +71,16 @@ for (const [moduleName, expectedCount] of expectedModules) {
 
 if (legacyEntries.length !== 119) throw new Error(`Expected 119 legacy exports; found ${legacyEntries.length}.`);
 
-const manifest = `${JSON.stringify({
-  schemaVersion: 1,
-  sourcePackageVersion: "1.0.2",
-  entryCount: legacyEntries.length,
-  entries: legacyEntries,
-}, null, 2)}\n`;
+const manifest = `${JSON.stringify(
+  {
+    schemaVersion: 1,
+    sourcePackageVersion: "1.0.2",
+    entryCount: legacyEntries.length,
+    entries: legacyEntries,
+  },
+  null,
+  2,
+)}\n`;
 const index = renderIndex([...canonical.values()], legacyEntries);
 const outputs = [
   [new URL("../docs/LEGACY_MANIFEST.json", import.meta.url), manifest],
@@ -68,7 +90,7 @@ const outputs = [
 if (process.argv.includes("--check")) {
   let stale = false;
   for (const [url, content] of outputs) {
-    if (await readFile(url, "utf8").catch(() => "") !== content) {
+    if ((await readFile(url, "utf8").catch(() => "")) !== content) {
       console.error(`${url.pathname.split("/").at(-1)} is stale; run npm run docs:migration.`);
       stale = true;
     }
@@ -91,8 +113,14 @@ function renderIndex(canonicalEntries, entries) {
   }
   const canonicalRows = canonicalEntries
     .sort((left, right) => left.name.localeCompare(right.name))
-    .map((entry) => `| \`${entry.name}\` | ${entry.category} | ${entry.runtime} | ${entry.mutation} | \`${entry.importPath}\` | ${(legacyByCanonical.get(entry.name) ?? []).map((name) => `\`${name}\``).join(", ") || "None"} |`);
-  const legacyRows = entries.map((entry) => `| \`${entry.module.replace(".js", "")}.${entry.name}\` | ${entry.canonicalReferences.map(({ category, name, relation }) => `${relation}: \`${category}.${name}\``).join(", ") || "None"} | ${escapeCell(entry.decision)} |`);
+    .map(
+      (entry) =>
+        `| \`${entry.name}\` | ${entry.category} | ${entry.runtime} | ${entry.mutation} | \`${entry.importPath}\` | ${(legacyByCanonical.get(entry.name) ?? []).map((name) => `\`${name}\``).join(", ") || "None"} |`,
+    );
+  const legacyRows = entries.map(
+    (entry) =>
+      `| \`${entry.module.replace(".js", "")}.${entry.name}\` | ${entry.canonicalReferences.map(({ category, name, relation }) => `${relation}: \`${category}.${name}\``).join(", ") || "None"} | ${escapeCell(entry.decision)} |`,
+  );
   return `# Akashatools function and migration index
 
 > Generated from public source exports and \`UTILITY_INVENTORY.md\` by

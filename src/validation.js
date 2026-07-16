@@ -150,7 +150,7 @@ export function isSet(value) {
  * @since 2.0.0
  */
 export function isTypedArray(value) {
-  return ArrayBuffer.isView(value) && typeof /** @type {any} */ (value).BYTES_PER_ELEMENT === "number";
+  return ArrayBuffer.isView(value) && typeof (/** @type {any} */ (value).BYTES_PER_ELEMENT) === "number";
 }
 
 /**
@@ -253,10 +253,14 @@ export function isEmail(value) {
   if (!emailLocalPattern.test(local) || domain.length > 253 || !domain.includes(".")) return false;
 
   const labels = domain.split(".");
-  return labels.every((label) =>
-    label.length > 0 && label.length <= 63 &&
-    !label.startsWith("-") && !label.endsWith("-") &&
-    domainLabelPattern.test(label));
+  return labels.every(
+    (label) =>
+      label.length > 0 &&
+      label.length <= 63 &&
+      !label.startsWith("-") &&
+      !label.endsWith("-") &&
+      domainLabelPattern.test(label),
+  );
 }
 
 /**
@@ -342,8 +346,10 @@ function validateContractNode(value, schema, root, path) {
   if (!contract) return [`${path}: unresolved contract reference`];
   const errors = [];
 
-  if (Object.hasOwn(contract, "const") && !Object.is(value, contract.const)) errors.push(`${path}: unexpected constant value`);
-  if (Array.isArray(contract.enum) && !contract.enum.some((/** @type {unknown} */ entry) => Object.is(entry, value))) errors.push(`${path}: unsupported enum value`);
+  if (Object.hasOwn(contract, "const") && !Object.is(value, contract.const))
+    errors.push(`${path}: unexpected constant value`);
+  if (Array.isArray(contract.enum) && !contract.enum.some((/** @type {unknown} */ entry) => Object.is(entry, value)))
+    errors.push(`${path}: unsupported enum value`);
   if (contract.type && !matchesJsonType(value, contract.type)) {
     errors.push(`${path}: expected ${contract.type}`);
     return errors;
@@ -361,7 +367,8 @@ function validateContractNode(value, schema, root, path) {
       }
     }
     for (const [key, child] of Object.entries(properties)) {
-      if (Object.hasOwn(objectValue, key)) errors.push(...validateContractNode(objectValue[key], child, root, `${path}.${key}`));
+      if (Object.hasOwn(objectValue, key))
+        errors.push(...validateContractNode(objectValue[key], child, root, `${path}.${key}`));
     }
   }
 
@@ -379,11 +386,14 @@ function resolveReference(root, reference) {
   if (typeof reference !== "string" || !reference.startsWith("#/")) {
     throw new TypeError(`Unsupported contract reference: ${String(reference)}`);
   }
-  return reference.slice(2).split("/").reduce((current, segment) => {
-    if (current === null || typeof current !== "object") return undefined;
-    const key = segment.replace(/~1/g, "/").replace(/~0/g, "~");
-    return Object.hasOwn(current, key) ? current[key] : undefined;
-  }, /** @type {any} */ (root));
+  return reference
+    .slice(2)
+    .split("/")
+    .reduce((current, segment) => {
+      if (current === null || typeof current !== "object") return undefined;
+      const key = segment.replace(/~1/g, "/").replace(/~0/g, "~");
+      return Object.hasOwn(current, key) ? current[key] : undefined;
+    }, /** @type {any} */ (root));
 }
 
 /** @param {unknown} value @param {string | string[]} expected @returns {boolean} */
@@ -437,9 +447,11 @@ function assertSupportedSchema(schema) {
     if (Object.hasOwn(values, "enum") && (!Array.isArray(values.enum) || values.enum.length === 0)) {
       throw new TypeError(`${path}.enum must be a non-empty array.`);
     }
-    if (Object.hasOwn(values, "required") && (
-      !Array.isArray(values.required) || [...values.required].some((key) => typeof key !== "string")
-    )) throw new TypeError(`${path}.required must be an array of strings.`);
+    if (
+      Object.hasOwn(values, "required") &&
+      (!Array.isArray(values.required) || [...values.required].some((key) => typeof key !== "string"))
+    )
+      throw new TypeError(`${path}.required must be an array of strings.`);
     if (Object.hasOwn(values, "additionalProperties") && typeof values.additionalProperties !== "boolean") {
       throw new TypeError(`${path}.additionalProperties must be a boolean.`);
     }

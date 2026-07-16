@@ -45,8 +45,10 @@ export function isPlainObject(value) {
   if (prototype === null) return true;
   if (!Object.hasOwn(prototype, "constructor")) return false;
   const constructor = prototype.constructor;
-  return typeof constructor === "function" &&
-    Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object);
+  return (
+    typeof constructor === "function" &&
+    Function.prototype.toString.call(constructor) === Function.prototype.toString.call(Object)
+  );
 }
 
 /**
@@ -63,7 +65,8 @@ export function isPlainObject(value) {
  */
 export function parsePath(path) {
   if (Array.isArray(path)) {
-    if (path.length > maximumPathSegments) throw new RangeError(`path cannot contain more than ${maximumPathSegments} segments.`);
+    if (path.length > maximumPathSegments)
+      throw new RangeError(`path cannot contain more than ${maximumPathSegments} segments.`);
     return path.map(normalizePathSegment);
   }
   if (typeof path !== "string" || path.trim() === "") {
@@ -72,9 +75,10 @@ export function parsePath(path) {
   if (path.length > maximumPathLength) throw new RangeError(`path cannot exceed ${maximumPathLength} code units.`);
 
   const normalized = path.trim().replace(/\[(\d+)\]/g, ".$1");
-  if (/[\[\]]/.test(normalized)) throw new TypeError(`Invalid property path: ${path}`);
+  if (normalized.includes("[") || normalized.includes("]")) throw new TypeError(`Invalid property path: ${path}`);
   const segments = normalized.split(".");
-  if (segments.length > maximumPathSegments) throw new RangeError(`path cannot contain more than ${maximumPathSegments} segments.`);
+  if (segments.length > maximumPathSegments)
+    throw new RangeError(`path cannot contain more than ${maximumPathSegments} segments.`);
   return segments.map(normalizePathSegment);
 }
 
@@ -146,7 +150,9 @@ export function setAtPath(value, path, nextValue) {
     const hasChild = Boolean(source) && Object.hasOwn(/** @type {object} */ (source), segment);
     const child = hasChild
       ? /** @type {Record<PropertyKey, any>} */ (/** @type {unknown} */ (source))[segment]
-      : typeof nextSegment === "number" ? [] : {};
+      : typeof nextSegment === "number"
+        ? []
+        : {};
     const updatedChild = setSegment(child, offset + 1);
     if (hasChild && Object.is(updatedChild, child)) return current;
 
@@ -367,7 +373,8 @@ export function cloneJson(value, options = {}) {
         const descriptor = descriptors[key];
         if (!descriptor?.enumerable) continue;
         if (typeof key !== "string") throw new TypeError("JSON objects cannot contain enumerable symbol keys.");
-        if (!Object.hasOwn(descriptor, "value")) throw new TypeError("JSON objects cannot contain enumerable accessors.");
+        if (!Object.hasOwn(descriptor, "value"))
+          throw new TypeError("JSON objects cannot contain enumerable accessors.");
         if (key.length > maximumKeyLength) throw new RangeError("cloneJson exceeded maximumKeyLength.");
         keysSeen += 1;
         if (keysSeen > maximumKeys) throw new RangeError("cloneJson exceeded maximumKeys.");
@@ -416,10 +423,17 @@ export function deepMerge(base, override) {
     throw new TypeError("deepMerge expects two plain objects.");
   }
 
-  return /** @type {T & U} */ (mergePlainObjects(base, override, {
-    nodes: 0,
-    activePairs: new WeakMap(),
-  }, 0));
+  return /** @type {T & U} */ (
+    mergePlainObjects(
+      base,
+      override,
+      {
+        nodes: 0,
+        activePairs: new WeakMap(),
+      },
+      0,
+    )
+  );
 }
 
 /**
@@ -429,9 +443,11 @@ export function deepMerge(base, override) {
  * @param {number} depth
  */
 function mergePlainObjects(base, override, state, depth) {
-  if (depth > maximumMergeDepth) throw new RangeError(`deepMerge cannot exceed ${maximumMergeDepth} nested merge levels.`);
+  if (depth > maximumMergeDepth)
+    throw new RangeError(`deepMerge cannot exceed ${maximumMergeDepth} nested merge levels.`);
   state.nodes += 1;
-  if (state.nodes > maximumMergeNodes) throw new RangeError(`deepMerge cannot merge more than ${maximumMergeNodes} object pairs.`);
+  if (state.nodes > maximumMergeNodes)
+    throw new RangeError(`deepMerge cannot merge more than ${maximumMergeNodes} object pairs.`);
 
   let pairedOverrides = state.activePairs.get(base);
   if (!pairedOverrides) {
@@ -446,9 +462,10 @@ function mergePlainObjects(base, override, state, depth) {
     const output = Object.create(Object.getPrototypeOf(base));
     for (const [key, value] of ownEnumerableDataEntries(base, "base")) output[key] = value;
     for (const [key, value] of ownEnumerableDataEntries(override, "override")) {
-      output[key] = isPlainObject(value) && isPlainObject(output[key])
-        ? mergePlainObjects(output[key], value, state, depth + 1)
-        : value;
+      output[key] =
+        isPlainObject(value) && isPlainObject(output[key])
+          ? mergePlainObjects(output[key], value, state, depth + 1)
+          : value;
     }
     return output;
   } finally {
@@ -532,7 +549,8 @@ function jsonStringUtf8ByteLength(value) {
     const codeUnit = value.charCodeAt(index);
     if (codeUnit === 0x22 || codeUnit === 0x5c) bytes += 2;
     else if (codeUnit <= 0x1f) {
-      bytes += codeUnit === 0x08 || codeUnit === 0x09 || codeUnit === 0x0a || codeUnit === 0x0c || codeUnit === 0x0d ? 2 : 6;
+      bytes +=
+        codeUnit === 0x08 || codeUnit === 0x09 || codeUnit === 0x0a || codeUnit === 0x0c || codeUnit === 0x0d ? 2 : 6;
     } else if (codeUnit <= 0x7f) bytes += 1;
     else if (codeUnit <= 0x7ff) bytes += 2;
     else if (codeUnit >= 0xd800 && codeUnit <= 0xdbff) {
@@ -607,9 +625,7 @@ function isTraversable(value) {
 
 /** @param {Record<PropertyKey, unknown> | unknown[]} value @param {string} key */
 function arrayIndexKey(value, key) {
-  return Array.isArray(value) && /^(0|[1-9]\d*)$/.test(key) && Number(key) < 4_294_967_295
-    ? Number(key)
-    : key;
+  return Array.isArray(value) && /^(0|[1-9]\d*)$/.test(key) && Number(key) < 4_294_967_295 ? Number(key) : key;
 }
 
 /**
@@ -633,16 +649,14 @@ function ownEnumerableDataEntries(value, name) {
 
 /** @param {unknown} segment @returns {string | number} */
 function normalizePathSegment(segment) {
-  const normalized = typeof segment === "number" || /^\d+$/.test(String(segment))
-    ? Number(segment)
-    : String(segment);
+  const normalized = typeof segment === "number" || /^\d+$/.test(String(segment)) ? Number(segment) : String(segment);
   if (typeof normalized === "number" && (!Number.isSafeInteger(normalized) || normalized < 0)) {
     throw new TypeError(`Invalid property path segment: ${String(segment)}`);
   }
-  if (typeof normalized === "string" && (
-    normalized === "" ||
-    blockedPathSegments.has(normalized) ||
-    !/^[A-Za-z_$][A-Za-z0-9_$-]*$/.test(normalized)
-  )) throw new TypeError(`Invalid property path segment: ${normalized}`);
+  if (
+    typeof normalized === "string" &&
+    (normalized === "" || blockedPathSegments.has(normalized) || !/^[A-Za-z_$][A-Za-z0-9_$-]*$/.test(normalized))
+  )
+    throw new TypeError(`Invalid property path segment: ${normalized}`);
   return normalized;
 }

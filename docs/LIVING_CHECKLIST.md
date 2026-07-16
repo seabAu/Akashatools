@@ -444,7 +444,7 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions is 97.33% / 85.48% / 95.68%, respectively; branch
+  the active-source additions is 97.23% / 85.56% / 95.68%, respectively; branch
   accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers. The six-test
   Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are
@@ -489,9 +489,9 @@ Acceptance criteria:
   so 2.0 will not add redundant per-method exports or separate npm packages.
 - [x] Ensure export maps expose types, import targets, and environment targets
   consistently.
-- [ ] Add reproducible scripts for type-check, lint/format, test, browser test,
+- [x] Add reproducible scripts for type-check, lint/format, test, browser test,
   coverage, benchmarks, build if needed, and package verification. Everything
-  except an agreed formatter/linter gate is now scripted.
+  is now scripted; maintained ESM uses pinned ESLint 10 and Prettier 3 gates.
 - [x] Add CI for Node 22/24 LTS, source coverage, package smoke/content checks,
   and Chromium/Firefox/WebKit browser contracts. First hosted execution remains
   an evidence gate under Phase 7.

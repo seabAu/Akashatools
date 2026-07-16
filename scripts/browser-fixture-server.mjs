@@ -4,7 +4,10 @@ import { readFile } from "node:fs/promises";
 const host = "127.0.0.1";
 const port = 4173;
 const files = new Map([
-  ["/fixtures/browser/download.html", [new URL("../fixtures/browser/download.html", import.meta.url), "text/html; charset=utf-8"]],
+  [
+    "/fixtures/browser/download.html",
+    [new URL("../fixtures/browser/download.html", import.meta.url), "text/html; charset=utf-8"],
+  ],
   ["/src/browser.js", [new URL("../src/browser.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/object.js", [new URL("../src/object.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/string.js", [new URL("../src/string.js", import.meta.url), "text/javascript; charset=utf-8"]],

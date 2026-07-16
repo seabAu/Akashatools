@@ -20,10 +20,11 @@ test("single-flight coalesces requests, caches accepted values, and isolates gen
     resolve(value);
   };
   const flight = createSingleFlight(
-    () => new Promise((resolve) => {
-      calls += 1;
-      resolvers.push(resolve);
-    }),
+    () =>
+      new Promise((resolve) => {
+        calls += 1;
+        resolvers.push(resolve);
+      }),
     { ttl: 100, now: () => currentTime, shouldCache: (value) => value > 0 },
   );
 
@@ -52,7 +53,9 @@ test("single-flight coalesces requests, caches accepted values, and isolates gen
 });
 
 test("single-flight normalizes synchronous errors and validates cache contracts", async () => {
-  const failed = createSingleFlight(() => { throw new Error("sync"); });
+  const failed = createSingleFlight(() => {
+    throw new Error("sync");
+  });
   await assert.rejects(failed.load(), /sync/);
   assert.throws(() => createSingleFlight(/** @type {any} */ (null)), TypeError);
   assert.throws(() => createSingleFlight(() => 1, /** @type {any} */ ([])), TypeError);
@@ -69,10 +72,13 @@ test("single-flight normalizes synchronous errors and validates cache contracts"
 
 test("keyed single-flight bounds least-recently used entries without allocating on invalidation", async () => {
   const calls = new Map();
-  const flight = createKeyedSingleFlight(async (key) => {
-    calls.set(key, (calls.get(key) ?? 0) + 1);
-    return `${key}-${calls.get(key)}`;
-  }, { ttl: Infinity, maximumSize: 2 });
+  const flight = createKeyedSingleFlight(
+    async (key) => {
+      calls.set(key, (calls.get(key) ?? 0) + 1);
+      return `${key}-${calls.get(key)}`;
+    },
+    { ttl: Infinity, maximumSize: 2 },
+  );
 
   assert.deepEqual(await Promise.all([flight.load("a"), flight.load("a")]), ["a-1", "a-1"]);
   assert.equal(await flight.load("b"), "b-1");
@@ -105,14 +111,22 @@ test("bounded async mapping preserves order and filters fulfilled values", async
 
 test("bounded settled mapping handles empty, sync-throw, high concurrency, and ordering", async () => {
   let emptyCalls = 0;
-  assert.deepEqual(await mapSettledWithConcurrency([], 100, () => { emptyCalls += 1; }), []);
+  assert.deepEqual(
+    await mapSettledWithConcurrency([], 100, () => {
+      emptyCalls += 1;
+    }),
+    [],
+  );
   assert.equal(emptyCalls, 0);
 
   const synchronous = await mapSettledWithConcurrency([1, 2], 2, (value) => {
     if (value === 1) throw new Error("synchronous failure");
     return value * 2;
   });
-  assert.deepEqual(synchronous.map(({ status }) => status), ["rejected", "fulfilled"]);
+  assert.deepEqual(
+    synchronous.map(({ status }) => status),
+    ["rejected", "fulfilled"],
+  );
 
   const completionOrder = [];
   const results = await mapSettledWithConcurrency([30, 5, 10], 99, async (milliseconds, index) => {
@@ -122,7 +136,10 @@ test("bounded settled mapping handles empty, sync-throw, high concurrency, and o
     return index;
   });
   assert.deepEqual(completionOrder, [2, 0]);
-  assert.deepEqual(results.map(({ status }) => status), ["fulfilled", "rejected", "fulfilled"]);
+  assert.deepEqual(
+    results.map(({ status }) => status),
+    ["fulfilled", "rejected", "fulfilled"],
+  );
   assert.equal(results[0].status === "fulfilled" ? results[0].value : undefined, 0);
   assert.match(results[1].status === "rejected" ? results[1].reason.message : "", /async failure/);
   assert.equal(results[2].status === "fulfilled" ? results[2].value : undefined, 2);

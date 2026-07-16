@@ -38,7 +38,9 @@ export function capitalize(value, locales) {
  */
 export function kebabCase(value) {
   assertString(value, "value");
-  return words(value).map((word) => word.toLowerCase()).join("-");
+  return words(value)
+    .map((word) => word.toLowerCase())
+    .join("-");
 }
 
 /**
@@ -53,10 +55,12 @@ export function kebabCase(value) {
  */
 export function camelCase(value) {
   assertString(value, "value");
-  return words(value).map((word, index) => {
-    const lower = word.toLowerCase();
-    return index === 0 ? lower : uppercaseFirst(lower);
-  }).join("");
+  return words(value)
+    .map((word, index) => {
+      const lower = word.toLowerCase();
+      return index === 0 ? lower : uppercaseFirst(lower);
+    })
+    .join("");
 }
 
 /**
@@ -85,7 +89,11 @@ export function pascalCase(value) {
  */
 export function sentenceCase(value) {
   assertString(value, "value");
-  return uppercaseFirst(words(value).map((word) => word.toLowerCase()).join(" "));
+  return uppercaseFirst(
+    words(value)
+      .map((word) => word.toLowerCase())
+      .join(" "),
+  );
 }
 
 /**
@@ -365,7 +373,8 @@ export function safeFilename(value, { fallback = "download", maximumLength = 80 
   assertString(value, "value");
   assertString(fallback, "fallback");
   assertMaximumLength(maximumLength);
-  let normalized = asciiSlug(value, maximumLength) || asciiSlug(fallback, maximumLength) || asciiSlug("download", maximumLength);
+  let normalized =
+    asciiSlug(value, maximumLength) || asciiSlug(fallback, maximumLength) || asciiSlug("download", maximumLength);
   if (windowsReservedFilename.test(normalized)) normalized = asciiSlug(`file-${normalized}`, maximumLength);
   return normalized;
 }
@@ -443,11 +452,7 @@ export function prettyJson(value, space = 2) {
  */
 export function stableJson(value, options = {}) {
   if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
-  const {
-    maximumDepth = 100,
-    maximumNodes = 10_000,
-    maximumLength = 1_000_000,
-  } = options;
+  const { maximumDepth = 100, maximumNodes = 10_000, maximumLength = 1_000_000 } = options;
   if (!Number.isSafeInteger(maximumDepth) || maximumDepth < 0) {
     throw new RangeError("maximumDepth must be a non-negative safe integer.");
   }
@@ -536,10 +541,12 @@ export function stableJson(value, options = {}) {
 
 /** @param {string} value */
 function words(value) {
-  return value
-    .replace(/([a-z\d])([A-Z])/g, "$1 $2")
-    .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
-    .match(/[\p{L}\p{N}]+/gu) ?? [];
+  return (
+    value
+      .replace(/([a-z\d])([A-Z])/g, "$1 $2")
+      .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+      .match(/[\p{L}\p{N}]+/gu) ?? []
+  );
 }
 
 /** @param {string} value */
@@ -550,7 +557,8 @@ function uppercaseFirst(value) {
 
 /** @param {string} value @param {number} maximumLength */
 function asciiSlug(value, maximumLength) {
-  return value.normalize("NFKD")
+  return value
+    .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -617,9 +625,8 @@ function buildTextMetricPrefixes(value) {
 /** @param {string} value @param {Uint32Array} prefix @param {number} start @param {number} end */
 function countSpanWords(value, prefix, start, end) {
   if (start === end) return 0;
-  const startsInsideWord = start > 0
-    && !whitespaceCodeUnit.test(value[start])
-    && !whitespaceCodeUnit.test(value[start - 1]);
+  const startsInsideWord =
+    start > 0 && !whitespaceCodeUnit.test(value[start]) && !whitespaceCodeUnit.test(value[start - 1]);
   return prefix[end] - prefix[start] + Number(startsInsideWord);
 }
 

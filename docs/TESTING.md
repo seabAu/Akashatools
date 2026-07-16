@@ -9,6 +9,8 @@ compatibility paths.
 ## Commands
 
 ```sh
+npm run lint
+npm run format:check
 npm test
 npm run test:browser:install
 npm run test:browser
@@ -18,8 +20,10 @@ npm run check
 npm run audit:release
 ```
 
-`npm test` runs the dependency-free Node test suite. `npm run check` also checks
-syntax across package JavaScript, generated artifacts, JSDoc/TypeScript
+`npm run lint` applies the pinned ESLint rules to maintained JavaScript, and
+`npm run format:check` verifies the pinned Prettier style without changing
+files. `npm test` runs the dependency-free Node test suite. `npm run check`
+also checks syntax, lint and formatting, generated artifacts, JSDoc/TypeScript
 declarations, JavaScript and TypeScript consumers, editor completions, and a
 clean installation of the exact packed artifact.
 

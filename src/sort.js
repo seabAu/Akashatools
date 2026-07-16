@@ -19,7 +19,11 @@ let defaultCollator;
  * sortBy(users, ({ name }) => name);
  * @since 2.0.0
  */
-export function sortBy(values, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))), { direction = "asc", nulls = "last", compare = compareValues } = {}) {
+export function sortBy(
+  values,
+  toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))),
+  { direction = "asc", nulls = "last", compare = compareValues } = {},
+) {
   return sortByMany(values, [{ toKey, direction, nulls, compare }]);
 }
 

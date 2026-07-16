@@ -19,14 +19,23 @@ try {
 
   const consumer = path.join(temporaryRoot, "consumer");
   await mkdir(consumer);
-  await writeFile(path.join(consumer, "package.json"), `${JSON.stringify({
-    name: "akashatools-installed-smoke",
-    private: true,
-    type: "module",
-  }, null, 2)}\n`);
+  await writeFile(
+    path.join(consumer, "package.json"),
+    `${JSON.stringify(
+      {
+        name: "akashatools-installed-smoke",
+        private: true,
+        type: "module",
+      },
+      null,
+      2,
+    )}\n`,
+  );
   run(process.execPath, [npmCli, "install", "--ignore-scripts", "--no-audit", "--no-fund", tarball], consumer);
 
-  await writeFile(path.join(consumer, "smoke.mjs"), `
+  await writeFile(
+    path.join(consumer, "smoke.mjs"),
+    `
 import assert from "node:assert/strict";
 import path from "node:path";
 import akasha, { chunk, isEmail } from "akashatools";
@@ -39,10 +48,13 @@ assert.equal(akasha.array.chunk, chunk);
 assert.equal(akasha.chunk, chunk);
 assert.equal(isEmail("person@example.com"), true);
 assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/srv/data", "report.json"));
-`);
+`,
+  );
   run(process.execPath, ["smoke.mjs"], consumer);
 
-  await writeFile(path.join(consumer, "smoke.ts"), `
+  await writeFile(
+    path.join(consumer, "smoke.ts"),
+    `
 import akasha, { chunk, request } from "akashatools";
 import { HttpError } from "akashatools/http";
 import type { JsonContract } from "akashatools/validation";
@@ -53,21 +65,31 @@ const response: Promise<{ ok: boolean }> = request<{ ok: boolean }>("https://exa
 const contract: JsonContract = { type: "object", properties: { ok: { type: "boolean" } } };
 const code: HttpError["code"] = "TIMEOUT";
 void [chunks, nested, response, contract, code];
-`);
-  await writeFile(path.join(consumer, "tsconfig.json"), `${JSON.stringify({
-    compilerOptions: {
-      strict: true,
-      noEmit: true,
-      target: "ES2023",
-      module: "NodeNext",
-      moduleResolution: "NodeNext",
-      lib: ["ES2023", "DOM"],
-    },
-    include: ["smoke.ts"],
-  }, null, 2)}\n`);
+`,
+  );
+  await writeFile(
+    path.join(consumer, "tsconfig.json"),
+    `${JSON.stringify(
+      {
+        compilerOptions: {
+          strict: true,
+          noEmit: true,
+          target: "ES2023",
+          module: "NodeNext",
+          moduleResolution: "NodeNext",
+          lib: ["ES2023", "DOM"],
+        },
+        include: ["smoke.ts"],
+      },
+      null,
+      2,
+    )}\n`,
+  );
   run(process.execPath, [path.join(root, "node_modules", "typescript", "bin", "tsc"), "-p", "tsconfig.json"], consumer);
 
-  const installedPackage = JSON.parse(await readFile(path.join(consumer, "node_modules", "akashatools", "package.json"), "utf8"));
+  const installedPackage = JSON.parse(
+    await readFile(path.join(consumer, "node_modules", "akashatools", "package.json"), "utf8"),
+  );
   assert.equal(installedPackage.dependencies, undefined);
   await Promise.all([
     access(path.join(consumer, "node_modules", "akashatools", "types", "index.d.ts")),

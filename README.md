@@ -109,6 +109,8 @@ exports or category subpaths.
 ## Development
 
 ```sh
+npm run lint
+npm run format:check
 npm test
 npm run test:browser:install
 npm run test:browser

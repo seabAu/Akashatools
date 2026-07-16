@@ -27,7 +27,8 @@ for (const fixture of fixtures) {
     write: false,
   });
   const [output] = result.outputFiles;
-  if (!output || result.outputFiles.length !== 1) throw new Error(`esbuild produced an unexpected output set for ${name}.`);
+  if (!output || result.outputFiles.length !== 1)
+    throw new Error(`esbuild produced an unexpected output set for ${name}.`);
   measurements.push({
     name,
     bytes: output.contents.byteLength,
@@ -46,9 +47,9 @@ if (new Set(focused.map(({ bytes, gzip }) => `${bytes}/${gzip}`)).size !== 1) {
   throw new Error("Focused and simulated per-method fixtures no longer produce identical bundles.");
 }
 
-const overBudget = measurements.filter(({ bytes, gzip, maximumBytes, maximumGzip }) => (
-  bytes > maximumBytes || gzip > maximumGzip
-));
+const overBudget = measurements.filter(
+  ({ bytes, gzip, maximumBytes, maximumGzip }) => bytes > maximumBytes || gzip > maximumGzip,
+);
 if (overBudget.length > 0) {
   throw new Error(`Bundle budget exceeded: ${overBudget.map(({ name }) => name).join(", ")}.`);
 }

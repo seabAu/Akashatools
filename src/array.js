@@ -209,9 +209,14 @@ export function removeFromArray(values, selector, options = {}) {
 
   const denseValues = [...values];
 
-  const resolvedMode = mode === "auto"
-    ? typeof selector === "function" ? "predicate" : Number.isInteger(selector) ? "index" : "value"
-    : mode;
+  const resolvedMode =
+    mode === "auto"
+      ? typeof selector === "function"
+        ? "predicate"
+        : Number.isInteger(selector)
+          ? "index"
+          : "value"
+      : mode;
 
   if (resolvedMode === "index") {
     if (!Number.isSafeInteger(selector)) throw new TypeError("An index selector must be a safe integer.");
@@ -227,9 +232,7 @@ export function removeFromArray(values, selector, options = {}) {
   let removed = false;
   const predicate = /** @type {(value: T, index: number, values: readonly T[]) => boolean} */ (selector);
   return denseValues.filter((value, index) => {
-    const matches = resolvedMode === "predicate"
-      ? predicate(value, index, denseValues)
-      : Object.is(value, selector);
+    const matches = resolvedMode === "predicate" ? predicate(value, index, denseValues) : Object.is(value, selector);
     if (!matches || (removed && !all)) return true;
     removed = true;
     return false;

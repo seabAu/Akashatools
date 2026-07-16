@@ -42,6 +42,14 @@ test("representative 1.x namespace and direct-module behavior remains executable
   assert.equal(time.convertDate(new Date(2020, 0, 2)), "Thu, 2 January 2020");
   assert.equal(time.elapsed(1_000, 3_000), 2);
 
-  assert.throws(() => val.valid("defined"), ReferenceError, "known 1.x reference defect remains isolated to legacy code");
-  assert.throws(() => time.timeElapsed(0, 1_000), ReferenceError, "known 1.x reference defect remains isolated to legacy code");
+  assert.throws(
+    () => val.valid("defined"),
+    ReferenceError,
+    "known 1.x reference defect remains isolated to legacy code",
+  );
+  assert.throws(
+    () => time.timeElapsed(0, 1_000),
+    ReferenceError,
+    "known 1.x reference defect remains isolated to legacy code",
+  );
 });

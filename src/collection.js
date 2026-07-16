@@ -14,7 +14,12 @@
  * upsertBy([{ id: 1, name: "old" }], { id: 1, name: "new" }, ({ id }) => id);
  * @since 2.0.0
  */
-export function upsertBy(values, nextValue, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))), { prepend = true } = {}) {
+export function upsertBy(
+  values,
+  nextValue,
+  toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))),
+  { prepend = true } = {},
+) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
   if (typeof prepend !== "boolean") throw new TypeError("prepend must be a boolean.");
@@ -44,7 +49,11 @@ export function upsertBy(values, nextValue, toKey = /** @type {(value: T) => K} 
  * excludeBy(users, new Set([blockedId]), ({ id }) => id);
  * @since 2.0.0
  */
-export function excludeBy(values, excluded, toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value)))) {
+export function excludeBy(
+  values,
+  excluded,
+  toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))),
+) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
   if (!(excluded instanceof Set)) throw new TypeError("excluded must be a Set.");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
