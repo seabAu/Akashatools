@@ -1,0 +1,41 @@
+# Source regression ledger
+
+Akashatools preserves source intent, not demonstrably broken source behavior.
+The regression suite names portable defects that influenced canonical contracts
+and proves their replacements do not reintroduce them.
+
+## Executable portable regressions
+
+| Source defect family | Canonical protection | Evidence |
+| --- | --- | --- |
+| Array cleanup dropped meaningful falsy values; move/remove helpers silently inserted or ignored invalid data; selectors logged and swallowed failures. | Nullish-only `compact`, strict indices/options, immutable results, and propagated callback errors. | `test/source-regressions.test.js` array cases plus `test/array.test.js`. |
+| Object-backed grouping coerced identity keys and could collide with prototype names. | `groupBy` returns a `Map` and preserves key identity. | Source-regression grouping case and array category tests. |
+| Mindspace nested getters/setters read inherited values, mutated callers, and accepted prototype-pollution paths. | Own-property reads, immutable structural sharing, blocked unsafe segments, and work bounds. | Source-regression nested-data case, object tests, and invariant tests. |
+| Server merge helpers mutated defaults, discarded `false`/`0`/empty-string overrides, recursed unsafely, and could invoke accessors. | Plain-object-only immutable `deepMerge` with exact falsy values, active-property rejection, cycle/depth/node bounds, and unsafe-key protection. | Source-regression merge case and object security tests. |
+| JSON clone/canonicalization silently converted unsupported values, invoked getters, lost data, or recursed without bounds. | Strict `cloneJson` and `stableJson` plain-JSON contracts with accessor/cycle/shape/work rejection. | Source-regression JSON case plus object/string category tests. |
+| Legacy multi-replacement treated caller strings as regex/replacement syntax. | Literal `replaceMany` is separate from explicit `replaceRegex`. | Source-regression replacement case and string tests. |
+| Mindspace helpers named for Unix seconds actually handled milliseconds. | `toUnixSeconds` and `fromUnixSeconds` enforce the stated unit. | Source-regression time-unit case, date tests, and deterministic invariants. |
+| Portfolio response filenames and legacy filesystem helpers accepted path components or unchecked traversal. | Bounded filename parsing/basename hardening and Node-only lexical/realpath containment. | Source-regression boundary case plus HTTP and Node threat tests. |
+| Portfolio single-flight invalidation allowed older in-flight work to race cache state. | Generation isolation prevents stale repopulation. | Source-regression generation case and async concurrency tests. |
+| SPLICR-style normalization/chunk fallback could obscure which source offsets a generic helper referenced. | `splitTextByLimits` is lossless, Unicode-safe, bounded, and leaves normalization/provider policy to SPLICR. | Source-regression text case and SPLICR consumer fixture. |
+| Browser globals leaked into universal validation and download cleanup could be skipped on errors. | Safe runtime-global detection, injected browser capabilities, and deterministic cleanup. | `test/validation.test.js`, `test/browser.test.js`, and the six Playwright contracts. |
+| Natural sorting rebuilt locale machinery inside hot comparisons or produced unstable missing-value behavior. | Reusable collators, stable copied sorts, explicit null placement, and finite comparators. | `test/sort.test.js` and `benchmark/collator.mjs`. |
+
+## Rejected and application-owned defects
+
+Some discovered bugs do not belong in an Akashatools executable regression
+because their surrounding behavior was intentionally not migrated. Their
+dispositions remain in the source inventories, including:
+
+- JWT millisecond/day confusion and Express cookie policy;
+- Mongoose schema/ObjectId reflection and response envelopes;
+- unrestricted or false-success file deletion and provider I/O wrappers;
+- notification, SMS, email, retry, auth, session, route, and queue error policy;
+- React hooks/components, browser storage globals, and import-time prototype
+  extensions;
+- portfolio search/navigation/media/session behavior, COMPOSR envelopes and
+  checkpoint schemas, and SPLICR provider/document/audio/storage policy.
+
+The source projects are read-only. Fixing an application-owned defect requires
+separate authorization and that application's own regression suite; copying it
+here merely to test it would incorrectly expand Akashatools' contract.

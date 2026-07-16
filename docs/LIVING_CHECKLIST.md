@@ -185,8 +185,9 @@ Acceptance criteria:
   authentication, and domain-owned behavior.
 - [x] Compare client/server duplicates for time, validation, file, schema, and
   data operations.
-- [ ] Capture source behavior tests for any function whose edge cases are unclear.
-- [ ] Review feature-local helpers only when they express a reusable primitive;
+- [x] Capture source behavior tests for portable functions whose edge cases were
+  unclear; rejected application behavior remains in its owning project.
+- [x] Review feature-local helpers only when they express a reusable primitive;
   do not migrate code solely because its folder is named `utils` or `lib`.
 
 ### 2.3 Portfolio rebuild
@@ -195,7 +196,7 @@ Acceptance criteria:
   `server/utilities`, and shared contracts.
 - [x] Review field-path, own-property, stable-order, field-coercion, network, and
   contained-path utilities for generalized contracts.
-- [ ] Keep portfolio search, admin session, public snapshot, navigation, and
+- [x] Keep portfolio search, admin session, public snapshot, navigation, and
   storage policy app-local unless a clear independent abstraction emerges.
 - [x] Compare portfolio legacy utility copies against Mindspace and Akashatools
   before adopting any implementation.
@@ -217,7 +218,7 @@ Acceptance criteria:
 - [x] Group reviewed candidates by behavior rather than source name.
 - [x] Identify semantic conflicts hidden behind identical names.
 - [x] Identify identical behavior hidden behind different names.
-- [ ] Choose one canonical implementation and contract per behavior.
+- [x] Choose one canonical implementation and contract per adopted behavior.
 - [x] Record aliases separately from canonical exports.
 - [x] Record native replacements such as `structuredClone`, `Object.hasOwn`,
   `Array.prototype.toSorted`, `Intl`, `Set`, `Map`, and `URL`.
@@ -438,13 +439,15 @@ Acceptance criteria:
 - [x] Add test factories for mutation checks and invalid-argument checks.
 - [x] Add deterministic randomized/property-style invariant tests for paths, ranges, sorting,
   deduplication, and date conversions.
-- [ ] Add regression tests for every source bug found during migration.
+- [x] Add regression tests for every portable source-defect family whose behavior
+  migrated; rejected app/framework defects are recorded separately in
+  `docs/SOURCE_REGRESSIONS.md` rather than copied into the package.
 - [x] Add cross-realm/browser tests: Node VM realms cover Date, plain objects,
   Map, Set, and typed arrays; the real-browser fixture covers native Blob/File
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions and consumer fixtures is 97.53% / 85.91% / 96.04%, respectively; branch
+  the active-source additions and regression fixtures is 97.53% / 86.14% / 96.04%, respectively; branch
   accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers. The six-test
   Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are

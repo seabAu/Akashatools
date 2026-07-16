@@ -169,3 +169,5 @@
 - Added shared source-shaped small/medium/large benchmark fixtures, fixed
   warmups, runtime metadata, range/variance reporting, and UTF-8 allocation
   tradeoff measurements.
+- Added a named source-origin regression suite and ledger covering portable bug
+  families while keeping rejected application/framework defects out of scope.
