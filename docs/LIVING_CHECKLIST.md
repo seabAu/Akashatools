@@ -68,13 +68,13 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 120 tests currently pass.
+- [x] Add dependency-free runtime tests; 121 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the current alpha
-  selects 84 files at approximately 230 kB packed and 861 kB unpacked.
+  selects 85 files at approximately 236 kB packed and 889 kB unpacked.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
   esbuild 0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus
-  53,877 raw/16,977 gzip bytes for the complete flat namespace.
+  54,330 raw/17,101 gzip bytes for the complete flat namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -394,10 +394,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 127 public declarations are complete, with parameter/return prose,
+  All 134 public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  127 public declarations by `npm run check:docs`.
+  134 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -448,11 +448,14 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions and regression fixtures is 97.56% / 86.18% / 96.10%, respectively; branch
-  accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
-- [ ] Run tests on supported Node LTS lines and target browsers. The six-test
-  Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are
-  configured and await their first hosted workflow run before this is complete.
+  the active-source and live-usage additions is 97.61% / 86.32% / 96.19% on
+  Node 22; Node 24 reports 86.13% branches with the same line/function values.
+  Branch accounting varies slightly by runtime; see `docs/TESTING.md`.
+- [x] Run the complete release audit locally on supported Node 22.18.0 and
+  Node 24.18.0, and run all six Chromium/Firefox/WebKit browser contracts.
+- [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
+  are configured, but local multi-runtime evidence cannot prove hosted setup,
+  checkout, dependency installation, or runner behavior.
 
 ### 7.2 Security review
 
@@ -523,19 +526,23 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 46,605-50,111 raw and 14,367-15,317 gzip bytes;
+  imports. Focused sets save 47,058-50,564 raw and 14,493-15,441 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
-- [x] Record missing ergonomics discovered through real usage. The fixtures need
-  only thin application adapters for positional options, prefixes, blank-input
-  policy, and domain envelopes; no additional generic primitive surfaced.
+- [x] Record missing ergonomics discovered through real usage. The fixture pass
+  retained thin application adapters; the later complete call-site audit added
+  seven strict validation conveniences backed by 559 live legacy reads.
 - [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
-  or environment globals accidentally.
+  or environment globals accidentally. Static AST evidence now maps all 1,982
+  parsed legacy member reads and identifies one undeclared `utils` global in a
+  malformed `_unused` Mindspace file, but runtime intent still requires an
+  authorized bounded migration.
 - [x] Feed validated improvements back into the canonical API before 2.0 RC.
   The refresh contributed bounded single-flight loaders, deterministic JSON,
   text measurement/chunking, byte/duration/relative-time formatting, strict JSON
-  cloning, response filenames, and native glob discovery; no further portable
-  primitive survived the disposition review.
+  cloning, response filenames, native glob discovery, strict type guards, and a
+  blank-value fallback. The residual usage audit findings are native,
+  application-owned, composition-only, or provably broken.
 
 ## Phase 10 — release gates
 
@@ -545,7 +552,7 @@ edits. When authorized, migrate one bounded area at a time.
   alongside the complete 1.0.2 legacy manifest.
 - [x] Stabilize default/named/category namespace architecture.
 - [x] Cover the universal core with contract tests and JSDoc. The reviewed
-  surface has 127 documented declarations and 120 passing contract tests.
+  surface has 134 documented declarations and 121 passing contract tests.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
@@ -561,7 +568,9 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Complete API docs, migration guide, declarations, and package smoke tests.
 - [x] Resolve all known breaking-change questions recorded in this checklist and
   the decision documents.
-- [ ] Confirm clean install and supported-runtime matrix.
+- [x] Confirm clean install and the local supported-runtime matrix on Node
+  22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
+  remains a separate open gate under Phase 7.
 - [x] Confirm package contents, license, changelog, repository links, and current
   alpha version. See `docs/RELEASE_READINESS.md`; stable version promotion is
   still part of the authorized publication gate.

@@ -23,6 +23,11 @@ The migration copies behavior, not files. Each adopted utility is reviewed for
 generic applicability, duplication, failure behavior, platform dependencies,
 security, and modern native equivalents before entering the public API.
 
+The source directories were refreshed and active Akashatools usage was parsed
+again on 2026-07-16. The reproducible results, parser boundaries, and remaining
+manual migration cases are recorded in
+[CONSUMER_USAGE_AUDIT_2026-07-16.md](inventory/CONSUMER_USAGE_AUDIT_2026-07-16.md).
+
 ## Included in alpha 1
 
 - Array primitives from Akashatools and Mindspace were consolidated into strict,
@@ -112,7 +117,7 @@ explicit options for ambiguous operations. Consult
 | Sparse arrays | Behavior varied by native method and incidental loops. | Transforms document dense-undefined semantics; `flatten` deliberately follows native hole removal. |
 | Nested properties | Several helpers read inherited keys or allowed prototype-mutating paths. | Path APIs use own properties and reject `__proto__`, `prototype`, and `constructor`. |
 | Cloning/merging | JSON/recursive clones lost built-ins and merge variants mutated or invoked getters. | `deepClone` uses `structuredClone`; `deepMerge` has bounded plain-data semantics. |
-| Validation | `valid`/`isValid`/`isTruthy` changed meaning by type and conflated legitimate falsy values. | Small literal predicates distinguish defined, blank, empty, finite, and domain syntax. |
+| Validation | `valid`/`isValid`/`isTruthy` changed meaning by type and conflated legitimate falsy values. | Explicit predicates distinguish primitive type, arrays, broad objects, plain objects, blank/empty values, finite numbers, and domain syntax; `defaultIfBlank` preserves legitimate `0` and `false` values. |
 | Random numbers | `rand` accepted `(maximum, minimum)` and all randomness looked interchangeable. | `randomFloat` uses `(minimum, maximum)`; secure IDs/strings are separately named Web Crypto APIs. |
 | Dates/timestamps | Some “seconds” helpers actually returned milliseconds or silently substituted now. | Unix-second and instant-range APIs use strict units and explicit boundaries. |
 | HTTP | Legacy wrappers delayed, logged/swallowed, and resolved some errors as values. | `http.request` performs one bounded attempt and throws typed, redacted `HttpError` instances. |

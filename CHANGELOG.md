@@ -2,6 +2,12 @@
 
 ## 2.0.0-alpha.1
 
+- Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
+  `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
+  `defaultIfBlank`, based on 559 current legacy consumer reads.
+- Added a reproducible error-tolerant AST audit of the complete current
+  Mindspace and portfolio Akashatools 1.0.2 import footprint, with every parsed
+  member correlated to the migration manifest.
 - Added a frozen default `akasha` namespace with both flat utility access and
   frozen categorized namespaces.
 - Added build-time collision detection, namespace completeness tests, and a

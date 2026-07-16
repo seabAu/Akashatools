@@ -22,6 +22,59 @@ export type JsonContract = {
  */
 export declare function isDefined<T>(value: T | null | undefined): value is T;
 /**
+ * Checks whether a value is an array without coercion.
+ *
+ * @param {unknown} value Candidate value.
+ * @returns {value is unknown[]} Whether the value is an array, including an empty or cross-realm array.
+ * @example
+ * isArray([]); // true
+ * @since 2.0.0
+ */
+export declare function isArray(value: unknown): value is unknown[];
+/**
+ * Checks whether a value is a primitive string without accepting boxed String
+ * objects.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is string} Whether the value has the primitive string type.
+ * @example
+ * isString("Akasha"); // true
+ * @since 2.0.0
+ */
+export declare function isString(value: unknown): value is string;
+/**
+ * Checks whether a value is a primitive number. NaN and infinities are numbers;
+ * use `isFiniteNumber` when arithmetic requires a finite value.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is number} Whether the value has the primitive number type.
+ * @example
+ * isNumber(Number.NaN); // true
+ * @since 2.0.0
+ */
+export declare function isNumber(value: unknown): value is number;
+/**
+ * Checks whether a value is a primitive boolean without coercion.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is boolean} Whether the value is exactly true or false.
+ * @example
+ * isBoolean(false); // true
+ * @since 2.0.0
+ */
+export declare function isBoolean(value: unknown): value is boolean;
+/**
+ * Checks for a non-null object while excluding arrays and functions. Plain
+ * objects, class instances, Dates, Maps, and Sets are accepted across realms.
+ *
+ * @param {unknown} value Candidate object.
+ * @returns {value is object} Whether the value is a non-array object.
+ * @example
+ * isNonArrayObject(new Date()); // true
+ * @since 2.0.0
+ */
+export declare function isNonArrayObject(value: unknown): value is object;
+/**
  * Checks for nullish values or strings containing only whitespace.
  *
  * @param {unknown} value Candidate for absence/whitespace semantics.
@@ -31,6 +84,20 @@ export declare function isDefined<T>(value: T | null | undefined): value is T;
  * @since 2.0.0
  */
 export declare function isBlank(value: unknown): boolean;
+/**
+ * Returns a fallback for nullish or whitespace-only input and otherwise returns
+ * the original value unchanged. Zero and false are preserved.
+ *
+ * @template T
+ * @template U
+ * @param {T} value Candidate value.
+ * @param {U} fallback Value returned when the candidate is blank.
+ * @returns {T | U} Original nonblank value or the supplied fallback.
+ * @example
+ * defaultIfBlank("  ", "untitled"); // "untitled"
+ * @since 2.0.0
+ */
+export declare function defaultIfBlank<T, U>(value: T, fallback: U): T | U;
 /**
  * Checks common empty values: blank strings, empty arrays, empty Maps/Sets, and
  * plain objects without enumerable own properties. Zero and false are not empty.
@@ -52,6 +119,16 @@ export declare function isEmpty(value: unknown): boolean;
  * @since 2.0.0
  */
 export declare function isFiniteNumber(value: unknown): value is number;
+/**
+ * Checks whether a value is a finite primitive number with a fractional part.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is number} Whether the value is finite and not an integer.
+ * @example
+ * isFiniteNonInteger(1.5); // true
+ * @since 2.0.0
+ */
+export declare function isFiniteNonInteger(value: unknown): value is number;
 /**
  * Checks whether a value is a safe primitive integer.
  *

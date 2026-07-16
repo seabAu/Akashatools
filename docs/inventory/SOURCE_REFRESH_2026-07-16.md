@@ -106,6 +106,13 @@ external Git metadata:
 This completes the active refresh audit without treating file location or a
 generic-sounding name as evidence that product policy belongs in Akashatools.
 
+The follow-up AST call-site audit found 1,527 current legacy member reads across
+263 Mindspace client files and 455 reads across 61 portfolio files. That live
+usage justified strict primitive/array/non-array-object guards and
+`defaultIfBlank`, while confirming that the remaining schema, flattening, query,
+and broken time helpers should not expand the universal surface. See
+`CONSUMER_USAGE_AUDIT_2026-07-16.md` for counts and migration risks.
+
 The later platform review also resolves the old filesystem-glob dependency
 question: Node 22.17 marks native `fsPromises.glob` stable, so the broken
 Mindspace wrapper is replaced by bounded deterministic `node.globPaths` without
@@ -128,6 +135,11 @@ adding a package dependency.
   policy and HTTP error metadata.
 - [x] Add strict `formatDuration` and Intl-backed `formatRelativeTime` from
   repeated Mindspace consumers.
+- [x] Audit actual legacy imports and member reads with a reproducible AST
+  scanner; map all 1,982 parsed calls to the legacy manifest.
+- [x] Add strict `isArray`, `isString`, `isNumber`, `isBoolean`,
+  `isNonArrayObject`, `isFiniteNonInteger`, and `defaultIfBlank` from live
+  consumer demand.
 - [x] Finish the symbol-level delta audit of newly changed Mindspace
   feature-local files and COMPOSR packages; record only independently reusable
   primitives rather than domain adapters.

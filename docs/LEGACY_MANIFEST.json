@@ -47,10 +47,19 @@
     {
       "module": "AO.js",
       "name": "replaceIfInvalid",
-      "canonicalReferences": [],
-      "decision": "Merge with `cleanInvalid` into an explicitly named fallback helper; prefer `??` for nullish values.",
+      "canonicalReferences": [
+        {
+          "name": "defaultIfBlank",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback.",
       "behavior": "Replaces null, undefined, empty string, or exactly one space.",
-      "evidence": "Source reviewed; semantics conflict with `isBlank`."
+      "evidence": "Current consumer audit and 2.x validation tests."
     },
     {
       "module": "AO.js",
@@ -358,19 +367,36 @@
           "mutation": "no input mutation",
           "importPath": "akashatools/object",
           "relation": "related"
+        },
+        {
+          "name": "findDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
         }
       ],
-      "decision": "Merge into the planned cycle-safe traversal API; shallow paths use `hasAtPath`.",
+      "decision": "Use `hasAtPath` for known paths or `findDeep` for bounded recursive key discovery.",
       "behavior": "Recursively checks for a key, mixing arrays/objects and legacy validity rules.",
-      "evidence": "`hasAtPath` tested; deep parity pending."
+      "evidence": "Current consumer audit and 2.x path/traversal tests."
     },
     {
       "module": "AO.js",
       "name": "hasAll",
-      "canonicalReferences": [],
-      "decision": "Reject implementation; redesign on top of canonical traversal.",
+      "canonicalReferences": [
+        {
+          "name": "findDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject implementation; compose the intended every-key policy explicitly with bounded `findDeep` calls.",
       "behavior": "Attempts recursive presence of all keys, with loop-return control-flow defects.",
-      "evidence": "Defect/source reviewed."
+      "evidence": "Defect proven; current consumer audit and 2.x traversal tests."
     },
     {
       "module": "AO.js",
@@ -408,18 +434,36 @@
     {
       "module": "AO.js",
       "name": "deepGetKey",
-      "canonicalReferences": [],
-      "decision": "Merge into path-aware traversal results.",
+      "canonicalReferences": [
+        {
+          "name": "findDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Compose `object.findDeep(value, ({ key }) => key === target)?.value`; missing results now use undefined.",
       "behavior": "Recursively returns values associated with a matching key.",
-      "evidence": "Source reviewed; cycle handling absent."
+      "evidence": "Current consumer audit and 2.x bounded traversal tests."
     },
     {
       "module": "AO.js",
       "name": "deepSearch",
-      "canonicalReferences": [],
-      "decision": "Merge into traversal results shaped as `{ value, key, path, parent }`.",
+      "canonicalReferences": [
+        {
+          "name": "findDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Compose `object.findDeep` and select its value or parent from the path-aware result.",
       "behavior": "Recursively searches a named key using a predicate and optionally returns a parent.",
-      "evidence": "Source reviewed; cycle handling absent."
+      "evidence": "Current consumer audit and 2.x bounded traversal tests."
     },
     {
       "module": "AO.js",
@@ -608,10 +652,19 @@
     {
       "module": "Val.js",
       "name": "cleanInvalid",
-      "canonicalReferences": [],
-      "decision": "Merge with `replaceIfInvalid` into a clearly named fallback helper if needed.",
+      "canonicalReferences": [
+        {
+          "name": "defaultIfBlank",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback.",
       "behavior": "Duplicate fallback logic for nullish, empty string, and one space.",
-      "evidence": "Source reviewed."
+      "evidence": "Current consumer audit and 2.x validation tests."
     },
     {
       "module": "Val.js",
@@ -633,25 +686,9 @@
     {
       "module": "Val.js",
       "name": "isTruthy",
-      "canonicalReferences": [],
-      "decision": "Reject misleading name; use native Boolean or literal predicates.",
-      "behavior": "Means defined and not empty string rather than JavaScript truthiness.",
-      "evidence": "Source reviewed."
-    },
-    {
-      "module": "Val.js",
-      "name": "isString",
-      "canonicalReferences": [],
-      "decision": "Defer/add a canonical type guard during validation expansion.",
-      "behavior": "Cross-realm string tag check.",
-      "evidence": "Source reviewed."
-    },
-    {
-      "module": "Val.js",
-      "name": "isNumber",
       "canonicalReferences": [
         {
-          "name": "isFiniteNumber",
+          "name": "isBlank",
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
@@ -659,17 +696,68 @@
           "relation": "related"
         }
       ],
-      "decision": "Use explicit `validation.isFiniteNumber` where numeric APIs require usable finite values; raw primitive checks remain native.",
+      "decision": "Reject misleading name; use native Boolean, a literal check, or `!validation.isBlank` when whitespace is absent.",
+      "behavior": "Means defined and not empty string rather than JavaScript truthiness.",
+      "evidence": "Current consumer audit and 2.x validation tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isString",
+      "canonicalReferences": [
+        {
+          "name": "isString",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted primitive-only `validation.isString`; boxed String objects no longer pass.",
+      "behavior": "Cross-realm string tag check.",
+      "evidence": "Current consumer audit and 2.x validation tests."
+    },
+    {
+      "module": "Val.js",
+      "name": "isNumber",
+      "canonicalReferences": [
+        {
+          "name": "isNumber",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        },
+        {
+          "name": "isFiniteNumber",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted primitive `validation.isNumber`; use `validation.isFiniteNumber` when arithmetic requires a finite value.",
       "behavior": "Checks `typeof value === \"number\"`, including `NaN` and infinities.",
-      "evidence": "2.x cross-realm/type-guard tests."
+      "evidence": "Current consumer audit and 2.x type-guard tests."
     },
     {
       "module": "Val.js",
       "name": "isNum",
-      "canonicalReferences": [],
-      "decision": "Reject duplicate; legacy alias maps to the eventual canonical predicate.",
+      "canonicalReferences": [
+        {
+          "name": "isNumber",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject duplicate legacy spelling; migrate to `validation.isNumber`.",
       "behavior": "Exact duplicate of `isNumber`.",
-      "evidence": "Source reviewed."
+      "evidence": "Current consumer audit and 2.x type-guard tests."
     },
     {
       "module": "Val.js",
@@ -699,18 +787,36 @@
     {
       "module": "Val.js",
       "name": "isFloat",
-      "canonicalReferences": [],
-      "decision": "Reject name/semantics; consider `isFiniteNonInteger`.",
+      "canonicalReferences": [
+        {
+          "name": "isFiniteNonInteger",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted explicit `validation.isFiniteNonInteger`; non-finite values no longer pass.",
       "behavior": "Defines float as any number that is not an integer, including problematic values.",
-      "evidence": "Source reviewed."
+      "evidence": "Current consumer audit and 2.x type-guard tests."
     },
     {
       "module": "Val.js",
       "name": "isBool",
-      "canonicalReferences": [],
-      "decision": "Native `typeof value === \"boolean\"`; possible canonical type guard.",
+      "canonicalReferences": [
+        {
+          "name": "isBoolean",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted clearly named primitive `validation.isBoolean`.",
       "behavior": "Checks exact true or false.",
-      "evidence": "Source reviewed."
+      "evidence": "Current consumer audit and 2.x type-guard tests."
     },
     {
       "module": "Val.js",
@@ -844,25 +950,42 @@
       "name": "isObject",
       "canonicalReferences": [
         {
+          "name": "isNonArrayObject",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        },
+        {
           "name": "isPlainObject",
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
           "importPath": "akashatools/object",
-          "relation": "related"
+          "relation": "replacement"
         }
       ],
-      "decision": "Split into adopted `object.isPlainObject` and a future explicitly named object-like guard.",
+      "decision": "Adopted exact-shape `validation.isNonArrayObject`; use `object.isPlainObject` when prototypes matter.",
       "behavior": "Any defined non-array object, including Dates, Maps, and class instances.",
-      "evidence": "2.x plain-object tests."
+      "evidence": "Current consumer audit and 2.x validation/plain-object tests."
     },
     {
       "module": "Val.js",
       "name": "isArray",
-      "canonicalReferences": [],
-      "decision": "Native `Array.isArray`.",
+      "canonicalReferences": [
+        {
+          "name": "isArray",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted discoverable `validation.isArray`; native `Array.isArray` remains equally valid inline.",
       "behavior": "Null-safe array predicate.",
-      "evidence": "Source reviewed."
+      "evidence": "Current consumer audit and 2.x cross-realm tests."
     },
     {
       "module": "Val.js",
@@ -874,6 +997,14 @@
           "runtime": "universal",
           "mutation": "no input mutation",
           "importPath": "akashatools/array",
+          "relation": "replacement"
+        },
+        {
+          "name": "isArray",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
           "relation": "replacement"
         }
       ],
@@ -909,10 +1040,27 @@
     {
       "module": "Val.js",
       "name": "isAO",
-      "canonicalReferences": [],
-      "decision": "Reject abbreviation; use explicit array/plain-object/object-like predicates.",
+      "canonicalReferences": [
+        {
+          "name": "isArray",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        },
+        {
+          "name": "isNonArrayObject",
+          "category": "validation",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/validation",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject abbreviation; compose `validation.isArray` and `validation.isNonArrayObject` explicitly.",
       "behavior": "Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity.",
-      "evidence": "Source reviewed."
+      "evidence": "Current consumer audit and 2.x cross-realm tests."
     },
     {
       "module": "Val.js",

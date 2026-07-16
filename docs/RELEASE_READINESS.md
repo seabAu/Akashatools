@@ -1,8 +1,9 @@
 # Release readiness
 
 > Status on 2026-07-16: the library-side alpha, beta, and release-candidate
-> evidence is complete. Hosted runtime evidence, real-application migrations,
-> and every publication action remain external gates.
+> evidence is complete, including local Node 22/24 and three-engine browser
+> matrices. Hosted workflow evidence, real-application migrations, and every
+> publication action remain external gates.
 
 ## Package snapshot
 
@@ -14,11 +15,11 @@
 | Module format | ESM-only |
 | Node.js engine | `>=22.17` |
 | License | ISC (`LICENSE`, 741 bytes) |
-| Dry-run files | 84 |
-| Dry-run packed size | Approximately 230 kB |
-| Dry-run unpacked size | Approximately 861 kB |
+| Dry-run files | 85 |
+| Dry-run packed size | Approximately 236 kB |
+| Dry-run unpacked size | Approximately 889 kB |
 
-`npm pack --dry-run --json` verified the exact 84-file package selection without
+`npm pack --dry-run --json` verified the exact 85-file package selection without
 creating or publishing an artifact. Sizes are rounded because this shipped
 readiness record contributes to its own packed size. The package includes the
 runtime sources, generated declarations, retained `lib` compatibility modules,
@@ -33,23 +34,28 @@ audit.
 
 ## Reproducible evidence
 
-`npm run audit:release` completed successfully on Node.js 22.18.0 and Windows.
-The command performs the dependency audit, complete project check, source-only
-coverage run, and dry-run package inspection.
+`npm run audit:release` completed successfully on Node.js 22.18.0 and through an
+isolated Node.js 24.18.0 runtime on Windows. The command performs the dependency
+audit, complete project check, source-only coverage run, and dry-run package
+inspection. The six-contract Playwright matrix also passes on Chromium,
+Firefox, and WebKit.
 
 | Gate | Result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 79 JavaScript files pass |
-| Public documentation | 127 declarations pass |
+| Maintained syntax | 81 JavaScript files pass |
+| Public documentation | 134 declarations pass |
 | Generated declarations | 17 files current |
 | API surface snapshot | 14 surfaces current |
-| Node contract tests | 120 passed, 0 failed |
+| Node contract tests | 121 passed, 0 failed |
 | Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
-| Source coverage | 97.56% lines / 86.18% branches / 96.10% functions |
+| Node 22 source coverage | 97.61% lines / 86.32% branches / 96.19% functions |
+| Node 24 source coverage | 97.61% lines / 86.13% branches / 96.19% functions |
+| Browser contracts | 6 passed across Chromium, Firefox, and WebKit |
 | Focused import budget | 321 raw / 252 gzip bytes |
-| Default namespace budget | 53,877 raw / 16,977 gzip bytes |
-| Consumer bundle evidence | Focused fixtures save 46,605–50,111 raw and 14,367–15,317 gzip bytes |
+| Default namespace budget | 54,330 raw / 17,101 gzip bytes |
+| Consumer bundle evidence | Focused fixtures save 47,058–50,564 raw and 14,493–15,441 gzip bytes |
+| Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven new APIs |
 
 The release audit also verifies formatting, linting, JSDoc/TypeScript checking,
 editor completions, generated documentation and migration data, export-map
@@ -58,9 +64,9 @@ fixtures.
 
 ## External gates still open
 
-1. Run the configured hosted Node.js 22 and 24 LTS jobs. The local
-   Chromium/Firefox/WebKit matrix is green, but local execution cannot replace
-   the first hosted workflow result.
+1. Run the configured hosted Node.js 22 and 24 LTS jobs plus the browser job.
+   Both local Node release audits and the Chromium/Firefox/WebKit matrix are
+   green, but local execution cannot replace the first hosted workflow result.
 2. With explicit authorization, migrate bounded areas of Mindspace, the
    portfolio rebuild, COMPOSR, and SPLICR. The current fixtures validate
    representative contracts; they do not prove whole-application drop-in

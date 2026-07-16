@@ -1474,6 +1474,56 @@ Checks whether a value is neither null nor undefined.
 - Since: 2.0.0
 - Returns: `value is T` — Whether value is neither null nor undefined; other falsy values pass.
 
+### isArray
+
+Checks whether a value is an array without coercion.
+
+- Signature: `isArray()`
+- Import: `import { isArray } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `value is unknown[]` — Whether the value is an array, including an empty or cross-realm array.
+
+### isString
+
+Checks whether a value is a primitive string without accepting boxed String objects.
+
+- Signature: `isString()`
+- Import: `import { isString } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `value is string` — Whether the value has the primitive string type.
+
+### isNumber
+
+Checks whether a value is a primitive number. NaN and infinities are numbers; use `isFiniteNumber` when arithmetic requires a finite value.
+
+- Signature: `isNumber()`
+- Import: `import { isNumber } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `value is number` — Whether the value has the primitive number type.
+
+### isBoolean
+
+Checks whether a value is a primitive boolean without coercion.
+
+- Signature: `isBoolean()`
+- Import: `import { isBoolean } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `value is boolean` — Whether the value is exactly true or false.
+
+### isNonArrayObject
+
+Checks for a non-null object while excluding arrays and functions. Plain objects, class instances, Dates, Maps, and Sets are accepted across realms.
+
+- Signature: `isNonArrayObject()`
+- Import: `import { isNonArrayObject } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `value is object` — Whether the value is a non-array object.
+
 ### isBlank
 
 Checks for nullish values or strings containing only whitespace.
@@ -1483,6 +1533,16 @@ Checks for nullish values or strings containing only whitespace.
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — True only for null, undefined, or whitespace-only strings.
+
+### defaultIfBlank
+
+Returns a fallback for nullish or whitespace-only input and otherwise returns the original value unchanged. Zero and false are preserved.
+
+- Signature: `defaultIfBlank()`
+- Import: `import { defaultIfBlank } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `T | U` — Original nonblank value or the supplied fallback.
 
 ### isEmpty
 
@@ -1503,6 +1563,16 @@ Checks whether a value is a finite primitive number.
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is number` — Whether value is a primitive finite number without coercion.
+
+### isFiniteNonInteger
+
+Checks whether a value is a finite primitive number with a fractional part.
+
+- Signature: `isFiniteNonInteger()`
+- Import: `import { isFiniteNonInteger } from "akashatools/validation"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `value is number` — Whether the value is finite and not an integer.
 
 ### isSafeInteger
 

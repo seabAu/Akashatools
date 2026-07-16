@@ -147,6 +147,7 @@
   "author": "Sean Brown",
   "license": "ISC",
   "devDependencies": {
+    "@babel/parser": "8.0.4",
     "@eslint/js": "10.0.1",
     "@playwright/test": "^1.61.1",
     "@types/node": "^22.20.1",

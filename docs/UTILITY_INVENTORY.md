@@ -38,7 +38,7 @@ Runtime: universal JavaScript, but coupled through the circular legacy
 | `isOneOf` | Strict membership in an array. | Native `Array.prototype.includes`. | Source reviewed. |
 | `uniqueArray` | Set-based first-occurrence deduplication after legacy array validation. | Adopted as `array.unique`. | 2.x array tests. |
 | `mergeArray` | Concatenates two arrays and optionally deduplicates via a positional boolean. | Native spread/`concat`; merge deduplicated behavior into future `union`. | Source reviewed. |
-| `replaceIfInvalid` | Replaces null, undefined, empty string, or exactly one space. | Merge with `cleanInvalid` into an explicitly named fallback helper; prefer `??` for nullish values. | Source reviewed; semantics conflict with `isBlank`. |
+| `replaceIfInvalid` | Replaces null, undefined, empty string, or exactly one space. | Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback. | Current consumer audit and 2.x validation tests. |
 | `removeEmpty` | Removes null, undefined, and empty strings while retaining `0` and `false`. | Merge as an explicit predicate/filter recipe; `compact` remains nullish-only. | Source reviewed; behavior differs from 2.x `compact`. |
 | `parseTextToArray` | Splits by one or multiple literal delimiters using a collision-prone sentinel. | Merge into a future `splitMany` with escaped alternation or deterministic scanning. | Source reviewed; sentinel can corrupt input. |
 | `cleanJSON` | Recursively replaces scalar values with type defaults and keeps only the first array element. | Reject the misleading name; reconsider only as schema-driven example/model initialization. | Defect/behavior proven from source. |
@@ -68,13 +68,13 @@ Runtime: universal JavaScript, but coupled through the circular legacy
 | `filterKeys` | Builds an object from selected input keys. | Adopted as `object.pick`. | 2.x object tests. |
 | `filterData` | Applies a custom array-of-filter-records query language with coercion and substring policy. | Defer or keep app-local until real query semantics are captured. | Source reviewed; no independent contract. |
 | `filterDataFast` | Alternate filter engine with JSON stringification and different matching behavior. | Reject as a duplicate implementation; disposition behavior-by-behavior with `filterData`. | Source reviewed; semantic drift observed. |
-| `has` | Recursively checks for a key, mixing arrays/objects and legacy validity rules. | Merge into the planned cycle-safe traversal API; shallow paths use `hasAtPath`. | `hasAtPath` tested; deep parity pending. |
-| `hasAll` | Attempts recursive presence of all keys, with loop-return control-flow defects. | Reject implementation; redesign on top of canonical traversal. | Defect/source reviewed. |
+| `has` | Recursively checks for a key, mixing arrays/objects and legacy validity rules. | Use `hasAtPath` for known paths or `findDeep` for bounded recursive key discovery. | Current consumer audit and 2.x path/traversal tests. |
+| `hasAll` | Attempts recursive presence of all keys, with loop-return control-flow defects. | Reject implementation; compose the intended every-key policy explicitly with bounded `findDeep` calls. | Defect proven; current consumer audit and 2.x traversal tests. |
 | `valContains` | JSON-stringifies values before substring comparison. | Adopted for actual strings as `string.includesText`; non-string search requires a separate explicit serializer/search API. | 2.x string tests. |
 | `objContains` | Recursively searches object values but relies on returns inside `forEach`. | Merge into canonical traversal/search. | Source reviewed; control-flow risk. |
 | `arrayContains` | Recursively searches array values with inconsistent object handling. | Merge into canonical traversal/search; primitive membership uses native `includes`. | Source reviewed. |
-| `deepGetKey` | Recursively returns values associated with a matching key. | Merge into path-aware traversal results. | Source reviewed; cycle handling absent. |
-| `deepSearch` | Recursively searches a named key using a predicate and optionally returns a parent. | Merge into traversal results shaped as `{ value, key, path, parent }`. | Source reviewed; cycle handling absent. |
+| `deepGetKey` | Recursively returns values associated with a matching key. | Compose `object.findDeep(value, ({ key }) => key === target)?.value`; missing results now use undefined. | Current consumer audit and 2.x bounded traversal tests. |
+| `deepSearch` | Recursively searches a named key using a predicate and optionally returns a parent. | Compose `object.findDeep` and select its value or parent from the path-aware result. | Current consumer audit and 2.x bounded traversal tests. |
 | `deepSearchItems` | Deep search variant that calls `this.deepSearchItems`, making module invocation fragile. | Reject implementation; merge behavior into canonical traversal. | Defect proven from source. |
 | `deepFindSet` | Intended immutable deep update, but recursive `forEach` returns are discarded; generally only a root match survives. | Reject; use `setAtPath` for known paths and design predicate-based deep update separately. | Defect proven from source. |
 | `cloneObj` | Recursive enumerable string-key clone that loses prototypes and special built-ins. | Adopted replacement `object.deepClone` using `structuredClone`. | 2.x clone tests. |
@@ -94,16 +94,16 @@ globals. Export count: 30.
 | `valid` | References undeclared `variable` instead of `value`, throwing for defined input. | Reject; adopted literal predicate `validation.isDefined`. | Defect proven; 2.x predicate tested. |
 | `isValid` | Changes meaning by type and optional positional boolean; treats several legitimate falsy values as invalid. | Reject umbrella predicate; use `isDefined`, `isBlank`, `isEmpty`, or a domain validator. | Source reviewed. |
 | `validate` | Attempts nested truthiness checks, but returns inside `forEach` do not affect the result. | Reject; compose explicit predicates with `every`. | Defect proven from source. |
-| `cleanInvalid` | Duplicate fallback logic for nullish, empty string, and one space. | Merge with `replaceIfInvalid` into a clearly named fallback helper if needed. | Source reviewed. |
+| `cleanInvalid` | Duplicate fallback logic for nullish, empty string, and one space. | Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback. | Current consumer audit and 2.x validation tests. |
 | `isDefined` | Checks non-nullish values. | Adopted as `validation.isDefined`. | 2.x validation tests. |
-| `isTruthy` | Means defined and not empty string rather than JavaScript truthiness. | Reject misleading name; use native Boolean or literal predicates. | Source reviewed. |
-| `isString` | Cross-realm string tag check. | Defer/add a canonical type guard during validation expansion. | Source reviewed. |
-| `isNumber` | Checks `typeof value === "number"`, including `NaN` and infinities. | Use explicit `validation.isFiniteNumber` where numeric APIs require usable finite values; raw primitive checks remain native. | 2.x cross-realm/type-guard tests. |
-| `isNum` | Exact duplicate of `isNumber`. | Reject duplicate; legacy alias maps to the eventual canonical predicate. | Source reviewed. |
+| `isTruthy` | Means defined and not empty string rather than JavaScript truthiness. | Reject misleading name; use native Boolean, a literal check, or `!validation.isBlank` when whitespace is absent. | Current consumer audit and 2.x validation tests. |
+| `isString` | Cross-realm string tag check. | Adopted primitive-only `validation.isString`; boxed String objects no longer pass. | Current consumer audit and 2.x validation tests. |
+| `isNumber` | Checks `typeof value === "number"`, including `NaN` and infinities. | Adopted primitive `validation.isNumber`; use `validation.isFiniteNumber` when arithmetic requires a finite value. | Current consumer audit and 2.x type-guard tests. |
+| `isNum` | Exact duplicate of `isNumber`. | Reject duplicate legacy spelling; migrate to `validation.isNumber`. | Current consumer audit and 2.x type-guard tests. |
 | `isInt` | Integer check via modulo. | Native `Number.isInteger`; possible canonical type guard. | Source reviewed. |
 | `isSafeInt` | Safe integer check with redundant number test. | Adopted as explicit `validation.isSafeInteger`; native `Number.isSafeInteger` remains equally valid inline. | 2.x type-guard tests. |
-| `isFloat` | Defines float as any number that is not an integer, including problematic values. | Reject name/semantics; consider `isFiniteNonInteger`. | Source reviewed. |
-| `isBool` | Checks exact true or false. | Native `typeof value === "boolean"`; possible canonical type guard. | Source reviewed. |
+| `isFloat` | Defines float as any number that is not an integer, including problematic values. | Adopted explicit `validation.isFiniteNonInteger`; non-finite values no longer pass. | Current consumer audit and 2.x type-guard tests. |
+| `isBool` | Checks exact true or false. | Adopted clearly named primitive `validation.isBoolean`. | Current consumer audit and 2.x type-guard tests. |
 | `isBlank` | References `this.length`/`this.trim()` in an arrow function and can throw. | Adopted replacement `validation.isBlank` with literal nullish/whitespace semantics. | Defect proven; 2.x tests. |
 | `escapeHtml` | Escapes five text-significant HTML characters. | Adopted under `string.escapeHtml`, documented as escaping rather than sanitization. | 2.x string tests. |
 | `isJSONRegex` | This-bound prototype-style function calls nonexistent `blank()` and uses a regex approximation. | Reject. | Defect proven from source. |
@@ -112,12 +112,12 @@ globals. Export count: 30.
 | `isSet` | `instanceof Set` predicate. | Adopted as `validation.isSet` with a cross-realm brand check. | 2.x cross-realm tests. |
 | `isFile` | Uses `'File' in window` and direct `File`, throwing outside browsers. | Adopted as `validation.isFile` using safe `globalThis.File` detection. | 2.x universal-runtime tests. |
 | `isBlob` | Uses `'Blob' in window` and direct `Blob`, throwing outside browsers. | Adopted as `validation.isBlob` using safe `globalThis.Blob` detection. | 2.x universal-runtime tests. |
-| `isObject` | Any defined non-array object, including Dates, Maps, and class instances. | Split into adopted `object.isPlainObject` and a future explicitly named object-like guard. | 2.x plain-object tests. |
-| `isArray` | Null-safe array predicate. | Native `Array.isArray`. | Source reviewed. |
+| `isObject` | Any defined non-array object, including Dates, Maps, and class instances. | Adopted exact-shape `validation.isNonArrayObject`; use `object.isPlainObject` when prototypes matter. | Current consumer audit and 2.x validation/plain-object tests. |
+| `isArray` | Null-safe array predicate. | Adopted discoverable `validation.isArray`; native `Array.isArray` remains equally valid inline. | Current consumer audit and 2.x cross-realm tests. |
 | `isValidArray` | Rejects empty arrays and arrays whose first item is undefined even when length checking is disabled. | Adopted clear predicate `array.isNonEmptyArray`; use `Array.isArray` when emptiness is allowed. | 2.x array tests. |
 | `arrayContainsObjects` | Returns true for any `typeof "object"` item, including null and arrays. | Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes. | Source reviewed. |
 | `isObjectArray` | Means an array containing at least one object-like item, not an array entirely of objects. | Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array. | 2.x type-guard tests. |
-| `isAO` | Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity. | Reject abbreviation; use explicit array/plain-object/object-like predicates. | Source reviewed. |
+| `isAO` | Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity. | Reject abbreviation; compose `validation.isArray` and `validation.isNonArrayObject` explicitly. | Current consumer audit and 2.x cross-realm tests. |
 | `getType` | Returns custom strings and infers array type from only the first element. | Adopted basic replacement `validation.typeOf`; richer array analysis remains separate. | 2.x type tests. |
 | `getFieldType` | Maps runtime values to HTML/form control concepts. | App-local/schema UI adapter. | Source reviewed. |
 | `getArrayType` | Walks array elements to report a custom homogeneous/mixed type string. | Defer a structured `inspectArrayTypes` result if consumer evidence warrants it. | Source reviewed. |

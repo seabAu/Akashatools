@@ -262,9 +262,16 @@ export declare const string: Readonly<{
 /** Frozen validation utilities for namespace-style discovery. */
 export declare const validation: Readonly<{
     isDefined<T>(value: T | null | undefined): value is T;
+    isArray(value: unknown): value is unknown[];
+    isString(value: unknown): value is string;
+    isNumber(value: unknown): value is number;
+    isBoolean(value: unknown): value is boolean;
+    isNonArrayObject(value: unknown): value is object;
     isBlank(value: unknown): boolean;
+    defaultIfBlank<T, U>(value: T, fallback: U): T | U;
     isEmpty(value: unknown): boolean;
     isFiniteNumber(value: unknown): value is number;
+    isFiniteNonInteger(value: unknown): value is number;
     isSafeInteger(value: unknown): value is number;
     isMap(value: unknown): value is Map<unknown, unknown>;
     isSet(value: unknown): value is Set<unknown>;
@@ -404,9 +411,16 @@ export declare const akasha: Readonly<{
     compareNumericOrder: typeof sortModule.compareNumericOrder;
     sortByNumericOrder: typeof sortModule.sortByNumericOrder;
     isDefined: typeof validationModule.isDefined;
+    isArray: typeof validationModule.isArray;
+    isString: typeof validationModule.isString;
+    isNumber: typeof validationModule.isNumber;
+    isBoolean: typeof validationModule.isBoolean;
+    isNonArrayObject: typeof validationModule.isNonArrayObject;
     isBlank: typeof validationModule.isBlank;
+    defaultIfBlank: typeof validationModule.defaultIfBlank;
     isEmpty: typeof validationModule.isEmpty;
     isFiniteNumber: typeof validationModule.isFiniteNumber;
+    isFiniteNonInteger: typeof validationModule.isFiniteNonInteger;
     isSafeInteger: typeof validationModule.isSafeInteger;
     isMap: typeof validationModule.isMap;
     isSet: typeof validationModule.isSet;
@@ -661,9 +675,16 @@ export declare const akasha: Readonly<{
     }>;
     validation: Readonly<{
         isDefined<T>(value: T | null | undefined): value is T;
+        isArray(value: unknown): value is unknown[];
+        isString(value: unknown): value is string;
+        isNumber(value: unknown): value is number;
+        isBoolean(value: unknown): value is boolean;
+        isNonArrayObject(value: unknown): value is object;
         isBlank(value: unknown): boolean;
+        defaultIfBlank<T, U>(value: T, fallback: U): T | U;
         isEmpty(value: unknown): boolean;
         isFiniteNumber(value: unknown): value is number;
+        isFiniteNonInteger(value: unknown): value is number;
         isSafeInteger(value: unknown): value is number;
         isMap(value: unknown): value is Map<unknown, unknown>;
         isSet(value: unknown): value is Set<unknown>;

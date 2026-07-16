@@ -46,6 +46,12 @@ these representative fixtures does not establish whole-application drop-in
 compatibility; that requires bounded migrations and application-owned tests in
 each source project.
 
+The read-only AST audit in
+`docs/inventory/CONSUMER_USAGE_AUDIT_2026-07-16.md` complements these small
+fixtures with the complete current 1.0.2 import footprint. It maps 1,982 parsed
+legacy member reads without implying that static mapping proves application
+behavior.
+
 ## Module-format evidence
 
 Akashatools 2.0 remains ESM-only. Current Mindspace client/server, portfolio
@@ -56,7 +62,7 @@ dual build would therefore add identity, export, and release complexity without
 a demonstrated active consumer.
 
 The representative bundle comparison in `docs/IMPORTS_AND_BUNDLING.md` shows
-46,605-50,111 raw bytes and 14,367-15,317 gzip bytes saved by the focused import
+47,058-50,564 raw bytes and 14,493-15,441 gzip bytes saved by the focused import
 sets. Runtime behavior is exercised by the same compatibility tests, public
 imports remain side-effect free, and no standalone import-time speed claim is
 made; whole-app runtime profiling requires an authorized migration in each app.

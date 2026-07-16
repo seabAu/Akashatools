@@ -4,28 +4,41 @@ import { runInNewContext } from "node:vm";
 
 import {
   assertJsonContract,
+  defaultIfBlank,
   formatNanpPhone,
+  isArray,
   isBlank,
   isBlob,
+  isBoolean,
   isDefined,
   isEmail,
   isEmpty,
   isFile,
+  isFiniteNonInteger,
   isFiniteNumber,
   isJson,
   isMap,
+  isNonArrayObject,
+  isNumber,
   isPlainObjectArray,
   isSafeInteger,
   isSet,
+  isString,
   isTypedArray,
   typeOf,
   validateJsonContract,
 } from "akashatools/validation";
 
 test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
+  const record = {};
   assert.equal(isDefined(0), true);
   assert.equal(isBlank("  "), true);
   assert.equal(isBlank(0), false);
+  assert.equal(defaultIfBlank("  ", "fallback"), "fallback");
+  assert.equal(defaultIfBlank(null, "fallback"), "fallback");
+  assert.equal(defaultIfBlank(0, 1), 0);
+  assert.equal(defaultIfBlank(false, true), false);
+  assert.equal(defaultIfBlank(record, null), record);
   assert.equal(isEmpty({}), true);
   assert.equal(isEmpty(false), false);
   assert.equal(isEmpty(new Date()), false);
@@ -53,9 +66,34 @@ test("email and NANP helpers enforce bounded syntax without identity claims", ()
 });
 
 test("type guards are literal, cross-realm aware, and browser-global safe", () => {
-  const foreign = runInNewContext("({ map: new Map(), set: new Set(), typed: new Uint16Array(2) })");
+  const foreign = runInNewContext(
+    "({ array: [], date: new Date(), map: new Map(), object: {}, set: new Set(), typed: new Uint16Array(2) })",
+  );
+  assert.equal(isArray([]), true);
+  assert.equal(isArray(foreign.array), true);
+  assert.equal(isArray({}), false);
+  assert.equal(isString("value"), true);
+  assert.equal(isString(new String("value")), false);
+  assert.equal(isNumber(Number.NaN), true);
+  assert.equal(isNumber(Number.POSITIVE_INFINITY), true);
+  assert.equal(isNumber(new Number(1)), false);
+  assert.equal(isBoolean(false), true);
+  assert.equal(isBoolean(0), false);
+  assert.equal(isNonArrayObject(foreign.object), true);
+  assert.equal(isNonArrayObject(foreign.date), true);
+  assert.equal(isNonArrayObject(foreign.map), true);
+  assert.equal(isNonArrayObject([]), false);
+  assert.equal(isNonArrayObject(null), false);
+  assert.equal(
+    isNonArrayObject(() => {}),
+    false,
+  );
   assert.equal(isFiniteNumber(0), true);
   assert.equal(isFiniteNumber(Number.POSITIVE_INFINITY), false);
+  assert.equal(isFiniteNonInteger(1.5), true);
+  assert.equal(isFiniteNonInteger(1), false);
+  assert.equal(isFiniteNonInteger(Number.NaN), false);
+  assert.equal(isFiniteNonInteger(Number.POSITIVE_INFINITY), false);
   assert.equal(isSafeInteger(1), true);
   assert.equal(isSafeInteger(1.5), false);
   assert.equal(isMap(foreign.map), true);

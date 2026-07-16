@@ -100,6 +100,16 @@ effect runs, and Node-only modules stay under `akashatools/node`.
 - Falsy values `0`, `false`, and `""` remain valid values unless the function is
   explicitly checking blank or empty input.
 - `NaN` and infinite values are rejected by finite-number contracts.
+- Primitive-type predicates are deliberately literal: `isString`, `isNumber`,
+  and `isBoolean` reject boxed values, while `isNumber` accepts `NaN` and
+  infinities because it answers a type question. Use `isFiniteNumber` for
+  arithmetic contracts.
+- `isNonArrayObject` is the broad object-shape predicate and includes Dates,
+  Maps, Sets, and class instances. Use `isPlainObject` when prototypes and
+  enumerable data semantics matter.
+- `isArray` intentionally mirrors `Array.isArray`. Its public wrapper is retained
+  because the active consumers use the validation namespace as their editor-
+  discoverable predicate vocabulary and because it works across realms.
 - The explicitly named legacy numeric-order comparator may coerce number-like
   ordering fields; general numeric helpers never do.
 - BigInt arithmetic stays native until consumer evidence justifies a separate

@@ -33,6 +33,7 @@ drop-in compatibility.
 | `daysInMonth` | date | universal | no input mutation | `akashatools/date` | None |
 | `deepClone` | object | universal | no input mutation | `akashatools/object` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
 | `deepMerge` | object | universal | no input mutation | `akashatools/object` | None |
+| `defaultIfBlank` | validation | universal | no input mutation | `akashatools/validation` | `AO.replaceIfInvalid`, `Val.cleanInvalid` |
 | `delay` | async | universal | timer effect | `akashatools/async` | None |
 | `differenceInLocalDays` | date | universal | no input mutation | `akashatools/date` | None |
 | `distance` | number | universal | no input mutation | `akashatools/number` | `Math.distance` |
@@ -44,7 +45,7 @@ drop-in compatibility.
 | `excludeBy` | collection | universal | no input mutation | `akashatools/collection` | None |
 | `excludeIds` | collection | universal | no input mutation | `akashatools/collection` | None |
 | `fibonacci` | number | universal | no input mutation | `akashatools/number` | None |
-| `findDeep` | object | universal | no input mutation | `akashatools/object` | None |
+| `findDeep` | object | universal | no input mutation | `akashatools/object` | `AO.has`, `AO.hasAll`, `AO.deepGetKey`, `AO.deepSearch` |
 | `flatten` | array | universal | no input mutation | `akashatools/array` | `AO.flatten` |
 | `formatBytes` | number | universal | no input mutation | `akashatools/number` | None |
 | `formatDate` | date | universal | no input mutation | `akashatools/date` | `Time.convertDate`, `Time.formatDate` |
@@ -62,21 +63,27 @@ drop-in compatibility.
 | `includesText` | string | universal | no input mutation | `akashatools/string` | `AO.valContains`, `String.subStringSearch` |
 | `insertItem` | array | universal | no input mutation | `akashatools/array` | None |
 | `intersection` | array | universal | no input mutation | `akashatools/array` | None |
-| `isBlank` | validation | universal | no input mutation | `akashatools/validation` | `Val.isValid`, `Val.isBlank` |
+| `isArray` | validation | universal | no input mutation | `akashatools/validation` | `Val.isArray`, `Val.isValidArray`, `Val.isAO` |
+| `isBlank` | validation | universal | no input mutation | `akashatools/validation` | `Val.isValid`, `Val.isTruthy`, `Val.isBlank` |
 | `isBlob` | validation | universal | no input mutation | `akashatools/validation` | `Val.isBlob` |
+| `isBoolean` | validation | universal | no input mutation | `akashatools/validation` | `Val.isBool` |
 | `isDefined` | validation | universal | no input mutation | `akashatools/validation` | `Val.valid`, `Val.isValid`, `Val.isDefined` |
 | `isEmail` | validation | universal | no input mutation | `akashatools/validation` | None |
 | `isEmpty` | validation | universal | no input mutation | `akashatools/validation` | `Val.isValid` |
 | `isFile` | validation | universal | no input mutation | `akashatools/validation` | `Val.isFile` |
+| `isFiniteNonInteger` | validation | universal | no input mutation | `akashatools/validation` | `Val.isFloat` |
 | `isFiniteNumber` | validation | universal | no input mutation | `akashatools/validation` | `Val.isNumber` |
 | `isJson` | validation | universal | no input mutation | `akashatools/validation` | `Val.isJSON` |
 | `isMap` | validation | universal | no input mutation | `akashatools/validation` | `Val.isMap` |
+| `isNonArrayObject` | validation | universal | no input mutation | `akashatools/validation` | `Val.isObject`, `Val.isAO` |
 | `isNonEmptyArray` | array | universal | no input mutation | `akashatools/array` | `Val.isValidArray` |
+| `isNumber` | validation | universal | no input mutation | `akashatools/validation` | `Val.isNumber`, `Val.isNum` |
 | `isPlainObject` | object | universal | no input mutation | `akashatools/object` | `Val.isObject` |
 | `isPlainObjectArray` | validation | universal | no input mutation | `akashatools/validation` | `Val.isObjectArray` |
 | `isSafeInteger` | validation | universal | no input mutation | `akashatools/validation` | `Val.isSafeInt` |
 | `isSameLocalDay` | date | universal | no input mutation | `akashatools/date` | None |
 | `isSet` | validation | universal | no input mutation | `akashatools/validation` | `Val.isSet` |
+| `isString` | validation | universal | no input mutation | `akashatools/validation` | `Val.isString` |
 | `isToday` | date | universal | no input mutation | `akashatools/date` | None |
 | `isTypedArray` | validation | universal | no input mutation | `akashatools/validation` | None |
 | `isValidDate` | date | universal | no input mutation | `akashatools/date` | None |
@@ -148,7 +155,7 @@ drop-in compatibility.
 | `AO.isOneOf` | None | Native `Array.prototype.includes`. |
 | `AO.uniqueArray` | replacement: `array.unique` | Adopted as `array.unique`. |
 | `AO.mergeArray` | None | Native spread/`concat`; merge deduplicated behavior into future `union`. |
-| `AO.replaceIfInvalid` | None | Merge with `cleanInvalid` into an explicitly named fallback helper; prefer `??` for nullish values. |
+| `AO.replaceIfInvalid` | replacement: `validation.defaultIfBlank` | Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback. |
 | `AO.removeEmpty` | related: `array.compact` | Merge as an explicit predicate/filter recipe; `compact` remains nullish-only. |
 | `AO.parseTextToArray` | None | Merge into a future `splitMany` with escaped alternation or deterministic scanning. |
 | `AO.cleanJSON` | None | Reject the misleading name; reconsider only as schema-driven example/model initialization. |
@@ -178,13 +185,13 @@ drop-in compatibility.
 | `AO.filterKeys` | replacement: `object.pick` | Adopted as `object.pick`. |
 | `AO.filterData` | None | Defer or keep app-local until real query semantics are captured. |
 | `AO.filterDataFast` | None | Reject as a duplicate implementation; disposition behavior-by-behavior with `filterData`. |
-| `AO.has` | related: `object.hasAtPath` | Merge into the planned cycle-safe traversal API; shallow paths use `hasAtPath`. |
-| `AO.hasAll` | None | Reject implementation; redesign on top of canonical traversal. |
+| `AO.has` | related: `object.hasAtPath`, related: `object.findDeep` | Use `hasAtPath` for known paths or `findDeep` for bounded recursive key discovery. |
+| `AO.hasAll` | related: `object.findDeep` | Reject implementation; compose the intended every-key policy explicitly with bounded `findDeep` calls. |
 | `AO.valContains` | replacement: `string.includesText` | Adopted for actual strings as `string.includesText`; non-string search requires a separate explicit serializer/search API. |
 | `AO.objContains` | None | Merge into canonical traversal/search. |
 | `AO.arrayContains` | None | Merge into canonical traversal/search; primitive membership uses native `includes`. |
-| `AO.deepGetKey` | None | Merge into path-aware traversal results. |
-| `AO.deepSearch` | None | Merge into traversal results shaped as `{ value, key, path, parent }`. |
+| `AO.deepGetKey` | related: `object.findDeep` | Compose `object.findDeep(value, ({ key }) => key === target)?.value`; missing results now use undefined. |
+| `AO.deepSearch` | related: `object.findDeep` | Compose `object.findDeep` and select its value or parent from the path-aware result. |
 | `AO.deepSearchItems` | None | Reject implementation; merge behavior into canonical traversal. |
 | `AO.deepFindSet` | related: `object.setAtPath` | Reject; use `setAtPath` for known paths and design predicate-based deep update separately. |
 | `AO.cloneObj` | replacement: `object.deepClone` | Adopted replacement `object.deepClone` using `structuredClone`. |
@@ -196,16 +203,16 @@ drop-in compatibility.
 | `Val.valid` | related: `validation.isDefined` | Reject; adopted literal predicate `validation.isDefined`. |
 | `Val.isValid` | related: `validation.isDefined`, related: `validation.isBlank`, related: `validation.isEmpty` | Reject umbrella predicate; use `isDefined`, `isBlank`, `isEmpty`, or a domain validator. |
 | `Val.validate` | None | Reject; compose explicit predicates with `every`. |
-| `Val.cleanInvalid` | None | Merge with `replaceIfInvalid` into a clearly named fallback helper if needed. |
+| `Val.cleanInvalid` | replacement: `validation.defaultIfBlank` | Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback. |
 | `Val.isDefined` | replacement: `validation.isDefined` | Adopted as `validation.isDefined`. |
-| `Val.isTruthy` | None | Reject misleading name; use native Boolean or literal predicates. |
-| `Val.isString` | None | Defer/add a canonical type guard during validation expansion. |
-| `Val.isNumber` | related: `validation.isFiniteNumber` | Use explicit `validation.isFiniteNumber` where numeric APIs require usable finite values; raw primitive checks remain native. |
-| `Val.isNum` | None | Reject duplicate; legacy alias maps to the eventual canonical predicate. |
+| `Val.isTruthy` | related: `validation.isBlank` | Reject misleading name; use native Boolean, a literal check, or `!validation.isBlank` when whitespace is absent. |
+| `Val.isString` | replacement: `validation.isString` | Adopted primitive-only `validation.isString`; boxed String objects no longer pass. |
+| `Val.isNumber` | replacement: `validation.isNumber`, replacement: `validation.isFiniteNumber` | Adopted primitive `validation.isNumber`; use `validation.isFiniteNumber` when arithmetic requires a finite value. |
+| `Val.isNum` | related: `validation.isNumber` | Reject duplicate legacy spelling; migrate to `validation.isNumber`. |
 | `Val.isInt` | None | Native `Number.isInteger`; possible canonical type guard. |
 | `Val.isSafeInt` | replacement: `validation.isSafeInteger` | Adopted as explicit `validation.isSafeInteger`; native `Number.isSafeInteger` remains equally valid inline. |
-| `Val.isFloat` | None | Reject name/semantics; consider `isFiniteNonInteger`. |
-| `Val.isBool` | None | Native `typeof value === "boolean"`; possible canonical type guard. |
+| `Val.isFloat` | replacement: `validation.isFiniteNonInteger` | Adopted explicit `validation.isFiniteNonInteger`; non-finite values no longer pass. |
+| `Val.isBool` | replacement: `validation.isBoolean` | Adopted clearly named primitive `validation.isBoolean`. |
 | `Val.isBlank` | replacement: `validation.isBlank` | Adopted replacement `validation.isBlank` with literal nullish/whitespace semantics. |
 | `Val.escapeHtml` | replacement: `string.escapeHtml` | Adopted under `string.escapeHtml`, documented as escaping rather than sanitization. |
 | `Val.isJSONRegex` | None | Reject. |
@@ -214,12 +221,12 @@ drop-in compatibility.
 | `Val.isSet` | replacement: `validation.isSet` | Adopted as `validation.isSet` with a cross-realm brand check. |
 | `Val.isFile` | replacement: `validation.isFile` | Adopted as `validation.isFile` using safe `globalThis.File` detection. |
 | `Val.isBlob` | replacement: `validation.isBlob` | Adopted as `validation.isBlob` using safe `globalThis.Blob` detection. |
-| `Val.isObject` | related: `object.isPlainObject` | Split into adopted `object.isPlainObject` and a future explicitly named object-like guard. |
-| `Val.isArray` | None | Native `Array.isArray`. |
-| `Val.isValidArray` | replacement: `array.isNonEmptyArray` | Adopted clear predicate `array.isNonEmptyArray`; use `Array.isArray` when emptiness is allowed. |
+| `Val.isObject` | replacement: `validation.isNonArrayObject`, replacement: `object.isPlainObject` | Adopted exact-shape `validation.isNonArrayObject`; use `object.isPlainObject` when prototypes matter. |
+| `Val.isArray` | replacement: `validation.isArray` | Adopted discoverable `validation.isArray`; native `Array.isArray` remains equally valid inline. |
+| `Val.isValidArray` | replacement: `array.isNonEmptyArray`, replacement: `validation.isArray` | Adopted clear predicate `array.isNonEmptyArray`; use `Array.isArray` when emptiness is allowed. |
 | `Val.arrayContainsObjects` | None | Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes. |
 | `Val.isObjectArray` | related: `validation.isPlainObjectArray` | Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array. |
-| `Val.isAO` | None | Reject abbreviation; use explicit array/plain-object/object-like predicates. |
+| `Val.isAO` | related: `validation.isArray`, related: `validation.isNonArrayObject` | Reject abbreviation; compose `validation.isArray` and `validation.isNonArrayObject` explicitly. |
 | `Val.getType` | replacement: `validation.typeOf` | Adopted basic replacement `validation.typeOf`; richer array analysis remains separate. |
 | `Val.getFieldType` | None | App-local/schema UI adapter. |
 | `Val.getArrayType` | None | Defer a structured `inspectArrayTypes` result if consumer evidence warrants it. |

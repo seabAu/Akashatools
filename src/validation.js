@@ -47,6 +47,74 @@ export function isDefined(value) {
 }
 
 /**
+ * Checks whether a value is an array without coercion.
+ *
+ * @param {unknown} value Candidate value.
+ * @returns {value is unknown[]} Whether the value is an array, including an empty or cross-realm array.
+ * @example
+ * isArray([]); // true
+ * @since 2.0.0
+ */
+export function isArray(value) {
+  return Array.isArray(value);
+}
+
+/**
+ * Checks whether a value is a primitive string without accepting boxed String
+ * objects.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is string} Whether the value has the primitive string type.
+ * @example
+ * isString("Akasha"); // true
+ * @since 2.0.0
+ */
+export function isString(value) {
+  return typeof value === "string";
+}
+
+/**
+ * Checks whether a value is a primitive number. NaN and infinities are numbers;
+ * use `isFiniteNumber` when arithmetic requires a finite value.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is number} Whether the value has the primitive number type.
+ * @example
+ * isNumber(Number.NaN); // true
+ * @since 2.0.0
+ */
+export function isNumber(value) {
+  return typeof value === "number";
+}
+
+/**
+ * Checks whether a value is a primitive boolean without coercion.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is boolean} Whether the value is exactly true or false.
+ * @example
+ * isBoolean(false); // true
+ * @since 2.0.0
+ */
+export function isBoolean(value) {
+  return typeof value === "boolean";
+}
+
+/**
+ * Checks for a non-null object while excluding arrays and functions. Plain
+ * objects, class instances, Dates, Maps, and Sets are accepted across realms.
+ *
+ * @param {unknown} value Candidate object.
+ * @returns {value is object} Whether the value is a non-array object.
+ * @example
+ * isNonArrayObject(new Date()); // true
+ * @since 2.0.0
+ */
+export function isNonArrayObject(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+/**
  * Checks for nullish values or strings containing only whitespace.
  *
  * @param {unknown} value Candidate for absence/whitespace semantics.
@@ -57,6 +125,23 @@ export function isDefined(value) {
  */
 export function isBlank(value) {
   return value === null || value === undefined || (typeof value === "string" && value.trim() === "");
+}
+
+/**
+ * Returns a fallback for nullish or whitespace-only input and otherwise returns
+ * the original value unchanged. Zero and false are preserved.
+ *
+ * @template T
+ * @template U
+ * @param {T} value Candidate value.
+ * @param {U} fallback Value returned when the candidate is blank.
+ * @returns {T | U} Original nonblank value or the supplied fallback.
+ * @example
+ * defaultIfBlank("  ", "untitled"); // "untitled"
+ * @since 2.0.0
+ */
+export function defaultIfBlank(value, fallback) {
+  return isBlank(value) ? fallback : value;
 }
 
 /**
@@ -88,6 +173,19 @@ export function isEmpty(value) {
  */
 export function isFiniteNumber(value) {
   return typeof value === "number" && Number.isFinite(value);
+}
+
+/**
+ * Checks whether a value is a finite primitive number with a fractional part.
+ *
+ * @param {unknown} value Candidate primitive.
+ * @returns {value is number} Whether the value is finite and not an integer.
+ * @example
+ * isFiniteNonInteger(1.5); // true
+ * @since 2.0.0
+ */
+export function isFiniteNonInteger(value) {
+  return isFiniteNumber(value) && !Number.isInteger(value);
 }
 
 /**

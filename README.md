@@ -143,6 +143,8 @@ Performance methodology and measured decisions are recorded in
 [docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 Portable source-defect protections and app-owned exclusions are mapped in
 [docs/SOURCE_REGRESSIONS.md](docs/SOURCE_REGRESSIONS.md).
+Current Mindspace and portfolio 1.0.2 call sites are measured in the
+[active consumer usage audit](docs/inventory/CONSUMER_USAGE_AUDIT_2026-07-16.md).
 Security boundaries and threat models are collected in
 [docs/SECURITY.md](docs/SECURITY.md).
 Test organization, invariant seeds, and coverage policy are documented in
