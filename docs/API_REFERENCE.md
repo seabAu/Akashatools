@@ -633,6 +633,33 @@ Formats a date and time using `Intl.DateTimeFormat`.
 Throws:
 - `TypeError | RangeError` — If value, locales, or options are invalid.
 
+### formatDuration
+
+Formats a non-negative minute duration as compact, locale-independent hours and minutes. Fractional input uses an explicit whole-minute rounding policy; zero components are omitted except for the canonical `0m` result.
+
+- Signature: `formatDuration()`
+- Import: `import { formatDuration } from "akashatools/date"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string` — Compact `0m`, `45m`, `2h`, or `2h 5m`-style label.
+
+Throws:
+- `TypeError` — If minutes or options violates its literal contract.
+- `RangeError` — If minutes is negative/unsafe or rounding is unsupported.
+
+### formatRelativeTime
+
+Formats a Date-compatible instant relative to an injectable base through `Intl.RelativeTimeFormat`. Automatic units use fixed thresholds of 60 seconds, 60 minutes, 24 hours, 30 days, and 365 days; month/year values are therefore presentation approximations rather than calendar arithmetic.
+
+- Signature: `formatRelativeTime()`
+- Import: `import { formatRelativeTime } from "akashatools/date"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string` — Locale-formatted relative time such as `yesterday` or `in 2 hours`.
+
+Throws:
+- `TypeError | RangeError` — If dates, locales, options, or Intl values are invalid.
+
 ## http
 
 Runtime: Universal JavaScript on the supported runtime floor.

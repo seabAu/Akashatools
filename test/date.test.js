@@ -10,6 +10,8 @@ import {
   differenceInLocalDays,
   formatDate,
   formatDateTime,
+  formatDuration,
+  formatRelativeTime,
   fromUnixSeconds,
   isSameLocalDay,
   isToday,
@@ -22,6 +24,34 @@ import {
   toDate,
   toUnixSeconds,
 } from "akashatools/date";
+
+test("duration formatting uses strict minute and rounding contracts", () => {
+  assert.equal(formatDuration(0), "0m");
+  assert.equal(formatDuration(45), "45m");
+  assert.equal(formatDuration(60), "1h");
+  assert.equal(formatDuration(125), "2h 5m");
+  assert.equal(formatDuration(59.5), "1h");
+  assert.equal(formatDuration(59.9, { rounding: "floor" }), "59m");
+  assert.equal(formatDuration(60.1, { rounding: "ceil" }), "1h 1m");
+  assert.throws(() => formatDuration(-1), RangeError);
+  assert.throws(() => formatDuration(Number.NaN), TypeError);
+  assert.throws(() => formatDuration(Number.MAX_SAFE_INTEGER + 1), RangeError);
+  assert.throws(() => formatDuration(1, { rounding: /** @type {any} */ ("bankers") }), RangeError);
+  assert.throws(() => formatDuration(1, /** @type {any} */ ([])), TypeError);
+});
+
+test("relative time formatting delegates locale text with fixed automatic units", () => {
+  const base = "2026-07-16T12:00:00.000Z";
+  assert.equal(formatRelativeTime("2026-07-17T12:00:00.000Z", "en", { base }), "tomorrow");
+  assert.equal(formatRelativeTime("2026-07-16T10:30:00.000Z", "en", { base, numeric: "always" }), "2 hours ago");
+  assert.equal(formatRelativeTime(base, "en", { base }), "now");
+  assert.equal(
+    formatRelativeTime("2026-08-15T12:00:00.000Z", "en", { base, numeric: "always" }),
+    "in 1 month",
+  );
+  assert.throws(() => formatRelativeTime("invalid", "en", { base }), TypeError);
+  assert.throws(() => formatRelativeTime(base, "en", /** @type {any} */ ([])), TypeError);
+});
 
 test("date conversion and calendar helpers reject invalid values without mutation", () => {
   const original = new Date(2024, 1, 29, 18, 30);

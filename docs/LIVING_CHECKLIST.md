@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 101 tests currently pass.
+- [x] Add dependency-free runtime tests; 103 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -229,12 +229,12 @@ Acceptance criteria:
 - [x] Create a dated delta ledger at
   `docs/inventory/SOURCE_REFRESH_2026-07-16.md` so post-snapshot findings do not
   silently invalidate the original inventories.
-- [ ] Complete a symbol-level delta audit of changed and untracked utility-like
+- [x] Complete a symbol-level delta audit of changed and untracked utility-like
   modules in all four consumer apps.
-- [ ] Inventory SPLICR's provider-neutral text measurement, semantic chunking,
+- [x] Inventory SPLICR's provider-neutral text measurement, semantic chunking,
   preprocessing, planning, delivery, storage, and error-classification
   algorithms, including Python-to-JavaScript semantic differences.
-- [ ] Implement and verify the independently reusable candidates selected by the
+- [x] Implement and verify the independently reusable candidates selected by the
   refresh ledger; do not migrate app contracts merely to increase API size.
 
 ## Phase 3 — finish the universal core
@@ -392,10 +392,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 124 public declarations are complete, with parameter/return prose,
+  All 126 public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  124 public declarations by `npm run check:docs`.
+  126 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -444,7 +444,7 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions is 97.30% / 85.44% / 95.64%, respectively; branch
+  the active-source additions is 97.33% / 85.48% / 95.68%, respectively; branch
   accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers. The six-test
   Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are

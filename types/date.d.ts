@@ -214,3 +214,38 @@ export declare function formatDate(value: Date | string | number, locales?: Intl
  * @since 2.0.0
  */
 export declare function formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+/**
+ * Formats a non-negative minute duration as compact, locale-independent hours
+ * and minutes. Fractional input uses an explicit whole-minute rounding policy;
+ * zero components are omitted except for the canonical `0m` result.
+ *
+ * @param {number} minutes Finite non-negative minute duration no greater than Number.MAX_SAFE_INTEGER.
+ * @param {{rounding?: "round" | "floor" | "ceil" | "trunc"}} [options] Whole-minute rounding method; defaults to nearest.
+ * @returns {string} Compact `0m`, `45m`, `2h`, or `2h 5m`-style label.
+ * @throws {TypeError} If minutes or options violates its literal contract.
+ * @throws {RangeError} If minutes is negative/unsafe or rounding is unsupported.
+ * @example
+ * formatDuration(125); // "2h 5m"
+ * @since 2.0.0
+ */
+export declare function formatDuration(minutes: number, options?: {
+    rounding?: "round" | "floor" | "ceil" | "trunc";
+}): string;
+/**
+ * Formats a Date-compatible instant relative to an injectable base through
+ * `Intl.RelativeTimeFormat`. Automatic units use fixed thresholds of 60
+ * seconds, 60 minutes, 24 hours, 30 days, and 365 days; month/year values are
+ * therefore presentation approximations rather than calendar arithmetic.
+ *
+ * @param {Date | string | number} value Valid target instant.
+ * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.RelativeTimeFormat.
+ * @param {Intl.RelativeTimeFormatOptions & {base?: Date | string | number}} [options] Intl presentation options plus the comparison instant; numeric defaults to `auto`.
+ * @returns {string} Locale-formatted relative time such as `yesterday` or `in 2 hours`.
+ * @throws {TypeError | RangeError} If dates, locales, options, or Intl values are invalid.
+ * @example
+ * formatRelativeTime("2026-07-17T00:00:00Z", "en", { base: "2026-07-16T00:00:00Z" }); // "tomorrow"
+ * @since 2.0.0
+ */
+export declare function formatRelativeTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
+    base?: Date | string | number;
+}): string;

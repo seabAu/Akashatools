@@ -1,3 +1,7 @@
+import { isPlainObject } from "./object.js";
+
+const durationRoundingModes = new Set(["round", "floor", "ceil", "trunc"]);
+
 /**
  * Checks whether a value represents a valid Date object.
  *
@@ -309,6 +313,69 @@ export function formatDateTime(value, locales, options = { dateStyle: "medium", 
   return new Intl.DateTimeFormat(locales, options).format(requiredDate(value));
 }
 
+/**
+ * Formats a non-negative minute duration as compact, locale-independent hours
+ * and minutes. Fractional input uses an explicit whole-minute rounding policy;
+ * zero components are omitted except for the canonical `0m` result.
+ *
+ * @param {number} minutes Finite non-negative minute duration no greater than Number.MAX_SAFE_INTEGER.
+ * @param {{rounding?: "round" | "floor" | "ceil" | "trunc"}} [options] Whole-minute rounding method; defaults to nearest.
+ * @returns {string} Compact `0m`, `45m`, `2h`, or `2h 5m`-style label.
+ * @throws {TypeError} If minutes or options violates its literal contract.
+ * @throws {RangeError} If minutes is negative/unsafe or rounding is unsupported.
+ * @example
+ * formatDuration(125); // "2h 5m"
+ * @since 2.0.0
+ */
+export function formatDuration(minutes, options = {}) {
+  if (!Number.isFinite(minutes)) throw new TypeError("minutes must be a finite number.");
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const { rounding = "round" } = options;
+  if (minutes < 0 || minutes > Number.MAX_SAFE_INTEGER) {
+    throw new RangeError("minutes must be between 0 and Number.MAX_SAFE_INTEGER.");
+  }
+  if (!durationRoundingModes.has(rounding)) throw new RangeError("rounding is unsupported.");
+  const totalMinutes = roundDurationMinutes(minutes, rounding);
+  const hours = Math.floor(totalMinutes / 60);
+  const remainder = totalMinutes % 60;
+  if (hours === 0) return `${remainder}m`;
+  return remainder === 0 ? `${hours}h` : `${hours}h ${remainder}m`;
+}
+
+/**
+ * Formats a Date-compatible instant relative to an injectable base through
+ * `Intl.RelativeTimeFormat`. Automatic units use fixed thresholds of 60
+ * seconds, 60 minutes, 24 hours, 30 days, and 365 days; month/year values are
+ * therefore presentation approximations rather than calendar arithmetic.
+ *
+ * @param {Date | string | number} value Valid target instant.
+ * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.RelativeTimeFormat.
+ * @param {Intl.RelativeTimeFormatOptions & {base?: Date | string | number}} [options] Intl presentation options plus the comparison instant; numeric defaults to `auto`.
+ * @returns {string} Locale-formatted relative time such as `yesterday` or `in 2 hours`.
+ * @throws {TypeError | RangeError} If dates, locales, options, or Intl values are invalid.
+ * @example
+ * formatRelativeTime("2026-07-17T00:00:00Z", "en", { base: "2026-07-16T00:00:00Z" }); // "tomorrow"
+ * @since 2.0.0
+ */
+export function formatRelativeTime(value, locales, options = {}) {
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const { base = new Date(), ...formatOptions } = options;
+  const difference = requiredDate(value).getTime()
+    - requiredDate(/** @type {Date | string | number} */ (base)).getTime();
+  const absolute = Math.abs(difference);
+  let divisor;
+  /** @type {Intl.RelativeTimeFormatUnit} */
+  let unit;
+  if (absolute < 60_000) [divisor, unit] = [1_000, "second"];
+  else if (absolute < 3_600_000) [divisor, unit] = [60_000, "minute"];
+  else if (absolute < 86_400_000) [divisor, unit] = [3_600_000, "hour"];
+  else if (absolute < 2_592_000_000) [divisor, unit] = [86_400_000, "day"];
+  else if (absolute < 31_536_000_000) [divisor, unit] = [2_592_000_000, "month"];
+  else [divisor, unit] = [31_536_000_000, "year"];
+  const amount = difference === 0 ? 0 : Math.sign(difference) * Math.round(absolute / divisor);
+  return new Intl.RelativeTimeFormat(locales, { numeric: "auto", ...formatOptions }).format(amount, unit);
+}
+
 /** @param {Date | string | number} value */
 function requiredDate(value) {
   const date = toDate(value);
@@ -319,4 +386,14 @@ function requiredDate(value) {
 /** @param {number} value */
 function pad2(value) {
   return String(value).padStart(2, "0");
+}
+
+/** @param {number} minutes @param {string} rounding */
+function roundDurationMinutes(minutes, rounding) {
+  switch (rounding) {
+    case "floor": return Math.floor(minutes);
+    case "ceil": return Math.ceil(minutes);
+    case "trunc": return Math.trunc(minutes);
+    default: return Math.round(minutes);
+  }
 }

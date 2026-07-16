@@ -49,7 +49,9 @@ drop-in compatibility.
 | `formatBytes` | number | universal | no input mutation | `akashatools/number` | None |
 | `formatDate` | date | universal | no input mutation | `akashatools/date` | `Time.convertDate`, `Time.formatDate` |
 | `formatDateTime` | date | universal | no input mutation | `akashatools/date` | None |
+| `formatDuration` | date | universal | no input mutation | `akashatools/date` | None |
 | `formatNanpPhone` | validation | universal | no input mutation | `akashatools/validation` | None |
+| `formatRelativeTime` | date | universal | no input mutation | `akashatools/date` | None |
 | `fromUnixSeconds` | date | universal | no input mutation | `akashatools/date` | None |
 | `fulfilledValues` | async | universal | no input mutation | `akashatools/async` | None |
 | `getAtPath` | object | universal | no input mutation | `akashatools/object` | None |

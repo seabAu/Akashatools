@@ -26,7 +26,8 @@ read-only and no compatibility claim follows from this inventory alone.
 | Mindspace `sanitizeBoundedJson` | Deep-clones plain JSON while enforcing byte, depth, key-count, array, key-length, and string limits. It also rejects Mongo operator/dotted keys and exposes Mindspace HTTP status/error codes. | Extract a generic bounded plain-JSON clone/validation contract; keep Mongo key policy and application error metadata in Mindspace. |
 | SPLICR `utf8_size` | Measures encoded UTF-8 bytes to enforce provider transport limits. | Adopt a strict universal string byte-length helper. |
 | SPLICR `SemanticChunker` and `plan_chunks` | Packs normalized text at paragraph, sentence, clause, word, then Unicode-code-point boundaries while enforcing byte/word/provider estimates; planning records normalized-source offsets. Tests cover multibyte text, blank input, custom estimators, and boundary fallback. | Strong candidate for a bounded text-chunk API. First separate transport whitespace normalization from lossless splitting and define whether offsets refer to original or normalized text. Provider controls and TTS markers stay in SPLICR. |
-| Mindspace `formatDurationLabel` | Formats minutes as compact hour/minute text. The current version uses falsy input semantics and accepts negative/fractional values accidentally. | Candidate for a strict duration-format helper after rounding, sign, maximum size, and localization rules are explicit. |
+| Mindspace `formatDurationLabel` | Formats minutes as compact hour/minute text. The current version uses falsy input semantics and accepts negative/fractional values accidentally. | Adopt as strict non-negative `formatDuration` with explicit rounding, safe bounds, and locale-independent compact output. |
+| Mindspace `formatTimeAgo` | Presents relative dates in several live reminder/table surfaces, but uses ambient time, fixed approximate months/years, invalid-Date fallthrough, and English-only string assembly. | Adopt as `formatRelativeTime` using `Intl.RelativeTimeFormat`, injectable base time, strict dates, and documented automatic-unit thresholds. |
 
 ## Behaviors already covered by the canonical API
 
@@ -90,6 +91,21 @@ preprocessor and should not enter a generic string category without independent
 consumer demand. Document import also depends on archive/XML/office-format and
 external-converter security contracts better owned by a dedicated package.
 
+## Final symbol-level delta audit
+
+The final pass re-enumerated current live source rather than trusting unavailable
+external Git metadata:
+
+| Source tree | Delta evidence reviewed | Final result |
+| --- | --- | --- |
+| Mindspace | 329 post-snapshot client/server source timestamps were screened, then 40 changed utility-root or feature-local `lib` files were inspected at export level. | `cloneJson`, `formatDuration`, and `formatRelativeTime` close the remaining generic gaps. Secure IDs, date/clock, clamp/wrap, nested-object, collection, and random primitives were already covered. Insight/stats records, reminders, routes, notifications, auth, queues, switchboards, drafts, and service adapters remain app-owned. |
+| Portfolio rebuild | Current client/server/shared utilities, the newer `web/src/lib/utils` surface, focused tests, and live consumers were rechecked. | Single-flight loaders, `formatBytes`, and `parseContentDispositionFilename` were adopted. Retry, session/search/media/navigation, and DOM response-download composition remain application policy. |
+| COMPOSR | Current package exports and later utility/json/http/code-health/result-portability work were compared with `COMPOSR_CROSS_PACKAGE.md`; the sole later-dated package source, `site-mapper-worker/src/portability.ts`, was inspected directly. | `stableJson` covers the new canonical checkpoint primitive. The portability file is a Site Mapper checkpoint adapter; other generic candidates retain their prior explicit dispositions. |
+| SPLICR | Provider-neutral `chunking.py`, `planning.py`, preprocessing, tests, and the surrounding provider/audio/storage/import surfaces were rechecked at symbol level. | `utf8ByteLength`, `countWords`, and lossless `splitTextByLimits` were adopted. Provider/TTS/document/storage policy remains SPLICR-owned. |
+
+This completes the active refresh audit without treating file location or a
+generic-sounding name as evidence that product policy belongs in Akashatools.
+
 ## Implementation queue from this refresh
 
 - [x] Add and test bounded expiring single-flight helpers as
@@ -105,6 +121,8 @@ external-converter security contracts better owned by a dedicated package.
   parameter precedence and safe cross-platform filename normalization.
 - [x] Add generic bounded `cloneJson` separately from Mongo/application key
   policy and HTTP error metadata.
-- [ ] Finish the symbol-level delta audit of newly changed Mindspace
+- [x] Add strict `formatDuration` and Intl-backed `formatRelativeTime` from
+  repeated Mindspace consumers.
+- [x] Finish the symbol-level delta audit of newly changed Mindspace
   feature-local files and COMPOSR packages; record only independently reusable
   primitives rather than domain adapters.

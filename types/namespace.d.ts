@@ -119,6 +119,12 @@ export declare const date: Readonly<{
     clock24To12(value: string): string | null;
     formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
     formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    formatDuration(minutes: number, options?: {
+        rounding?: "round" | "floor" | "ceil" | "trunc";
+    }): string;
+    formatRelativeTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
+        base?: Date | string | number;
+    }): string;
 }>;
 /** Frozen HTTP request and error utilities. */
 export declare const http: Readonly<{
@@ -367,6 +373,8 @@ export declare const akasha: Readonly<{
     clock24To12: typeof dateModule.clock24To12;
     formatDate: typeof dateModule.formatDate;
     formatDateTime: typeof dateModule.formatDateTime;
+    formatDuration: typeof dateModule.formatDuration;
+    formatRelativeTime: typeof dateModule.formatRelativeTime;
     HttpError: typeof httpModule.HttpError;
     request: typeof httpModule.request;
     redactHeaders: typeof httpModule.redactHeaders;
@@ -517,6 +525,12 @@ export declare const akasha: Readonly<{
         clock24To12(value: string): string | null;
         formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
         formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+        formatDuration(minutes: number, options?: {
+            rounding?: "round" | "floor" | "ceil" | "trunc";
+        }): string;
+        formatRelativeTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
+            base?: Date | string | number;
+        }): string;
     }>;
     http: Readonly<{
         HttpError: typeof httpModule.HttpError;

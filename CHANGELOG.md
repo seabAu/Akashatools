@@ -158,3 +158,5 @@
   evidence, without inheriting Mongo, HTTP, or application error policies.
 - Added bounded `parseContentDispositionFilename` from portfolio download
   evidence, with standards-aware extended decoding and path/control hardening.
+- Added strict compact `formatDuration` and Intl-backed `formatRelativeTime`
+  from repeated Mindspace time-display evidence.
