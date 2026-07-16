@@ -465,10 +465,14 @@ Acceptance criteria:
 
 ### 7.3 Benchmarks and bundle size
 
-- [ ] Establish representative small, medium, and large fixtures from source apps.
-- [ ] Benchmark only competing implementations with identical semantics.
-- [ ] Record Node version, warmup, iterations, variance, and memory where relevant.
-- [ ] Avoid micro-optimizations that reduce readability without measured benefit.
+- [x] Establish deterministic small, medium, and large fixtures from source-app
+  record IDs, natural labels, and multilingual document text.
+- [x] Benchmark only competing implementations with identical semantics, with
+  output equality asserted before timing.
+- [x] Record Node/OS/CPU, warmups, samples, median, range, standard deviation,
+  and exact proportional allocation where relevant.
+- [x] Avoid micro-optimizations that reduce readability without measured benefit;
+  measured decisions retain clear Set/Map/collator and allocation-free text paths.
 - [x] Add bundle fixtures for named root, category named/namespace, default
   flat/category namespace, a simulated per-method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300

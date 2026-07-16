@@ -166,3 +166,6 @@
   client/server, portfolio, COMPOSR, and SPLICR utility contracts.
 - Confirmed the 2.0 package remains ESM-only from current consumer manifests and
   compiler settings; no active CommonJS requirement was found.
+- Added shared source-shaped small/medium/large benchmark fixtures, fixed
+  warmups, runtime metadata, range/variance reporting, and UTF-8 allocation
+  tradeoff measurements.

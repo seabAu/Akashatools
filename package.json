@@ -98,8 +98,10 @@
     "node": ">=22"
   },
   "scripts": {
+    "benchmark": "node --run benchmark:membership && node --run benchmark:collator && node --run benchmark:text",
     "benchmark:collator": "node benchmark/collator.mjs",
     "benchmark:membership": "node benchmark/membership.mjs",
+    "benchmark:text": "node benchmark/text-measurement.mjs",
     "bundle:check": "node scripts/measure-bundles.mjs",
     "format": "prettier --write \"{src,test,browser-test,scripts,benchmark,fixtures}/**/*.{js,mjs}\" \"*.config.js\" package.json jsconfig.json tsconfig.types.json",
     "format:check": "prettier --check \"{src,test,browser-test,scripts,benchmark,fixtures}/**/*.{js,mjs}\" \"*.config.js\" package.json jsconfig.json tsconfig.types.json",

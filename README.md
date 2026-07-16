@@ -115,6 +115,7 @@ npm test
 npm run test:browser:install
 npm run test:browser
 npm run test:coverage
+npm run benchmark
 npm run bundle:check
 npm run check
 npm run pack:check
@@ -138,6 +139,8 @@ and bundle tradeoffs in
 [docs/IMPORTS_AND_BUNDLING.md](docs/IMPORTS_AND_BUNDLING.md).
 Declaration and editor guarantees are documented in
 [docs/TYPES.md](docs/TYPES.md).
+Performance methodology and measured decisions are recorded in
+[docs/BENCHMARKS.md](docs/BENCHMARKS.md).
 Security boundaries and threat models are collected in
 [docs/SECURITY.md](docs/SECURITY.md).
 Test organization, invariant seeds, and coverage policy are documented in
