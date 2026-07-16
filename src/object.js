@@ -20,6 +20,17 @@ const maximumMergeNodes = 10_000;
  */
 
 /**
+ * @typedef {object} JsonCloneOptions
+ * @property {number} [maximumArrayLength=10000] Greatest permitted array length.
+ * @property {number} [maximumBytes=1000000] Greatest exact UTF-8 JSON serialization size.
+ * @property {number} [maximumDepth=100] Greatest permitted nesting depth below the root.
+ * @property {number} [maximumKeyLength=10000] Greatest object-key length in UTF-16 code units.
+ * @property {number} [maximumKeys=10000] Greatest total enumerable object-key count.
+ * @property {number} [maximumNodes=20000] Greatest total primitive/container node count.
+ * @property {number} [maximumStringLength=1000000] Greatest string-value length in UTF-16 code units.
+ */
+
+/**
  * Checks whether a value is an object with Object.prototype or a null prototype.
  *
  * @param {unknown} value Candidate from any JavaScript realm.
@@ -262,6 +273,128 @@ export function deepClone(value, options) {
 }
 
 /**
+ * Clones strict plain JSON data without invoking `toJSON` methods or accessors.
+ * The result uses ordinary objects, safely preserves all string keys, and
+ * duplicates shared references as JSON serialization would. Cycles, sparse or
+ * customized arrays, non-finite numbers, symbols, and non-plain objects are
+ * rejected rather than coerced.
+ *
+ * @template T
+ * @param {T} value Plain JSON value to clone.
+ * @param {JsonCloneOptions} [options] Structural and exact serialized UTF-8 work limits.
+ * @returns {T} Independent plain JSON clone.
+ * @throws {TypeError} If value/options contain unsupported JSON shapes or active property semantics.
+ * @throws {RangeError} If a configured structural or byte limit is exceeded.
+ * @example
+ * cloneJson({ profile: { active: true } });
+ * @since 2.0.0
+ */
+export function cloneJson(value, options = {}) {
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const {
+    maximumArrayLength = 10_000,
+    maximumBytes = 1_000_000,
+    maximumDepth = 100,
+    maximumKeyLength = 10_000,
+    maximumKeys = 10_000,
+    maximumNodes = 20_000,
+    maximumStringLength = 1_000_000,
+  } = options;
+  assertNonNegativeSafeInteger(maximumArrayLength, "maximumArrayLength");
+  assertNonNegativeSafeInteger(maximumBytes, "maximumBytes");
+  assertNonNegativeSafeInteger(maximumDepth, "maximumDepth");
+  assertNonNegativeSafeInteger(maximumKeyLength, "maximumKeyLength");
+  assertNonNegativeSafeInteger(maximumKeys, "maximumKeys");
+  assertPositiveSafeInteger(maximumNodes, "maximumNodes");
+  assertNonNegativeSafeInteger(maximumStringLength, "maximumStringLength");
+
+  const ancestors = new WeakSet();
+  let bytes = 0;
+  let keysSeen = 0;
+  let nodesSeen = 0;
+
+  /** @param {number} amount */
+  const addBytes = (amount) => {
+    bytes += amount;
+    if (bytes > maximumBytes) throw new RangeError("cloneJson exceeded maximumBytes.");
+  };
+
+  /** @param {unknown} current @param {number} depth @returns {unknown} */
+  const visit = (current, depth) => {
+    nodesSeen += 1;
+    if (nodesSeen > maximumNodes) throw new RangeError("cloneJson exceeded maximumNodes.");
+    if (depth > maximumDepth) throw new RangeError("cloneJson exceeded maximumDepth.");
+
+    if (current === null) {
+      addBytes(4);
+      return null;
+    }
+    if (typeof current === "boolean") {
+      addBytes(current ? 4 : 5);
+      return current;
+    }
+    if (typeof current === "string") {
+      if (current.length > maximumStringLength) throw new RangeError("cloneJson exceeded maximumStringLength.");
+      addBytes(jsonStringUtf8ByteLength(current));
+      return current;
+    }
+    if (typeof current === "number") {
+      if (!Number.isFinite(current)) throw new TypeError("JSON numbers must be finite.");
+      addBytes(JSON.stringify(current).length);
+      return current;
+    }
+    if (current === null || typeof current !== "object") {
+      throw new TypeError("value must contain only plain JSON data.");
+    }
+    if (ancestors.has(current)) throw new TypeError("value contains a circular reference.");
+    if (!Array.isArray(current) && !isPlainObject(current)) {
+      throw new TypeError("value must contain only arrays and plain objects.");
+    }
+
+    ancestors.add(current);
+    try {
+      if (Array.isArray(current)) {
+        if (current.length > maximumArrayLength) throw new RangeError("cloneJson exceeded maximumArrayLength.");
+        const descriptors = jsonArrayDataDescriptors(current);
+        addBytes(2 + Math.max(0, current.length - 1));
+        return descriptors.map((descriptor) => visit(descriptor.value, depth + 1));
+      }
+
+      const descriptors = Object.getOwnPropertyDescriptors(current);
+      /** @type {Array<[string, unknown]>} */
+      const entries = [];
+      for (const key of Reflect.ownKeys(descriptors)) {
+        const descriptor = descriptors[key];
+        if (!descriptor?.enumerable) continue;
+        if (typeof key !== "string") throw new TypeError("JSON objects cannot contain enumerable symbol keys.");
+        if (!Object.hasOwn(descriptor, "value")) throw new TypeError("JSON objects cannot contain enumerable accessors.");
+        if (key.length > maximumKeyLength) throw new RangeError("cloneJson exceeded maximumKeyLength.");
+        keysSeen += 1;
+        if (keysSeen > maximumKeys) throw new RangeError("cloneJson exceeded maximumKeys.");
+        entries.push([key, descriptor.value]);
+      }
+      addBytes(2 + Math.max(0, entries.length - 1));
+      /** @type {Record<string, unknown>} */
+      const output = {};
+      for (const [key, nested] of entries) {
+        addBytes(jsonStringUtf8ByteLength(key) + 1);
+        Object.defineProperty(output, key, {
+          configurable: true,
+          enumerable: true,
+          value: visit(nested, depth + 1),
+          writable: true,
+        });
+      }
+      return output;
+    } finally {
+      ancestors.delete(current);
+    }
+  };
+
+  return /** @type {T} */ (visit(value, 0));
+}
+
+/**
  * Recursively merges own enumerable string-keyed data properties of plain
  * objects without mutating either input. Arrays and non-plain objects are
  * replaced by reference. Unsafe names, enumerable symbols, and enumerable
@@ -359,6 +492,59 @@ export function pickAllowed(value, allowedKeys, { rejectUnknown = true } = {}) {
 /** @param {unknown} value @returns {value is Record<PropertyKey, unknown> | unknown[]} */
 function isObjectLike(value) {
   return value !== null && typeof value === "object";
+}
+
+/** @param {unknown} value @param {string} name */
+function assertNonNegativeSafeInteger(value, name) {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw new RangeError(`${name} must be a non-negative safe integer.`);
+  }
+}
+
+/** @param {unknown} value @param {string} name */
+function assertPositiveSafeInteger(value, name) {
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 1) {
+    throw new RangeError(`${name} must be a positive safe integer.`);
+  }
+}
+
+/** @param {unknown[]} value @returns {Array<PropertyDescriptor & {value: unknown}>} */
+function jsonArrayDataDescriptors(value) {
+  /** @type {Array<PropertyDescriptor & {value: unknown}>} */
+  const descriptors = [];
+  for (const key of Reflect.ownKeys(value)) {
+    const descriptor = Object.getOwnPropertyDescriptor(value, key);
+    if (!descriptor?.enumerable) continue;
+    if (typeof key !== "string" || !/^(0|[1-9]\d*)$/.test(key) || Number(key) >= value.length) {
+      throw new TypeError("JSON arrays cannot contain custom enumerable properties.");
+    }
+    if (!Object.hasOwn(descriptor, "value")) throw new TypeError("JSON arrays cannot contain enumerable accessors.");
+    descriptors.push(/** @type {PropertyDescriptor & {value: unknown}} */ (descriptor));
+  }
+  if (descriptors.length !== value.length) throw new TypeError("JSON arrays must not contain sparse slots.");
+  return descriptors;
+}
+
+/** @param {string} value */
+function jsonStringUtf8ByteLength(value) {
+  let bytes = 2;
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+    if (codeUnit === 0x22 || codeUnit === 0x5c) bytes += 2;
+    else if (codeUnit <= 0x1f) {
+      bytes += codeUnit === 0x08 || codeUnit === 0x09 || codeUnit === 0x0a || codeUnit === 0x0c || codeUnit === 0x0d ? 2 : 6;
+    } else if (codeUnit <= 0x7f) bytes += 1;
+    else if (codeUnit <= 0x7ff) bytes += 2;
+    else if (codeUnit >= 0xd800 && codeUnit <= 0xdbff) {
+      const next = value.charCodeAt(index + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) {
+        bytes += 4;
+        index += 1;
+      } else bytes += 6;
+    } else if (codeUnit >= 0xdc00 && codeUnit <= 0xdfff) bytes += 6;
+    else bytes += 3;
+  }
+  return bytes;
 }
 
 /**

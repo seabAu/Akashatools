@@ -68,7 +68,7 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 95 tests currently pass.
+- [x] Add dependency-free runtime tests; 98 tests currently pass.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`.
 - [x] Verify focused-import tree-shaking after adding the default namespace:
@@ -392,10 +392,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 122 public declarations are complete, with parameter/return prose,
+  All 123 public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  122 public declarations by `npm run check:docs`.
+  123 public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -444,7 +444,7 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source additions is 97.32% / 85.25% / 95.40%, respectively; branch
+  the active-source additions is 97.31% / 85.49% / 95.54%, respectively; branch
   accounting can vary slightly with random-source execution; see `docs/TESTING.md`.
 - [ ] Run tests on supported Node LTS lines and target browsers. The six-test
   Chromium/Firefox/WebKit matrix passes locally; Node 22 and 24 LTS jobs are

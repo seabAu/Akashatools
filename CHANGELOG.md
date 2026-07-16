@@ -154,3 +154,5 @@
   preservation, Unicode-safe fallback, and an optional custom cost estimator.
 - Raised only the complete discoverable-namespace bundle guardrail after the
   measured source expansion; focused import and side-effect budgets are unchanged.
+- Added descriptor-safe bounded `cloneJson` from Mindspace payload-boundary
+  evidence, without inheriting Mongo, HTTP, or application error policies.

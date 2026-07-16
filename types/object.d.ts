@@ -30,6 +30,36 @@ export type ObjectTraversalOptions = {
      */
     maxNodes?: number;
 };
+export type JsonCloneOptions = {
+    /**
+     * Greatest permitted array length.
+     */
+    maximumArrayLength?: number;
+    /**
+     * Greatest exact UTF-8 JSON serialization size.
+     */
+    maximumBytes?: number;
+    /**
+     * Greatest permitted nesting depth below the root.
+     */
+    maximumDepth?: number;
+    /**
+     * Greatest object-key length in UTF-16 code units.
+     */
+    maximumKeyLength?: number;
+    /**
+     * Greatest total enumerable object-key count.
+     */
+    maximumKeys?: number;
+    /**
+     * Greatest total primitive/container node count.
+     */
+    maximumNodes?: number;
+    /**
+     * Greatest string-value length in UTF-16 code units.
+     */
+    maximumStringLength?: number;
+};
 /**
  * @typedef {object} ObjectTraversalEntry
  * @property {unknown} value Value found at this traversal position.
@@ -42,6 +72,16 @@ export type ObjectTraversalOptions = {
  * @property {boolean} [includeRoot=false] Whether to emit the root entry.
  * @property {number} [maxDepth=100] Maximum entered depth, or Infinity.
  * @property {number} [maxNodes=10000] Maximum emitted entries before failure.
+ */
+/**
+ * @typedef {object} JsonCloneOptions
+ * @property {number} [maximumArrayLength=10000] Greatest permitted array length.
+ * @property {number} [maximumBytes=1000000] Greatest exact UTF-8 JSON serialization size.
+ * @property {number} [maximumDepth=100] Greatest permitted nesting depth below the root.
+ * @property {number} [maximumKeyLength=10000] Greatest object-key length in UTF-16 code units.
+ * @property {number} [maximumKeys=10000] Greatest total enumerable object-key count.
+ * @property {number} [maximumNodes=20000] Greatest total primitive/container node count.
+ * @property {number} [maximumStringLength=1000000] Greatest string-value length in UTF-16 code units.
  */
 /**
  * Checks whether a value is an object with Object.prototype or a null prototype.
@@ -183,6 +223,24 @@ export declare function omit<T extends object>(value: T, keys: readonly (keyof T
  * @since 2.0.0
  */
 export declare function deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
+/**
+ * Clones strict plain JSON data without invoking `toJSON` methods or accessors.
+ * The result uses ordinary objects, safely preserves all string keys, and
+ * duplicates shared references as JSON serialization would. Cycles, sparse or
+ * customized arrays, non-finite numbers, symbols, and non-plain objects are
+ * rejected rather than coerced.
+ *
+ * @template T
+ * @param {T} value Plain JSON value to clone.
+ * @param {JsonCloneOptions} [options] Structural and exact serialized UTF-8 work limits.
+ * @returns {T} Independent plain JSON clone.
+ * @throws {TypeError} If value/options contain unsupported JSON shapes or active property semantics.
+ * @throws {RangeError} If a configured structural or byte limit is exceeded.
+ * @example
+ * cloneJson({ profile: { active: true } });
+ * @since 2.0.0
+ */
+export declare function cloneJson<T>(value: T, options?: JsonCloneOptions): T;
 /**
  * Recursively merges own enumerable string-keyed data properties of plain
  * objects without mutating either input. Arrays and non-plain objects are

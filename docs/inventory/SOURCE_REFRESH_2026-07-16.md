@@ -102,7 +102,7 @@ external-converter security contracts better owned by a dedicated package.
 - [x] Port SPLICR's semantic chunking core as `splitTextByLimits`, with lossless
   source preservation as the generic default and no implicit normalization.
 - [ ] Design a bounded `Content-Disposition` filename parser before exposing it.
-- [ ] Design a generic bounded JSON clone separately from Mongo/application key
+- [x] Add generic bounded `cloneJson` separately from Mongo/application key
   policy and HTTP error metadata.
 - [ ] Finish the symbol-level delta audit of newly changed Mindspace
   feature-local files and COMPOSR packages; record only independently reusable

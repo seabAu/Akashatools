@@ -965,6 +965,20 @@ Deeply clones structured-cloneable values, including circular references, Maps, 
 Throws:
 - `DOMException` — If value or transfer options cannot be structured-cloned.
 
+### cloneJson
+
+Clones strict plain JSON data without invoking `toJSON` methods or accessors. The result uses ordinary objects, safely preserves all string keys, and duplicates shared references as JSON serialization would. Cycles, sparse or customized arrays, non-finite numbers, symbols, and non-plain objects are rejected rather than coerced.
+
+- Signature: `cloneJson()`
+- Import: `import { cloneJson } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `T` — Independent plain JSON clone.
+
+Throws:
+- `TypeError` — If value/options contain unsupported JSON shapes or active property semantics.
+- `RangeError` — If a configured structural or byte limit is exceeded.
+
 ### deepMerge
 
 Recursively merges own enumerable string-keyed data properties of plain objects without mutating either input. Arrays and non-plain objects are replaced by reference. Unsafe names, enumerable symbols, and enumerable accessors are rejected without invoking getters. The base prototype is kept.

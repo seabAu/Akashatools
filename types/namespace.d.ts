@@ -171,6 +171,7 @@ export declare const object: Readonly<{
     pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
     omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
     deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
+    cloneJson<T>(value: T, options?: objectModule.JsonCloneOptions): T;
     deepMerge<T extends Record<PropertyKey, unknown>, U extends Record<PropertyKey, unknown>>(base: T, override: U): T & U;
     pickAllowed(value: unknown, allowedKeys: readonly string[], { rejectUnknown }?: {
         rejectUnknown?: boolean;
@@ -291,6 +292,7 @@ export declare const akasha: Readonly<{
     pick: typeof objectModule.pick;
     omit: typeof objectModule.omit;
     deepClone: typeof objectModule.deepClone;
+    cloneJson: typeof objectModule.cloneJson;
     deepMerge: typeof objectModule.deepMerge;
     pickAllowed: typeof objectModule.pickAllowed;
     asArray: typeof arrayModule.asArray;
@@ -558,6 +560,7 @@ export declare const akasha: Readonly<{
         pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
         omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
         deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
+        cloneJson<T>(value: T, options?: objectModule.JsonCloneOptions): T;
         deepMerge<T extends Record<PropertyKey, unknown>, U extends Record<PropertyKey, unknown>>(base: T, override: U): T & U;
         pickAllowed(value: unknown, allowedKeys: readonly string[], { rejectUnknown }?: {
             rejectUnknown?: boolean;

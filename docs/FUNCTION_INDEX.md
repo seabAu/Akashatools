@@ -21,6 +21,7 @@ drop-in compatibility.
 | `clock12To24` | date | universal | no input mutation | `akashatools/date` | None |
 | `clock24To12` | date | universal | no input mutation | `akashatools/date` | None |
 | `clockTimeToMinutes` | date | universal | no input mutation | `akashatools/date` | None |
+| `cloneJson` | object | universal | no input mutation | `akashatools/object` | None |
 | `compact` | array | universal | no input mutation | `akashatools/array` | `AO.removeEmpty`, `AO.cleanArray` |
 | `compareNumericOrder` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `compareValues` | sort | universal | no input mutation | `akashatools/sort` | None |

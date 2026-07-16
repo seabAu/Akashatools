@@ -17,6 +17,7 @@
       "clock12To24",
       "clock24To12",
       "clockTimeToMinutes",
+      "cloneJson",
       "collection",
       "compact",
       "compareNumericOrder",
@@ -217,6 +218,7 @@
       "wrap"
     ],
     "./object": [
+      "cloneJson",
       "deepClone",
       "deepMerge",
       "findDeep",

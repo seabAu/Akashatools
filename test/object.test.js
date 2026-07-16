@@ -3,6 +3,7 @@ import test from "node:test";
 import { runInNewContext } from "node:vm";
 
 import {
+  cloneJson,
   deepClone,
   deepMerge,
   findDeep,
@@ -14,6 +15,56 @@ import {
   setAtPath,
   traverseObject,
 } from "akashatools/object";
+
+test("cloneJson safely clones strict plain JSON without invoking active properties", () => {
+  const shared = { nested: [true, null, "value"] };
+  const source = { left: shared, right: shared };
+  const clone = cloneJson(source);
+  assert.deepEqual(clone, source);
+  assert.notEqual(clone, source);
+  assert.notEqual(clone.left, shared);
+  assert.notEqual(clone.left, clone.right, "JSON cloning duplicates shared references");
+
+  let getterCalls = 0;
+  const active = Object.defineProperty({}, "computed", {
+    enumerable: true,
+    get() { getterCalls += 1; return true; },
+  });
+  assert.throws(() => cloneJson(active), TypeError);
+  assert.equal(getterCalls, 0);
+});
+
+test("cloneJson preserves arbitrary JSON keys without prototype mutation", () => {
+  const source = JSON.parse('{"__proto__":{"polluted":true},"constructor":1,"prototype":2}');
+  const clone = cloneJson(source);
+  assert.deepEqual(clone, source);
+  assert.equal(Object.getPrototypeOf(clone), Object.prototype);
+  assert.equal(Object.hasOwn(clone, "__proto__"), true);
+  assert.equal(Object.prototype.hasOwnProperty.call(Object.prototype, "polluted"), false);
+  assert.equal(/** @type {any} */ ({}).polluted, undefined);
+});
+
+test("cloneJson enforces exact encoded size and structural work limits", () => {
+  const source = { escaped: "\"\n\\\ud800", unicode: "\u00e9\ud83d\ude42" };
+  const serializedBytes = new TextEncoder().encode(JSON.stringify(source)).byteLength;
+  assert.deepEqual(cloneJson(source, { maximumBytes: serializedBytes }), source);
+  assert.throws(() => cloneJson(source, { maximumBytes: serializedBytes - 1 }), RangeError);
+  assert.throws(() => cloneJson({ nested: {} }, { maximumDepth: 0 }), RangeError);
+  assert.throws(() => cloneJson([1, 2], { maximumArrayLength: 1 }), RangeError);
+  assert.throws(() => cloneJson({ one: 1, two: 2 }, { maximumKeys: 1 }), RangeError);
+  assert.throws(() => cloneJson({ long: true }, { maximumKeyLength: 3 }), RangeError);
+  assert.throws(() => cloneJson("long", { maximumStringLength: 3 }), RangeError);
+  assert.throws(() => cloneJson([1, 2], { maximumNodes: 2 }), RangeError);
+
+  const circular = {};
+  circular.self = circular;
+  const customArray = [1];
+  customArray.extra = true;
+  for (const invalid of [circular, [, 1], customArray, { value: undefined }, { value: Number.NaN }, new Date(), { [Symbol("key")]: true }]) {
+    assert.throws(() => cloneJson(invalid), TypeError);
+  }
+  assert.throws(() => cloneJson({}, /** @type {any} */ ([])), TypeError);
+});
 
 test("plain-object detection accepts cross-realm and null-prototype records", () => {
   assert.equal(isPlainObject(runInNewContext("({ value: 1 })")), true);
