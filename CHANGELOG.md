@@ -171,3 +171,5 @@
   tradeoff measurements.
 - Added a named source-origin regression suite and ledger covering portable bug
   families while keeping rejected application/framework defects out of scope.
+- Added a checked representative consumer bundle comparison; focused imports
+  save 46.6-50.1 KB raw and 14.4-15.3 KB gzip versus the default namespace.

@@ -74,3 +74,22 @@ The zero-byte side-effect-only output verifies that the package can be removed
 when none of its values are used. Combined with the source review that public
 modules only create internal functions/constants/frozen namespace objects at
 import time, this keeps `sideEffects: false` truthful.
+
+## Representative consumer import sets
+
+Run `npm run bundle:consumers` to bundle the exact universal function sets used
+by the current compatibility fixtures once as named imports and once through the
+flat default namespace. The script asserts that every focused set remains
+smaller in both raw and gzip output and is included in `npm run bundle:check`.
+
+| Consumer surface | Functions | Focused raw/gzip | Default raw/gzip | Raw/gzip saved |
+| --- | ---: | ---: | ---: | ---: |
+| Mindspace universal | 10 | 7,388 / 2,666 | 53,993 / 17,033 | 46,605 / 14,367 |
+| Portfolio rebuild | 4 | 5,802 / 2,324 | 53,962 / 16,996 | 48,160 / 14,672 |
+| COMPOSR | 7 | 5,390 / 2,019 | 53,981 / 17,028 | 48,591 / 15,009 |
+| SPLICR | 3 | 3,806 / 1,681 | 53,917 / 16,998 | 50,111 / 15,317 |
+
+These 2026-07-16 esbuild 0.28.1 measurements use minified ES2022 ESM. They
+isolate Akashatools dependency cost rather than claiming a whole-application
+bundle result. Mindspace's Node-only containment helper has no universal-default
+equivalent and correctly remains a direct `akashatools/node` import.

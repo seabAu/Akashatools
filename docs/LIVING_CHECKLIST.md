@@ -489,8 +489,9 @@ Acceptance criteria:
 - [x] Decide whether ESM-only remains appropriate after consumer fixture testing:
   yes. Active JavaScript consumers are ESM or bundler-resolved ESNext, while
   SPLICR is Python and creates no CommonJS requirement.
-- [ ] If CommonJS is required, use generated dual outputs with identity/interop
-  tests; do not hand-maintain duplicate sources.
+- [x] CommonJS is not required by active consumers; therefore do not generate or
+  hand-maintain duplicate outputs. Reopen identity/interop tests only if that
+  decision changes.
 - [x] Keep extensionless modern subpaths as the canonical spelling; extensioned
   `lib/*.js` paths exist only for explicitly temporary 1.x compatibility.
 - [x] Evaluate explicit per-method subpaths such as `akashatools/chunk` using a
@@ -520,7 +521,10 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a COMPOSR compatibility fixture.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
-- [ ] Measure bundle/runtime impact before and after focused imports.
+- [x] Measure representative bundle/runtime impact before and after focused
+  imports. Focused sets save 46,605-50,111 raw and 14,367-15,317 gzip bytes;
+  their runtime contracts pass and imports remain side-effect free. Whole-app
+  runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixtures need
   only thin application adapters for positional options, prefixes, blank-input
   policy, and domain envelopes; no additional generic primitive surfaced.

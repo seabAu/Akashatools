@@ -54,3 +54,9 @@ COMPOSR TypeScript configurations use ESNext with bundler resolution. SPLICR is
 a Python application and supplies no CommonJS consumer requirement. A generated
 dual build would therefore add identity, export, and release complexity without
 a demonstrated active consumer.
+
+The representative bundle comparison in `docs/IMPORTS_AND_BUNDLING.md` shows
+46,605-50,111 raw bytes and 14,367-15,317 gzip bytes saved by the focused import
+sets. Runtime behavior is exercised by the same compatibility tests, public
+imports remain side-effect free, and no standalone import-time speed claim is
+made; whole-app runtime profiling requires an authorized migration in each app.
