@@ -3,7 +3,48 @@ import { once } from "node:events";
 import { createServer } from "node:http";
 import test from "node:test";
 
-import { HttpError, redactHeaders, request } from "akashatools/http";
+import { HttpError, parseContentDispositionFilename, redactHeaders, request } from "akashatools/http";
+
+test("content-disposition filenames prefer valid extended values", () => {
+  assert.equal(
+    parseContentDispositionFilename("attachment; filename=report.txt; filename*=UTF-8'en'r%C3%A9sum%C3%A9%20final.pdf"),
+    "r\u00e9sum\u00e9 final.pdf",
+  );
+  assert.equal(
+    parseContentDispositionFilename("attachment; filename=plain.txt; filename*=ISO-8859-1''cost-%A3.txt"),
+    "cost-\u00a3.txt",
+  );
+  assert.equal(
+    parseContentDispositionFilename("attachment; filename=plain.txt; filename*=UTF-8''invalid%ZZ.txt"),
+    "plain.txt",
+  );
+  assert.equal(
+    parseContentDispositionFilename("attachment; filename=plain.txt; filename*=UTF-16''ignored.txt"),
+    "plain.txt",
+  );
+  assert.equal(parseContentDispositionFilename("attachment; filename*=UTF-8''one+two.txt"), "one+two.txt");
+});
+
+test("content-disposition parsing handles quoted syntax and safe path stripping", () => {
+  assert.equal(parseContentDispositionFilename('attachment; filename="quarter; final.txt"'), "quarter; final.txt");
+  assert.equal(parseContentDispositionFilename('attachment; filename="quarter\\\"final.txt"'), "quarter-final.txt");
+  assert.equal(parseContentDispositionFilename('attachment; filename="../../CON.txt"'), "file-CON.txt");
+  assert.equal(parseContentDispositionFilename("attachment; filename=../unsafe.json"), "unsafe.json");
+  assert.equal(parseContentDispositionFilename('attachment; filename="bad\u202ename:\u0000file?.txt"'), "badname-file-.txt");
+  assert.equal(parseContentDispositionFilename("attachment; filename=first.txt; filename=second.txt"), "first.txt");
+});
+
+test("content-disposition filenames validate bounds and use normalized fallbacks", () => {
+  assert.equal(parseContentDispositionFilename(null, { fallback: "../Fallback Report.pdf" }), "Fallback Report.pdf");
+  assert.equal(parseContentDispositionFilename("attachment\r\nfilename=unsafe.txt", { fallback: "safe.txt" }), "safe.txt");
+  assert.equal(parseContentDispositionFilename("inline"), undefined);
+  assert.equal(parseContentDispositionFilename("attachment; filename=abcdef", { maximumLength: 3 }), "abc");
+  assert.throws(() => parseContentDispositionFilename(/** @type {any} */ (1)), TypeError);
+  assert.throws(() => parseContentDispositionFilename(null, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => parseContentDispositionFilename(null, { fallback: /** @type {any} */ (1) }), TypeError);
+  assert.throws(() => parseContentDispositionFilename("attachment; filename=a", { maximumHeaderLength: 4 }), RangeError);
+  assert.throws(() => parseContentDispositionFilename(null, { maximumLength: 0 }), RangeError);
+});
 
 test("request parses bounded JSON, text, binary, Blob, empty, and raw responses", async () => {
   await withServer((request, response) => {

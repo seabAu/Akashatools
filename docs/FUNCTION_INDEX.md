@@ -87,6 +87,7 @@ drop-in compatibility.
 | `normalizeInstantRange` | date | universal | no input mutation | `akashatools/date` | None |
 | `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation` | None |
 | `omit` | object | universal | no input mutation | `akashatools/object` | `AO.removeKey` |
+| `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http` | None |
 | `parsePath` | object | universal | no input mutation | `akashatools/object` | None |
 | `partition` | array | universal | no input mutation | `akashatools/array` | None |
 | `pascalCase` | string | universal | no input mutation | `akashatools/string` | `String.toUpperCamelCase` |

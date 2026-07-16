@@ -132,6 +132,11 @@ export declare const http: Readonly<{
         fetchFn?: typeof fetch;
     }): Promise<T>;
     redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+    parseContentDispositionFilename(value: string | null | undefined, options?: {
+        fallback?: string;
+        maximumHeaderLength?: number;
+        maximumLength?: number;
+    }): string | undefined;
 }>;
 /** Frozen numeric utilities for namespace-style discovery. */
 export declare const number: Readonly<{
@@ -365,6 +370,7 @@ export declare const akasha: Readonly<{
     HttpError: typeof httpModule.HttpError;
     request: typeof httpModule.request;
     redactHeaders: typeof httpModule.redactHeaders;
+    parseContentDispositionFilename: typeof httpModule.parseContentDispositionFilename;
     clamp: typeof numberModule.clamp;
     wrap: typeof numberModule.wrap;
     roundTo: typeof numberModule.roundTo;
@@ -523,6 +529,11 @@ export declare const akasha: Readonly<{
             fetchFn?: typeof fetch;
         }): Promise<T>;
         redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+        parseContentDispositionFilename(value: string | null | undefined, options?: {
+            fallback?: string;
+            maximumHeaderLength?: number;
+            maximumLength?: number;
+        }): string | undefined;
     }>;
     number: Readonly<{
         clamp(value: number, minimum: number, maximum: number): number;

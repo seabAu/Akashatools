@@ -156,3 +156,5 @@
   measured source expansion; focused import and side-effect budgets are unchanged.
 - Added descriptor-safe bounded `cloneJson` from Mindspace payload-boundary
   evidence, without inheriting Mongo, HTTP, or application error policies.
+- Added bounded `parseContentDispositionFilename` from portfolio download
+  evidence, with standards-aware extended decoding and path/control hardening.

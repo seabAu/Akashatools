@@ -675,6 +675,20 @@ Copies headers while replacing common credential/cookie values with `[REDACTED]`
 Throws:
 - `TypeError` — If additionalSensitiveNames is not an array of strings or Headers rejects the input.
 
+### parseContentDispositionFilename
+
+Extracts a bounded cross-platform-safe filename suggestion from an HTTP `Content-Disposition` value. A valid RFC extended `filename*` takes precedence over `filename`; malformed candidates fall through to the next candidate and then an optional fallback. Path components, controls, bidi overrides, reserved characters, and Windows device names are neutralized.
+
+- Signature: `parseContentDispositionFilename()`
+- Import: `import { parseContentDispositionFilename } from "akashatools/http"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string | undefined` — Safe filename suggestion, normalized fallback, or undefined.
+
+Throws:
+- `TypeError` — If value, options, or fallback violates its literal contract.
+- `RangeError` — If a length bound is invalid or the header exceeds maximumHeaderLength.
+
 ## number
 
 Runtime: Universal JavaScript on the supported runtime floor.

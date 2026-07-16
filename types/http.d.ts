@@ -82,3 +82,24 @@ export declare function request<T>(input: string | URL, options?: RequestInit & 
  * @since 2.0.0
  */
 export declare function redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+/**
+ * Extracts a bounded cross-platform-safe filename suggestion from an HTTP
+ * `Content-Disposition` value. A valid RFC extended `filename*` takes
+ * precedence over `filename`; malformed candidates fall through to the next
+ * candidate and then an optional fallback. Path components, controls, bidi
+ * overrides, reserved characters, and Windows device names are neutralized.
+ *
+ * @param {string | null | undefined} value Content-Disposition header value, or nullish when absent.
+ * @param {{fallback?: string, maximumHeaderLength?: number, maximumLength?: number}} [options] Optional fallback plus positive header code-unit and filename code-point bounds.
+ * @returns {string | undefined} Safe filename suggestion, normalized fallback, or undefined.
+ * @throws {TypeError} If value, options, or fallback violates its literal contract.
+ * @throws {RangeError} If a length bound is invalid or the header exceeds maximumHeaderLength.
+ * @example
+ * parseContentDispositionFilename("attachment; filename*=UTF-8''report%20final.pdf");
+ * @since 2.0.0
+ */
+export declare function parseContentDispositionFilename(value: string | null | undefined, options?: {
+    fallback?: string;
+    maximumHeaderLength?: number;
+    maximumLength?: number;
+}): string | undefined;
