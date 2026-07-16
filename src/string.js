@@ -173,6 +173,59 @@ export function longestStringLength(value) {
 }
 
 /**
+ * Measures the UTF-8 encoding length of a string without allocating an encoded
+ * byte array. Unpaired UTF-16 surrogates count as the three-byte replacement
+ * character, matching `TextEncoder` and web-platform string encoding.
+ *
+ * @param {string} value String to measure without normalization or coercion.
+ * @returns {number} Number of bytes in the UTF-8 representation.
+ * @throws {TypeError} If value is not a string.
+ * @example
+ * utf8ByteLength("A\u00e9\ud83d\ude42"); // 7
+ * @since 2.0.0
+ */
+export function utf8ByteLength(value) {
+  assertString(value, "value");
+  let bytes = 0;
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+    if (codeUnit <= 0x7f) {
+      bytes += 1;
+    } else if (codeUnit <= 0x7ff) {
+      bytes += 2;
+    } else if (codeUnit >= 0xd800 && codeUnit <= 0xdbff) {
+      const next = value.charCodeAt(index + 1);
+      if (next >= 0xdc00 && next <= 0xdfff) {
+        bytes += 4;
+        index += 1;
+      } else {
+        bytes += 3;
+      }
+    } else {
+      bytes += 3;
+    }
+  }
+  return bytes;
+}
+
+/**
+ * Counts whitespace-delimited tokens without language-specific word-breaking
+ * guesses. Unicode whitespace separates tokens; punctuation remains part of
+ * the surrounding token.
+ *
+ * @param {string} value String whose non-whitespace runs are counted.
+ * @returns {number} Number of non-whitespace runs.
+ * @throws {TypeError} If value is not a string.
+ * @example
+ * countWords("one\ttwo\nthree"); // 3
+ * @since 2.0.0
+ */
+export function countWords(value) {
+  assertString(value, "value");
+  return value.match(/\S+/gu)?.length ?? 0;
+}
+
+/**
  * Creates a conservative lowercase filename stem. Output is ASCII, NFKD
  * normalized, bounded, free of trailing punctuation/control characters, and
  * prefixed when it would equal a reserved Windows device name.

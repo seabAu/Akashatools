@@ -25,6 +25,7 @@ drop-in compatibility.
 | `compareNumericOrder` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `compareValues` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `countBy` | array | universal | no input mutation | `akashatools/array` | None |
+| `countWords` | string | universal | no input mutation | `akashatools/string` | None |
 | `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async` | None |
 | `createSingleFlight` | async | universal | no input mutation | `akashatools/async` | None |
@@ -128,6 +129,7 @@ drop-in compatibility.
 | `unique` | array | universal | no input mutation | `akashatools/array` | `AO.uniqueArray` |
 | `upsertBy` | collection | universal | no input mutation | `akashatools/collection` | None |
 | `upsertById` | collection | universal | no input mutation | `akashatools/collection` | None |
+| `utf8ByteLength` | string | universal | no input mutation | `akashatools/string` | None |
 | `validateJsonContract` | validation | universal | no input mutation | `akashatools/validation` | None |
 | `wrap` | number | universal | no input mutation | `akashatools/number` | `Math.wrap` |
 | `zip` | array | universal | no input mutation | `akashatools/array` | None |

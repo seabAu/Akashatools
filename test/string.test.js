@@ -5,6 +5,7 @@ import { runInNewContext } from "node:vm";
 import {
   camelCase,
   capitalize,
+  countWords,
   escapeHtml,
   includesText,
   kebabCase,
@@ -15,6 +16,7 @@ import {
   sentenceCase,
   slugify,
   stableJson,
+  utf8ByteLength,
 } from "akashatools/string";
 
 test("string helpers normalize identifiers and replace literal text", () => {
@@ -40,6 +42,23 @@ test("literal and regular-expression replacements have separate contracts", () =
   assert.throws(() => replaceRegex("value", /** @type {any} */ ("value"), "x"), TypeError);
   assert.throws(() => replaceMany("value", /** @type {any} */ (null)), TypeError);
   assert.throws(() => replaceMany("value", new Map([["value", /** @type {any} */ (1)]])), TypeError);
+});
+
+test("utf8ByteLength matches platform UTF-8 encoding without allocating it", () => {
+  const values = ["", "ASCII", "A\u00e9\ud83d\ude42", "\ud800", "\udc00", "\ud800A", "A\udc00", "\u0000"];
+  for (const value of values) {
+    assert.equal(utf8ByteLength(value), new TextEncoder().encode(value).byteLength);
+  }
+  assert.equal(utf8ByteLength("A\u00e9\ud83d\ude42"), 7);
+  assert.throws(() => utf8ByteLength(/** @type {any} */ (1)), TypeError);
+});
+
+test("countWords explicitly counts Unicode-whitespace-delimited runs", () => {
+  assert.equal(countWords(""), 0);
+  assert.equal(countWords(" \n\t\u00a0 "), 0);
+  assert.equal(countWords("one\ttwo\nthree"), 3);
+  assert.equal(countWords("hello-world ... \ud83d\ude42"), 3);
+  assert.throws(() => countWords(/** @type {any} */ (null)), TypeError);
 });
 
 test("slug and filename helpers normalize unsafe cross-platform names", () => {

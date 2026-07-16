@@ -148,3 +148,5 @@
   comparison evidence, with deterministic keys and no accessor/cycle coercion.
 - Added strict `formatBytes` decimal/IEC formatting from live portfolio media
   presentation evidence.
+- Added allocation-free `utf8ByteLength` and explicit whitespace-delimited
+  `countWords` primitives from SPLICR's live chunk-planning requirements.

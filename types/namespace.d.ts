@@ -221,6 +221,8 @@ export declare const string: Readonly<{
     replaceMany(value: string, replacements: ReadonlyMap<string, string> | Record<string, string>): string;
     replaceRegex(value: string, pattern: RegExp, replacement: string | ((substring: string, ...args: any[]) => string)): string;
     longestStringLength(value: unknown): number;
+    utf8ByteLength(value: string): number;
+    countWords(value: string): number;
     safeFilename(value: string, { fallback, maximumLength }?: {
         fallback?: string;
         maximumLength?: number;
@@ -313,6 +315,8 @@ export declare const akasha: Readonly<{
     replaceMany: typeof stringModule.replaceMany;
     replaceRegex: typeof stringModule.replaceRegex;
     longestStringLength: typeof stringModule.longestStringLength;
+    utf8ByteLength: typeof stringModule.utf8ByteLength;
+    countWords: typeof stringModule.countWords;
     safeFilename: typeof stringModule.safeFilename;
     slugify: typeof stringModule.slugify;
     escapeHtml: typeof stringModule.escapeHtml;
@@ -592,6 +596,8 @@ export declare const akasha: Readonly<{
         replaceMany(value: string, replacements: ReadonlyMap<string, string> | Record<string, string>): string;
         replaceRegex(value: string, pattern: RegExp, replacement: string | ((substring: string, ...args: any[]) => string)): string;
         longestStringLength(value: unknown): number;
+        utf8ByteLength(value: string): number;
+        countWords(value: string): number;
         safeFilename(value: string, { fallback, maximumLength }?: {
             fallback?: string;
             maximumLength?: number;

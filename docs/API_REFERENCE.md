@@ -1300,6 +1300,32 @@ Returns the greatest string length among values, object keys, or a scalar.
 - Since: 2.0.0
 - Returns: `number` — Greatest UTF-16 code-unit length; nullish scalar entries count as empty.
 
+### utf8ByteLength
+
+Measures the UTF-8 encoding length of a string without allocating an encoded byte array. Unpaired UTF-16 surrogates count as the three-byte replacement character, matching `TextEncoder` and web-platform string encoding.
+
+- Signature: `utf8ByteLength()`
+- Import: `import { utf8ByteLength } from "akashatools/string"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — Number of bytes in the UTF-8 representation.
+
+Throws:
+- `TypeError` — If value is not a string.
+
+### countWords
+
+Counts whitespace-delimited tokens without language-specific word-breaking guesses. Unicode whitespace separates tokens; punctuation remains part of the surrounding token.
+
+- Signature: `countWords()`
+- Import: `import { countWords } from "akashatools/string"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — Number of non-whitespace runs.
+
+Throws:
+- `TypeError` — If value is not a string.
+
 ### safeFilename
 
 Creates a conservative lowercase filename stem. Output is ASCII, NFKD normalized, bounded, free of trailing punctuation/control characters, and prefixed when it would equal a reserved Windows device name.

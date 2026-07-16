@@ -22,6 +22,7 @@
       "compareNumericOrder",
       "compareValues",
       "countBy",
+      "countWords",
       "createCollatorComparator",
       "createKeyedSingleFlight",
       "createSingleFlight",
@@ -130,6 +131,7 @@
       "unique",
       "upsertBy",
       "upsertById",
+      "utf8ByteLength",
       "validateJsonContract",
       "validation",
       "wrap",
@@ -247,6 +249,7 @@
     "./string": [
       "camelCase",
       "capitalize",
+      "countWords",
       "escapeHtml",
       "includesText",
       "kebabCase",
@@ -258,7 +261,8 @@
       "safeFilename",
       "sentenceCase",
       "slugify",
-      "stableJson"
+      "stableJson",
+      "utf8ByteLength"
     ],
     "./validation": [
       "assertJsonContract",
