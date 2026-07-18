@@ -74,8 +74,10 @@ edited again after this dated review.
 - [x] Reopen the reserved `function` category for independently useful
   once/memoize/debounce/throttle contracts after receiver, async result,
   cancellation, cache, and timer semantics are written down.
-- [ ] Resolve the explicit opt-in `Array.prototype` augmentation decision. Never
-  augment `Object.prototype`; normal and granular imports must remain inert.
+- [x] Resolve the explicit opt-in `Array.prototype` augmentation decision. It is
+  rejected because collision/realm/ownership/type/uninstall hazards remain even
+  behind a side-effect subpath. Never augment `Object.prototype`; descriptor
+  regression proves that every modern import remains inert.
 
 Each adopted batch must update this ledger and the living checklist in the same
 commit, add strict JSDoc/types/package endpoints automatically, and pass the full

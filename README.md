@@ -105,10 +105,11 @@ findAllDeepValues({ one: { id: 1 }, two: { id: 2 } }, "id", { by: "key" });
 // [1, 2]
 
 deepQuery({ user: { id: 1 } }).has("id", { by: "key" }); // true
+deepQuery([{ id: 1 }]).has("id", { by: "key" }); // true
 ```
 
-The wrapper is syntactic sugar over the same functions. Normal imports never
-patch built-in or object prototypes.
+The wrapper is syntactic sugar over the same functions. No normal or opt-in
+package entry patches built-in constructors or prototypes.
 
 Function control keeps identity and failure policy explicit:
 

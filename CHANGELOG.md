@@ -15,6 +15,9 @@
   explicit exact-needle boolean, entry, value, parent, and all projections.
 - Added frozen `deepQuery(data).has(...)` dot-style syntax without modifying
   `Object.prototype`, `Array.prototype`, constructors, or import-time globals.
+- Rejected an opt-in built-in augmentation entry after collision, realm,
+  ownership, ambient-type, and uninstall analysis; modern entrypoint imports now
+  have a complete built-in-descriptor regression.
 - Added generated category indexes and named/default granular method subpaths
   such as `akashatools/array/chunk`, with canonical function identity, types,
   package-smoke coverage, and bundle equivalence checks.

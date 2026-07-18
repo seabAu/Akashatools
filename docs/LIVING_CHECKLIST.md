@@ -593,9 +593,11 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
 - [x] Add a side-effect-free `deepQuery(data).has(...)` fluent query wrapper for discoverable dot syntax.
   Normal imports must remain inert; direct arbitrary `value.has()` would require
   `Object.prototype` mutation and is not permitted on the default surface.
-- [ ] Decide and test whether an explicit opt-in augmentation entry can safely
+- [x] Decide and test whether an explicit opt-in augmentation entry can safely
   provide non-enumerable, collision-checked `Array.prototype` conveniences with
-  an uninstall path. Do not augment `Object.prototype`.
+  an uninstall path. Reject it: collision checks, realms, package duplication,
+  ambient types, and uninstall ownership remain unsafe; no modern import changes
+  Array, Object, Date, their constructors, or their prototypes.
 - [x] Add generated granular method subpaths beneath their category, such as
   `akashatools/array/chunk`, while keeping one package and one canonical function
   identity. Each category also has a generated index that fronts its canonical
@@ -770,6 +772,7 @@ Acceptance criteria:
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
 | 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 174 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
+| 2026-07-18 | Reject even an explicit opt-in built-in augmentation entry. | Non-enumerability and pre-install collision checks cannot solve future collisions, cross-realm gaps, duplicate-package ownership, ambient-type mismatch, or safe uninstall races; `deepQuery(value).has(...)` supplies local dot syntax while descriptor snapshots enforce inert modern imports. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
 | 2026-07-18 | Raise the temporary full-discovery guardrail to 100,000 raw/30,000 gzip after the Retry-After batch. | Strict support for all standard HTTP-date forms moved the complete namespace to 75,742 raw/22,873 gzip, 742 raw bytes over the prior expansion ceiling. Focused root/category/granular imports remain exactly 321/252 and side-effect-only remains zero; only the intentionally comprehensive namespace receives more headroom, and it must be recalibrated before RC. |
 | 2026-07-18 | Treat the second source refresh as a delta, not a bulk copy. | Current dirty and untracked consumer source is evidence for atomic contracts, but thread archives, TTS providers, UI components, storage, and application policy remain with their owning projects; the dated ledger records every new family and the reusable implementation queue. |

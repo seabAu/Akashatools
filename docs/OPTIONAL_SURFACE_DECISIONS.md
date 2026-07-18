@@ -63,3 +63,36 @@ A future diagnostics abstraction would first need shared decisions for event
 shape, levels, redaction, context propagation, sink failure, sync/async delivery,
 and production removal. A generic wrapper around `console` or `performance.now()`
 does not justify a permanent category.
+
+## Prototype and constructor augmentation
+
+Akashatools 2.0 will not publish an opt-in augmentation entry for
+`Array.prototype`, `Array`, `Object.prototype`, or other built-ins. Making a
+property non-enumerable and checking for a collision before installation does
+not make shared global mutation composable:
+
+- a later platform, polyfill, test, or package can claim the same name after the
+  check;
+- an uninstall function cannot safely restore ownership when another actor has
+  replaced or reconfigured the property;
+- patching one realm does not patch arrays created in iframes, workers, VM
+  contexts, or other realms;
+- multiple installed Akashatools copies cannot reliably identify which copy owns
+  the property;
+- ambient TypeScript declarations would advertise the method even where the
+  installing side effect did not run;
+- a side-effect entry weakens the package-wide `sideEffects: false` and focused-
+  import guarantees even if ordinary imports remain inert; and
+- `Array.has` moves the same collision and ownership problems to the constructor
+  rather than removing them.
+
+There is no safe `Object.prototype` version: a universal `value.has()` endpoint
+would affect nearly every object and risks collisions far beyond arrays.
+
+The supported dot-style alternative is the explicit, frozen
+`deepQuery(value).has(...)` view, which accepts arrays as structured roots and
+delegates to the same bounded atomic search functions. Category namespaces and
+granular subpaths provide discovery for array transforms without binding methods
+to a particular value. This keeps every modern package import inert, a property
+enforced by a regression that snapshots the complete descriptors of Array,
+Object, Date, and their prototypes before importing every modern entry point.
