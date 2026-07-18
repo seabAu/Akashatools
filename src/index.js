@@ -12,6 +12,7 @@ export * from "./collection.js";
 export * from "./data.js";
 export * from "./date.js";
 export * from "./http.js";
+export * from "./input.js";
 export * from "./number.js";
 export * from "./object.js";
 export * from "./random.js";
@@ -29,6 +30,7 @@ export {
   data,
   date,
   http,
+  input,
   number,
   object,
   random,

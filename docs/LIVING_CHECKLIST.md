@@ -399,10 +399,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 139 current public declarations are complete, with parameter/return prose,
+  All 145 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  139 current public declarations by `npm run check:docs`.
+  145 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -412,7 +412,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 18 declaration files.
+  byte-for-byte drift check across 19 declaration files.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
   service in JavaScript and TypeScript consumers.
@@ -569,9 +569,10 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
 - [x] Add the universal `data` category with tested `normalizeDataType`,
   `analyzeArrayTypes`, `defaultValueForType`, `defaultValueFor`, and
   `initializeLike` contracts.
-- [ ] Add pure input/control inference that composes the atomic data layer,
-  including value/type-to-input mapping and data-to-field descriptors without
-  importing React, Mongoose, or application schemas.
+- [x] Add pure input/control inference that composes the atomic data layer:
+  type/value-to-native-input mapping, declared/runtime control classification,
+  single field descriptors, and direct data-to-field descriptors without React,
+  Mongoose, or application schemas.
 - [ ] Expand bounded deep query/search operations into an explicit `has` family
   that can return boolean, first match, value, parent, or all matches without
   changing return shape behind boolean flags.

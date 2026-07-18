@@ -1107,10 +1107,27 @@
     {
       "module": "Val.js",
       "name": "getFieldType",
-      "canonicalReferences": [],
-      "decision": "Merge into pending pure `input` inference; keep component/layout/schema policy app-local.",
+      "canonicalReferences": [
+        {
+          "name": "inputTypeForValue",
+          "category": "input",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/input",
+          "relation": "related"
+        },
+        {
+          "name": "controlTypeForValue",
+          "category": "input",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/input",
+          "relation": "related"
+        }
+      ],
+      "decision": "Split into `input.inputTypeForValue` and full-array `input.controlTypeForValue`; component/layout/schema policy stays app-local.",
       "behavior": "Maps runtime values to HTML/form control concepts.",
-      "evidence": "Active-call-site regression review."
+      "evidence": "Active-call-site regression review and 2.x input tests."
     },
     {
       "module": "Val.js",

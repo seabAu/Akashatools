@@ -47,6 +47,11 @@
       "import": "./src/http.js",
       "default": "./src/http.js"
     },
+    "./input": {
+      "types": "./types/input.d.ts",
+      "import": "./src/input.js",
+      "default": "./src/input.js"
+    },
     "./node": {
       "types": "./types/node.d.ts",
       "node": "./src/node.js",

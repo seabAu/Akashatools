@@ -32,7 +32,7 @@ Akashatools now adopts these dependency-free operations under `data`:
 - create a fresh initialized value for a type or runtime value; and
 - recursively initialize a plain-data shape with explicit array/object policies.
 
-Pure HTML input/control inference and generic data-to-field descriptors may
+Pure HTML input/control inference and generic data-to-field descriptors now
 compose that layer under a separate `input` category. Mongoose adapters, custom
 database-ID construction, React components, validation/layout metadata,
 application defaults, and data-model migrations remain application-owned.

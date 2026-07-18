@@ -120,13 +120,13 @@ mixes primitive-looking functions with HTML input and schema-form policy.
 | --- | --- | --- |
 | `generateString` | Generates characters with `Math.random` and no argument/source validation. | Replaced by validated, injectable `random.randomString`. |
 | `getType` | Produces legacy custom type strings and infers an array type from its first element. | Basic inspection is covered by `validation.typeOf`; structured array inspection remains deferred. |
-| `getFieldType` | Maps runtime values to HTML input concepts. | Merge into pending pure `input` inference; layout policy remains app-local. |
+| `getFieldType` | Maps runtime values to HTML input concepts. | Split into `input.inputTypeForValue` and `input.controlTypeForValue`; layout policy remains app-local. |
 | `getArrayType` | Infers from the first item and references undeclared `test` for nonempty arrays. | Reject broken implementation; adopted structured replacement `data.analyzeArrayTypes`. |
 | `formatInputValue` | Reads DOM event/control shapes and applies HTML-field coercion. | App-local UI adapter. |
 | `initializeModel` | Delegates to legacy `cleanJSON`, which does not preserve a general value model. | Reject implementation; related explicit replacement is `data.initializeLike`. |
 | `arrayToEnum` | Builds a frozen value-to-itself object without defining duplicate/unsafe-key behavior. | Defer safe lookup/keying helper only if usage warrants it. |
 | `typeToInitialDefault` | Maps form types to defaults but loses explicit false/zero defaults through truthiness checks. | Split: adopted generic core `data.defaultValueForType`; schema overrides remain app-local. |
-| `dataType2fieldType` | Maps custom data-type labels to HTML input types. | Merge into pending pure `input` type inference. |
+| `dataType2fieldType` | Maps custom data-type labels to HTML input types. | Adopted atomic replacement `input.inputTypeForType`; composite rendering uses `controlTypeForType`. |
 | `generateRandom` | Dispatches fixture generation by schema/form type using `Math.random`. | Primitive cases are covered by `random`; schema dispatch remains fixture-local. |
 | `createBasicUUID` | Produces a non-cryptographic, caller-shaped random identifier. | Reject for identity/security use; use Web Crypto identifiers. |
 | `schemaToFormModel` | Recursively turns a custom schema into form metadata and optional random fixtures. | App-local schema/form adapter. |

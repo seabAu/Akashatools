@@ -47,6 +47,7 @@ Category subpaths provide the smallest and clearest import boundary:
 import { chunk, removeFromArray } from "akashatools/array";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { deepClone, setAtPath } from "akashatools/object";
+import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 ```
 
 The `data` category keeps related operations distinct and composable:
@@ -64,6 +65,17 @@ analyzeArrayTypes([1, "2", 3]).types; // ["number", "string"]
 defaultValueForType(Boolean); // false
 initializeLike({ name: "Ada", rows: [{ id: 1 }] });
 // { name: "", rows: [] }
+```
+
+Input inference is a separate, framework-neutral layer:
+
+```js
+import { controlTypeForValue, fieldsFromData, inputTypeForValue } from "akashatools/input";
+
+inputTypeForValue(new Date()); // "datetime-local"
+controlTypeForValue([{ id: 1 }]); // "object-array"
+fieldsFromData({ name: "Ada", active: false });
+// Frozen descriptors with text/checkbox input types and literal defaults.
 ```
 
 Category namespaces are also available when that style is more readable:

@@ -23,6 +23,8 @@
       "compact",
       "compareNumericOrder",
       "compareValues",
+      "controlTypeForType",
+      "controlTypeForValue",
       "countBy",
       "countWords",
       "createCollatorComparator",
@@ -48,6 +50,8 @@
       "excludeBy",
       "excludeIds",
       "fibonacci",
+      "fieldDescriptorFor",
+      "fieldsFromData",
       "findDeep",
       "flatten",
       "formatBytes",
@@ -64,6 +68,9 @@
       "http",
       "includesText",
       "initializeLike",
+      "input",
+      "inputTypeForType",
+      "inputTypeForValue",
       "insertItem",
       "intersection",
       "isArray",
@@ -225,6 +232,14 @@
       "parseContentDispositionFilename",
       "redactHeaders",
       "request"
+    ],
+    "./input": [
+      "controlTypeForType",
+      "controlTypeForValue",
+      "fieldDescriptorFor",
+      "fieldsFromData",
+      "inputTypeForType",
+      "inputTypeForValue"
     ],
     "./node": [
       "globPaths",

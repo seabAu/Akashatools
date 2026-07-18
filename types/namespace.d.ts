@@ -5,6 +5,7 @@ import * as collectionModule from "./collection.js";
 import * as dataModule from "./data.js";
 import * as dateModule from "./date.js";
 import * as httpModule from "./http.js";
+import * as inputModule from "./input.js";
 import * as numberModule from "./number.js";
 import * as objectModule from "./object.js";
 import * as randomModule from "./random.js";
@@ -159,6 +160,24 @@ export declare const http: Readonly<{
         maximumHeaderLength?: number;
         maximumLength?: number;
     }): string | undefined;
+}>;
+/** Frozen form-input inference and descriptor utilities. */
+export declare const input: Readonly<{
+    inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): string | undefined;
+    inputTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): string | undefined;
+    controlTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): "input" | "array" | "object" | "map" | "set" | "unsupported";
+    controlTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): "input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported";
+    fieldDescriptorFor(name: string, value: unknown, options?: inputModule.InputFieldOptions): Readonly<{
+        name: string;
+        label: string;
+        path: readonly (string | number)[];
+        dataType: string;
+        inputType: string | undefined;
+        controlType: ReturnType<typeof inputModule.controlTypeForValue>;
+        defaultValue: unknown;
+        arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
+    }>;
+    fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: inputModule.FieldsFromDataOptions): readonly ReturnType<typeof inputModule.fieldDescriptorFor>[];
 }>;
 /** Frozen numeric utilities for namespace-style discovery. */
 export declare const number: Readonly<{
@@ -432,6 +451,12 @@ export declare const akasha: Readonly<{
     request: typeof httpModule.request;
     redactHeaders: typeof httpModule.redactHeaders;
     parseContentDispositionFilename: typeof httpModule.parseContentDispositionFilename;
+    inputTypeForType: typeof inputModule.inputTypeForType;
+    inputTypeForValue: typeof inputModule.inputTypeForValue;
+    controlTypeForType: typeof inputModule.controlTypeForType;
+    controlTypeForValue: typeof inputModule.controlTypeForValue;
+    fieldDescriptorFor: typeof inputModule.fieldDescriptorFor;
+    fieldsFromData: typeof inputModule.fieldsFromData;
     clamp: typeof numberModule.clamp;
     wrap: typeof numberModule.wrap;
     roundTo: typeof numberModule.roundTo;
@@ -597,6 +622,23 @@ export declare const akasha: Readonly<{
             maximumHeaderLength?: number;
             maximumLength?: number;
         }): string | undefined;
+    }>;
+    input: Readonly<{
+        inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): string | undefined;
+        inputTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): string | undefined;
+        controlTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): "input" | "array" | "object" | "map" | "set" | "unsupported";
+        controlTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): "input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported";
+        fieldDescriptorFor(name: string, value: unknown, options?: inputModule.InputFieldOptions): Readonly<{
+            name: string;
+            label: string;
+            path: readonly (string | number)[];
+            dataType: string;
+            inputType: string | undefined;
+            controlType: ReturnType<typeof inputModule.controlTypeForValue>;
+            defaultValue: unknown;
+            arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
+        }>;
+        fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: inputModule.FieldsFromDataOptions): readonly ReturnType<typeof inputModule.fieldDescriptorFor>[];
     }>;
     number: Readonly<{
         clamp(value: number, minimum: number, maximum: number): number;

@@ -26,6 +26,8 @@ drop-in compatibility.
 | `compact` | array | universal | no input mutation | `akashatools/array` | `AO.removeEmpty`, `AO.cleanArray` |
 | `compareNumericOrder` | sort | universal | no input mutation | `akashatools/sort` | None |
 | `compareValues` | sort | universal | no input mutation | `akashatools/sort` | None |
+| `controlTypeForType` | input | universal | no input mutation | `akashatools/input` | None |
+| `controlTypeForValue` | input | universal | no input mutation | `akashatools/input` | `Val.getFieldType` |
 | `countBy` | array | universal | no input mutation | `akashatools/array` | None |
 | `countWords` | string | universal | no input mutation | `akashatools/string` | None |
 | `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort` | None |
@@ -48,6 +50,8 @@ drop-in compatibility.
 | `excludeBy` | collection | universal | no input mutation | `akashatools/collection` | None |
 | `excludeIds` | collection | universal | no input mutation | `akashatools/collection` | None |
 | `fibonacci` | number | universal | no input mutation | `akashatools/number` | None |
+| `fieldDescriptorFor` | input | universal | no input mutation | `akashatools/input` | None |
+| `fieldsFromData` | input | universal | no input mutation | `akashatools/input` | None |
 | `findDeep` | object | universal | no input mutation | `akashatools/object` | `AO.has`, `AO.hasAll`, `AO.deepGetKey`, `AO.deepSearch` |
 | `flatten` | array | universal | no input mutation | `akashatools/array` | `AO.flatten` |
 | `formatBytes` | number | universal | no input mutation | `akashatools/number` | None |
@@ -65,6 +69,8 @@ drop-in compatibility.
 | `HttpError` | http | universal | no input mutation | `akashatools/http` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
 | `includesText` | string | universal | no input mutation | `akashatools/string` | `AO.valContains`, `String.subStringSearch` |
 | `initializeLike` | data | universal | no input mutation | `akashatools/data` | `AO.cleanJSON` |
+| `inputTypeForType` | input | universal | no input mutation | `akashatools/input` | None |
+| `inputTypeForValue` | input | universal | no input mutation | `akashatools/input` | `Val.getFieldType` |
 | `insertItem` | array | universal | no input mutation | `akashatools/array` | None |
 | `intersection` | array | universal | no input mutation | `akashatools/array` | None |
 | `isArray` | validation | universal | no input mutation | `akashatools/validation` | `Val.isArray`, `Val.isValidArray`, `Val.isAO` |
@@ -233,7 +239,7 @@ drop-in compatibility.
 | `Val.isObjectArray` | related: `validation.isPlainObjectArray` | Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array. |
 | `Val.isAO` | related: `validation.isArray`, related: `validation.isNonArrayObject` | Reject abbreviation; compose `validation.isArray` and `validation.isNonArrayObject` explicitly. |
 | `Val.getType` | related: `validation.typeOf`, related: `data.normalizeDataType`, related: `data.analyzeArrayTypes` | Split into atomic `validation.typeOf`, `data.normalizeDataType`, and full-slot `data.analyzeArrayTypes`. |
-| `Val.getFieldType` | None | Merge into pending pure `input` inference; keep component/layout/schema policy app-local. |
+| `Val.getFieldType` | related: `input.inputTypeForValue`, related: `input.controlTypeForValue` | Split into `input.inputTypeForValue` and full-array `input.controlTypeForValue`; component/layout/schema policy stays app-local. |
 | `Val.getArrayType` | replacement: `data.analyzeArrayTypes` | Adopted structured replacement `data.analyzeArrayTypes`. |
 | `Time.convertDate` | related: `date.formatDate` | Merge into adopted `date.formatDate` with explicit `Intl` options. |
 | `Time.sec2str` | None | Defer a duration formatter with a stable grammar. |

@@ -8,6 +8,9 @@
 - Added the universal `data` category with atomic type-descriptor normalization,
   complete array type analysis, fresh type/value defaults, and bounded recursive
   shape initialization.
+- Added the universal `input` category with separate scalar input inference,
+  composite control classification, and frozen framework-neutral field
+  descriptors for plain objects and arrays.
 - Reclassified the Mindspace/portfolio data and input families so generic
   introspection/default/control primitives can compose beneath application-owned
   Mongoose, React, layout, custom-ID, and product-schema adapters.

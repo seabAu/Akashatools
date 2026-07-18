@@ -11,7 +11,8 @@ const expectations = [
   ["data", "akasha.data.", ["analyzeArrayTypes", "defaultValueForType", "initializeLike"]],
   ["validation", "akasha.validation.", ["isEmail", "isJson", "isPlainObjectArray"]],
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
-  ["flat", "akasha.", ["chunk", "initializeLike", "isEmail", "request"]],
+  ["input", "akasha.input.", ["controlTypeForValue", "fieldsFromData", "inputTypeForType"]],
+  ["flat", "akasha.", ["chunk", "fieldsFromData", "initializeLike", "isEmail", "request"]],
 ];
 const files = [];
 

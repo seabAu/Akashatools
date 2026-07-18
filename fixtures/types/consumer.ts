@@ -3,6 +3,7 @@ import akasha, {
   chunk,
   data,
   http,
+  input,
   isEmail,
   request,
   validation,
@@ -10,6 +11,7 @@ import akasha, {
 import { chunk as categoryChunk } from "akashatools/array";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { HttpError, request as categoryRequest } from "akashatools/http";
+import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import type { JsonContract } from "akashatools/validation";
 
@@ -21,6 +23,9 @@ const namedNamespaceValues: number[][] = array.chunk([1, 2, 3], 2);
 const initialized: unknown = initializeLike({ name: "Ada" });
 const primaryType: string | undefined = analyzeArrayTypes([1, 2]).primaryType;
 const defaultString: unknown = data.defaultValueForType(String);
+const textInput: string | undefined = inputTypeForValue("Ada");
+const fieldName: string = fieldsFromData({ name: "Ada" })[0].name;
+const nestedInput: string | undefined = input.inputTypeForType(Boolean);
 const validEmail: boolean = validation.isEmail("person@example.com");
 const rootPredicate: boolean = isEmail("person@example.com");
 const path: string = resolveContainedPath("/srv/data", "report.json");
@@ -44,6 +49,7 @@ const invalidContract: JsonContract = { type: "date" };
 void [
   values, categoryValues, nestedValues, flatValues, namedNamespaceValues,
   initialized, primaryType, defaultString,
+  textInput, fieldName, nestedInput,
   validEmail, rootPredicate, path, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract,
 ];

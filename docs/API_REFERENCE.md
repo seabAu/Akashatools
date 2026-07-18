@@ -788,6 +788,91 @@ Throws:
 - `TypeError` — If value, options, or fallback violates its literal contract.
 - `RangeError` — If a length bound is invalid or the header exceeds maximumHeaderLength.
 
+## input
+
+Runtime: Universal JavaScript on the supported runtime floor.
+
+Focused import: `akashatools/input`
+
+### inputTypeForType
+
+Returns the native HTML input type suited to one scalar data type. Composite containers return `undefined` by default because they require a higher-level control; use `controlTypeForType` to classify those. Overrides are checked by normalized descriptor spelling and then by canonical data type.
+
+- Signature: `inputTypeForType()`
+- Import: `import { inputTypeForType } from "akashatools/input"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string | undefined` — Native input type or undefined for unsupported/composite data.
+
+Throws:
+- `TypeError` — If descriptor or options do not match the contract.
+
+### inputTypeForValue
+
+Returns the native HTML input type suited to a runtime scalar value. Strings remain text even when their content resembles a number or boolean; this function never guesses semantic types from string contents.
+
+- Signature: `inputTypeForValue()`
+- Import: `import { inputTypeForValue } from "akashatools/input"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string | undefined` — Native input type or undefined for unsupported/composite data.
+
+Throws:
+- `TypeError` — If options do not match the contract.
+
+### controlTypeForType
+
+Classifies a declared type into a renderer-level control without pretending composite data can be accepted by a native input. The result is `input`, `array`, `object`, `map`, `set`, or `unsupported`.
+
+- Signature: `controlTypeForType()`
+- Import: `import { controlTypeForType } from "akashatools/input"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `"input" | "array" | "object" | "map" | "set" | "unsupported"` — Generic control category.
+
+Throws:
+- `TypeError` — If descriptor or options do not match the contract.
+
+### controlTypeForValue
+
+Classifies a runtime value into a renderer-level control. Arrays are analyzed in full and distinguished as empty, scalar, object, nested, or mixed rather than inferred from item zero.
+
+- Signature: `controlTypeForValue()`
+- Import: `import { controlTypeForValue } from "akashatools/input"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `"input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported"` — Generic control category.
+
+Throws:
+- `TypeError` — If options do not match the contract.
+
+### fieldDescriptorFor
+
+Describes one generic data-backed input field without importing a UI framework or schema language. The existing value becomes `defaultValue` unless the option is explicitly present, so false, zero, and empty strings are preserved. The value itself is retained by reference, not cloned.
+
+- Signature: `fieldDescriptorFor()`
+- Import: `import { fieldDescriptorFor } from "akashatools/input"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>` — Frozen framework-neutral field descriptor.
+
+Throws:
+- `TypeError` — If name, options, label, or path is invalid.
+
+### fieldsFromData
+
+Creates descriptors for the direct fields of a plain object or array. Object accessors, enumerable symbols, prototype-mutating names, and custom array properties are rejected without invoking getters. Sparse array slots become indexed fields with `undefined` values, matching Akashatools sequence policy.
+
+- Signature: `fieldsFromData()`
+- Import: `import { fieldsFromData } from "akashatools/input"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `readonly ReturnType<typeof fieldDescriptorFor>[]` — Frozen ordered field descriptors.
+
+Throws:
+- `TypeError` — If value, options, labels, or property semantics are invalid.
+- `RangeError` — If the field count exceeds maximumFields.
+
 ## number
 
 Runtime: Universal JavaScript on the supported runtime floor.

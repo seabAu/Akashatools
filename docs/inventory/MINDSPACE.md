@@ -379,13 +379,13 @@ schema descriptions rather than providing general data primitives.
 | `getDefaultValueForType` | Maps constructors to defaults, including current time for Date. | Adopted generic core as `data.defaultValueForType`, with epoch/now date policy and fresh mutable defaults. |
 | `getType` | Custom legacy type strings inferred from first array element. | Adopted basic `validation.typeOf`; richer inspection deferred. |
 | `getValueType` | Adds Mindspace `DateTimeLocal` and form/schema-oriented capitalized labels. | App-local type adapter. |
-| `getFieldType` | Maps values to HTML input concepts. | Merge into pending pure `input` inference; component/layout policy remains app-local. |
+| `getFieldType` | Maps values to HTML input concepts. | Split into `input.inputTypeForValue` and `input.controlTypeForValue`; component/layout policy remains app-local. |
 | `getArrayType` | References undeclared `test` for nonempty arrays. | Reject implementation; adopted structured replacement `data.analyzeArrayTypes`. |
 | `formatInputValue` | Reads DOM event shapes and converts form controls. | App-local UI adapter. |
 | `initializeModel` | Delegates to legacy `cleanJSON`, which discards scalar values and all but first array examples. | Reject implementation; related explicit replacement is `data.initializeLike` with named container policies. |
 | `arrayToEnum` | Duplicate frozen value-to-itself object builder with unsafe key ambiguity. | Defer safe `keyBy`/lookup builder if usage warrants it. |
 | `typeToInitialDefault` | Form default mapper uses truthiness, so explicit false/zero defaults are lost. | Split: adopted generic core `data.defaultValueForType`; schema overrides remain app-local. |
-| `dataType2fieldType` | Maps data type labels to HTML input types. | Merge into pending pure `input` type inference. |
+| `dataType2fieldType` | Maps data type labels to HTML input types. | Adopted atomic replacement `input.inputTypeForType`; composite rendering uses `controlTypeForType`. |
 | `generateRandom` | Type-switched fixture generator based on `Math.random`. | Merge primitive cases into adopted random APIs; schema switching stays fixture-local. |
 | `createBasicUUID` | Non-cryptographic random identifier with caller-defined complexity. | Reject for identity/security; future secure IDs use Web Crypto. |
 | `schemaToFormModel` | Converts Mongoose-like field definitions into UI form metadata. | App-local/schema candidate; coupled to input types and legacy helpers. |

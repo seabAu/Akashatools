@@ -24,9 +24,9 @@ operations instead of being copied as one form-model converter.
 | What is the initialized default for a type? | `getDefaultValueForType`, `typeToInitialDefault`, and local copies overlap. Several use `value || fallback` or truthy conditionals, losing explicit `false`, `0`, and `""`. Date outputs vary between now, Date objects, and formatted strings. | Add `data.defaultValueForType` with fresh values, epoch/now policy, caller factories, and literal falsy behavior. |
 | What is the initialized default for this value? | Several callers first detect a type and then call another mapper. | Add the thin compositional wrapper `data.defaultValueFor`. |
 | What initialized shape mirrors this data? | Legacy `cleanJSON` recursively resets leaves and keeps only the first array item; `initializeModel` delegates to it despite the cleaning name. | Add bounded `data.initializeLike` with explicit empty/items/sample arrays and empty/shape objects. Reject the old name and implicit policy. |
-| Which HTML input accepts this scalar? | `getFieldType` and `dataType2fieldType` mix type inference, HTML input names, and custom composite controls. | Pending pure `inputTypeForType`/`inputTypeForValue`; no React or layout dependency. |
-| Is this composite data a field or nested editor? | Arrays, objects, object arrays, and mixed arrays require a control distinction beyond native HTML `type`. | Pending separate `controlTypeForType`/value analysis rather than overloading scalar input inference. |
-| How are field descriptors built? | `dataToModel` is mostly generic; `schemaToFormModel` also reads Mongoose paths, custom classes, defaults, labels, validation, and random fixtures. | Pending generic data-to-field descriptors composed from atomic functions. Keep Mongoose/schema adapters app-owned. |
+| Which HTML input accepts this scalar? | `getFieldType` and `dataType2fieldType` mix type inference, HTML input names, and custom composite controls. | Adopt `inputTypeForType`/`inputTypeForValue`; no React or layout dependency. |
+| Is this composite data a field or nested editor? | Arrays, objects, object arrays, and mixed arrays require a control distinction beyond native HTML `type`. | Adopt separate `controlTypeForType`/`controlTypeForValue` analysis rather than overloading scalar input inference. |
+| How are field descriptors built? | `dataToModel` is mostly generic; `schemaToFormModel` also reads Mongoose paths, custom classes, defaults, labels, validation, and random fixtures. | Adopt generic `fieldDescriptorFor`/`fieldsFromData` composed from atomic functions. Keep Mongoose/schema adapters app-owned. |
 
 ## Adopted data contracts
 
@@ -61,6 +61,23 @@ These APIs overlap by design but are not aliases:
 This core/wrapper relationship follows the user's direction that meaningful
 semi-redundancy is preferable to forcing unrelated questions through one
 shape-changing umbrella function.
+
+## Adopted input contracts
+
+The second implementation batch adds:
+
+- `inputTypeForType` and `inputTypeForValue` for native scalar input types,
+  including `datetime-local` for Date values without coercing string contents;
+- `controlTypeForType` and `controlTypeForValue` for renderer-level composite
+  distinctions, including empty/scalar/object/nested/mixed arrays; and
+- `fieldDescriptorFor` and `fieldsFromData` for frozen, framework-neutral field
+  metadata that literally preserves false, zero, and empty-string defaults.
+
+The data-to-fields operation reads only direct own data properties, includes a
+work bound, treats sparse array slots as indexed `undefined`, and rejects active
+or prototype-mutating property semantics without executing getters. It does not
+add event handlers, mutate form state, create an `enabled` field, infer labels,
+or absorb renderer validation/layout policy.
 
 ## Deep-query and dot-syntax boundary
 
