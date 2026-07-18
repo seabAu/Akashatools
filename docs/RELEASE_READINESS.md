@@ -1,12 +1,14 @@
 # Release readiness
 
-> Status on 2026-07-18: the expanded Akashatools 2.0 alpha is locally
-> release-candidate ready. Complete audits pass on both supported Node runtimes
-> and the three browser engines. Hosted workflow evidence, bounded real-app
-> migrations, and every push, tag, automation, and publication action remain
-> external approval gates.
+> Status on 2026-07-18: release-candidate evidence is reopened while the newly
+> discovered `(excepted modules)` source set is redesigned and verified. The
+> snapshot below remains the last complete pre-expansion baseline; its counts are
+> historical until Phase 9.6 passes on both supported Node runtimes and all three
+> browser engines. Hosted workflow evidence, bounded real-app migrations, and
+> every push, tag, automation, and publication action remain external approval
+> gates.
 
-## Current local candidate snapshot
+## Last complete local candidate snapshot (superseded by Phase 9.6 work)
 
 | Field | Verified value |
 | --- | --- |

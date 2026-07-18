@@ -1,7 +1,7 @@
 # Akashatools 2026 living checklist
 
-> Status: active project plan; the 2026-07-18 regression expansion and local
-> release-candidate evidence are complete. Update this document in
+> Status: active project plan; the local release-candidate evidence is reopened
+> for the 2026-07-18 `(excepted modules)` audit and implementation pass. Update this document in
 > the same commit as each meaningful implementation batch. Check an item only when its acceptance
 > criteria are verified. Add newly discovered work instead of keeping it in chat.
 
@@ -656,38 +656,77 @@ Acceptance criteria:
 - All recursive work is cycle-aware, bounded, non-mutating, and safe around
   accessors, symbols, custom properties, and prototype-mutating keys.
 
+## Phase 9.6 — `(excepted modules)` recovery and redesign
+
+The repository-level `(excepted modules)` directory was omitted from the earlier
+source ledgers. Its six files are now fixed and classified in
+`docs/inventory/EXCEPTED_MODULES_2026-07-18.md`. Their intent may be recovered;
+their framework coupling, defects, ambiguous coordinate order, and ambient
+browser behavior must not be copied into the canonical package.
+
+- [x] Inventory every active export and the comment-only `ObjMap.js` source,
+  record source hashes, and assign an explicit adopt/covered/reject/owned
+  disposition.
+- [ ] Add a universal `geo` category with canonical longitude/latitude order,
+  range-checked position aliases, Haversine distance, bounded nearby queries,
+  and strict deterministic GeoJSON features/collections.
+- [ ] Complete serialized input conversion with a pure, compiled datatype parser
+  and a one-shot wrapper. Preserve meaningful empty/falsy values, reject lossy
+  guesses, and state date/time assumptions literally.
+- [ ] Add a browser control adapter for checkbox, radio, file, multiple-select,
+  and ordinary value extraction without importing browser globals at module load.
+- [ ] Recover the portable DOM/storage atoms as late-bound media-query helpers
+  and explicit-Storage JSON read/write helpers; leave React renderers and
+  product database layouts with their owners.
+- [ ] Add contract, generation, type, package, collision, bundle, and
+  three-engine browser coverage for every adopted function.
+- [ ] Benchmark semantically equivalent parsing and geo hot paths at high call
+  counts. Keep elapsed time out of deterministic test assertions and document
+  when precompiled parsers improve repeated-handler throughput.
+- [ ] Refresh generated declarations, API snapshots/reference, migration notes,
+  changelog, package measurements, coverage, and Node 22/24 release evidence.
+
+Acceptance criteria:
+
+- GeoJSON arrays always use `[longitude, latitude]`; legacy `[latitude,
+  longitude]` input is accepted only through an explicit option.
+- Distance units and earth-radius policy are explicit, finite, and bounded.
+- Repeated parsing can precompute descriptor/options without changing one-shot
+  parsing semantics.
+- Datatypes that cannot be reconstructed safely from serialized input fail with
+  a documented error instead of returning an unrelated fallback.
+- Universal imports remain inert in Node and do not touch `window`, Storage,
+  built-in prototypes, React, Mapbox, or the DOM.
+
 ## Phase 10 — release gates
 
 ### Alpha exit
 
-- [x] Complete the disposition ledger for all four active consumer source sets,
-  alongside the complete 1.0.2 legacy manifest.
+- [ ] Reconfirm the disposition ledger after completing the newly discovered
+  `(excepted modules)` source set.
 - [x] Stabilize default/named/category namespace architecture.
-- [x] Reconfirm the expanded universal core with contract tests and JSDoc: 175
-  documented declarations, 213 generated declaration files, and 183 contracts
-  pass on both supported Node audit runtimes.
+- [ ] Reconfirm the expanded universal core, generated declarations, and
+  contracts on both supported Node audit runtimes after Phase 9.6.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [x] Re-freeze the 175 canonical names and option shapes after the regression
-  expansion through the reviewed API snapshot, generated surfaces, types, and
-  explicit decision records.
-- [x] Complete security review and initial performance/bundle baselines.
+- [ ] Re-freeze canonical names and option shapes after Phase 9.6 through the
+  reviewed API snapshot, generated surfaces, types, and explicit decisions.
+- [ ] Refresh security review and performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
 
 ### Release candidate exit
 
-- [x] Complete API docs, migration guide, declarations, and package smoke tests.
-- [x] Resolve all newly reopened breaking-change questions recorded in this
-  checklist and the decision documents, including granular paths, semantic
-  variants, dot syntax, and rejection of built-in augmentation.
-- [x] Confirm clean install and the local supported-runtime matrix on Node
+- [ ] Refresh API docs, migration guide, declarations, and package smoke tests.
+- [ ] Resolve the newly reopened geo, input parsing, browser adapter, and storage
+  contract questions recorded in Phase 9.6 and its source ledger.
+- [ ] Reconfirm clean install and the local supported-runtime matrix on Node
   22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
   remains a separate open gate under Phase 7.
-- [x] Confirm package contents, license, changelog, repository links, and current
+- [ ] Reconfirm package contents, license, changelog, repository links, and current
   alpha version. See `docs/RELEASE_READINESS.md`; stable version promotion is
   still part of the authorized publication gate.
 - [ ] Obtain explicit user approval before publishing an RC.
