@@ -78,7 +78,9 @@ case. No package entry mutates built-in constructors or prototypes.
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 532 files at 380,227 bytes packed and 1,418,573 bytes unpacked.
+  selects 533 files at approximately 384 KB packed and 1.43 MB unpacked. Capture
+  exact bytes only for an immutable release candidate because a self-recorded
+  compressed size changes the packaged payload.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
   116,220 raw/34,939 gzip bytes for the complete discoverable namespace.
@@ -555,10 +557,19 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
   retained thin application adapters; the later complete call-site audit added
   seven strict validation conveniences backed by 559 live legacy reads.
+- [x] Refresh the read-only call-site audit with behavioral use shapes. The
+  2026-07-18 pass maps 1,981 parsed root reads into 1,980 calls and one proven
+  non-call defect, classifies every result and argument count, finds 56 calls
+  inside `try` blocks, records eight direct-subpath calls/two unused bindings,
+  finds zero dynamic imported-root reads, and reproduces two ambient candidates
+  in one malformed `_unused` Mindspace file. See
+  `docs/inventory/CONSUMER_BEHAVIOR_AUDIT_2026-07-18.md`.
 - [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
-  or environment globals accidentally. Static AST evidence now maps all 1,982
-  parsed legacy member reads and identifies one undeclared `utils` global in a
-  malformed `_unused` Mindspace file, but runtime intent still requires an
+  or environment globals accidentally. Static evidence now proves no discarded
+  call results, no dynamic root reads, two unused `handleFetch` imports, two
+  shallow-copy mutator calls, seven flattening calls with residual nested-alias
+  risk, three sentinel-producing table adapters, and the malformed ambient
+  reads. Runtime values and rendered/application intent still require an
   authorized bounded migration.
 - [x] Feed validated improvements back into the canonical API before 2.0 RC.
   The refresh contributed bounded single-flight loaders, deterministic JSON,
@@ -928,6 +939,7 @@ Acceptance criteria:
 | 2026-07-18 | Share repeated internal option-error text instead of widening the full-namespace budget. | Centralizing one private constant keeps all public messages unchanged while the final default-category bundle measures 113,294/33,705 under the existing 114,000/34,000 ceiling; focused imports remain 321/252 and consumer sets save 106,018-109,518 raw bytes. |
 | 2026-07-18 | Separate canonical runtime datatypes, native input types, and composite control types into three frozen vocabularies. | Their wire values sometimes overlap but their domains and valid sets do not. Shared internal definitions keep data, input, and validation consistent without circular imports; public string values remain compatible and exact TypeScript unions make optional adoption safer. |
 | 2026-07-18 | Recalibrate only the full-discovery namespace guardrail to 117,000 raw/35,250 gzip for the canonical vocabularies. | Keeping all three constant objects, one normalized-name map, and direct canonical built-in dispatch on the discoverable default namespace moves the largest fixture to 116,220/34,939, while focused root/category/granular imports remain 321/252 and side-effect-only output remains zero raw bytes. |
+| 2026-07-18 | Treat call-site syntax as migration-risk evidence, not runtime compatibility proof. | The refreshed scanner classifies all 1,981 parsed root reads, direct legacy bindings, result use, try containment, dynamic access, and malformed-file candidates. It can prove discarded-result absence and specific source defects, but only authorized app tests can establish runtime values, alias identity, rendering, and fallback intent. |
 
 ## Definition of done
 

@@ -21,6 +21,11 @@
 - Added an equal-output canonical `typeOf` dispatch benchmark and replaced a
   slower intermediate lookup with direct constant returns plus a custom-brand
   fallback.
+- Expanded the read-only legacy-consumer audit from member counts to call and
+  reference shapes, argument/result contexts, lexical `try` containment,
+  direct/unused subpath bindings, dynamic access, and malformed-source
+  candidates; the current behavior-risk ledger records the remaining
+  migration-only mutation, coercion, fallback, and ambient-global evidence.
 - Completed the reopened 2026-07-18 regression, adversarial refinement, and
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,

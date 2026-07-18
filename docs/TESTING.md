@@ -7,6 +7,10 @@ export map, installed package, declarations, editor completion, and retained 1.x
 compatibility paths. `test/consumer-compatibility.test.js` executes focused-import
 adapters based on the current Mindspace, portfolio, COMPOSR, and SPLICR utility
 contracts; see `docs/CONSUMER_COMPATIBILITY.md` for its scope and limits.
+`test/legacy-consumer-audit.test.js` separately verifies the read-only source
+scanner's static/dynamic access distinction, call result and `try` contexts,
+direct and unused legacy subpath bindings, manifest correlation, and conservative
+fallback for malformed source.
 
 ## Commands
 

@@ -1,5 +1,10 @@
 # Active consumer legacy-usage audit — 2026-07-16
 
+> Historical footprint snapshot. The scanner and current working-copy evidence
+> were expanded on 2026-07-18; see
+> [`CONSUMER_BEHAVIOR_AUDIT_2026-07-18.md`](./CONSUMER_BEHAVIOR_AUDIT_2026-07-18.md)
+> for current counts and behavioral use shapes.
+
 This audit measures current Akashatools 1.0.2 imports and member reads in the
 read-only Mindspace, portfolio rebuild, COMPOSR, and SPLICR working copies. It
 answers a different question from the symbol inventories: not merely which
@@ -100,4 +105,3 @@ authorized migration should therefore start with direct validation replacements
 in one bounded Mindspace surface, run that application’s focused tests, and only
 then proceed to recursive AO helpers. Until that happens, Akashatools must not
 claim drop-in compatibility.
-

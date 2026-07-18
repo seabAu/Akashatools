@@ -19,16 +19,18 @@
 | Generated declaration files | 236 |
 | Reviewed API surfaces | 19 |
 | License | ISC (`LICENSE`, 741 bytes) |
-| Dry-run files | 532 |
-| Dry-run packed size | 380,227 bytes |
-| Dry-run unpacked size | 1,418,573 bytes |
+| Dry-run files | 533 |
+| Dry-run packed size | Approximately 384 KB |
+| Dry-run unpacked size | Approximately 1.43 MB |
 
 `npm pack --dry-run --json` verifies the selected package content without
 creating or publishing an artifact. The package includes runtime sources,
 generated declarations, retained `lib` compatibility modules, documentation,
 benchmarks, changelog, README, license, and package metadata. Tests, consumer
 fixtures, development scripts/configuration, coverage, installed dependencies,
-and credentials are excluded.
+and credentials are excluded. Exact byte counts belong to the final immutable
+release candidate: embedding a compressed byte count inside a packaged document
+changes that count and can create a non-converging self-reference.
 
 The repository, issue tracker, and homepage metadata still target the existing
 public `seabAu/Akashatools` project. This local 2.0 repository has no Git remote
@@ -58,7 +60,7 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Default namespace maximum | 116,220 raw / 34,939 gzip; budget 117,000 / 35,250 |
 | Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |
 | Consumer bundle evidence | Focused fixtures save 108,945-112,442 raw and 32,291-33,256 gzip bytes |
-| Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven strict APIs |
+| Legacy usage evidence | 1,981 parsed root reads (1,980 calls + 1 proven non-call defect), 8 direct-subpath calls, 0 dynamic reads; every member dispositioned |
 | Modern import inertness | Root, all 18 category surfaces, and all 194 granular methods preserve complete Array/Object/Date descriptors |
 
 The unified gate also verifies formatting, linting, JSDoc/TypeScript checking,
@@ -94,10 +96,11 @@ opt-in package entry patches built-in constructors or prototypes.
    capture the configured hosted Node 22, Node 24, and browser workflow result
    from a clean checkout. Local execution cannot prove hosted runner setup.
 2. With explicit authorization, migrate bounded areas of Mindspace, the
-   portfolio rebuild, COMPOSR, and SPLICR. Representative fixtures and static
-   call-site evidence do not prove whole-application drop-in compatibility or
-   every accidental dependency on legacy coercion, mutation, swallowed errors,
-   or environment globals.
+   portfolio rebuild, COMPOSR, and SPLICR. The behavioral AST refresh classifies
+   all current parsed calls, result contexts, direct bindings, dynamic access,
+   and malformed-file candidates, but representative fixtures and static
+   evidence still cannot prove runtime values, nested alias identity, rendered
+   fallbacks, or whole-application drop-in compatibility.
 3. Obtain explicit approval for the intended version, exact commit, npm
    dist-tag, provenance/trusted-publishing setup, tag, push, and publication.
 4. After publication, install the registry artifact and verify its integrity,

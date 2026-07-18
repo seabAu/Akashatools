@@ -46,11 +46,13 @@ these representative fixtures does not establish whole-application drop-in
 compatibility; that requires bounded migrations and application-owned tests in
 each source project.
 
-The read-only AST audit in
-`docs/inventory/CONSUMER_USAGE_AUDIT_2026-07-16.md` complements these small
-fixtures with the complete current 1.0.2 import footprint. It maps 1,982 parsed
-legacy member reads without implying that static mapping proves application
-behavior.
+The read-only AST audits in
+`docs/inventory/CONSUMER_USAGE_AUDIT_2026-07-16.md` and
+`docs/inventory/CONSUMER_BEHAVIOR_AUDIT_2026-07-18.md` complement these small
+fixtures with the current 1.0.2 import footprint and use shape. The refresh maps
+1,981 parsed root-member reads, 1,980 calls, one proven non-call defect, eight
+direct legacy-subpath calls, two unused legacy bindings, and zero dynamic root
+accesses without implying that static mapping proves application behavior.
 
 ## Module-format evidence
 
