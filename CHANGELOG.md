@@ -2,9 +2,9 @@
 
 ## 2.0.0-alpha.1
 
-- Reopened the local release-candidate evidence for a 2026-07-18 regression and
-  utility-surface expansion; prior package, bundle, test, coverage, and runtime
-  totals remain historical until the expanded surface is fully reverified.
+- Completed the reopened 2026-07-18 regression and utility-surface expansion;
+  the current Node 22/24 audits, 15-test browser matrix, package, bundle,
+  coverage, declaration, and API totals replace the historical snapshot.
 - Added the universal `data` category with atomic type-descriptor normalization,
   complete array type analysis, fresh type/value defaults, and bounded recursive
   shape initialization.

@@ -1,96 +1,103 @@
 # Release readiness
 
-> Status on 2026-07-18: release-candidate evidence is reopened. The user expanded
-> the data/input/query/import surface after the complete 2026-07-16 local
-> snapshot. The measurements below remain reproducible historical evidence but
-> are not current release gates until the regression expansion stabilizes and
-> the complete Node 22/24 and three-engine browser matrices are rerun. Hosted
-> workflow evidence, real-application migrations, and every publication action
-> remain external gates.
+> Status on 2026-07-18: the expanded Akashatools 2.0 alpha is locally
+> release-candidate ready. Complete audits pass on both supported Node runtimes
+> and the three browser engines. Hosted workflow evidence, bounded real-app
+> migrations, and every push, tag, automation, and publication action remain
+> external approval gates.
 
-## Superseded 2026-07-16 package snapshot
+## Current local candidate snapshot
 
 | Field | Verified value |
 | --- | --- |
 | Package | `akashatools` |
 | Workspace version | `2.0.0-alpha.1` |
-| Public npm `latest` | `1.0.2` |
 | Module format | ESM-only |
 | Node.js engine | `>=22.17` |
+| Universal categories | 17 |
+| Public methods | 175 |
+| Generated declaration files | 213 |
+| Reviewed API surfaces | 18 |
 | License | ISC (`LICENSE`, 741 bytes) |
-| Dry-run files | 86 |
-| Dry-run packed size | Approximately 240 kB |
-| Dry-run unpacked size | Approximately 901 kB |
+| Dry-run files | 483 |
+| Dry-run packed size | Approximately 331 kB |
+| Dry-run unpacked size | Approximately 1.24 MB |
 
-`npm pack --dry-run --json` verified the exact 86-file package selection without
-creating or publishing an artifact. Sizes are rounded because this shipped
-readiness record contributes to its own packed size. The package includes the
-runtime sources, generated declarations, retained `lib` compatibility modules,
-documentation, benchmarks, changelog, README, license, and package metadata. It
-excludes tests, consumer fixtures, development scripts and configuration,
-coverage output, and installed dependencies as intended.
+`npm pack --dry-run --json` verifies the selected package content without
+creating or publishing an artifact. The package includes runtime sources,
+generated declarations, retained `lib` compatibility modules, documentation,
+benchmarks, changelog, README, license, and package metadata. Tests, consumer
+fixtures, development scripts/configuration, coverage, installed dependencies,
+and credentials are excluded.
 
-The declared repository, issue tracker, and homepage point to the live public
-`seabAu/Akashatools` GitHub repository. This local 2026 repository has no Git
-remote configured; no remote was added and no push was attempted during the
-audit.
+The repository, issue tracker, and homepage metadata still target the existing
+public `seabAu/Akashatools` project. This local 2.0 repository has no Git remote
+configured, and no push, tag, registry write, consumer-project edit, or release
+automation change occurred during this work.
 
-A read-only public-state check on 2026-07-16 found GitHub `main` at 1.x commit
-`c52129b78e20b3d61f0c9765213264ffcda5180d`, last pushed on 2024-08-23, with
-zero configured workflows and zero Actions runs. The npm registry still reports
-`1.0.2` as both the newest version and `latest`, last modified on 2024-08-23.
-Consequently, hosted 2.0 CI evidence cannot exist until an explicitly authorized
-push installs the already-reviewed workflow on the public repository.
+## Reproducible local evidence
 
-The public commit tree identity is
-`e63dcb763dc238023d48c1b85200731ce0a04da9`, exactly matching local baseline
-commit `3a245be`. This proves the preserved rollback/source-comparison point is
-the public 1.0.2 source tree rather than an approximate reconstruction.
+`npm run audit:release` completed successfully on the installed Node.js
+22.18.0 runtime and an isolated Node.js 24.18.0 runtime on Windows. The command
+performs the dependency audit, complete project check, source coverage gate, and
+dry-run package inspection. Playwright separately passed all five browser
+contracts in Chromium, Firefox, and WebKit.
 
-## Superseded 2026-07-16 reproducible evidence
-
-`npm run audit:release` completed successfully on Node.js 22.18.0 and through an
-isolated Node.js 24.18.0 runtime on Windows. The command performs the dependency
-audit, complete project check, source-only coverage run, and dry-run package
-inspection. The six-contract Playwright matrix also passes on Chromium,
-Firefox, and WebKit.
-
-| Gate | Result |
+| Gate | Current result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 82 JavaScript files pass |
-| Public documentation | 134 declarations pass |
-| Generated declarations | 17 files current |
-| API surface snapshot | 14 surfaces current |
-| Node contract tests | 122 passed, 0 failed |
+| Maintained syntax | 284 JavaScript files pass |
+| Public documentation | 175 declarations pass |
+| Generated declarations | 213 files current |
+| API surface snapshot | 18 surfaces current |
+| Node contract tests | 183 passed, 0 failed on Node 22 and Node 24 |
 | Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
-| Node 22 source coverage | 97.61% lines / 86.32% branches / 96.19% functions |
-| Node 24 source coverage | 97.61% lines / 86.21% branches / 96.19% functions |
-| Browser contracts | 6 passed across Chromium, Firefox, and WebKit |
-| Focused import budget | 321 raw / 252 gzip bytes |
-| Default namespace budget | 54,330 raw / 17,101 gzip bytes |
-| Consumer bundle evidence | Focused fixtures save 47,058–50,564 raw and 14,493–15,441 gzip bytes |
-| Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven new APIs |
+| Node 22 source coverage | 98.37% lines / 89.83% branches / 97.09% functions |
+| Node 24 source coverage | 98.37% lines / 89.68% branches / 97.09% functions |
+| Browser tests | 15 passed across Chromium, Firefox, and WebKit |
+| Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
+| Default namespace maximum | 87,552 raw / 26,336 gzip; budget 90,000 / 27,000 |
+| Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |
+| Consumer bundle evidence | Focused fixtures save 80,274-83,780 raw and 23,717-24,659 gzip bytes |
+| Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven strict APIs |
+| Modern import inertness | Root, all 17 categories, and all 175 granular methods preserve complete Array/Object/Date descriptors |
 
-The release audit also verifies formatting, linting, JSDoc/TypeScript checking,
+The unified gate also verifies formatting, linting, JSDoc/TypeScript checking,
 editor completions, generated documentation and migration data, export-map
-resolution, side-effect elimination, and representative source-consumer
-fixtures.
+resolution, canonical function identity, side-effect elimination, focused
+bundle equivalence, and representative source-consumer fixtures.
+
+## Scope conclusions
+
+The 2026-07-18 read-only delta review covers the changed Mindspace, portfolio,
+COMPOSR, and SPLICR utility sources. It promoted independently reusable data,
+input, deep-query, concurrency, JSON Pointer, Retry-After, hashing, path,
+function-control, binary-search/indexing, and Jaccard-similarity atoms. Archive,
+audio, provider, template, persistence, UI, profiling, schema, retry-execution,
+and application-record behavior remains with its owning domain.
+
+Meaningfully distinct variants remain only where their documented return shape
+or policy differs. The atomic type/default/input and deep-query functions
+compose broader behavior without truthiness loss, hidden mutation, accessor
+invocation, prototype pollution, or unbounded recursion. Dot-style discovery is
+available through frozen namespaces and `deepQuery(value)`, while no normal or
+opt-in package entry patches built-in constructors or prototypes.
 
 ## External gates still open
 
-1. Run the configured hosted Node.js 22 and 24 LTS jobs plus the browser job.
-   Both local Node release audits and the Chromium/Firefox/WebKit matrix are
-   green, but local execution cannot replace the first hosted workflow result.
+1. Push the exact reviewed candidate only with explicit authorization, then
+   capture the configured hosted Node 22, Node 24, and browser workflow result
+   from a clean checkout. Local execution cannot prove hosted runner setup.
 2. With explicit authorization, migrate bounded areas of Mindspace, the
-   portfolio rebuild, COMPOSR, and SPLICR. The current fixtures validate
-   representative contracts; they do not prove whole-application drop-in
-   compatibility or reveal every accidental dependency on legacy behavior.
-3. Obtain explicit approval for the intended prerelease or stable version,
-   exact commit, npm dist-tag, provenance setup, tag, and publication. No tag,
-   push, registry write, or consumer-project edit has occurred.
-4. After publication, install and verify the registry artifact and its documented
-   import examples before calling that release complete.
+   portfolio rebuild, COMPOSR, and SPLICR. Representative fixtures and static
+   call-site evidence do not prove whole-application drop-in compatibility or
+   every accidental dependency on legacy coercion, mutation, swallowed errors,
+   or environment globals.
+3. Obtain explicit approval for the intended version, exact commit, npm
+   dist-tag, provenance/trusted-publishing setup, tag, push, and publication.
+4. After publication, install the registry artifact and verify its integrity,
+   provenance, file list, declarations, and documented imports before calling
+   the release complete.
 
 The exact approval boundaries, candidate checks, trusted-publishing design,
 registry verification, and recovery procedure are defined in

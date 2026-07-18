@@ -1,7 +1,7 @@
 # Akashatools 2026 living checklist
 
-> Status: active project plan; the 2026-07-18 regression expansion reopened the
-> previously completed local release-candidate evidence. Update this document in
+> Status: active project plan; the 2026-07-18 regression expansion and local
+> release-candidate evidence are complete. Update this document in
 > the same commit as each meaningful implementation batch. Check an item only when its acceptance
 > criteria are verified. Add newly discovered work instead of keeping it in chat.
 
@@ -47,10 +47,9 @@ import { chunk } from "akashatools/array";
 import chunkMethod from "akashatools/array/chunk";
 ```
 
-The default namespace remains a plain, frozen utility object. The 2026-07-18
-regression phase will add a separate, safe fluent deep-query wrapper because a
-concrete discovery/use case now exists. Normal imports will not mutate built-in
-or `Object.prototype` behavior.
+The default namespace remains a plain, frozen utility object. A separate, safe
+fluent deep-query wrapper supplies local dot syntax for a concrete discovery/use
+case. No package entry mutates built-in constructors or prototypes.
 
 ## Lessons adopted without copying another library
 
@@ -75,14 +74,14 @@ or `Object.prototype` behavior.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 122 tests passed at the 2026-07-16
-  release-readiness snapshot. Recount after the reopened regression phase.
+- [x] Add dependency-free runtime tests; all 183 current contracts pass on the
+  supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
-- [x] Verify npm tarball contents with `npm pack --dry-run`: the 2026-07-16 alpha
-  selects 86 files at approximately 240 kB packed and 901 kB unpacked.
-- [x] Verify focused-import tree-shaking at the 2026-07-16 snapshot:
-  esbuild 0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus
-  54,330 raw/17,101 gzip bytes for the complete flat namespace.
+- [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
+  selects 483 files at approximately 331 kB packed and 1.24 MB unpacked.
+- [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
+  0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
+  87,552 raw/26,336 gzip bytes for the complete discoverable namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -464,12 +463,12 @@ Acceptance criteria:
   Map, Set, and typed arrays; the real-browser fixture covers native Blob/File
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
-  lines, 80% branches, and 90% functions. The 2026-07-16 observed baseline after
-  the active-source and live-usage additions is 97.61% / 86.32% / 96.19% on
-  Node 22; Node 24 reports 86.21% branches with the same line/function values.
-  Branch accounting varies slightly by runtime; see `docs/TESTING.md`.
+  lines, 80% branches, and 90% functions. The stabilized surface measures
+  98.37% lines / 89.83% branches / 97.09% functions on Node 22.18.0 and
+  98.37% / 89.68% / 97.09% on Node 24.18.0. Branch accounting varies slightly
+  by runtime; see `docs/TESTING.md`.
 - [x] Run the complete release audit locally on supported Node 22.18.0 and
-  Node 24.18.0, and run all six Chromium/Firefox/WebKit browser contracts.
+  Node 24.18.0, and run all 15 Chromium/Firefox/WebKit browser contracts.
 - [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
   are configured, but local multi-runtime evidence cannot prove hosted setup,
   checkout, dependency installation, or runner behavior.
@@ -550,7 +549,7 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 47,058-50,564 raw and 14,493-15,441 gzip bytes;
+  imports. Focused sets save 80,274-83,780 raw and 23,717-24,659 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
@@ -639,9 +638,10 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
   Unicode/separator/kind policies, work limits, platform-reserved/traversal
   rejection, and deterministic normalized/case/file-prefix collision handling;
   document that lexical validity never authorizes extraction or writing.
-- [ ] Re-run API collision, types, editor completions, package smoke, bundle,
+- [x] Re-run API collision, types, editor completions, package smoke, bundle,
   coverage, Node 22/24, and browser regression gates after the expanded surface
-  stabilizes. Replace the superseded release-readiness measurements.
+  stabilizes. Current measurements replace the superseded snapshot in
+  `docs/RELEASE_READINESS.md`.
 
 Acceptance criteria:
 
@@ -663,24 +663,27 @@ Acceptance criteria:
 - [x] Complete the disposition ledger for all four active consumer source sets,
   alongside the complete 1.0.2 legacy manifest.
 - [x] Stabilize default/named/category namespace architecture.
-- [ ] Reconfirm the expanded universal core with contract tests and JSDoc. The
-  earlier 2026-07-16 snapshot had 134 documented declarations and 122 passing
-  contract tests; the 2026-07-18 scope expansion supersedes those totals.
+- [x] Reconfirm the expanded universal core with contract tests and JSDoc: 175
+  documented declarations, 213 generated declaration files, and 183 contracts
+  pass on both supported Node audit runtimes.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [ ] Re-freeze canonical names and option shapes after the regression expansion.
+- [x] Re-freeze the 175 canonical names and option shapes after the regression
+  expansion through the reviewed API snapshot, generated surfaces, types, and
+  explicit decision records.
 - [x] Complete security review and initial performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
 
 ### Release candidate exit
 
 - [x] Complete API docs, migration guide, declarations, and package smoke tests.
-- [ ] Resolve all newly reopened breaking-change questions recorded in this checklist and
-  the decision documents.
+- [x] Resolve all newly reopened breaking-change questions recorded in this
+  checklist and the decision documents, including granular paths, semantic
+  variants, dot syntax, and rejection of built-in augmentation.
 - [x] Confirm clean install and the local supported-runtime matrix on Node
   22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
   remains a separate open gate under Phase 7.
