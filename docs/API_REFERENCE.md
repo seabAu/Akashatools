@@ -612,6 +612,17 @@ Runtime: Universal JavaScript on the supported runtime floor.
 
 Focused import: `akashatools/data`
 
+### DATA_TYPES
+
+Frozen enum-style identifiers for every data type recognized by Akashatools contracts. Values remain the existing lowercase strings, so constants and serialized descriptors are interchangeable.
+
+- Signature: `const DATA_TYPES`
+- Import: `import { DATA_TYPES } from "akashatools/data"`
+- Granular import: `import DATA_TYPES from "akashatools/data/DATA_TYPES"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Type: `DataTypeMap`
+
 ### normalizeDataType
 
 Normalizes a built-in constructor or common schema-style type name to the lowercase runtime vocabulary used by `typeOf`. Array descriptors such as `[String]`, `String[]`, and `array<object>` normalize to `array`; custom constructors normalize to `object` without being invoked.
@@ -1237,6 +1248,28 @@ Runtime: Universal JavaScript on the supported runtime floor.
 
 Focused import: `akashatools/input`
 
+### INPUT_TYPES
+
+Frozen enum-style identifiers for native HTML input types recognized by Akashatools. The values can be passed anywhere the equivalent string is accepted and remain suitable for serialized field descriptors.
+
+- Signature: `const INPUT_TYPES`
+- Import: `import { INPUT_TYPES } from "akashatools/input"`
+- Granular import: `import INPUT_TYPES from "akashatools/input/INPUT_TYPES"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Type: `InputTypeMap`
+
+### CONTROL_TYPES
+
+Frozen enum-style identifiers returned by renderer-level control classification. They distinguish native inputs from composite data controls.
+
+- Signature: `const CONTROL_TYPES`
+- Import: `import { CONTROL_TYPES } from "akashatools/input"`
+- Granular import: `import CONTROL_TYPES from "akashatools/input/CONTROL_TYPES"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Type: `ControlTypeMap`
+
 ### inputTypeForType
 
 Returns the native HTML input type suited to one scalar data type. Composite containers return `undefined` by default because they require a higher-level control; use `controlTypeForType` to classify those. Overrides are checked by normalized descriptor spelling and then by canonical data type.
@@ -1246,7 +1279,7 @@ Returns the native HTML input type suited to one scalar data type. Composite con
 - Granular import: `import inputTypeForType from "akashatools/input/inputTypeForType"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string | undefined` — Native input type or undefined for unsupported/composite data.
+- Returns: `InputType | string | undefined` — Native input type or configured override, or undefined for unsupported/composite data.
 
 Throws:
 - `TypeError` — If descriptor or options do not match the contract.
@@ -1260,7 +1293,7 @@ Returns the native HTML input type suited to a runtime scalar value. Strings rem
 - Granular import: `import inputTypeForValue from "akashatools/input/inputTypeForValue"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `string | undefined` — Native input type or undefined for unsupported/composite data.
+- Returns: `InputType | string | undefined` — Native input type or configured override, or undefined for unsupported/composite data.
 
 Throws:
 - `TypeError` — If options do not match the contract.
@@ -1274,7 +1307,7 @@ Classifies a declared type into a renderer-level control without pretending comp
 - Granular import: `import controlTypeForType from "akashatools/input/controlTypeForType"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `"input" | "array" | "object" | "map" | "set" | "unsupported"` — Generic control category.
+- Returns: `ControlType` — Generic control category.
 
 Throws:
 - `TypeError` — If descriptor or options do not match the contract.
@@ -1288,7 +1321,7 @@ Classifies a runtime value into a renderer-level control. Arrays are analyzed in
 - Granular import: `import controlTypeForValue from "akashatools/input/controlTypeForValue"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `"input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported"` — Generic control category.
+- Returns: `ControlType` — Generic control category.
 
 Throws:
 - `TypeError` — If options do not match the contract.
@@ -1302,7 +1335,7 @@ Describes one generic data-backed input field without importing a UI framework o
 - Granular import: `import fieldDescriptorFor from "akashatools/input/fieldDescriptorFor"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
-- Returns: `Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>` — Frozen framework-neutral field descriptor.
+- Returns: `Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: InputType | string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>` — Frozen framework-neutral field descriptor.
 
 Throws:
 - `TypeError` — If name, options, label, or path is invalid.

@@ -74,14 +74,14 @@ case. No package entry mutates built-in constructors or prototypes.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; all 215 current contracts pass on the
+- [x] Add dependency-free runtime tests; all 217 current contracts pass on the
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 523 files at 370,795 bytes packed and 1,389,292 bytes unpacked.
+  selects 532 files at 380,227 bytes packed and 1,418,573 bytes unpacked.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
-  113,294 raw/33,705 gzip bytes for the complete discoverable namespace.
+  116,220 raw/34,939 gzip bytes for the complete discoverable namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -409,10 +409,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 191 current public declarations are complete, with parameter/return prose,
+  All 194 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  191 current public declarations by `npm run check:docs`.
+  194 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -422,7 +422,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 232 declaration files, including generated
+  byte-for-byte drift check across 236 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -464,8 +464,8 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The stabilized surface measures
-  98.21% lines / 89.56% branches / 97.23% functions on Node 22.18.0 and
-  98.21% / 89.51% / 97.23% on Node 24.18.0. Branch accounting varies slightly
+  98.25% lines / 89.74% branches / 97.23% functions on Node 22.18.0 and
+  98.25% / 89.66% / 97.23% on Node 24.18.0. Branch accounting varies slightly
   by runtime; see `docs/TESTING.md`.
 - [x] Run the complete release gates locally on supported Node 22.18.0 and
   Node 24.18.0, and run all 18 Chromium/Firefox/WebKit browser contracts.
@@ -499,8 +499,8 @@ Acceptance criteria:
 - [x] Add bundle fixtures for named root, category named/namespace, default
   flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
-  gzip bytes; the stabilized discoverable default namespace uses 114,000 raw/
-  34,000 gzip guardrails around the measured 113,294 raw/33,705 gzip maximum.
+  gzip bytes; the stabilized discoverable default namespace uses 117,000 raw/
+  35,250 gzip guardrails around the measured 116,220 raw/34,939 gzip maximum.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -549,7 +549,7 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 106,018-109,518 raw and 31,050-32,026 gzip bytes;
+  imports. Focused sets save 108,945-112,442 raw and 32,291-33,256 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
@@ -759,6 +759,36 @@ Acceptance criteria:
   rather than substring or coercion heuristics, while streamed bytes stay
   bounded regardless of headers.
 
+### 9.9 Canonical type and control vocabularies
+
+- [x] Define one frozen `DATA_TYPES` vocabulary for runtime type descriptors,
+  including supported canonical values and recognized aliases/subtypes.
+- [x] Define separate frozen `INPUT_TYPES` and `CONTROL_TYPES` vocabularies for
+  native HTML input kinds and framework-neutral composite controls.
+- [x] Preserve the existing string values and acceptance of literal strings so
+  the consistency layer does not create a forced consumer migration.
+- [x] Refactor data defaults, validation contracts, input inference, composite
+  control selection, and serialized parsing to compare and return canonical
+  vocabulary members.
+- [x] Export exact `DataType`, `InputType`, and `ControlType` TypeScript unions;
+  expose root, category, and generated granular constant entrypoints.
+- [x] Cover immutability, value uniqueness, cross-category interchangeability,
+  namespaces, editor discovery, declarations, package installation, and bundles.
+- [x] Benchmark canonical `typeOf` dispatch against the equal-output legacy
+  lowercase-brand path; reject the slower generic lookup and retain direct
+  constant returns with comparable or better high-volume performance.
+
+Acceptance criteria:
+
+- Semantic type/control strings have one internal source of truth without
+  introducing circular category dependencies.
+- The three domains stay separate even where their serialized values overlap.
+- Fundamental JavaScript `typeof` guards retain language literals where needed
+  for TypeScript control-flow narrowing; public semantic comparisons use the
+  canonical vocabularies.
+- Existing valid string callers and stored schemas continue to behave exactly as
+  before, while TypeScript consumers can opt into exact identifier unions.
+
 ## Phase 10 — release gates
 
 ### Alpha exit
@@ -767,14 +797,14 @@ Acceptance criteria:
   `(excepted modules)` source set.
 - [x] Stabilize default/named/category namespace architecture.
 - [x] Reconfirm the expanded universal core, generated declarations, and
-  contracts on both supported Node audit runtimes after Phase 9.8.
+  contracts on both supported Node audit runtimes after Phase 9.9.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [x] Re-freeze canonical names and option shapes after Phase 9.8 through the
+- [x] Re-freeze canonical names and option shapes after Phase 9.9 through the
   reviewed API snapshot, generated surfaces, types, and explicit decisions.
 - [x] Refresh security review and performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
@@ -876,7 +906,7 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
-| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 191 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 194 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Reject even an explicit opt-in built-in augmentation entry. | Non-enumerability and pre-install collision checks cannot solve future collisions, cross-realm gaps, duplicate-package ownership, ambient-type mismatch, or safe uninstall races; `deepQuery(value).has(...)` supplies local dot syntax while descriptor snapshots enforce inert modern imports. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
@@ -896,6 +926,8 @@ Acceptance criteria:
 | 2026-07-18 | Give default sorting a deterministic mixed-type total preorder and snapshot configuration once. | Comparator laws must hold across nullish and heterogeneous values; valid extreme numbers cannot share a sentinel with invalid numeric-order inputs, and mutable getters must not change policy mid-sort. |
 | 2026-07-18 | Parse HTTP metadata by exact grammar and keep stream limits authoritative. | JSON substring matching, numeric coercion of malformed lengths, and silently invalid redaction names create ambiguous or unsafe behavior; exact media/token/decimal validation makes the boundary observable without trusting response declarations. |
 | 2026-07-18 | Share repeated internal option-error text instead of widening the full-namespace budget. | Centralizing one private constant keeps all public messages unchanged while the final default-category bundle measures 113,294/33,705 under the existing 114,000/34,000 ceiling; focused imports remain 321/252 and consumer sets save 106,018-109,518 raw bytes. |
+| 2026-07-18 | Separate canonical runtime datatypes, native input types, and composite control types into three frozen vocabularies. | Their wire values sometimes overlap but their domains and valid sets do not. Shared internal definitions keep data, input, and validation consistent without circular imports; public string values remain compatible and exact TypeScript unions make optional adoption safer. |
+| 2026-07-18 | Recalibrate only the full-discovery namespace guardrail to 117,000 raw/35,250 gzip for the canonical vocabularies. | Keeping all three constant objects, one normalized-name map, and direct canonical built-in dispatch on the discoverable default namespace moves the largest fixture to 116,220/34,939, while focused root/category/granular imports remain 321/252 and side-effect-only output remains zero raw bytes. |
 
 ## Definition of done
 

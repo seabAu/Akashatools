@@ -59,6 +59,9 @@ test("flat, categorized, named, and subpath functions retain identity", () => {
   assert.equal(akasha.initializeLike, dataModule.initializeLike);
   assert.equal(akasha.fieldsFromData, inputModule.fieldsFromData);
   assert.equal(akasha.once, functionModule.once);
+  assert.equal(akasha.DATA_TYPES, dataModule.DATA_TYPES);
+  assert.equal(akasha.INPUT_TYPES, inputModule.INPUT_TYPES);
+  assert.equal(akasha.CONTROL_TYPES, inputModule.CONTROL_TYPES);
 });
 
 test("every category utility is represented flat and as a named root export", () => {

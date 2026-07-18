@@ -8,7 +8,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const temporaryDirectory = path.join(root, ".completion-check");
 const expectations = [
   ["array", "akasha.array.", ["chunk", "removeFromArray", "shuffle"]],
-  ["data", "akasha.data.", ["analyzeArrayTypes", "defaultValueForType", "initializeLike"]],
+  ["data", "akasha.data.", ["analyzeArrayTypes", "DATA_TYPES", "defaultValueForType", "initializeLike"]],
   ["browser", "akasha.browser.", ["inputValueFromControl", "prefersColorScheme", "readJsonStorage"]],
   [
     "validation",
@@ -21,7 +21,15 @@ const expectations = [
   [
     "input",
     "akasha.input.",
-    ["controlTypeForValue", "createInputValueParser", "fieldsFromData", "inputTypeForType", "parseInputValue"],
+    [
+      "CONTROL_TYPES",
+      "controlTypeForValue",
+      "createInputValueParser",
+      "fieldsFromData",
+      "INPUT_TYPES",
+      "inputTypeForType",
+      "parseInputValue",
+    ],
   ],
   ["function", "akasha.function.", ["debounce", "memoize", "once", "throttle"]],
   ["object", "akasha.object.", ["deepQuery", "findAllDeepValues", "hasDeep"]],
@@ -30,12 +38,15 @@ const expectations = [
     "akasha.",
     [
       "chunk",
+      "CONTROL_TYPES",
       "crc32",
+      "DATA_TYPES",
       "deepQuery",
       "debounce",
       "fieldsFromData",
       "haversineDistance",
       "inputValueFromControl",
+      "INPUT_TYPES",
       "initializeLike",
       "isEmail",
       "memoize",

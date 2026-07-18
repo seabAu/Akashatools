@@ -44,13 +44,14 @@ for (const category of categories) {
       return match ? [{ type: match[1], name: match[2], description: match[3] ?? "" }] : [];
     });
     const returns = tags.find((line) => /^@returns?\s+\{/.test(line))?.match(/^@returns?\s+\{(.+)\}(?:\s+(.*))?$/);
+    const valueType = tags.find((line) => /^@type\s+\{/.test(line))?.match(/^@type\s+\{(.+)\}$/);
     const thrown = tags.flatMap((line) => {
       const match = line.match(/^@throws\s+\{(.+)\}(?:\s+(.*))?$/);
       return match ? [{ type: match[1], description: match[2] ?? "" }] : [];
     });
     const deprecated = tags.find((line) => line.startsWith("@deprecated "))?.slice("@deprecated ".length);
     const since = tags.find((line) => line.startsWith("@since "))?.slice("@since ".length);
-    declarations.push({ kind, name, summary, parameters, returns, thrown, deprecated, since });
+    declarations.push({ kind, name, summary, parameters, returns, valueType, thrown, deprecated, since });
   }
 
   sections.push(renderCategory(category, declarations));
@@ -96,7 +97,11 @@ function renderCategory(category, declarations) {
 function renderDeclaration(declaration, importPath, category) {
   const names = declaration.parameters.map(({ name }) => normalizeParameterName(name));
   const signature =
-    declaration.kind === "class" ? `class ${declaration.name}` : `${declaration.name}(${names.join(", ")})`;
+    declaration.kind === "class"
+      ? `class ${declaration.name}`
+      : declaration.kind === "const" && !declaration.returns
+        ? `const ${declaration.name}`
+        : `${declaration.name}(${names.join(", ")})`;
   const lines = [
     `### ${declaration.name}`,
     "",
@@ -112,6 +117,7 @@ function renderDeclaration(declaration, importPath, category) {
     lines.push(
       `- Returns: \`${declaration.returns[1]}\`${declaration.returns[2] ? ` — ${declaration.returns[2]}` : ""}`,
     );
+  if (declaration.valueType) lines.push(`- Type: \`${declaration.valueType[1]}\``);
   if (declaration.deprecated) lines.push(`- Deprecated: ${declaration.deprecated}`);
   if (declaration.parameters.length > 0) {
     lines.push("", "| Parameter | Type | Description |", "| --- | --- | --- |");

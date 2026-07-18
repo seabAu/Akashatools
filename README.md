@@ -99,6 +99,23 @@ fieldsFromData({ name: "Ada", active: false });
 // Frozen descriptors with text/checkbox input types and literal defaults.
 ```
 
+Use the frozen canonical vocabularies when datatype or control identifiers cross
+function boundaries. Existing literal strings remain accepted:
+
+```js
+import { DATA_TYPES, normalizeDataType } from "akashatools/data";
+import { CONTROL_TYPES, INPUT_TYPES, inputTypeForType } from "akashatools/input";
+
+normalizeDataType(DATA_TYPES.INTEGER); // DATA_TYPES.NUMBER
+inputTypeForType(DATA_TYPES.BOOLEAN); // INPUT_TYPES.CHECKBOX
+CONTROL_TYPES.OBJECT_ARRAY; // "object-array"
+```
+
+TypeScript consumers can also import the `DataType`, `InputType`, and
+`ControlType` string-union types. The three vocabularies remain separate because
+runtime datatypes, native HTML input types, and composite form-control types are
+different domains even when some values happen to match.
+
 Serialized input conversion is strict and can be precompiled for repeated
 handlers:
 

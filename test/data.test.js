@@ -3,22 +3,34 @@ import test from "node:test";
 
 import {
   analyzeArrayTypes,
+  DATA_TYPES,
   defaultValueFor,
   defaultValueForType,
   initializeLike,
   normalizeDataType,
 } from "akashatools/data";
 
+test("DATA_TYPES is a frozen, unique, serialization-compatible vocabulary", () => {
+  assert.equal(Object.isFrozen(DATA_TYPES), true);
+  assert.equal(new Set(Object.values(DATA_TYPES)).size, Object.values(DATA_TYPES).length);
+  assert.equal(DATA_TYPES.BOOLEAN, "boolean");
+  assert.equal(normalizeDataType(DATA_TYPES.BOOLEAN), DATA_TYPES.BOOLEAN);
+  assert.equal(normalizeDataType(DATA_TYPES.ANY), DATA_TYPES.UNDEFINED);
+  assert.equal(normalizeDataType(DATA_TYPES.INTEGER), DATA_TYPES.NUMBER);
+  assert.equal(defaultValueForType(DATA_TYPES.ARRAY_BUFFER).byteLength, 0);
+  assert.equal(defaultValueForType(DATA_TYPES.UNDEFINED), undefined);
+});
+
 test("normalizeDataType unifies constructors, aliases, and collection descriptors", () => {
   class CustomType {}
 
-  assert.equal(normalizeDataType(String), "string");
-  assert.equal(normalizeDataType(CustomType), "object");
-  assert.equal(normalizeDataType(" DateTime_Local "), "date");
-  assert.equal(normalizeDataType("INTEGER"), "number");
-  assert.equal(normalizeDataType("[String]"), "array");
-  assert.equal(normalizeDataType("Object[]"), "array");
-  assert.equal(normalizeDataType("Array<Object>"), "array");
+  assert.equal(normalizeDataType(String), DATA_TYPES.STRING);
+  assert.equal(normalizeDataType(CustomType), DATA_TYPES.OBJECT);
+  assert.equal(normalizeDataType(" DateTime_Local "), DATA_TYPES.DATE);
+  assert.equal(normalizeDataType("INTEGER"), DATA_TYPES.NUMBER);
+  assert.equal(normalizeDataType("[String]"), DATA_TYPES.ARRAY);
+  assert.equal(normalizeDataType("Object[]"), DATA_TYPES.ARRAY);
+  assert.equal(normalizeDataType("Array<Object>"), DATA_TYPES.ARRAY);
   assert.equal(normalizeDataType("Custom Widget"), "customwidget");
   assert.throws(() => normalizeDataType("  "), /nonblank type string/);
   assert.throws(() => normalizeDataType(1), /type string or constructor/);
@@ -28,8 +40,11 @@ test("analyzeArrayTypes scans all slots and returns a frozen type distribution",
   const values = [1, "two", 3, , undefined, Number.NaN];
   const analysis = analyzeArrayTypes(values);
 
-  assert.deepEqual(analysis.types, ["number", "string", "undefined", "nan"]);
-  assert.deepEqual({ ...analysis.counts }, { number: 2, string: 1, undefined: 2, nan: 1 });
+  assert.deepEqual(analysis.types, [DATA_TYPES.NUMBER, DATA_TYPES.STRING, DATA_TYPES.UNDEFINED, DATA_TYPES.NAN]);
+  assert.deepEqual(
+    { ...analysis.counts },
+    { [DATA_TYPES.NUMBER]: 2, [DATA_TYPES.STRING]: 1, [DATA_TYPES.UNDEFINED]: 2, [DATA_TYPES.NAN]: 1 },
+  );
   assert.equal(analysis.length, 6);
   assert.equal(analysis.empty, false);
   assert.equal(analysis.homogeneous, false);

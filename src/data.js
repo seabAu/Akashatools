@@ -1,13 +1,30 @@
 import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
+import { dataTypes } from "./internal/type-vocabulary.js";
 import { isPlainObject } from "./object.js";
 import { typeOf } from "./validation.js";
+
+/** @typedef {typeof dataTypes} DataTypeMap */
+
+/**
+ * Frozen enum-style identifiers for every data type recognized by Akashatools
+ * contracts. Values remain the existing lowercase strings, so constants and
+ * serialized descriptors are interchangeable.
+ *
+ * @type {DataTypeMap}
+ * @example
+ * defaultValueForType(DATA_TYPES.BOOLEAN); // false
+ * @since 2.0.0
+ */
+export const DATA_TYPES = dataTypes;
+
+/** @typedef {(typeof DATA_TYPES)[keyof typeof DATA_TYPES]} DataType */
 
 /**
  * @typedef {object} DefaultValueOptions
  * @property {"epoch" | "now"} [date="epoch"] Date initialization policy.
  * @property {ReadonlyMap<string | Function, () => unknown> | Readonly<Record<string, () => unknown>>} [factories]
  * Descriptor- or canonical-type-specific factories checked before built-in defaults.
- * @property {"throw" | "undefined"} [unsupported="throw"] Unsupported-type policy.
+ * @property {"throw" | typeof DATA_TYPES.UNDEFINED} [unsupported="throw"] Unsupported-type policy.
  */
 
 /**
@@ -15,7 +32,7 @@ import { typeOf } from "./validation.js";
  * @property {"epoch" | "now"} [date="epoch"] Date initialization policy.
  * @property {ReadonlyMap<string | Function, () => unknown> | Readonly<Record<string, () => unknown>>} [factories]
  * Descriptor- or canonical-type-specific factories checked before built-in defaults.
- * @property {"throw" | "undefined"} [unsupported="throw"] Unsupported-type policy.
+ * @property {"throw" | typeof DATA_TYPES.UNDEFINED} [unsupported="throw"] Unsupported-type policy.
  * @property {"empty" | "items" | "sample"} [arrays="empty"] Array initialization policy.
  * @property {"empty" | "shape"} [objects="shape"] Plain-object initialization policy.
  * @property {number} [maxDepth=100] Maximum recursive edge depth.
@@ -23,113 +40,88 @@ import { typeOf } from "./validation.js";
  */
 
 const blockedKeys = new Set(["__proto__", "constructor", "prototype"]);
+/** @type {Set<string>} */
 const typedArrayTypes = new Set([
-  "bigint64array",
-  "biguint64array",
-  "float32array",
-  "float64array",
-  "int8array",
-  "int16array",
-  "int32array",
-  "uint8array",
-  "uint8clampedarray",
-  "uint16array",
-  "uint32array",
+  DATA_TYPES.BIGINT64_ARRAY,
+  DATA_TYPES.BIGUINT64_ARRAY,
+  DATA_TYPES.FLOAT32_ARRAY,
+  DATA_TYPES.FLOAT64_ARRAY,
+  DATA_TYPES.INT8_ARRAY,
+  DATA_TYPES.INT16_ARRAY,
+  DATA_TYPES.INT32_ARRAY,
+  DATA_TYPES.UINT8_ARRAY,
+  DATA_TYPES.UINT8_CLAMPED_ARRAY,
+  DATA_TYPES.UINT16_ARRAY,
+  DATA_TYPES.UINT32_ARRAY,
 ]);
-const aliases = new Map([
-  ["any", "undefined"],
-  ["bool", "boolean"],
-  ["datetime", "date"],
-  ["datetimelocal", "date"],
-  ["decimal", "number"],
-  ["decimal128", "number"],
-  ["double", "number"],
-  ["float", "number"],
-  ["int", "number"],
-  ["int32", "number"],
-  ["integer", "number"],
-  ["long", "number"],
-  ["objectarray", "array"],
-  ["objectid", "object"],
-  ["void", "undefined"],
-]);
-const canonicalTypes = new Set([
-  "array",
-  "arraybuffer",
-  "bigint",
-  "blob",
-  "boolean",
-  "data",
-  "dataview",
-  "date",
-  "error",
-  "file",
-  "formdata",
-  "function",
-  "map",
-  "nan",
-  "null",
-  "number",
-  "object",
-  "promise",
-  "regexp",
-  "set",
-  "sharedarraybuffer",
-  "string",
-  "symbol",
-  "undefined",
-  "url",
-  "urlsearchparams",
-  "weakmap",
-  "weakset",
-  ...typedArrayTypes,
-]);
+/** @type {Map<string, string>} */
+const normalizedTypes = new Map();
+for (const type of Object.values(DATA_TYPES)) normalizedTypes.set(type, type);
+for (const [alias, type] of [
+  [DATA_TYPES.ANY, DATA_TYPES.UNDEFINED],
+  ["bool", DATA_TYPES.BOOLEAN],
+  ["datetime", DATA_TYPES.DATE],
+  ["datetimelocal", DATA_TYPES.DATE],
+  ["decimal", DATA_TYPES.NUMBER],
+  ["decimal128", DATA_TYPES.NUMBER],
+  ["double", DATA_TYPES.NUMBER],
+  ["float", DATA_TYPES.NUMBER],
+  ["int", DATA_TYPES.NUMBER],
+  ["int32", DATA_TYPES.NUMBER],
+  [DATA_TYPES.INTEGER, DATA_TYPES.NUMBER],
+  ["long", DATA_TYPES.NUMBER],
+  ["objectarray", DATA_TYPES.ARRAY],
+  ["objectid", DATA_TYPES.OBJECT],
+  ["void", DATA_TYPES.UNDEFINED],
+]) {
+  normalizedTypes.set(alias, type);
+}
 /** @type {Map<Function, string>} */
 const constructorTypes = new Map();
 for (const [constructor, type] of [
-  [Array, "array"],
-  [ArrayBuffer, "arraybuffer"],
-  [BigInt, "bigint"],
-  [Boolean, "boolean"],
-  [DataView, "dataview"],
-  [Date, "date"],
-  [Error, "error"],
-  [Function, "function"],
-  [Map, "map"],
-  [Number, "number"],
-  [Object, "object"],
-  [Promise, "promise"],
-  [RegExp, "regexp"],
-  [Set, "set"],
-  [String, "string"],
-  [Symbol, "symbol"],
-  [WeakMap, "weakmap"],
-  [WeakSet, "weakset"],
+  [Array, DATA_TYPES.ARRAY],
+  [ArrayBuffer, DATA_TYPES.ARRAY_BUFFER],
+  [BigInt, DATA_TYPES.BIGINT],
+  [Boolean, DATA_TYPES.BOOLEAN],
+  [DataView, DATA_TYPES.DATA_VIEW],
+  [Date, DATA_TYPES.DATE],
+  [Error, DATA_TYPES.ERROR],
+  [Function, DATA_TYPES.FUNCTION],
+  [Map, DATA_TYPES.MAP],
+  [Number, DATA_TYPES.NUMBER],
+  [Object, DATA_TYPES.OBJECT],
+  [Promise, DATA_TYPES.PROMISE],
+  [RegExp, DATA_TYPES.REGEXP],
+  [Set, DATA_TYPES.SET],
+  [String, DATA_TYPES.STRING],
+  [Symbol, DATA_TYPES.SYMBOL],
+  [WeakMap, DATA_TYPES.WEAK_MAP],
+  [WeakSet, DATA_TYPES.WEAK_SET],
 ]) {
   constructorTypes.set(/** @type {Function} */ (constructor), /** @type {string} */ (type));
 }
 
-for (const type of [
-  "BigInt64Array",
-  "BigUint64Array",
-  "Blob",
-  "File",
-  "Float32Array",
-  "Float64Array",
-  "FormData",
-  "Int8Array",
-  "Int16Array",
-  "Int32Array",
-  "SharedArrayBuffer",
-  "Uint8Array",
-  "Uint8ClampedArray",
-  "Uint16Array",
-  "Uint32Array",
-  "URL",
-  "URLSearchParams",
+for (const [name, type] of [
+  ["BigInt64Array", DATA_TYPES.BIGINT64_ARRAY],
+  ["BigUint64Array", DATA_TYPES.BIGUINT64_ARRAY],
+  ["Blob", DATA_TYPES.BLOB],
+  ["File", DATA_TYPES.FILE],
+  ["Float32Array", DATA_TYPES.FLOAT32_ARRAY],
+  ["Float64Array", DATA_TYPES.FLOAT64_ARRAY],
+  ["FormData", DATA_TYPES.FORM_DATA],
+  ["Int8Array", DATA_TYPES.INT8_ARRAY],
+  ["Int16Array", DATA_TYPES.INT16_ARRAY],
+  ["Int32Array", DATA_TYPES.INT32_ARRAY],
+  ["SharedArrayBuffer", DATA_TYPES.SHARED_ARRAY_BUFFER],
+  ["Uint8Array", DATA_TYPES.UINT8_ARRAY],
+  ["Uint8ClampedArray", DATA_TYPES.UINT8_CLAMPED_ARRAY],
+  ["Uint16Array", DATA_TYPES.UINT16_ARRAY],
+  ["Uint32Array", DATA_TYPES.UINT32_ARRAY],
+  ["URL", DATA_TYPES.URL],
+  ["URLSearchParams", DATA_TYPES.URL_SEARCH_PARAMS],
 ]) {
-  const constructor = /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (globalThis))[type];
-  if (typeof constructor === "function") constructorTypes.set(constructor, type.toLowerCase());
+  const constructor = /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (globalThis))[name];
+  if (typeof constructor === "function") constructorTypes.set(constructor, type);
 }
 
 /**
@@ -146,18 +138,18 @@ for (const type of [
  * @since 2.0.0
  */
 export function normalizeDataType(descriptor) {
-  if (typeof descriptor === "function") return constructorTypes.get(descriptor) ?? "object";
+  if (typeof descriptor === "function") return constructorTypes.get(descriptor) ?? DATA_TYPES.OBJECT;
   if (typeof descriptor !== "string" || descriptor.trim() === "") {
     throw new TypeError("descriptor must be a nonblank type string or constructor.");
   }
 
   const trimmed = descriptor.trim();
   if ((trimmed.startsWith("[") && trimmed.endsWith("]")) || trimmed.endsWith("[]") || /^array\s*[<(]/i.test(trimmed)) {
-    return "array";
+    return DATA_TYPES.ARRAY;
   }
 
   const compact = trimmed.replace(/[\s_-]/g, "").toLowerCase();
-  return aliases.get(compact) ?? (canonicalTypes.has(compact) ? compact : compact);
+  return normalizedTypes.get(compact) ?? compact;
 }
 
 /**
@@ -219,7 +211,7 @@ export function defaultValueForType(descriptor, options = {}) {
   if (typeFactory) return typeFactory();
   const value = createBuiltInDefault(type, options.date ?? "epoch");
   if (value.supported) return value.value;
-  if ((options.unsupported ?? "throw") === "undefined") return undefined;
+  if ((options.unsupported ?? "throw") === DATA_TYPES.UNDEFINED) return undefined;
   throw new TypeError(`No default value is supported for type: ${type}`);
 }
 
@@ -318,7 +310,11 @@ function assertDefaultOptions(options) {
   if (options.date !== undefined && options.date !== "epoch" && options.date !== "now") {
     throw new TypeError('date must be "epoch" or "now".');
   }
-  if (options.unsupported !== undefined && options.unsupported !== "throw" && options.unsupported !== "undefined") {
+  if (
+    options.unsupported !== undefined &&
+    options.unsupported !== "throw" &&
+    options.unsupported !== DATA_TYPES.UNDEFINED
+  ) {
     throw new TypeError('unsupported must be "throw" or "undefined".');
   }
   assertFactories(options.factories);
@@ -369,36 +365,36 @@ function getFactory(factories, descriptor) {
 
 /** @param {string} type @param {"epoch" | "now"} date */
 function createBuiltInDefault(type, date) {
-  if (type === "undefined" || type === "any") return supported(undefined);
-  if (type === "null") return supported(null);
-  if (type === "boolean") return supported(false);
-  if (type === "number" || type === "nan") return supported(0);
-  if (type === "bigint") return supported(0n);
-  if (type === "string") return supported("");
-  if (type === "symbol") return supported(Symbol());
-  if (type === "function") return supported(function initializedFunction() {});
-  if (type === "array") return supported([]);
-  if (type === "object" || type === "data") return supported({});
-  if (type === "date") return supported(new Date(date === "now" ? Date.now() : 0));
-  if (type === "regexp") return supported(new RegExp(""));
-  if (type === "map") return supported(new Map());
-  if (type === "set") return supported(new Set());
-  if (type === "weakmap") return supported(new WeakMap());
-  if (type === "weakset") return supported(new WeakSet());
-  if (type === "promise") return supported(Promise.resolve(undefined));
-  if (type === "error") return supported(new Error());
-  if (type === "arraybuffer") return supported(new ArrayBuffer(0));
-  if (type === "dataview") return supported(new DataView(new ArrayBuffer(0)));
-  if (type === "url") return supported(new URL("about:blank"));
-  if (type === "urlsearchparams") return supported(new URLSearchParams());
+  if (type === DATA_TYPES.UNDEFINED || type === DATA_TYPES.ANY) return supported(undefined);
+  if (type === DATA_TYPES.NULL) return supported(null);
+  if (type === DATA_TYPES.BOOLEAN) return supported(false);
+  if (type === DATA_TYPES.NUMBER || type === DATA_TYPES.NAN) return supported(0);
+  if (type === DATA_TYPES.BIGINT) return supported(0n);
+  if (type === DATA_TYPES.STRING) return supported("");
+  if (type === DATA_TYPES.SYMBOL) return supported(Symbol());
+  if (type === DATA_TYPES.FUNCTION) return supported(function initializedFunction() {});
+  if (type === DATA_TYPES.ARRAY) return supported([]);
+  if (type === DATA_TYPES.OBJECT || type === DATA_TYPES.DATA) return supported({});
+  if (type === DATA_TYPES.DATE) return supported(new Date(date === "now" ? Date.now() : 0));
+  if (type === DATA_TYPES.REGEXP) return supported(new RegExp(""));
+  if (type === DATA_TYPES.MAP) return supported(new Map());
+  if (type === DATA_TYPES.SET) return supported(new Set());
+  if (type === DATA_TYPES.WEAK_MAP) return supported(new WeakMap());
+  if (type === DATA_TYPES.WEAK_SET) return supported(new WeakSet());
+  if (type === DATA_TYPES.PROMISE) return supported(Promise.resolve(undefined));
+  if (type === DATA_TYPES.ERROR) return supported(new Error());
+  if (type === DATA_TYPES.ARRAY_BUFFER) return supported(new ArrayBuffer(0));
+  if (type === DATA_TYPES.DATA_VIEW) return supported(new DataView(new ArrayBuffer(0)));
+  if (type === DATA_TYPES.URL) return supported(new URL("about:blank"));
+  if (type === DATA_TYPES.URL_SEARCH_PARAMS) return supported(new URLSearchParams());
 
   const constructor = [...constructorTypes].find(([, knownType]) => knownType === type)?.[0];
   const BuiltIn = /** @type {any} */ (constructor);
   if (typedArrayTypes.has(type) && constructor) return supported(new BuiltIn(0));
-  if (type === "sharedarraybuffer" && constructor) return supported(new BuiltIn(0));
-  if (type === "blob" && constructor) return supported(new BuiltIn([]));
-  if (type === "file" && constructor) return supported(new BuiltIn([], ""));
-  if (type === "formdata" && constructor) return supported(new BuiltIn());
+  if (type === DATA_TYPES.SHARED_ARRAY_BUFFER && constructor) return supported(new BuiltIn(0));
+  if (type === DATA_TYPES.BLOB && constructor) return supported(new BuiltIn([]));
+  if (type === DATA_TYPES.FILE && constructor) return supported(new BuiltIn([], ""));
+  if (type === DATA_TYPES.FORM_DATA && constructor) return supported(new BuiltIn());
   return { supported: false, value: undefined };
 }
 

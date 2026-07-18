@@ -93,7 +93,10 @@ for (const filename of publicModules) {
       .filter((line) => line !== "" && !line.startsWith("@"));
     if (prose.length === 0) failures.push(`${location}: missing summary`);
     if (!/@since\s+2\.0\.0\b/.test(comment)) failures.push(`${location}: missing @since 2.0.0`);
-    if (kind !== "class" && !/@returns?\s*\{/.test(comment)) failures.push(`${location}: missing @returns type`);
+    if (kind === "function" && !/@returns?\s*\{/.test(comment)) failures.push(`${location}: missing @returns type`);
+    if (kind === "const" && !/@type\s*\{/.test(comment) && !/@returns?\s*\{/.test(comment)) {
+      failures.push(`${location}: missing @type or @returns type`);
+    }
     if (/@deprecated\b/.test(comment) && !/@deprecated\s+\S/.test(comment)) {
       failures.push(`${location}: @deprecated must identify a replacement or rationale`);
     }
@@ -122,7 +125,7 @@ for (const filename of publicModules) {
       const hasDescribedReturn =
         /^@returns?\s+\{.*\}\s+\S/.test(returnsLine ?? "") ||
         (/^@returns?\s+\{\{$/.test(returnsLine ?? "") && lines.some((line) => /^\}\}\s+\S/.test(line)));
-      if (kind !== "class" && !hasDescribedReturn) {
+      if ((kind === "function" || (kind === "const" && /@returns?\s*\{/.test(comment))) && !hasDescribedReturn) {
         failures.push(`${location}: @returns must include a description`);
       }
       for (const line of lines.filter((line) => line.startsWith("@throws "))) {

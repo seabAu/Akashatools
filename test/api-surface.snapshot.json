@@ -3,7 +3,10 @@
   "packageVersion": "2.0.0-alpha.1",
   "surfaces": {
     ".": [
+      "CONTROL_TYPES",
+      "DATA_TYPES",
       "HttpError",
+      "INPUT_TYPES",
       "akasha",
       "analyzeArrayTypes",
       "array",
@@ -260,6 +263,7 @@
       "upsertById"
     ],
     "./data": [
+      "DATA_TYPES",
       "analyzeArrayTypes",
       "defaultValueFor",
       "defaultValueForType",
@@ -313,6 +317,8 @@
       "normalizeGeoPosition"
     ],
     "./input": [
+      "CONTROL_TYPES",
+      "INPUT_TYPES",
       "controlTypeForType",
       "controlTypeForValue",
       "createInputValueParser",

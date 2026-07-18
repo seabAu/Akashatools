@@ -19,7 +19,9 @@ derived from the active source shapes:
   one-million-code-unit work limits;
 - repeated serialized number values from form-style input; and
 - deterministic longitude/latitude positions for repeated and batched distance
-  filtering.
+  filtering; and
+- mixed primitive, built-in, function, collection, typed-array, and custom-brand
+  values for runtime type classification.
 
 Every strategy receives the same retained input and its output is asserted equal
 to the baseline before timing. The shared harness performs three warmups, uses
@@ -29,6 +31,28 @@ Construction work is included when it would occur in the compared operation.
 
 The results below were measured 2026-07-18 on Node.js 22.18.0, Windows
 10.0.19045 x64, Intel Core Ultra 9 285K.
+
+## Canonical runtime type dispatch
+
+This comparison classifies the same mixed primitives, ordinary and async
+functions, arrays, built-ins, typed arrays, and custom intrinsic brand through
+the former dynamic-lowercase implementation and the canonical constant
+dispatch used by `typeOf`. Every batch checksum is asserted equal before
+timing. The small result differs by roughly four hundredths of a millisecond;
+at one million calls, direct dispatch is slightly faster.
+
+| Strategy | Scale | Calls | Samples | Median ms | Min-max ms | Std dev ms | Relative |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| dynamic lowercase brand | small | 1,000 | 21 | 0.042 | 0.026-0.329 | 0.067 | 1.0x |
+| canonical constant dispatch | small | 1,000 | 21 | 0.079 | 0.077-0.190 | 0.024 | 0.5x |
+| dynamic lowercase brand | medium | 100,000 | 11 | 2.856 | 2.803-3.046 | 0.074 | 1.0x |
+| canonical constant dispatch | medium | 100,000 | 11 | 2.562 | 2.475-2.600 | 0.033 | 1.1x |
+| dynamic lowercase brand | large | 1,000,000 | 5 | 28.939 | 28.024-29.282 | 0.476 | 1.0x |
+| canonical constant dispatch | large | 1,000,000 | 5 | 25.899 | 25.613-26.198 | 0.191 | 1.1x |
+
+Decision: use direct primitive and built-in dispatch so known results come from
+`DATA_TYPES`, retain dynamic lowercase fallback for custom brands, and reject a
+generic `Map` lookup that measured materially slower during refinement.
 
 ## Repeated membership checks
 

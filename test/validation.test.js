@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { runInNewContext } from "node:vm";
 
+import { DATA_TYPES } from "akashatools/data";
 import {
   assertJsonContract,
   defaultIfBlank,
@@ -110,7 +111,62 @@ test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
   const foreignCollections = runInNewContext("({ map: new Map([['key', 1]]), set: new Set([1]) })");
   assert.equal(isEmpty(foreignCollections.map), false);
   assert.equal(isEmpty(foreignCollections.set), false);
-  assert.equal(typeOf(new Uint8Array()), "uint8array");
+  assert.equal(typeOf(new Uint8Array()), DATA_TYPES.UINT8_ARRAY);
+  assert.equal(typeOf(false), DATA_TYPES.BOOLEAN);
+  assert.equal(typeOf(new Map()), DATA_TYPES.MAP);
+  assert.equal(typeOf(undefined), DATA_TYPES.UNDEFINED);
+
+  const runtimeTypeCases = [
+    [null, DATA_TYPES.NULL],
+    [[], DATA_TYPES.ARRAY],
+    [Number.NaN, DATA_TYPES.NAN],
+    [0, DATA_TYPES.NUMBER],
+    ["", DATA_TYPES.STRING],
+    [0n, DATA_TYPES.BIGINT],
+    [Symbol("value"), DATA_TYPES.SYMBOL],
+    [() => undefined, DATA_TYPES.FUNCTION],
+    [{}, DATA_TYPES.OBJECT],
+    [Object(false), DATA_TYPES.BOOLEAN],
+    [Object(0), DATA_TYPES.NUMBER],
+    [Object(""), DATA_TYPES.STRING],
+    [Object(0n), DATA_TYPES.BIGINT],
+    [Object(Symbol("value")), DATA_TYPES.SYMBOL],
+    [new ArrayBuffer(0), DATA_TYPES.ARRAY_BUFFER],
+    [new DataView(new ArrayBuffer(0)), DATA_TYPES.DATA_VIEW],
+    [new Date(0), DATA_TYPES.DATE],
+    [new Error("message"), DATA_TYPES.ERROR],
+    [/value/u, DATA_TYPES.REGEXP],
+    [new Map(), DATA_TYPES.MAP],
+    [new Set(), DATA_TYPES.SET],
+    [new WeakMap(), DATA_TYPES.WEAK_MAP],
+    [new WeakSet(), DATA_TYPES.WEAK_SET],
+    [Promise.resolve(), DATA_TYPES.PROMISE],
+    [new Blob(), DATA_TYPES.BLOB],
+    [new File([], "empty.txt"), DATA_TYPES.FILE],
+    [new FormData(), DATA_TYPES.FORM_DATA],
+    [new URL("https://example.com"), DATA_TYPES.URL],
+    [new URLSearchParams(), DATA_TYPES.URL_SEARCH_PARAMS],
+    [new Int8Array(), DATA_TYPES.INT8_ARRAY],
+    [new Int16Array(), DATA_TYPES.INT16_ARRAY],
+    [new Int32Array(), DATA_TYPES.INT32_ARRAY],
+    [new Uint8Array(), DATA_TYPES.UINT8_ARRAY],
+    [new Uint8ClampedArray(), DATA_TYPES.UINT8_CLAMPED_ARRAY],
+    [new Uint16Array(), DATA_TYPES.UINT16_ARRAY],
+    [new Uint32Array(), DATA_TYPES.UINT32_ARRAY],
+    [new Float32Array(), DATA_TYPES.FLOAT32_ARRAY],
+    [new Float64Array(), DATA_TYPES.FLOAT64_ARRAY],
+    [new BigInt64Array(), DATA_TYPES.BIGINT64_ARRAY],
+    [new BigUint64Array(), DATA_TYPES.BIGUINT64_ARRAY],
+    [new SharedArrayBuffer(0), DATA_TYPES.SHARED_ARRAY_BUFFER],
+  ];
+  for (const [value, expected] of runtimeTypeCases) assert.equal(typeOf(value), expected);
+
+  const customBrand = { [Symbol.toStringTag]: "AkashaRecord" };
+  assert.equal(typeOf(customBrand), "akasharecord");
+  assert.equal(
+    typeOf(async () => undefined),
+    "asyncfunction",
+  );
   assert.equal(isJson("false"), true);
   assert.equal(isJson("undefined"), false);
   assert.equal(isEmail("person@example.com"), true);
@@ -175,11 +231,11 @@ test("type guards are literal, cross-realm aware, and browser-global safe", () =
 
 test("JSON contract validation reports paths and supports local references", () => {
   const schema = {
-    definitions: { id: { type: "integer" } },
-    type: "object",
+    definitions: { id: { type: DATA_TYPES.INTEGER } },
+    type: DATA_TYPES.OBJECT,
     required: ["id", "name"],
     additionalProperties: false,
-    properties: { id: { $ref: "#/definitions/id" }, name: { type: "string" } },
+    properties: { id: { $ref: "#/definitions/id" }, name: { type: DATA_TYPES.STRING } },
   };
   assert.deepEqual(validateJsonContract({ id: 1, name: "Akasha" }, schema), []);
   assert.deepEqual(validateJsonContract({ id: "1", extra: true }, schema), [

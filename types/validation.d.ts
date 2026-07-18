@@ -1,4 +1,5 @@
-export type JsonContractType = "array" | "object" | "integer" | "null" | "string" | "number" | "boolean";
+import { dataTypes as DATA_TYPES } from "./internal/type-vocabulary.js";
+export type JsonContractType = (typeof DATA_TYPES)["ARRAY" | "OBJECT" | "INTEGER" | "NULL" | "STRING" | "NUMBER" | "BOOLEAN"];
 export type PortablePathKind = "file" | "directory" | "either";
 export type PortablePathNormalization = "NFC" | "NFKC" | "none";
 export type PortableRelativePathOptions = {

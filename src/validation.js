@@ -1,7 +1,10 @@
 import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
+import { dataTypes as DATA_TYPES } from "./internal/type-vocabulary.js";
 import { isPlainObject } from "./object.js";
 
-/** @typedef {"array" | "object" | "integer" | "null" | "string" | "number" | "boolean"} JsonContractType */
+/**
+ * @typedef {(typeof DATA_TYPES)["ARRAY" | "OBJECT" | "INTEGER" | "NULL" | "STRING" | "NUMBER" | "BOOLEAN"]} JsonContractType
+ */
 /** @typedef {"file" | "directory" | "either"} PortablePathKind */
 /** @typedef {"NFC" | "NFKC" | "none"} PortablePathNormalization */
 /**
@@ -39,7 +42,16 @@ const supportedContractKeywords = new Set([
   "additionalProperties",
   "definitions",
 ]);
-const supportedJsonTypes = new Set(["array", "object", "integer", "null", "string", "number", "boolean"]);
+/** @type {Set<string>} */
+const supportedJsonTypes = new Set([
+  DATA_TYPES.ARRAY,
+  DATA_TYPES.OBJECT,
+  DATA_TYPES.INTEGER,
+  DATA_TYPES.NULL,
+  DATA_TYPES.STRING,
+  DATA_TYPES.NUMBER,
+  DATA_TYPES.BOOLEAN,
+]);
 const emailLocalPattern = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
 const domainLabelPattern = /^[A-Za-z0-9-]+$/;
 const nanpInputPattern = /^[\d\s()+.-]+$/;
@@ -320,10 +332,97 @@ export function isFile(value) {
  * @since 2.0.0
  */
 export function typeOf(value) {
-  if (value === null) return "null";
-  if (Array.isArray(value)) return "array";
-  if (Number.isNaN(value)) return "nan";
-  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
+  if (value === null) return DATA_TYPES.NULL;
+  if (Array.isArray(value)) return DATA_TYPES.ARRAY;
+
+  switch (typeof value) {
+    case "undefined":
+      return DATA_TYPES.UNDEFINED;
+    case "boolean":
+      return DATA_TYPES.BOOLEAN;
+    case "number":
+      return Number.isNaN(value) ? DATA_TYPES.NAN : DATA_TYPES.NUMBER;
+    case "string":
+      return DATA_TYPES.STRING;
+    case "bigint":
+      return DATA_TYPES.BIGINT;
+    case "symbol":
+      return DATA_TYPES.SYMBOL;
+  }
+
+  const brand = Object.prototype.toString.call(value).slice(8, -1);
+  switch (brand) {
+    case "ArrayBuffer":
+      return DATA_TYPES.ARRAY_BUFFER;
+    case "BigInt":
+      return DATA_TYPES.BIGINT;
+    case "BigInt64Array":
+      return DATA_TYPES.BIGINT64_ARRAY;
+    case "BigUint64Array":
+      return DATA_TYPES.BIGUINT64_ARRAY;
+    case "Blob":
+      return DATA_TYPES.BLOB;
+    case "Boolean":
+      return DATA_TYPES.BOOLEAN;
+    case "DataView":
+      return DATA_TYPES.DATA_VIEW;
+    case "Date":
+      return DATA_TYPES.DATE;
+    case "Error":
+      return DATA_TYPES.ERROR;
+    case "File":
+      return DATA_TYPES.FILE;
+    case "Float32Array":
+      return DATA_TYPES.FLOAT32_ARRAY;
+    case "Float64Array":
+      return DATA_TYPES.FLOAT64_ARRAY;
+    case "FormData":
+      return DATA_TYPES.FORM_DATA;
+    case "Function":
+      return DATA_TYPES.FUNCTION;
+    case "Int8Array":
+      return DATA_TYPES.INT8_ARRAY;
+    case "Int16Array":
+      return DATA_TYPES.INT16_ARRAY;
+    case "Int32Array":
+      return DATA_TYPES.INT32_ARRAY;
+    case "Map":
+      return DATA_TYPES.MAP;
+    case "Number":
+      return DATA_TYPES.NUMBER;
+    case "Object":
+      return DATA_TYPES.OBJECT;
+    case "Promise":
+      return DATA_TYPES.PROMISE;
+    case "RegExp":
+      return DATA_TYPES.REGEXP;
+    case "Set":
+      return DATA_TYPES.SET;
+    case "SharedArrayBuffer":
+      return DATA_TYPES.SHARED_ARRAY_BUFFER;
+    case "String":
+      return DATA_TYPES.STRING;
+    case "Symbol":
+      return DATA_TYPES.SYMBOL;
+    case "Uint8Array":
+      return DATA_TYPES.UINT8_ARRAY;
+    case "Uint8ClampedArray":
+      return DATA_TYPES.UINT8_CLAMPED_ARRAY;
+    case "Uint16Array":
+      return DATA_TYPES.UINT16_ARRAY;
+    case "Uint32Array":
+      return DATA_TYPES.UINT32_ARRAY;
+    case "URL":
+      return DATA_TYPES.URL;
+    case "URLSearchParams":
+      return DATA_TYPES.URL_SEARCH_PARAMS;
+    case "WeakMap":
+      return DATA_TYPES.WEAK_MAP;
+    case "WeakSet":
+      return DATA_TYPES.WEAK_SET;
+    default:
+      return brand.toLowerCase();
+  }
 }
 
 /**
@@ -544,7 +643,7 @@ function validateContractNode(value, schema, root, path) {
     return errors;
   }
 
-  if (contract.type === "object") {
+  if (contract.type === DATA_TYPES.OBJECT) {
     const objectValue = /** @type {Record<string, unknown>} */ (value);
     const properties = contract.properties ?? {};
     for (const key of contract.required ?? []) {
@@ -561,7 +660,7 @@ function validateContractNode(value, schema, root, path) {
     }
   }
 
-  if (contract.type === "array" && contract.items) {
+  if (contract.type === DATA_TYPES.ARRAY && contract.items) {
     const arrayValue = /** @type {unknown[]} */ (value);
     for (let index = 0; index < arrayValue.length; index += 1) {
       errors.push(...validateContractNode(arrayValue[index], contract.items, root, `${path}[${index}]`));
@@ -688,11 +787,12 @@ function resolveReference(root, reference) {
 /** @param {unknown} value @param {string | string[]} expected @returns {boolean} */
 function matchesJsonType(value, expected) {
   if (Array.isArray(expected)) return expected.some((type) => matchesJsonType(value, type));
-  if (expected === "array") return Array.isArray(value);
-  if (expected === "object") return isPlainObject(value);
-  if (expected === "integer") return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value);
-  if (expected === "number") return isFiniteNumber(value);
-  if (expected === "null") return value === null;
+  if (expected === DATA_TYPES.ARRAY) return Array.isArray(value);
+  if (expected === DATA_TYPES.OBJECT) return isPlainObject(value);
+  if (expected === DATA_TYPES.INTEGER)
+    return typeof value === "number" && Number.isFinite(value) && Number.isInteger(value);
+  if (expected === DATA_TYPES.NUMBER) return isFiniteNumber(value);
+  if (expected === DATA_TYPES.NULL) return value === null;
   return typeof value === expected;
 }
 

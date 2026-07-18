@@ -1,3 +1,18 @@
+import { dataTypes } from "./internal/type-vocabulary.js";
+export type DataTypeMap = typeof dataTypes;
+/** @typedef {typeof dataTypes} DataTypeMap */
+/**
+ * Frozen enum-style identifiers for every data type recognized by Akashatools
+ * contracts. Values remain the existing lowercase strings, so constants and
+ * serialized descriptors are interchangeable.
+ *
+ * @type {DataTypeMap}
+ * @example
+ * defaultValueForType(DATA_TYPES.BOOLEAN); // false
+ * @since 2.0.0
+ */
+export declare const DATA_TYPES: DataTypeMap;
+export type DataType = (typeof DATA_TYPES)[keyof typeof DATA_TYPES];
 export type DefaultValueOptions = {
     /**
      * Date initialization policy.
@@ -10,7 +25,7 @@ export type DefaultValueOptions = {
     /**
      * Unsupported-type policy.
      */
-    unsupported?: "throw" | "undefined";
+    unsupported?: "throw" | typeof DATA_TYPES.UNDEFINED;
 };
 export type InitializeLikeOptions = {
     /**
@@ -24,7 +39,7 @@ export type InitializeLikeOptions = {
     /**
      * Unsupported-type policy.
      */
-    unsupported?: "throw" | "undefined";
+    unsupported?: "throw" | typeof DATA_TYPES.UNDEFINED;
     /**
      * Array initialization policy.
      */

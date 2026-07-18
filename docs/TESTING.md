@@ -75,9 +75,9 @@ when those support windows change.
 
 The local 2026-07-18 expanded release matrix completed the full check and
 coverage gates on Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed
-all 215 tests, fresh JavaScript/TypeScript tarball installation, 191-API and
-232-declaration generation checks, bundle budgets, dependency audit, and package
-inspection. Node 22 measured 98.21% lines, 89.56% branches, and 97.23%
-functions; Node 24 measured 98.21% / 89.51% / 97.23%. Playwright separately
+all 217 tests, fresh JavaScript/TypeScript tarball installation, 194-API and
+236-declaration generation checks, bundle budgets, dependency audit, and package
+inspection. Node 22 measured 98.25% lines, 89.74% branches, and 97.23%
+functions; Node 24 measured 98.25% / 89.66% / 97.23%. Playwright separately
 passed all 18 tests across Chromium, Firefox, and WebKit. The first hosted
 workflow result remains a distinct release gate.

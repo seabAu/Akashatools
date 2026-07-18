@@ -27,6 +27,7 @@ drop-in compatibility.
 | `compact` | array | universal | no input mutation | `akashatools/array/compact` | `AO.removeEmpty`, `AO.cleanArray` |
 | `compareNumericOrder` | sort | universal | no input mutation | `akashatools/sort/compareNumericOrder` | None |
 | `compareValues` | sort | universal | no input mutation | `akashatools/sort/compareValues` | None |
+| `CONTROL_TYPES` | input | universal | no input mutation | `akashatools/input/CONTROL_TYPES` | None |
 | `controlTypeForType` | input | universal | no input mutation | `akashatools/input/controlTypeForType` | None |
 | `controlTypeForValue` | input | universal | no input mutation | `akashatools/input/controlTypeForValue` | `Val.getFieldType` |
 | `countBy` | array | universal | no input mutation | `akashatools/array/countBy` | None |
@@ -40,6 +41,7 @@ drop-in compatibility.
 | `createKeyedConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createKeyedConcurrencyLimiter` | None |
 | `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async/createKeyedSingleFlight` | None |
 | `createSingleFlight` | async | universal | no input mutation | `akashatools/async/createSingleFlight` | None |
+| `DATA_TYPES` | data | universal | no input mutation | `akashatools/data/DATA_TYPES` | None |
 | `daysInMonth` | date | universal | no input mutation | `akashatools/date/daysInMonth` | None |
 | `debounce` | function | universal | no input mutation | `akashatools/function/debounce` | None |
 | `deepClone` | object | universal | no input mutation | `akashatools/object/deepClone` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
@@ -92,6 +94,7 @@ drop-in compatibility.
 | `HttpError` | http | universal | no input mutation | `akashatools/http/HttpError` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
 | `includesText` | string | universal | no input mutation | `akashatools/string/includesText` | `AO.valContains`, `String.subStringSearch` |
 | `initializeLike` | data | universal | no input mutation | `akashatools/data/initializeLike` | `AO.cleanJSON` |
+| `INPUT_TYPES` | input | universal | no input mutation | `akashatools/input/INPUT_TYPES` | None |
 | `inputTypeForType` | input | universal | no input mutation | `akashatools/input/inputTypeForType` | None |
 | `inputTypeForValue` | input | universal | no input mutation | `akashatools/input/inputTypeForValue` | `Val.getFieldType` |
 | `inputValueFromControl` | browser | browser-effect | browser effect | `akashatools/browser/inputValueFromControl` | None |

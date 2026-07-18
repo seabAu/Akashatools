@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  CONTROL_TYPES,
   controlTypeForType,
   controlTypeForValue,
   createInputValueParser,
@@ -9,14 +10,26 @@ import {
   fieldsFromData,
   inputTypeForType,
   inputTypeForValue,
+  INPUT_TYPES,
   parseInputValue,
 } from "akashatools/input";
 
+test("input and control vocabularies are frozen and interchangeable with strings", () => {
+  assert.equal(Object.isFrozen(INPUT_TYPES), true);
+  assert.equal(Object.isFrozen(CONTROL_TYPES), true);
+  assert.equal(new Set(Object.values(INPUT_TYPES)).size, Object.values(INPUT_TYPES).length);
+  assert.equal(new Set(Object.values(CONTROL_TYPES)).size, Object.values(CONTROL_TYPES).length);
+  assert.equal(inputTypeForType(Boolean), INPUT_TYPES.CHECKBOX);
+  assert.equal(inputTypeForType(Date, { dateType: INPUT_TYPES.DATE }), INPUT_TYPES.DATE);
+  assert.equal(controlTypeForValue([{ id: 1 }]), CONTROL_TYPES.OBJECT_ARRAY);
+  assert.equal(parseInputValue("42", INPUT_TYPES.NUMBER), 42);
+});
+
 test("inputTypeForType separates scalar HTML inputs from composite controls", () => {
-  assert.equal(inputTypeForType(String), "text");
-  assert.equal(inputTypeForType(Number), "number");
-  assert.equal(inputTypeForType(Boolean), "checkbox");
-  assert.equal(inputTypeForType(Date), "datetime-local");
+  assert.equal(inputTypeForType(String), INPUT_TYPES.TEXT);
+  assert.equal(inputTypeForType(Number), INPUT_TYPES.NUMBER);
+  assert.equal(inputTypeForType(Boolean), INPUT_TYPES.CHECKBOX);
+  assert.equal(inputTypeForType(Date), INPUT_TYPES.DATETIME_LOCAL);
   assert.equal(inputTypeForType("date"), "date");
   assert.equal(inputTypeForType("DateTimeLocal"), "datetime-local");
   assert.equal(inputTypeForType("ObjectId"), "text");
@@ -52,13 +65,13 @@ test("inputTypeForValue uses runtime types without coercing string contents", ()
 });
 
 test("control classification distinguishes declared composites and scalar inputs", () => {
-  assert.equal(controlTypeForType(Array), "array");
-  assert.equal(controlTypeForType(Object), "object");
-  assert.equal(controlTypeForType(Map), "map");
-  assert.equal(controlTypeForType(Set), "set");
-  assert.equal(controlTypeForType(String), "input");
-  assert.equal(controlTypeForType(Function), "unsupported");
-  assert.equal(controlTypeForType(Function, { unsupported: "text" }), "input");
+  assert.equal(controlTypeForType(Array), CONTROL_TYPES.ARRAY);
+  assert.equal(controlTypeForType(Object), CONTROL_TYPES.OBJECT);
+  assert.equal(controlTypeForType(Map), CONTROL_TYPES.MAP);
+  assert.equal(controlTypeForType(Set), CONTROL_TYPES.SET);
+  assert.equal(controlTypeForType(String), CONTROL_TYPES.INPUT);
+  assert.equal(controlTypeForType(Function), CONTROL_TYPES.UNSUPPORTED);
+  assert.equal(controlTypeForType(Function, { unsupported: INPUT_TYPES.TEXT }), CONTROL_TYPES.INPUT);
   assert.throws(() => controlTypeForType(Array, { unsupported: "skip" }), /unsupported must/);
 });
 

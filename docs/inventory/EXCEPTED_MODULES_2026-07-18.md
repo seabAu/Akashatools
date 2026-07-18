@@ -163,7 +163,7 @@ to migrate.
 - The source files above remain untouched. Only redesigned canonical package
   code, tests, documentation, and generated entry points enter Akashatools.
 
-The completed redesign and adversarial refinement pass 215 Node contracts on
+The completed redesign and adversarial refinement pass 217 Node contracts on
 Node 22.18.0 and 24.18.0,
 plus 18 Playwright checks across Chromium, Firefox, and WebKit. Equal-output
 benchmarks and their reproducible commands are recorded in

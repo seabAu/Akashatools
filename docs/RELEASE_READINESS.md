@@ -15,13 +15,13 @@
 | Module format | ESM-only |
 | Node.js engine | `>=22.17` |
 | Universal categories | 17 |
-| Public methods | 191 |
-| Generated declaration files | 232 |
+| Public methods | 194 |
+| Generated declaration files | 236 |
 | Reviewed API surfaces | 19 |
 | License | ISC (`LICENSE`, 741 bytes) |
-| Dry-run files | 523 |
-| Dry-run packed size | 370,795 bytes |
-| Dry-run unpacked size | 1,389,292 bytes |
+| Dry-run files | 532 |
+| Dry-run packed size | 380,227 bytes |
+| Dry-run unpacked size | 1,418,573 bytes |
 
 `npm pack --dry-run --json` verifies the selected package content without
 creating or publishing an artifact. The package includes runtime sources,
@@ -45,21 +45,21 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Gate | Current result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 305 JavaScript files pass |
-| Public documentation | 191 declarations pass |
-| Generated declarations | 232 files current |
+| Maintained syntax | 310 JavaScript files pass |
+| Public documentation | 194 declarations pass |
+| Generated declarations | 236 files current |
 | API surface snapshot | 19 surfaces current |
-| Node contract tests | 215 passed, 0 failed on Node 22 and Node 24 |
+| Node contract tests | 217 passed, 0 failed on Node 22 and Node 24 |
 | Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
-| Node 22 source coverage | 98.21% lines / 89.56% branches / 97.23% functions |
-| Node 24 source coverage | 98.21% lines / 89.51% branches / 97.23% functions |
+| Node 22 source coverage | 98.25% lines / 89.74% branches / 97.23% functions |
+| Node 24 source coverage | 98.25% lines / 89.66% branches / 97.23% functions |
 | Browser tests | 18 passed across Chromium, Firefox, and WebKit |
 | Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
-| Default namespace maximum | 113,294 raw / 33,705 gzip; budget 114,000 / 34,000 |
+| Default namespace maximum | 116,220 raw / 34,939 gzip; budget 117,000 / 35,250 |
 | Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |
-| Consumer bundle evidence | Focused fixtures save 106,018-109,518 raw and 31,050-32,026 gzip bytes |
+| Consumer bundle evidence | Focused fixtures save 108,945-112,442 raw and 32,291-33,256 gzip bytes |
 | Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven strict APIs |
-| Modern import inertness | Root, all 18 category surfaces, and all 191 granular methods preserve complete Array/Object/Date descriptors |
+| Modern import inertness | Root, all 18 category surfaces, and all 194 granular methods preserve complete Array/Object/Date descriptors |
 
 The unified gate also verifies formatting, linting, JSDoc/TypeScript checking,
 editor completions, generated documentation and migration data, export-map

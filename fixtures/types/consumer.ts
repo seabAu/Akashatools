@@ -13,11 +13,13 @@ import akasha, {
 } from "akashatools";
 import { chunk as categoryChunk } from "akashatools/array";
 import granularChunk from "akashatools/array/chunk";
-import { analyzeArrayTypes, initializeLike } from "akashatools/data";
+import { analyzeArrayTypes, DATA_TYPES, initializeLike } from "akashatools/data";
+import type { DataType } from "akashatools/data";
 import { HttpError, request as categoryRequest } from "akashatools/http";
 import { crc32, sha256Hex, stableJsonId } from "akashatools/hash";
 import granularOnce from "akashatools/function/once";
-import { fieldsFromData, inputTypeForValue } from "akashatools/input";
+import { CONTROL_TYPES, fieldsFromData, inputTypeForValue, INPUT_TYPES } from "akashatools/input";
+import type { ControlType, InputType } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
 import granularHasDeep from "akashatools/object/hasDeep";
@@ -39,6 +41,10 @@ const defaultString: unknown = data.defaultValueForType(String);
 const textInput: string | undefined = inputTypeForValue("Ada");
 const fieldName: string = fieldsFromData({ name: "Ada" })[0].name;
 const nestedInput: string | undefined = input.inputTypeForType(Boolean);
+const dataType: DataType = DATA_TYPES.BOOLEAN;
+const inputType: InputType = INPUT_TYPES.CHECKBOX;
+const controlType: ControlType = CONTROL_TYPES.INPUT;
+const rootDataType: "boolean" = akasha.DATA_TYPES.BOOLEAN;
 const hasId: boolean = deepQuery({ user: { id: 1 } }).has("id", { by: "key" });
 const ids: unknown[] = findAllDeepValues({ user: { id: 1 } }, "id", { by: "key" });
 const granularHasId: boolean = granularHasDeep({ id: 1 }, "id", { by: "key" });
@@ -78,14 +84,16 @@ akasha.resolveContainedPath;
 chunk("not an array", 2);
 // @ts-expect-error The contract supports only declared JSON types.
 const invalidContract: JsonContract = { type: "date" };
+// @ts-expect-error DataType accepts only the canonical vocabulary.
+const invalidDataType: DataType = "not-a-data-type";
 
 void [
   values, categoryValues, granularValues, nestedValues, flatValues, namedNamespaceValues,
   initialized, primaryType, defaultString,
-  textInput, fieldName, nestedInput,
+  textInput, fieldName, nestedInput, dataType, inputType, controlType, rootDataType,
   hasId, ids, granularHasId,
   validEmail, rootPredicate, path, archivePath, archivePaths, contract, response, categoryResponse,
-  namespacedResponse, errorCode, invalidContract,
+  namespacedResponse, errorCode, invalidContract, invalidDataType,
   checksum, digest, deterministicId, namespacedDigest,
   initializedOnce, granularInitialized, memoizedLength, cachedLength,
   debouncedLength, pendingLength, throttledLength, throttledPending,

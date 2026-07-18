@@ -134,6 +134,7 @@ export declare const collection: Readonly<{
 }>;
 /** Frozen data introspection and initialization utilities. */
 export declare const data: Readonly<{
+    DATA_TYPES: dataModule.DataTypeMap;
     normalizeDataType(descriptor: string | Function): string;
     analyzeArrayTypes(values: readonly unknown[]): {
         length: number;
@@ -250,16 +251,18 @@ export declare const geo: Readonly<{
 }>;
 /** Frozen form-input inference and descriptor utilities. */
 export declare const input: Readonly<{
-    inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): string | undefined;
-    inputTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): string | undefined;
-    controlTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): "input" | "array" | "object" | "map" | "set" | "unsupported";
-    controlTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): "input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported";
+    INPUT_TYPES: inputModule.InputTypeMap;
+    CONTROL_TYPES: inputModule.ControlTypeMap;
+    inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): inputModule.InputType | string | undefined;
+    inputTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): inputModule.InputType | string | undefined;
+    controlTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): inputModule.ControlType;
+    controlTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): inputModule.ControlType;
     fieldDescriptorFor(name: string, value: unknown, options?: inputModule.InputFieldOptions): Readonly<{
         name: string;
         label: string;
         path: readonly (string | number)[];
         dataType: string;
-        inputType: string | undefined;
+        inputType: inputModule.InputType | string | undefined;
         controlType: ReturnType<typeof inputModule.controlTypeForValue>;
         defaultValue: unknown;
         arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
@@ -569,6 +572,7 @@ export declare const akasha: Readonly<{
     normalizePortableRelativePaths: typeof validationModule.normalizePortableRelativePaths;
     validateJsonContract: typeof validationModule.validateJsonContract;
     assertJsonContract: typeof validationModule.assertJsonContract;
+    DATA_TYPES: dataModule.DataTypeMap;
     normalizeDataType: typeof dataModule.normalizeDataType;
     analyzeArrayTypes: typeof dataModule.analyzeArrayTypes;
     defaultValueForType: typeof dataModule.defaultValueForType;
@@ -616,6 +620,8 @@ export declare const akasha: Readonly<{
     redactHeaders: typeof httpModule.redactHeaders;
     parseRetryAfter: typeof httpModule.parseRetryAfter;
     parseContentDispositionFilename: typeof httpModule.parseContentDispositionFilename;
+    INPUT_TYPES: inputModule.InputTypeMap;
+    CONTROL_TYPES: inputModule.ControlTypeMap;
     inputTypeForType: typeof inputModule.inputTypeForType;
     inputTypeForValue: typeof inputModule.inputTypeForValue;
     controlTypeForType: typeof inputModule.controlTypeForType;
@@ -756,6 +762,7 @@ export declare const akasha: Readonly<{
         }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
     }>;
     data: Readonly<{
+        DATA_TYPES: dataModule.DataTypeMap;
         normalizeDataType(descriptor: string | Function): string;
         analyzeArrayTypes(values: readonly unknown[]): {
             length: number;
@@ -867,16 +874,18 @@ export declare const akasha: Readonly<{
         };
     }>;
     input: Readonly<{
-        inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): string | undefined;
-        inputTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): string | undefined;
-        controlTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): "input" | "array" | "object" | "map" | "set" | "unsupported";
-        controlTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): "input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported";
+        INPUT_TYPES: inputModule.InputTypeMap;
+        CONTROL_TYPES: inputModule.ControlTypeMap;
+        inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): inputModule.InputType | string | undefined;
+        inputTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): inputModule.InputType | string | undefined;
+        controlTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): inputModule.ControlType;
+        controlTypeForValue(value: unknown, options?: inputModule.InputTypeOptions): inputModule.ControlType;
         fieldDescriptorFor(name: string, value: unknown, options?: inputModule.InputFieldOptions): Readonly<{
             name: string;
             label: string;
             path: readonly (string | number)[];
             dataType: string;
-            inputType: string | undefined;
+            inputType: inputModule.InputType | string | undefined;
             controlType: ReturnType<typeof inputModule.controlTypeForValue>;
             defaultValue: unknown;
             arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;

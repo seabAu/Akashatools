@@ -18,6 +18,9 @@
 - Added equal-output high-volume benchmarks for one-shot versus compiled input
   parsing and repeated atomic versus bounded batched geo filtering; elapsed time
   remains reporting evidence rather than a test pass/fail condition.
+- Added an equal-output canonical `typeOf` dispatch benchmark and replaced a
+  slower intermediate lookup with direct constant returns plus a custom-brand
+  fallback.
 - Completed the reopened 2026-07-18 regression, adversarial refinement, and
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,
@@ -37,6 +40,9 @@
 - Added the universal `input` category with separate scalar input inference,
   composite control classification, and frozen framework-neutral field
   descriptors for plain objects and arrays.
+- Added frozen `DATA_TYPES`, `INPUT_TYPES`, and `CONTROL_TYPES` vocabularies plus
+  exact TypeScript value-union types, and refactored datatype, native-input, and
+  composite-control comparisons and results to share those canonical values.
 - Expanded bounded object traversal with predicate/all-match collection and
   explicit exact-needle boolean, entry, value, parent, and all projections.
 - Added frozen `deepQuery(data).has(...)` dot-style syntax without modifying
@@ -54,9 +60,9 @@
   Mongoose, React, layout, custom-ID, and product-schema adapters.
 - Reopened generated category/method subpaths and safe fluent deep-query syntax
   as explicit ergonomics work while retaining side-effect-free normal imports.
-- Kept focused imports at 321 raw/252 gzip bytes through the expanded 191-method
+- Kept focused imports at 321 raw/252 gzip bytes through the expanded 194-method
   surface and recalibrated only the full default-namespace guardrail to
-  114,000 raw/34,000 gzip around a refined 113,294/33,705 maximum measurement.
+  117,000 raw/35,250 gzip around a refined 116,220/34,939 maximum measurement.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.

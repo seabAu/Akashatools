@@ -1,9 +1,37 @@
-import { analyzeArrayTypes } from "./data.js";
+import { analyzeArrayTypes, DATA_TYPES } from "./data.js";
+import { controlTypes, inputTypes } from "./internal/type-vocabulary.js";
+export type InputTypeMap = typeof inputTypes;
+export type ControlTypeMap = typeof controlTypes;
+/** @typedef {typeof inputTypes} InputTypeMap */
+/** @typedef {typeof controlTypes} ControlTypeMap */
+/**
+ * Frozen enum-style identifiers for native HTML input types recognized by
+ * Akashatools. The values can be passed anywhere the equivalent string is
+ * accepted and remain suitable for serialized field descriptors.
+ *
+ * @type {InputTypeMap}
+ * @example
+ * inputTypeForType(Boolean) === INPUT_TYPES.CHECKBOX; // true
+ * @since 2.0.0
+ */
+export declare const INPUT_TYPES: InputTypeMap;
+/**
+ * Frozen enum-style identifiers returned by renderer-level control
+ * classification. They distinguish native inputs from composite data controls.
+ *
+ * @type {ControlTypeMap}
+ * @example
+ * controlTypeForValue([{ id: 1 }]) === CONTROL_TYPES.OBJECT_ARRAY; // true
+ * @since 2.0.0
+ */
+export declare const CONTROL_TYPES: ControlTypeMap;
+export type InputType = (typeof INPUT_TYPES)[keyof typeof INPUT_TYPES];
+export type ControlType = (typeof CONTROL_TYPES)[keyof typeof CONTROL_TYPES];
 export type InputTypeOptions = {
     /**
      * Native input type used for Date data.
      */
-    dateType?: "date" | "datetime-local";
+    dateType?: typeof INPUT_TYPES.DATE | typeof INPUT_TYPES.DATETIME_LOCAL;
     /**
      * Descriptor/type-specific mappings.
      */
@@ -11,7 +39,7 @@ export type InputTypeOptions = {
     /**
      * Unsupported-type policy.
      */
-    unsupported?: "text" | "undefined" | "throw";
+    unsupported?: typeof INPUT_TYPES.TEXT | typeof DATA_TYPES.UNDEFINED | "throw";
 };
 export type InputFieldOptions = InputTypeOptions & {
     label?: string;
@@ -27,7 +55,7 @@ export type InputValueParserOptions = {
     /**
      * Empty-string policy. Text preserves by default; other types throw by default.
      */
-    empty?: "preserve" | "null" | "undefined" | "throw";
+    empty?: "preserve" | typeof DATA_TYPES.NULL | typeof DATA_TYPES.UNDEFINED | "throw";
     /**
      * Whether syntactic scalar parsers ignore outer whitespace. String output is never trimmed.
      */
@@ -43,7 +71,7 @@ export type InputValueParserOptions = {
     /**
      * Representation returned for Date data.
      */
-    dateOutput?: "date" | "timestamp" | "string";
+    dateOutput?: typeof DATA_TYPES.DATE | "timestamp" | typeof DATA_TYPES.STRING;
     /**
      * Zone policy for a date-time string without an offset.
      */
@@ -69,13 +97,13 @@ export type InputValueParserOptions = {
  *
  * @param {string | Function} descriptor Data type label or constructor.
  * @param {InputTypeOptions} [options] Date, override, and unsupported-type policies.
- * @returns {string | undefined} Native input type or undefined for unsupported/composite data.
+ * @returns {InputType | string | undefined} Native input type or configured override, or undefined for unsupported/composite data.
  * @throws {TypeError} If descriptor or options do not match the contract.
  * @example
  * inputTypeForType(Date); // "datetime-local"
  * @since 2.0.0
  */
-export declare function inputTypeForType(descriptor: string | Function, options?: InputTypeOptions): string | undefined;
+export declare function inputTypeForType(descriptor: string | Function, options?: InputTypeOptions): InputType | string | undefined;
 /**
  * Returns the native HTML input type suited to a runtime scalar value. Strings
  * remain text even when their content resembles a number or boolean; this
@@ -83,13 +111,13 @@ export declare function inputTypeForType(descriptor: string | Function, options?
  *
  * @param {unknown} value Runtime value to classify.
  * @param {InputTypeOptions} [options] Date, override, and unsupported-type policies.
- * @returns {string | undefined} Native input type or undefined for unsupported/composite data.
+ * @returns {InputType | string | undefined} Native input type or configured override, or undefined for unsupported/composite data.
  * @throws {TypeError} If options do not match the contract.
  * @example
  * inputTypeForValue(false); // "checkbox"
  * @since 2.0.0
  */
-export declare function inputTypeForValue(value: unknown, options?: InputTypeOptions): string | undefined;
+export declare function inputTypeForValue(value: unknown, options?: InputTypeOptions): InputType | string | undefined;
 /**
  * Classifies a declared type into a renderer-level control without pretending
  * composite data can be accepted by a native input. The result is `input`,
@@ -97,13 +125,13 @@ export declare function inputTypeForValue(value: unknown, options?: InputTypeOpt
  *
  * @param {string | Function} descriptor Data type label or constructor.
  * @param {InputTypeOptions} [options] Scalar input mapping policies.
- * @returns {"input" | "array" | "object" | "map" | "set" | "unsupported"} Generic control category.
+ * @returns {ControlType} Generic control category.
  * @throws {TypeError} If descriptor or options do not match the contract.
  * @example
  * controlTypeForType(Array); // "array"
  * @since 2.0.0
  */
-export declare function controlTypeForType(descriptor: string | Function, options?: InputTypeOptions): "input" | "array" | "object" | "map" | "set" | "unsupported";
+export declare function controlTypeForType(descriptor: string | Function, options?: InputTypeOptions): ControlType;
 /**
  * Classifies a runtime value into a renderer-level control. Arrays are analyzed
  * in full and distinguished as empty, scalar, object, nested, or mixed rather
@@ -111,13 +139,13 @@ export declare function controlTypeForType(descriptor: string | Function, option
  *
  * @param {unknown} value Runtime value to classify.
  * @param {InputTypeOptions} [options] Scalar input mapping policies.
- * @returns {"input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported"} Generic control category.
+ * @returns {ControlType} Generic control category.
  * @throws {TypeError} If options do not match the contract.
  * @example
  * controlTypeForValue([{ id: 1 }]); // "object-array"
  * @since 2.0.0
  */
-export declare function controlTypeForValue(value: unknown, options?: InputTypeOptions): "input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported";
+export declare function controlTypeForValue(value: unknown, options?: InputTypeOptions): ControlType;
 /**
  * Describes one generic data-backed input field without importing a UI
  * framework or schema language. The existing value becomes `defaultValue`
@@ -127,7 +155,7 @@ export declare function controlTypeForValue(value: unknown, options?: InputTypeO
  * @param {string} name Stable field name.
  * @param {unknown} value Current field value used for type/control inference.
  * @param {InputFieldOptions} [options] Label, path, explicit default, and input mapping policies.
- * @returns {Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>} Frozen framework-neutral field descriptor.
+ * @returns {Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: InputType | string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>} Frozen framework-neutral field descriptor.
  * @throws {TypeError} If name, options, label, or path is invalid.
  * @example
  * fieldDescriptorFor("active", false).inputType; // "checkbox"
@@ -138,7 +166,7 @@ export declare function fieldDescriptorFor(name: string, value: unknown, options
     label: string;
     path: readonly (string | number)[];
     dataType: string;
-    inputType: string | undefined;
+    inputType: InputType | string | undefined;
     controlType: ReturnType<typeof controlTypeForValue>;
     defaultValue: unknown;
     arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined;

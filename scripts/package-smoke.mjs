@@ -38,10 +38,11 @@ try {
     `
 import assert from "node:assert/strict";
 import path from "node:path";
-import akasha, { chunk, isEmail } from "akashatools";
+import akasha, { chunk, CONTROL_TYPES, DATA_TYPES, INPUT_TYPES, isEmail } from "akashatools";
 import { chunk as categoryChunk } from "akashatools/array";
 import methodChunk, { chunk as granularChunk } from "akashatools/array/chunk";
-import { defaultValueForType, initializeLike } from "akashatools/data";
+import { DATA_TYPES as categoryDataTypes, defaultValueForType, initializeLike } from "akashatools/data";
+import granularDataTypes from "akashatools/data/DATA_TYPES";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { debounce, memoize, once, throttle } from "akashatools/function";
 import { crc32, sha256Hex } from "akashatools/hash";
@@ -56,6 +57,12 @@ assert.equal(methodChunk, chunk);
 assert.equal(granularChunk, chunk);
 assert.equal(akasha.array.chunk, chunk);
 assert.equal(akasha.chunk, chunk);
+assert.equal(DATA_TYPES, categoryDataTypes);
+assert.equal(DATA_TYPES, granularDataTypes);
+assert.equal(akasha.DATA_TYPES, DATA_TYPES);
+assert.equal(DATA_TYPES.BOOLEAN, "boolean");
+assert.equal(INPUT_TYPES.CHECKBOX, "checkbox");
+assert.equal(CONTROL_TYPES.INPUT, "input");
 assert.equal(isEmail("person@example.com"), true);
 assert.equal(defaultValueForType(Boolean), false);
 assert.deepEqual(initializeLike({ title: "Draft" }), { title: "" });
@@ -90,10 +97,12 @@ assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/sr
   await writeFile(
     path.join(consumer, "smoke.ts"),
     `
-import akasha, { chunk, request } from "akashatools";
+import akasha, { chunk, CONTROL_TYPES, DATA_TYPES, INPUT_TYPES, request } from "akashatools";
 import granularChunk from "akashatools/array/chunk";
 import { analyzeArrayTypes } from "akashatools/data";
+import type { DataType } from "akashatools/data";
 import { controlTypeForValue } from "akashatools/input";
+import type { ControlType, InputType } from "akashatools/input";
 import { deepQuery } from "akashatools/object";
 import granularDeepQuery from "akashatools/object/deepQuery";
 import { HttpError } from "akashatools/http";
@@ -107,6 +116,9 @@ const granularChunks: number[][] = granularChunk([1, 2, 3], 2);
 const nested: number[][] = akasha.array.chunk([1, 2, 3], 2);
 const primaryType: string | undefined = analyzeArrayTypes([1, 2]).primaryType;
 const control: string = controlTypeForValue([{ id: 1 }]);
+const dataType: DataType = DATA_TYPES.OBJECT;
+const inputType: InputType = INPUT_TYPES.TEXT;
+const controlType: ControlType = CONTROL_TYPES.INPUT;
 const hasId: boolean = deepQuery({ id: 1 }).has("id", { by: "key" });
 const granularHasId: boolean = granularDeepQuery({ id: 1 }).has("id", { by: "key" });
 const response: Promise<{ ok: boolean }> = request<{ ok: boolean }>("https://example.com");
@@ -123,7 +135,7 @@ const debouncedLength = debounce((value: string) => value.length, 25);
 const pendingLength: Promise<number> = debouncedLength("Akasha");
 const throttledLength = throttle((value: string) => value.length, 25, { trailing: false });
 const throttledPending: Promise<number> = throttledLength("Akasha");
-void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths, initialize, cachedLength, length, debouncedLength, pendingLength, throttledLength, throttledPending];
+void [chunks, granularChunks, nested, primaryType, control, dataType, inputType, controlType, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths, initialize, cachedLength, length, debouncedLength, pendingLength, throttledLength, throttledPending];
 `,
   );
   await writeFile(

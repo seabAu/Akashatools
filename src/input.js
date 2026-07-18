@@ -1,13 +1,43 @@
-import { analyzeArrayTypes, normalizeDataType } from "./data.js";
+import { analyzeArrayTypes, DATA_TYPES, normalizeDataType } from "./data.js";
 import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
+import { controlTypes, inputTypes } from "./internal/type-vocabulary.js";
 import { cloneJson, isPlainObject } from "./object.js";
 import { typeOf } from "./validation.js";
 
+/** @typedef {typeof inputTypes} InputTypeMap */
+/** @typedef {typeof controlTypes} ControlTypeMap */
+
+/**
+ * Frozen enum-style identifiers for native HTML input types recognized by
+ * Akashatools. The values can be passed anywhere the equivalent string is
+ * accepted and remain suitable for serialized field descriptors.
+ *
+ * @type {InputTypeMap}
+ * @example
+ * inputTypeForType(Boolean) === INPUT_TYPES.CHECKBOX; // true
+ * @since 2.0.0
+ */
+export const INPUT_TYPES = inputTypes;
+
+/**
+ * Frozen enum-style identifiers returned by renderer-level control
+ * classification. They distinguish native inputs from composite data controls.
+ *
+ * @type {ControlTypeMap}
+ * @example
+ * controlTypeForValue([{ id: 1 }]) === CONTROL_TYPES.OBJECT_ARRAY; // true
+ * @since 2.0.0
+ */
+export const CONTROL_TYPES = controlTypes;
+
+/** @typedef {(typeof INPUT_TYPES)[keyof typeof INPUT_TYPES]} InputType */
+/** @typedef {(typeof CONTROL_TYPES)[keyof typeof CONTROL_TYPES]} ControlType */
+
 /**
  * @typedef {object} InputTypeOptions
- * @property {"date" | "datetime-local"} [dateType="datetime-local"] Native input type used for Date data.
+ * @property {typeof INPUT_TYPES.DATE | typeof INPUT_TYPES.DATETIME_LOCAL} [dateType="datetime-local"] Native input type used for Date data.
  * @property {Readonly<Record<string, string | undefined>>} [overrides] Descriptor/type-specific mappings.
- * @property {"text" | "undefined" | "throw"} [unsupported="undefined"] Unsupported-type policy.
+ * @property {typeof INPUT_TYPES.TEXT | typeof DATA_TYPES.UNDEFINED | "throw"} [unsupported="undefined"] Unsupported-type policy.
  */
 
 /**
@@ -28,11 +58,11 @@ import { typeOf } from "./validation.js";
 
 /**
  * @typedef {object} InputValueParserOptions
- * @property {"preserve" | "null" | "undefined" | "throw"} [empty] Empty-string policy. Text preserves by default; other types throw by default.
+ * @property {"preserve" | typeof DATA_TYPES.NULL | typeof DATA_TYPES.UNDEFINED | "throw"} [empty] Empty-string policy. Text preserves by default; other types throw by default.
  * @property {boolean} [trim=false] Whether syntactic scalar parsers ignore outer whitespace. String output is never trimmed.
  * @property {number} [maximumLength=1000000] Greatest serialized string length and strict JSON byte budget.
  * @property {number} [maximumItems=100000] Greatest direct item count for parsed containers and binary arrays.
- * @property {"date" | "timestamp" | "string"} [dateOutput="date"] Representation returned for Date data.
+ * @property {typeof DATA_TYPES.DATE | "timestamp" | typeof DATA_TYPES.STRING} [dateOutput="date"] Representation returned for Date data.
  * @property {"reject" | "utc" | "local"} [dateAssumption="reject"] Zone policy for a date-time string without an offset.
  * @property {"reject" | "earlier" | "later"} [dateDisambiguation="reject"] Selection policy when a host-local date-time occurs twice during an offset transition.
  * @property {string} [regexpFlags=""] Flags used when constructing a RegExp from text.
@@ -40,30 +70,8 @@ import { typeOf } from "./validation.js";
  */
 
 const blockedKeys = new Set(["__proto__", "constructor", "prototype"]);
-const directInputTypes = new Set([
-  "button",
-  "checkbox",
-  "color",
-  "date",
-  "datetime-local",
-  "email",
-  "file",
-  "hidden",
-  "image",
-  "month",
-  "number",
-  "password",
-  "radio",
-  "range",
-  "reset",
-  "search",
-  "submit",
-  "tel",
-  "text",
-  "time",
-  "url",
-  "week",
-]);
+/** @type {Set<string>} */
+const directInputTypes = new Set(Object.values(INPUT_TYPES));
 
 /**
  * Returns the native HTML input type suited to one scalar data type. Composite
@@ -73,7 +81,7 @@ const directInputTypes = new Set([
  *
  * @param {string | Function} descriptor Data type label or constructor.
  * @param {InputTypeOptions} [options] Date, override, and unsupported-type policies.
- * @returns {string | undefined} Native input type or undefined for unsupported/composite data.
+ * @returns {InputType | string | undefined} Native input type or configured override, or undefined for unsupported/composite data.
  * @throws {TypeError} If descriptor or options do not match the contract.
  * @example
  * inputTypeForType(Date); // "datetime-local"
@@ -87,18 +95,20 @@ export function inputTypeForType(descriptor, options = {}) {
   if (override.found) return override.value;
 
   if (typeof descriptor === "string" && directInputTypes.has(descriptorName)) return descriptorName;
-  if (dataType === "string" || dataType === "regexp" || descriptorName === "objectid") return "text";
-  if (dataType === "number" || dataType === "nan" || dataType === "bigint") return "number";
-  if (dataType === "boolean") return "checkbox";
-  if (dataType === "date") return options.dateType ?? "datetime-local";
-  if (dataType === "blob" || dataType === "file") return "file";
-  if (dataType === "url") return "url";
-  if (descriptorName === "phone" || descriptorName === "telephone") return "tel";
+  if (dataType === DATA_TYPES.STRING || dataType === DATA_TYPES.REGEXP || descriptorName === "objectid")
+    return INPUT_TYPES.TEXT;
+  if (dataType === DATA_TYPES.NUMBER || dataType === DATA_TYPES.NAN || dataType === DATA_TYPES.BIGINT)
+    return INPUT_TYPES.NUMBER;
+  if (dataType === DATA_TYPES.BOOLEAN) return INPUT_TYPES.CHECKBOX;
+  if (dataType === DATA_TYPES.DATE) return options.dateType ?? INPUT_TYPES.DATETIME_LOCAL;
+  if (dataType === DATA_TYPES.BLOB || dataType === DATA_TYPES.FILE) return INPUT_TYPES.FILE;
+  if (dataType === DATA_TYPES.URL) return INPUT_TYPES.URL;
+  if (descriptorName === "phone" || descriptorName === "telephone") return INPUT_TYPES.TEL;
   if (directInputTypes.has(descriptorName)) return descriptorName;
 
-  const unsupported = options.unsupported ?? "undefined";
-  if (unsupported === "text") return "text";
-  if (unsupported === "undefined") return undefined;
+  const unsupported = options.unsupported ?? DATA_TYPES.UNDEFINED;
+  if (unsupported === INPUT_TYPES.TEXT) return INPUT_TYPES.TEXT;
+  if (unsupported === DATA_TYPES.UNDEFINED) return undefined;
   throw new TypeError(`No native input type is supported for data type: ${dataType}`);
 }
 
@@ -109,7 +119,7 @@ export function inputTypeForType(descriptor, options = {}) {
  *
  * @param {unknown} value Runtime value to classify.
  * @param {InputTypeOptions} [options] Date, override, and unsupported-type policies.
- * @returns {string | undefined} Native input type or undefined for unsupported/composite data.
+ * @returns {InputType | string | undefined} Native input type or configured override, or undefined for unsupported/composite data.
  * @throws {TypeError} If options do not match the contract.
  * @example
  * inputTypeForValue(false); // "checkbox"
@@ -117,7 +127,7 @@ export function inputTypeForType(descriptor, options = {}) {
  */
 export function inputTypeForValue(value, options = {}) {
   const dataType = typeOf(value);
-  return inputTypeForType(dataType === "date" ? Date : dataType, options);
+  return inputTypeForType(dataType === DATA_TYPES.DATE ? Date : dataType, options);
 }
 
 /**
@@ -127,7 +137,7 @@ export function inputTypeForValue(value, options = {}) {
  *
  * @param {string | Function} descriptor Data type label or constructor.
  * @param {InputTypeOptions} [options] Scalar input mapping policies.
- * @returns {"input" | "array" | "object" | "map" | "set" | "unsupported"} Generic control category.
+ * @returns {ControlType} Generic control category.
  * @throws {TypeError} If descriptor or options do not match the contract.
  * @example
  * controlTypeForType(Array); // "array"
@@ -136,11 +146,11 @@ export function inputTypeForValue(value, options = {}) {
 export function controlTypeForType(descriptor, options = {}) {
   assertInputTypeOptions(options);
   const dataType = normalizeDataType(descriptor);
-  if (dataType === "array") return "array";
-  if (dataType === "object") return "object";
-  if (dataType === "map" || dataType === "weakmap") return "map";
-  if (dataType === "set" || dataType === "weakset") return "set";
-  return inputTypeForType(descriptor, options) === undefined ? "unsupported" : "input";
+  if (dataType === DATA_TYPES.ARRAY) return CONTROL_TYPES.ARRAY;
+  if (dataType === DATA_TYPES.OBJECT) return CONTROL_TYPES.OBJECT;
+  if (dataType === DATA_TYPES.MAP || dataType === DATA_TYPES.WEAK_MAP) return CONTROL_TYPES.MAP;
+  if (dataType === DATA_TYPES.SET || dataType === DATA_TYPES.WEAK_SET) return CONTROL_TYPES.SET;
+  return inputTypeForType(descriptor, options) === undefined ? CONTROL_TYPES.UNSUPPORTED : CONTROL_TYPES.INPUT;
 }
 
 /**
@@ -150,7 +160,7 @@ export function controlTypeForType(descriptor, options = {}) {
  *
  * @param {unknown} value Runtime value to classify.
  * @param {InputTypeOptions} [options] Scalar input mapping policies.
- * @returns {"input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported"} Generic control category.
+ * @returns {ControlType} Generic control category.
  * @throws {TypeError} If options do not match the contract.
  * @example
  * controlTypeForValue([{ id: 1 }]); // "object-array"
@@ -160,11 +170,11 @@ export function controlTypeForValue(value, options = {}) {
   assertInputTypeOptions(options);
   if (Array.isArray(value)) {
     const analysis = analyzeArrayTypes(value);
-    if (analysis.empty) return "array";
-    if (analysis.types.length > 1) return "mixed-array";
-    if (analysis.primaryType === "object") return "object-array";
-    if (analysis.primaryType === "array") return "nested-array";
-    return "scalar-array";
+    if (analysis.empty) return CONTROL_TYPES.ARRAY;
+    if (analysis.types.length > 1) return CONTROL_TYPES.MIXED_ARRAY;
+    if (analysis.primaryType === DATA_TYPES.OBJECT) return CONTROL_TYPES.OBJECT_ARRAY;
+    if (analysis.primaryType === DATA_TYPES.ARRAY) return CONTROL_TYPES.NESTED_ARRAY;
+    return CONTROL_TYPES.SCALAR_ARRAY;
   }
 
   return controlTypeForType(typeOf(value), options);
@@ -179,7 +189,7 @@ export function controlTypeForValue(value, options = {}) {
  * @param {string} name Stable field name.
  * @param {unknown} value Current field value used for type/control inference.
  * @param {InputFieldOptions} [options] Label, path, explicit default, and input mapping policies.
- * @returns {Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>} Frozen framework-neutral field descriptor.
+ * @returns {Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: InputType | string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>} Frozen framework-neutral field descriptor.
  * @throws {TypeError} If name, options, label, or path is invalid.
  * @example
  * fieldDescriptorFor("active", false).inputType; // "checkbox"
@@ -276,73 +286,73 @@ export function createInputValueParser(descriptor, options = {}) {
   const key = descriptorKey(descriptor);
   const type = parserDataType(descriptor, key);
 
-  if (typeof descriptor === "function" && type === "object" && descriptor !== Object) {
+  if (typeof descriptor === "function" && type === DATA_TYPES.OBJECT && descriptor !== Object) {
     throw new TypeError("Custom constructors cannot be reconstructed from serialized input.");
   }
 
   if (isTextDescriptor(key, type)) return (value) => parseStringValue(value, parserOptions);
-  if (key === "time") return (value) => parseTemporalText(value, "time", parserOptions);
-  if (key === "month") return (value) => parseTemporalText(value, "month", parserOptions);
-  if (key === "week") return (value) => parseTemporalText(value, "week", parserOptions);
-  if (key === "radio") return (value) => parseStringValue(value, parserOptions);
+  if (key === INPUT_TYPES.TIME) return (value) => parseTemporalText(value, INPUT_TYPES.TIME, parserOptions);
+  if (key === INPUT_TYPES.MONTH) return (value) => parseTemporalText(value, INPUT_TYPES.MONTH, parserOptions);
+  if (key === INPUT_TYPES.WEEK) return (value) => parseTemporalText(value, INPUT_TYPES.WEEK, parserOptions);
+  if (key === INPUT_TYPES.RADIO) return (value) => parseStringValue(value, parserOptions);
 
   switch (type) {
-    case "boolean":
+    case DATA_TYPES.BOOLEAN:
       return (value) => parseBooleanValue(value, parserOptions);
-    case "number":
+    case DATA_TYPES.NUMBER:
       return (value) => parseNumberValue(value, parserOptions, integerDescriptorKeys.has(key));
-    case "nan":
+    case DATA_TYPES.NAN:
       return (value) => parseNanValue(value, parserOptions);
-    case "bigint":
+    case DATA_TYPES.BIGINT:
       return (value) => parseBigIntValue(value, parserOptions);
-    case "null":
+    case DATA_TYPES.NULL:
       return (value) => parseNullValue(value, parserOptions);
-    case "undefined":
+    case DATA_TYPES.UNDEFINED:
       return (value) => parseUndefinedValue(value, parserOptions);
-    case "date":
+    case DATA_TYPES.DATE:
       return (value) => parseDateValue(value, parserOptions);
-    case "array":
-      return (value) => parseJsonContainer(value, "array", parserOptions);
-    case "object":
-      return (value) => parseJsonContainer(value, "object", parserOptions);
-    case "data":
-      return (value) => parseJsonContainer(value, "data", parserOptions);
-    case "map":
+    case DATA_TYPES.ARRAY:
+      return (value) => parseJsonContainer(value, DATA_TYPES.ARRAY, parserOptions);
+    case DATA_TYPES.OBJECT:
+      return (value) => parseJsonContainer(value, DATA_TYPES.OBJECT, parserOptions);
+    case DATA_TYPES.DATA:
+      return (value) => parseJsonContainer(value, DATA_TYPES.DATA, parserOptions);
+    case DATA_TYPES.MAP:
       return (value) => parseMapValue(value, parserOptions);
-    case "set":
+    case DATA_TYPES.SET:
       return (value) => parseSetValue(value, parserOptions);
-    case "regexp":
+    case DATA_TYPES.REGEXP:
       return (value) => parseRegExpValue(value, parserOptions);
-    case "url":
+    case DATA_TYPES.URL:
       return (value) => parseUrlValue(value, parserOptions);
-    case "urlsearchparams":
+    case DATA_TYPES.URL_SEARCH_PARAMS:
       return (value) => parseUrlSearchParamsValue(value, parserOptions);
-    case "arraybuffer":
-    case "dataview":
-    case "sharedarraybuffer":
+    case DATA_TYPES.ARRAY_BUFFER:
+    case DATA_TYPES.DATA_VIEW:
+    case DATA_TYPES.SHARED_ARRAY_BUFFER:
       return (value) => parseBufferValue(value, type, parserOptions);
-    case "bigint64array":
-    case "biguint64array":
-    case "float32array":
-    case "float64array":
-    case "int8array":
-    case "int16array":
-    case "int32array":
-    case "uint8array":
-    case "uint8clampedarray":
-    case "uint16array":
-    case "uint32array":
+    case DATA_TYPES.BIGINT64_ARRAY:
+    case DATA_TYPES.BIGUINT64_ARRAY:
+    case DATA_TYPES.FLOAT32_ARRAY:
+    case DATA_TYPES.FLOAT64_ARRAY:
+    case DATA_TYPES.INT8_ARRAY:
+    case DATA_TYPES.INT16_ARRAY:
+    case DATA_TYPES.INT32_ARRAY:
+    case DATA_TYPES.UINT8_ARRAY:
+    case DATA_TYPES.UINT8_CLAMPED_ARRAY:
+    case DATA_TYPES.UINT16_ARRAY:
+    case DATA_TYPES.UINT32_ARRAY:
       return (value) => parseTypedArrayValue(value, type, parserOptions);
-    case "error":
+    case DATA_TYPES.ERROR:
       return (value) => parseErrorValue(value, parserOptions);
-    case "blob":
-    case "file":
-    case "formdata":
-    case "function":
-    case "promise":
-    case "symbol":
-    case "weakmap":
-    case "weakset":
+    case DATA_TYPES.BLOB:
+    case DATA_TYPES.FILE:
+    case DATA_TYPES.FORM_DATA:
+    case DATA_TYPES.FUNCTION:
+    case DATA_TYPES.PROMISE:
+    case DATA_TYPES.SYMBOL:
+    case DATA_TYPES.WEAK_MAP:
+    case DATA_TYPES.WEAK_SET:
       return (value) => passThroughBrandedValue(value, type);
     default:
       throw new TypeError(`No serialized input parser is supported for data type: ${type}`);
@@ -370,42 +380,49 @@ export function parseInputValue(value, descriptor, options = {}) {
 
 const integerDescriptorKeys = new Set(["int", "int32", "integer", "long"]);
 const textDescriptorKeys = new Set([
-  "button",
-  "color",
-  "email",
-  "hidden",
-  "image",
+  INPUT_TYPES.BUTTON,
+  INPUT_TYPES.COLOR,
+  INPUT_TYPES.EMAIL,
+  INPUT_TYPES.HIDDEN,
+  INPUT_TYPES.IMAGE,
   "objectid",
-  "password",
+  INPUT_TYPES.PASSWORD,
   "phone",
-  "reset",
-  "search",
-  "submit",
-  "tel",
+  INPUT_TYPES.RESET,
+  INPUT_TYPES.SEARCH,
+  INPUT_TYPES.SUBMIT,
+  INPUT_TYPES.TEL,
   "telephone",
-  "text",
+  INPUT_TYPES.TEXT,
 ]);
 const finiteNumberPattern = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
 const integerPattern = /^[+-]?\d+$/;
+/** @type {Map<string, string>} */
 const typedArrayConstructors = new Map([
-  ["bigint64array", "BigInt64Array"],
-  ["biguint64array", "BigUint64Array"],
-  ["float32array", "Float32Array"],
-  ["float64array", "Float64Array"],
-  ["int8array", "Int8Array"],
-  ["int16array", "Int16Array"],
-  ["int32array", "Int32Array"],
-  ["uint8array", "Uint8Array"],
-  ["uint8clampedarray", "Uint8ClampedArray"],
-  ["uint16array", "Uint16Array"],
-  ["uint32array", "Uint32Array"],
+  [DATA_TYPES.BIGINT64_ARRAY, "BigInt64Array"],
+  [DATA_TYPES.BIGUINT64_ARRAY, "BigUint64Array"],
+  [DATA_TYPES.FLOAT32_ARRAY, "Float32Array"],
+  [DATA_TYPES.FLOAT64_ARRAY, "Float64Array"],
+  [DATA_TYPES.INT8_ARRAY, "Int8Array"],
+  [DATA_TYPES.INT16_ARRAY, "Int16Array"],
+  [DATA_TYPES.INT32_ARRAY, "Int32Array"],
+  [DATA_TYPES.UINT8_ARRAY, "Uint8Array"],
+  [DATA_TYPES.UINT8_CLAMPED_ARRAY, "Uint8ClampedArray"],
+  [DATA_TYPES.UINT16_ARRAY, "Uint16Array"],
+  [DATA_TYPES.UINT32_ARRAY, "Uint32Array"],
 ]);
 
 /** @param {InputValueParserOptions} options */
 function normalizeInputValueParserOptions(options) {
   if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const empty = options.empty;
-  if (empty !== undefined && empty !== "preserve" && empty !== "null" && empty !== "undefined" && empty !== "throw") {
+  if (
+    empty !== undefined &&
+    empty !== "preserve" &&
+    empty !== DATA_TYPES.NULL &&
+    empty !== DATA_TYPES.UNDEFINED &&
+    empty !== "throw"
+  ) {
     throw new TypeError('empty must be "preserve", "null", "undefined", or "throw".');
   }
   if (options.trim !== undefined && typeof options.trim !== "boolean") throw new TypeError("trim must be a boolean.");
@@ -417,8 +434,8 @@ function normalizeInputValueParserOptions(options) {
   if (!Number.isSafeInteger(maximumItems) || maximumItems < 0) {
     throw new RangeError("maximumItems must be a non-negative safe integer.");
   }
-  const dateOutput = options.dateOutput ?? "date";
-  if (dateOutput !== "date" && dateOutput !== "timestamp" && dateOutput !== "string") {
+  const dateOutput = options.dateOutput ?? DATA_TYPES.DATE;
+  if (dateOutput !== DATA_TYPES.DATE && dateOutput !== "timestamp" && dateOutput !== DATA_TYPES.STRING) {
     throw new TypeError('dateOutput must be "date", "timestamp", or "string".');
   }
   const dateAssumption = options.dateAssumption ?? "reject";
@@ -459,15 +476,15 @@ function normalizeInputValueParserOptions(options) {
 
 /** @param {string | Function} descriptor @param {string} key */
 function parserDataType(descriptor, key) {
-  if (key === "checkbox") return "boolean";
-  if (key === "range") return "number";
-  if (key === "file") return "file";
+  if (key === INPUT_TYPES.CHECKBOX) return DATA_TYPES.BOOLEAN;
+  if (key === INPUT_TYPES.RANGE) return DATA_TYPES.NUMBER;
+  if (key === INPUT_TYPES.FILE) return DATA_TYPES.FILE;
   return normalizeDataType(descriptor);
 }
 
 /** @param {string} key @param {string} type */
 function isTextDescriptor(key, type) {
-  return type === "string" || textDescriptorKeys.has(key);
+  return type === DATA_TYPES.STRING || textDescriptorKeys.has(key);
 }
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
@@ -536,7 +553,7 @@ function parseNullValue(value, options) {
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
-  if (source === "null") return null;
+  if (source === DATA_TYPES.NULL) return null;
   throw new TypeError('Null input must be null or "null".');
 }
 
@@ -546,13 +563,13 @@ function parseUndefinedValue(value, options) {
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
-  if (source === "undefined") return undefined;
+  if (source === DATA_TYPES.UNDEFINED) return undefined;
   throw new TypeError('Undefined input must be undefined or "undefined".');
 }
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseDateValue(value, options) {
-  if (typeOf(value) === "date") {
+  if (typeOf(value) === DATA_TYPES.DATE) {
     const timestamp = /** @type {Date} */ (value).getTime();
     if (!Number.isFinite(timestamp)) throw new TypeError("Date input must be valid.");
     return formatParsedDate(new Date(timestamp), options.dateOutput);
@@ -560,15 +577,15 @@ function parseDateValue(value, options) {
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
-  const validationAssumption = options.dateOutput === "string" ? "utc" : options.dateAssumption;
+  const validationAssumption = options.dateOutput === DATA_TYPES.STRING ? "utc" : options.dateAssumption;
   const date = dateFromInputText(source, validationAssumption, options.dateDisambiguation);
-  return options.dateOutput === "string" ? source : formatParsedDate(date, options.dateOutput);
+  return options.dateOutput === DATA_TYPES.STRING ? source : formatParsedDate(date, options.dateOutput);
 }
 
 /** @param {Date} date @param {"date" | "timestamp" | "string"} output */
 function formatParsedDate(date, output) {
   if (output === "timestamp") return date.getTime();
-  if (output === "string") return date.toISOString();
+  if (output === DATA_TYPES.STRING) return date.toISOString();
   return date;
 }
 
@@ -700,14 +717,17 @@ function parseTemporalText(value, kind, options) {
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
-  if (kind === "time" && !/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,3})?)?$/.test(source)) {
+  if (kind === INPUT_TYPES.TIME && !/^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d{1,3})?)?$/.test(source)) {
     throw new TypeError("Time input must use a valid HH:mm[:ss[.sss]] value.");
   }
-  if (kind === "month" && !/^\d{4}-(?:0[1-9]|1[0-2])$/.test(source)) {
+  if (kind === INPUT_TYPES.MONTH && !/^\d{4}-(?:0[1-9]|1[0-2])$/.test(source)) {
     throw new TypeError("Month input must use a valid YYYY-MM value.");
   }
   const week = source.match(/^(\d{4})-W(\d{2})$/);
-  if (kind === "week" && (!week || Number(week[2]) < 1 || Number(week[2]) > isoWeeksInYear(Number(week[1])))) {
+  if (
+    kind === INPUT_TYPES.WEEK &&
+    (!week || Number(week[2]) < 1 || Number(week[2]) > isoWeeksInYear(Number(week[1])))
+  ) {
     throw new TypeError("Week input must use a valid ISO YYYY-Www value.");
   }
   return source;
@@ -740,8 +760,9 @@ function parseJsonContainer(value, expected, options) {
       throw new TypeError("Input must contain valid JSON.", { cause: error });
     }
   }
-  if (expected === "array" && !Array.isArray(parsed)) throw new TypeError("Input JSON must contain an array.");
-  if (expected === "object" && !isPlainObject(parsed)) throw new TypeError("Input JSON must contain a plain object.");
+  if (expected === DATA_TYPES.ARRAY && !Array.isArray(parsed)) throw new TypeError("Input JSON must contain an array.");
+  if (expected === DATA_TYPES.OBJECT && !isPlainObject(parsed))
+    throw new TypeError("Input JSON must contain a plain object.");
   return cloneJson(parsed, {
     maximumArrayLength: options.maximumItems,
     maximumBytes: options.maximumLength,
@@ -751,8 +772,8 @@ function parseJsonContainer(value, expected, options) {
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseMapValue(value, options) {
-  if (typeOf(value) === "map") return value;
-  const entries = parseJsonContainer(value, "array", options);
+  if (typeOf(value) === DATA_TYPES.MAP) return value;
+  const entries = parseJsonContainer(value, DATA_TYPES.ARRAY, options);
   for (const entry of /** @type {unknown[]} */ (entries)) {
     if (!Array.isArray(entry) || entry.length !== 2)
       throw new TypeError("Map input must contain two-item entry arrays.");
@@ -762,13 +783,13 @@ function parseMapValue(value, options) {
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseSetValue(value, options) {
-  if (typeOf(value) === "set") return value;
-  return new Set(/** @type {unknown[]} */ (parseJsonContainer(value, "array", options)));
+  if (typeOf(value) === DATA_TYPES.SET) return value;
+  return new Set(/** @type {unknown[]} */ (parseJsonContainer(value, DATA_TYPES.ARRAY, options)));
 }
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseRegExpValue(value, options) {
-  if (typeOf(value) === "regexp") {
+  if (typeOf(value) === DATA_TYPES.REGEXP) {
     const expression = /** @type {RegExp} */ (value);
     return new RegExp(expression.source, expression.flags);
   }
@@ -784,7 +805,7 @@ function parseRegExpValue(value, options) {
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseUrlValue(value, options) {
-  if (typeOf(value) === "url") return value;
+  if (typeOf(value) === DATA_TYPES.URL) return value;
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
@@ -797,7 +818,7 @@ function parseUrlValue(value, options) {
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseUrlSearchParamsValue(value, options) {
-  if (typeOf(value) === "urlsearchparams") return value;
+  if (typeOf(value) === DATA_TYPES.URL_SEARCH_PARAMS) return value;
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   return empty.handled ? empty.value : new URLSearchParams(source);
@@ -810,14 +831,14 @@ function parseUrlSearchParamsValue(value, options) {
  */
 function parseBufferValue(value, type, options) {
   if (typeOf(value) === type) return value;
-  const bytes = /** @type {unknown[]} */ (parseJsonContainer(value, "array", options));
+  const bytes = /** @type {unknown[]} */ (parseJsonContainer(value, DATA_TYPES.ARRAY, options));
   const normalized = bytes.map((byte) => {
     if (!Number.isInteger(byte) || /** @type {number} */ (byte) < 0 || /** @type {number} */ (byte) > 255) {
       throw new TypeError("Binary input items must be integers from 0 through 255.");
     }
     return /** @type {number} */ (byte);
   });
-  if (type === "sharedarraybuffer") {
+  if (type === DATA_TYPES.SHARED_ARRAY_BUFFER) {
     const Constructor = globalThis.SharedArrayBuffer;
     if (typeof Constructor !== "function") throw new TypeError("SharedArrayBuffer is unavailable in this runtime.");
     const buffer = new Constructor(normalized.length);
@@ -825,7 +846,7 @@ function parseBufferValue(value, type, options) {
     return buffer;
   }
   const buffer = Uint8Array.from(normalized).buffer;
-  return type === "dataview" ? new DataView(buffer) : buffer;
+  return type === DATA_TYPES.DATA_VIEW ? new DataView(buffer) : buffer;
 }
 
 /**
@@ -835,7 +856,7 @@ function parseBufferValue(value, type, options) {
  */
 function parseTypedArrayValue(value, type, options) {
   if (typeOf(value) === type) return value;
-  const items = /** @type {unknown[]} */ (parseJsonContainer(value, "array", options));
+  const items = /** @type {unknown[]} */ (parseJsonContainer(value, DATA_TYPES.ARRAY, options));
   const constructorName = typedArrayConstructors.get(type);
   const Constructor =
     constructorName && /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (globalThis))[constructorName];
@@ -847,21 +868,21 @@ function parseTypedArrayValue(value, type, options) {
 
 /** @param {unknown} value @param {string} type */
 function normalizeTypedArrayItem(value, type) {
-  if (type === "bigint64array" || type === "biguint64array") {
+  if (type === DATA_TYPES.BIGINT64_ARRAY || type === DATA_TYPES.BIGUINT64_ARRAY) {
     if (typeof value === "string" && integerPattern.test(value)) value = BigInt(value);
     if (typeof value !== "bigint") throw new TypeError("BigInt typed-array items must be bigint or integer strings.");
-    const minimum = type === "bigint64array" ? -(2n ** 63n) : 0n;
-    const maximum = type === "bigint64array" ? 2n ** 63n - 1n : 2n ** 64n - 1n;
+    const minimum = type === DATA_TYPES.BIGINT64_ARRAY ? -(2n ** 63n) : 0n;
+    const maximum = type === DATA_TYPES.BIGINT64_ARRAY ? 2n ** 63n - 1n : 2n ** 64n - 1n;
     if (value < minimum || value > maximum) throw new RangeError(`${type} item is outside its representable range.`);
     return value;
   }
   if (typeof value !== "number" || !Number.isFinite(value))
     throw new TypeError("Typed-array items must be finite numbers.");
-  if (type === "float32array") {
+  if (type === DATA_TYPES.FLOAT32_ARRAY) {
     if (!Number.isFinite(Math.fround(value))) throw new RangeError(`${type} item is outside its representable range.`);
     return value;
   }
-  if (type === "float64array") return value;
+  if (type === DATA_TYPES.FLOAT64_ARRAY) return value;
   if (!Number.isInteger(value)) throw new TypeError("Integer typed-array items must be integers.");
   const [minimum, maximum] = typedArrayRange(type);
   if (value < minimum || value > maximum) throw new RangeError(`${type} item is outside its representable range.`);
@@ -870,17 +891,17 @@ function normalizeTypedArrayItem(value, type) {
 
 /** @param {string} type @returns {[number, number]} */
 function typedArrayRange(type) {
-  if (type === "int8array") return [-128, 127];
-  if (type === "uint8array" || type === "uint8clampedarray") return [0, 255];
-  if (type === "int16array") return [-32_768, 32_767];
-  if (type === "uint16array") return [0, 65_535];
-  if (type === "int32array") return [-2_147_483_648, 2_147_483_647];
+  if (type === DATA_TYPES.INT8_ARRAY) return [-128, 127];
+  if (type === DATA_TYPES.UINT8_ARRAY || type === DATA_TYPES.UINT8_CLAMPED_ARRAY) return [0, 255];
+  if (type === DATA_TYPES.INT16_ARRAY) return [-32_768, 32_767];
+  if (type === DATA_TYPES.UINT16_ARRAY) return [0, 65_535];
+  if (type === DATA_TYPES.INT32_ARRAY) return [-2_147_483_648, 2_147_483_647];
   return [0, 4_294_967_295];
 }
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseErrorValue(value, options) {
-  if (typeOf(value) === "error") return value;
+  if (typeOf(value) === DATA_TYPES.ERROR) return value;
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   return empty.handled ? empty.value : new Error(source);
@@ -889,9 +910,9 @@ function parseErrorValue(value, options) {
 /** @param {unknown} value @param {string} type */
 function passThroughBrandedValue(value, type) {
   const matches =
-    type === "function"
+    type === DATA_TYPES.FUNCTION
       ? typeof value === "function"
-      : type === "symbol"
+      : type === DATA_TYPES.SYMBOL
         ? typeof value === "symbol"
         : typeOf(value) === type;
   if (!matches)
@@ -917,21 +938,25 @@ function resolveEmpty(source, options) {
   if (source !== "") return { handled: false, value: undefined };
   const policy = options.empty ?? "throw";
   if (policy === "preserve") return { handled: true, value: "" };
-  if (policy === "null") return { handled: true, value: null };
-  if (policy === "undefined") return { handled: true, value: undefined };
+  if (policy === DATA_TYPES.NULL) return { handled: true, value: null };
+  if (policy === DATA_TYPES.UNDEFINED) return { handled: true, value: undefined };
   throw new TypeError("Empty input is not valid for this datatype.");
 }
 
 /** @param {InputTypeOptions} options */
 function assertInputTypeOptions(options) {
   if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
-  if (options.dateType !== undefined && options.dateType !== "date" && options.dateType !== "datetime-local") {
+  if (
+    options.dateType !== undefined &&
+    options.dateType !== INPUT_TYPES.DATE &&
+    options.dateType !== INPUT_TYPES.DATETIME_LOCAL
+  ) {
     throw new TypeError('dateType must be "date" or "datetime-local".');
   }
   if (
     options.unsupported !== undefined &&
-    options.unsupported !== "text" &&
-    options.unsupported !== "undefined" &&
+    options.unsupported !== INPUT_TYPES.TEXT &&
+    options.unsupported !== DATA_TYPES.UNDEFINED &&
     options.unsupported !== "throw"
   ) {
     throw new TypeError('unsupported must be "text", "undefined", or "throw".');
