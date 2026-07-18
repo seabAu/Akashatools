@@ -457,6 +457,76 @@ Throws:
 - `TypeError` — If JSON.stringify returns undefined or delegated arguments are invalid.
 - `Error` — If serialization or required browser capabilities fail.
 
+### inputValueFromControl
+
+Extracts the semantic value from an input, select, or textarea control and optionally applies a precompiled pure parser. Checkboxes yield booleans, unchecked radios and empty file controls yield `undefined`, single file controls yield one File, multiple file controls and multiple selects yield arrays, and ordinary controls yield their string value. Unchecked/empty controls return before invoking parser. Pass a parser returned by `createInputValueParser` for efficient repeated handlers; keeping parser construction outside this browser adapter avoids descriptor work and keeps extraction independently testable.
+
+- Signature: `inputValueFromControl()`
+- Import: `import { inputValueFromControl } from "akashatools/browser"`
+- Granular import: `import inputValueFromControl from "akashatools/browser/inputValueFromControl"`
+- Input mutation: Does not mutate inputs; performs a browser download effect.
+- Since: 2.0.0
+- Returns: `unknown` — Extracted raw value or parser result.
+
+Throws:
+- `TypeError | RangeError` — If control, parser, options, or extracted work violate the contract.
+
+### matchesMediaQuery
+
+Evaluates a CSS media query on demand. No browser global is read during module import; callers may inject `matchMedia` for tests or alternate realms.
+
+- Signature: `matchesMediaQuery()`
+- Import: `import { matchesMediaQuery } from "akashatools/browser"`
+- Granular import: `import matchesMediaQuery from "akashatools/browser/matchesMediaQuery"`
+- Input mutation: Does not mutate inputs; performs a browser download effect.
+- Since: 2.0.0
+- Returns: `boolean` — Current media-query match state.
+
+Throws:
+- `TypeError | RangeError | Error` — If query, environment, or browser capability is invalid.
+
+### prefersColorScheme
+
+Checks the current browser preference for a light or dark color scheme without evaluating it at import time.
+
+- Signature: `prefersColorScheme()`
+- Import: `import { prefersColorScheme } from "akashatools/browser"`
+- Granular import: `import prefersColorScheme from "akashatools/browser/prefersColorScheme"`
+- Input mutation: Does not mutate inputs; performs a browser download effect.
+- Since: 2.0.0
+- Returns: `boolean` — Whether the requested color scheme currently matches.
+
+Throws:
+- `TypeError | RangeError | Error` — If scheme or browser capability is invalid.
+
+### readJsonStorage
+
+Reads and parses one strict JSON value from an explicit Web Storage-like object. Missing keys return the optional fallback. Storage security errors, quota errors, malformed JSON, and size violations remain visible.
+
+- Signature: `readJsonStorage()`
+- Import: `import { readJsonStorage } from "akashatools/browser"`
+- Granular import: `import readJsonStorage from "akashatools/browser/readJsonStorage"`
+- Input mutation: Does not mutate inputs; performs a browser download effect.
+- Since: 2.0.0
+- Returns: `unknown` — Parsed JSON value or fallback when the key is absent.
+
+Throws:
+- `TypeError | RangeError` — If arguments, stored text, or JSON violate the contract.
+
+### writeJsonStorage
+
+Strictly clones, serializes, and writes one plain JSON value to an explicit Web Storage-like object. Accessors, `toJSON`, cycles, sparse/custom arrays, non-finite numbers, and non-JSON brands are rejected before `setItem` runs. The exact stored string is returned for diagnostics or equality checks; its UTF-8 size is not presented as a browser quota measurement.
+
+- Signature: `writeJsonStorage()`
+- Import: `import { writeJsonStorage } from "akashatools/browser"`
+- Granular import: `import writeJsonStorage from "akashatools/browser/writeJsonStorage"`
+- Input mutation: Does not mutate inputs; performs a browser download effect.
+- Since: 2.0.0
+- Returns: `string` — Exact JSON text passed to storage.setItem.
+
+Throws:
+- `TypeError | RangeError` — If arguments or value violate the strict JSON contract.
+
 ## collection
 
 Runtime: Universal JavaScript on the supported runtime floor.

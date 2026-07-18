@@ -114,6 +114,19 @@ parseInputValue("2026-07-18T12:30", Date, {
 });
 ```
 
+Browser control extraction remains a separate adapter, so repeated handlers can
+reuse the compiled parser:
+
+```js
+import { inputValueFromControl, prefersColorScheme, readJsonStorage } from "akashatools/browser";
+import { createInputValueParser } from "akashatools/input";
+
+const parseAmount = createInputValueParser(Number);
+const amount = inputValueFromControl(event.currentTarget, parseAmount);
+const dark = prefersColorScheme("dark");
+const settings = readJsonStorage(localStorage, "settings", { fallback: {} });
+```
+
 Set-style similarity remains generic and bounded:
 
 ```js

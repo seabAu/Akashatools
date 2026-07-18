@@ -94,6 +94,7 @@ drop-in compatibility.
 | `initializeLike` | data | universal | no input mutation | `akashatools/data/initializeLike` | `AO.cleanJSON` |
 | `inputTypeForType` | input | universal | no input mutation | `akashatools/input/inputTypeForType` | None |
 | `inputTypeForValue` | input | universal | no input mutation | `akashatools/input/inputTypeForValue` | `Val.getFieldType` |
+| `inputValueFromControl` | browser | browser-effect | browser effect | `akashatools/browser/inputValueFromControl` | None |
 | `insertItem` | array | universal | no input mutation | `akashatools/array/insertItem` | None |
 | `intersection` | array | universal | no input mutation | `akashatools/array/intersection` | None |
 | `isArray` | validation | universal | no input mutation | `akashatools/validation/isArray` | `Val.isArray`, `Val.isValidArray`, `Val.isAO` |
@@ -130,6 +131,7 @@ drop-in compatibility.
 | `longestStringLength` | string | universal | no input mutation | `akashatools/string/longestStringLength` | `String.getLongest` |
 | `lowerBound` | array | universal | no input mutation | `akashatools/array/lowerBound` | None |
 | `mapSettledWithConcurrency` | async | universal | no input mutation | `akashatools/async/mapSettledWithConcurrency` | None |
+| `matchesMediaQuery` | browser | browser-effect | browser effect | `akashatools/browser/matchesMediaQuery` | None |
 | `memoize` | function | universal | no input mutation | `akashatools/function/memoize` | None |
 | `minutesToClockTime` | date | universal | no input mutation | `akashatools/date/minutesToClockTime` | None |
 | `moveItem` | array | universal | no input mutation | `akashatools/array/moveItem` | None |
@@ -150,6 +152,7 @@ drop-in compatibility.
 | `pascalCase` | string | universal | no input mutation | `akashatools/string/pascalCase` | `String.toUpperCamelCase` |
 | `pick` | object | universal | no input mutation | `akashatools/object/pick` | `AO.extractKeys`, `AO.filterKeys` |
 | `pickAllowed` | object | universal | no input mutation | `akashatools/object/pickAllowed` | None |
+| `prefersColorScheme` | browser | browser-effect | browser effect | `akashatools/browser/prefersColorScheme` | None |
 | `prettyJson` | string | universal | no input mutation | `akashatools/string/prettyJson` | None |
 | `randomBoolean` | random | universal | no input mutation | `akashatools/random/randomBoolean` | `Math.boolRand` |
 | `randomDate` | random | universal | no input mutation | `akashatools/random/randomDate` | None |
@@ -157,6 +160,7 @@ drop-in compatibility.
 | `randomInt` | random | universal | no input mutation | `akashatools/random/randomInt` | None |
 | `randomString` | random | universal | no input mutation | `akashatools/random/randomString` | `Rand.randString` |
 | `range` | array | universal | no input mutation | `akashatools/array/range` | None |
+| `readJsonStorage` | browser | browser-effect | browser effect | `akashatools/browser/readJsonStorage` | None |
 | `redactHeaders` | http | universal | no input mutation | `akashatools/http/redactHeaders` | None |
 | `removeFromArray` | array | universal | no input mutation | `akashatools/array/removeFromArray` | None |
 | `replaceMany` | string | universal | no input mutation | `akashatools/string/replaceMany` | `String.replaceMultiple` |
@@ -197,6 +201,7 @@ drop-in compatibility.
 | `utf8ByteLength` | string | universal | no input mutation | `akashatools/string/utf8ByteLength` | None |
 | `validateJsonContract` | validation | universal | no input mutation | `akashatools/validation/validateJsonContract` | None |
 | `wrap` | number | universal | no input mutation | `akashatools/number/wrap` | `Math.wrap` |
+| `writeJsonStorage` | browser | browser-effect | browser effect | `akashatools/browser/writeJsonStorage` | None |
 | `zip` | array | universal | no input mutation | `akashatools/array/zip` | None |
 
 ## Akashatools 1.0.2 migration lookup

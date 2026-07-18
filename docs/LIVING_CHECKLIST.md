@@ -673,9 +673,9 @@ browser behavior must not be copied into the canonical package.
 - [x] Complete serialized input conversion with a pure, compiled datatype parser
   and a one-shot wrapper. Preserve meaningful empty/falsy values, reject lossy
   guesses, and state date/time assumptions literally.
-- [ ] Add a browser control adapter for checkbox, radio, file, multiple-select,
+- [x] Add a browser control adapter for checkbox, radio, file, multiple-select,
   and ordinary value extraction without importing browser globals at module load.
-- [ ] Recover the portable DOM/storage atoms as late-bound media-query helpers
+- [x] Recover the portable DOM/storage atoms as late-bound media-query helpers
   and explicit-Storage JSON read/write helpers; leave React renderers and
   product database layouts with their owners.
 - [ ] Add contract, generation, type, package, collision, bundle, and
@@ -825,6 +825,7 @@ Acceptance criteria:
 | 2026-07-18 | Recalibrate the stabilized full-discovery bundle guardrail to 90,000 raw/27,000 gzip. | The final default-category measurement is 87,552/26,336, leaving a small explicit review margin while focused imports remain 321/252 and the side-effect-only fixture remains zero bytes. |
 | 2026-07-18 | Replace the excepted Mapbox-era geo helpers with a universal `geo` category. | GeoJSON requires `[longitude, latitude]`; canonical normalization, explicit legacy order, range checks, Haversine units/radius, bounded nearby searches, and deterministic feature construction preserve reusable intent without random jitter, HTML, React, Mapbox, or broken degree-box predicates. |
 | 2026-07-18 | Separate serialized datatype parsing from browser control extraction. | `createInputValueParser` precomputes reusable descriptor/options policy and `parseInputValue` provides one-shot convenience; strict numeric, date, JSON, collection, URL, RegExp, binary, and branded-value branches replace lossy `parseInt`, truthiness, event-shape, and implicit-zone behavior. |
+| 2026-07-18 | Recover only late-bound browser atoms from the excepted DOM and LocalDB modules. | Semantic form-control extraction composes with a pure parser; media queries run only when called; and strict JSON storage requires an explicit Storage object. Import-time `window`, React renderers, HTML interpolation, product database layouts, and quota guesses remain excluded. |
 
 ## Definition of done
 

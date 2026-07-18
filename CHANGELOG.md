@@ -10,6 +10,9 @@
   `parseInputValue` and reusable `createInputValueParser` APIs covering scalar,
   date/time, JSON, collection, URL, RegExp, binary, typed-array, and branded
   runtime values without decimal loss or implicit local-time assumptions.
+- Added browser-only `inputValueFromControl`, late-bound `matchesMediaQuery` and
+  `prefersColorScheme`, and explicit-Storage `readJsonStorage`/
+  `writeJsonStorage`; normal imports remain free of browser-global reads.
 - Completed the reopened 2026-07-18 regression and utility-surface expansion;
   the current Node 22/24 audits, 15-test browser matrix, package, bundle,
   coverage, declaration, and API totals replace the historical snapshot.

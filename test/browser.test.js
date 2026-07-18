@@ -1,7 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { downloadBlob, downloadJson, downloadTextFile } from "akashatools/browser";
+import {
+  downloadBlob,
+  downloadJson,
+  downloadTextFile,
+  inputValueFromControl,
+  matchesMediaQuery,
+  prefersColorScheme,
+  readJsonStorage,
+  writeJsonStorage,
+} from "akashatools/browser";
+import { createInputValueParser } from "akashatools/input";
 
 function browserHarness({ clickError, scheduleError } = {}) {
   const events = [];
@@ -116,4 +126,84 @@ test("JSON downloads normalize one extension and preserve JSON media type", asyn
   assert.equal(harness.blob?.type, "application/json;charset=utf-8");
   assert.equal(await harness.blob?.text(), '{"ok":true}');
   harness.scheduled[0]();
+});
+
+test("inputValueFromControl extracts semantic control values before parsing", () => {
+  const parseNumber = createInputValueParser(Number);
+  assert.equal(inputValueFromControl(/** @type {any} */ ({ type: "number", value: "12.50" }), parseNumber), 12.5);
+  assert.equal(inputValueFromControl(/** @type {any} */ ({ type: "checkbox", checked: false })), false);
+  assert.equal(inputValueFromControl(/** @type {any} */ ({ type: "radio", checked: false, value: "one" })), undefined);
+  assert.equal(inputValueFromControl(/** @type {any} */ ({ type: "radio", checked: true, value: "one" })), "one");
+  assert.deepEqual(
+    inputValueFromControl(
+      /** @type {any} */ ({ multiple: true, selectedOptions: [{ value: "one" }, { value: "two" }] }),
+    ),
+    ["one", "two"],
+  );
+
+  const firstFile = new Blob(["one"]);
+  const secondFile = new Blob(["two"]);
+  assert.equal(
+    inputValueFromControl(/** @type {any} */ ({ type: "file", files: [firstFile], multiple: false })),
+    firstFile,
+  );
+  assert.deepEqual(
+    inputValueFromControl(/** @type {any} */ ({ type: "file", files: [firstFile, secondFile], multiple: true })),
+    [firstFile, secondFile],
+  );
+  assert.throws(
+    () =>
+      inputValueFromControl(/** @type {any} */ ({ type: "file", files: [firstFile] }), undefined, { maximumItems: 0 }),
+    /maximumItems/,
+  );
+  assert.throws(() => inputValueFromControl(/** @type {any} */ ({ type: "text", value: 1 })), /value must/);
+});
+
+test("media-query helpers are late-bound and injectable", () => {
+  const queries = [];
+  const environment = {
+    matchMedia(query) {
+      queries.push(query);
+      return { matches: query.includes("dark") };
+    },
+  };
+  assert.equal(matchesMediaQuery("(width >= 1px)", environment), false);
+  assert.equal(prefersColorScheme("dark", environment), true);
+  assert.deepEqual(queries, ["(width >= 1px)", "(prefers-color-scheme: dark)"]);
+  assert.throws(() => matchesMediaQuery("", environment), /nonblank/);
+  assert.throws(() => prefersColorScheme(/** @type {any} */ ("auto"), environment), /scheme/);
+  assert.throws(() => matchesMediaQuery("(color)", { matchMedia: /** @type {any} */ (() => ({})) }), /boolean matches/);
+});
+
+test("JSON storage helpers use explicit storage and strict bounded data", () => {
+  const values = new Map();
+  const storage = {
+    getItem(key) {
+      return values.get(key) ?? null;
+    },
+    setItem(key, value) {
+      values.set(key, value);
+    },
+  };
+  assert.equal(
+    writeJsonStorage(storage, "settings", { theme: "dark", active: false }),
+    '{"theme":"dark","active":false}',
+  );
+  assert.deepEqual(readJsonStorage(storage, "settings"), { theme: "dark", active: false });
+  assert.deepEqual(readJsonStorage(storage, "missing", { fallback: { first: true } }), { first: true });
+
+  let getterCalls = 0;
+  const active = {};
+  Object.defineProperty(active, "secret", {
+    enumerable: true,
+    get() {
+      getterCalls += 1;
+      return "secret";
+    },
+  });
+  assert.throws(() => writeJsonStorage(storage, "active", active), /accessors/);
+  assert.equal(getterCalls, 0);
+  assert.throws(() => writeJsonStorage(storage, "large", "é", { maximumBytes: 3 }), /maximumBytes/);
+  values.set("broken", "{");
+  assert.throws(() => readJsonStorage(storage, "broken"), /valid JSON/);
 });

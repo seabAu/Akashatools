@@ -9,6 +9,7 @@ const temporaryDirectory = path.join(root, ".completion-check");
 const expectations = [
   ["array", "akasha.array.", ["chunk", "removeFromArray", "shuffle"]],
   ["data", "akasha.data.", ["analyzeArrayTypes", "defaultValueForType", "initializeLike"]],
+  ["browser", "akasha.browser.", ["inputValueFromControl", "prefersColorScheme", "readJsonStorage"]],
   [
     "validation",
     "akasha.validation.",
@@ -34,6 +35,7 @@ const expectations = [
       "debounce",
       "fieldsFromData",
       "haversineDistance",
+      "inputValueFromControl",
       "initializeLike",
       "isEmail",
       "memoize",

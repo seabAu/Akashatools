@@ -114,3 +114,58 @@ test("timer controls coalesce results and cancel pending browser work", async ({
   });
   expect(errors).toEqual([]);
 });
+
+test("browser controls, media preferences, and JSON storage compose safely", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto(fixturePath);
+  const result = await page.evaluate(async () => {
+    const { inputValueFromControl, prefersColorScheme, readJsonStorage, writeJsonStorage } =
+      await import("/src/browser.js");
+    const { createInputValueParser } = await import("/src/input.js");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = false;
+    const number = document.createElement("input");
+    number.type = "number";
+    number.value = "12.50";
+    const select = document.createElement("select");
+    select.multiple = true;
+    for (const value of ["one", "two"]) {
+      const option = document.createElement("option");
+      option.value = value;
+      option.selected = true;
+      select.append(option);
+    }
+    const file = document.createElement("input");
+    file.type = "file";
+    const transfer = new DataTransfer();
+    transfer.items.add(new File(["browser"], "browser.txt", { type: "text/plain" }));
+    file.files = transfer.files;
+
+    const key = `akashatools-${crypto.randomUUID()}`;
+    const serialized = writeJsonStorage(localStorage, key, { active: false, count: 0 });
+    const stored = readJsonStorage(localStorage, key);
+    localStorage.removeItem(key);
+    return {
+      dark: prefersColorScheme("dark"),
+      checkbox: inputValueFromControl(checkbox),
+      number: inputValueFromControl(number, createInputValueParser(Number)),
+      selected: inputValueFromControl(select),
+      filename: inputValueFromControl(file).name,
+      serialized,
+      stored,
+    };
+  });
+
+  expect(result).toEqual({
+    dark: true,
+    checkbox: false,
+    number: 12.5,
+    selected: ["one", "two"],
+    filename: "browser.txt",
+    serialized: '{"active":false,"count":0}',
+    stored: { active: false, count: 0 },
+  });
+  expect(errors).toEqual([]);
+});

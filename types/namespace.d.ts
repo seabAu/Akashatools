@@ -110,6 +110,11 @@ export declare const browser: Readonly<{
         url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
         schedule?: (callback: () => void) => unknown;
     }): void;
+    inputValueFromControl(control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, parser?: (value: unknown) => unknown, options?: browserModule.InputControlOptions): unknown;
+    matchesMediaQuery(query: string, environment?: browserModule.MediaQueryEnvironment): boolean;
+    prefersColorScheme(scheme?: "dark" | "light", environment?: browserModule.MediaQueryEnvironment): boolean;
+    readJsonStorage(storage: Pick<Storage, "getItem">, key: string, options?: browserModule.JsonStorageOptions): unknown;
+    writeJsonStorage(storage: Pick<Storage, "setItem">, key: string, value: unknown, options?: browserModule.JsonStorageOptions): string;
 }>;
 /** Frozen collection utilities for namespace-style discovery. */
 export declare const collection: Readonly<{
@@ -523,6 +528,11 @@ export declare const akasha: Readonly<{
     downloadBlob: typeof browserModule.downloadBlob;
     downloadTextFile: typeof browserModule.downloadTextFile;
     downloadJson: typeof browserModule.downloadJson;
+    inputValueFromControl: typeof browserModule.inputValueFromControl;
+    matchesMediaQuery: typeof browserModule.matchesMediaQuery;
+    prefersColorScheme: typeof browserModule.prefersColorScheme;
+    readJsonStorage: typeof browserModule.readJsonStorage;
+    writeJsonStorage: typeof browserModule.writeJsonStorage;
     jaccardSimilarity: typeof collectionModule.jaccardSimilarity;
     upsertBy: typeof collectionModule.upsertBy;
     excludeBy: typeof collectionModule.excludeBy;
@@ -724,6 +734,11 @@ export declare const akasha: Readonly<{
             url?: Pick<typeof URL, "createObjectURL" | "revokeObjectURL">;
             schedule?: (callback: () => void) => unknown;
         }): void;
+        inputValueFromControl(control: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement, parser?: (value: unknown) => unknown, options?: browserModule.InputControlOptions): unknown;
+        matchesMediaQuery(query: string, environment?: browserModule.MediaQueryEnvironment): boolean;
+        prefersColorScheme(scheme?: "dark" | "light", environment?: browserModule.MediaQueryEnvironment): boolean;
+        readJsonStorage(storage: Pick<Storage, "getItem">, key: string, options?: browserModule.JsonStorageOptions): unknown;
+        writeJsonStorage(storage: Pick<Storage, "setItem">, key: string, value: unknown, options?: browserModule.JsonStorageOptions): string;
     }>;
     collection: Readonly<{
         jaccardSimilarity<L, R>(left: Iterable<L>, right: Iterable<R>, options?: {
