@@ -237,8 +237,9 @@ export function readJsonStorage(storage, key, options = {}) {
   if (typeof source !== "string") throw new TypeError("storage.getItem must return a string or null.");
   if (utf8ByteLength(source) > maximumBytes) throw new RangeError("Stored JSON exceeded maximumBytes.");
   try {
-    return JSON.parse(source);
+    return cloneJson(JSON.parse(source), { maximumBytes });
   } catch (error) {
+    if (error instanceof RangeError) throw error;
     throw new TypeError("Stored value must contain valid JSON.", { cause: error });
   }
 }

@@ -1,4 +1,5 @@
 import { cloneJson, isPlainObject } from "./object.js";
+import { utf8ByteLength } from "./string.js";
 
 /**
  * @typedef {object} GeoPositionOptions
@@ -266,6 +267,7 @@ export function createGeoJsonFeatureCollection(features, options = {}) {
   }
 
   let remainingPositions = normalizedOptions.maximumPositions;
+  let remainingPropertyBytes = normalizedOptions.maximumPropertyBytes;
   const copiedFeatures = features.map((value) => {
     if (!isPlainObject(value)) throw new TypeError("Each collection item must be a plain GeoJSON Feature.");
     const type = ownDataValue(value, "type", "Feature");
@@ -288,12 +290,13 @@ export function createGeoJsonFeatureCollection(features, options = {}) {
         arrayOrder: normalizedOptions.arrayOrder,
         properties: /** @type {Record<PropertyKey, unknown> | null} */ (properties),
         maximumPositions: remainingPositions,
-        maximumPropertyBytes: normalizedOptions.maximumPropertyBytes,
+        maximumPropertyBytes: remainingPropertyBytes,
         ...(id.found ? { id: /** @type {string | number} */ (id.value) } : {}),
       },
     );
     const used = countGeometryPositions(copied.geometry.type, copied.geometry.coordinates);
     remainingPositions -= used;
+    remainingPropertyBytes -= utf8ByteLength(JSON.stringify(copied.properties));
     return copied;
   });
   return { type: "FeatureCollection", features: copiedFeatures };

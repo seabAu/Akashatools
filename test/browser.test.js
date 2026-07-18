@@ -206,4 +206,6 @@ test("JSON storage helpers use explicit storage and strict bounded data", () => 
   assert.throws(() => writeJsonStorage(storage, "large", "é", { maximumBytes: 3 }), /maximumBytes/);
   values.set("broken", "{");
   assert.throws(() => readJsonStorage(storage, "broken"), /valid JSON/);
+  values.set("deep", `${"[".repeat(101)}0${"]".repeat(101)}`);
+  assert.throws(() => readJsonStorage(storage, "deep"), /maximumDepth/);
 });

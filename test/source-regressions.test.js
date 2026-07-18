@@ -4,8 +4,11 @@ import test from "node:test";
 
 import { compact, groupBy, moveItem, removeFromArray, unique } from "akashatools/array";
 import { createSingleFlight } from "akashatools/async";
+import { matchesMediaQuery, readJsonStorage } from "akashatools/browser";
 import { fromUnixSeconds, toUnixSeconds } from "akashatools/date";
+import { isWithinGeoDistance, normalizeGeoPosition } from "akashatools/geo";
 import { parseContentDispositionFilename } from "akashatools/http";
+import { parseInputValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import { cloneJson, deepMerge, getAtPath, setAtPath } from "akashatools/object";
 import { replaceMany, splitTextByLimits, stableJson } from "akashatools/string";
@@ -146,4 +149,18 @@ test("source regressions: semantic chunks preserve whitespace and Unicode code p
     chunks.every((chunk) => Buffer.byteLength(chunk) <= 16),
     true,
   );
+});
+
+test("source regressions: excepted geo, input, media, and storage intent is strict and late-bound", () => {
+  assert.deepEqual(normalizeGeoPosition({ lat: 40.7, lng: -74 }), [-74, 40.7]);
+  assert.equal(isWithinGeoDistance([0, 0], [0, 0.001], 112), true);
+  assert.equal(isWithinGeoDistance([0, 0], [0, 0.001], 111), false);
+  assert.equal(parseInputValue("12.50", Number), 12.5);
+  assert.equal(parseInputValue("false", Boolean), false);
+  assert.throws(() => parseInputValue("2026-07-18T12:30", Date), /dateAssumption/);
+  assert.equal(matchesMediaQuery("(prefers-color-scheme: dark)", { matchMedia: () => ({ matches: true }) }), true);
+  assert.deepEqual(readJsonStorage({ getItem: () => '{"active":false,"count":0}' }, "settings"), {
+    active: false,
+    count: 0,
+  });
 });

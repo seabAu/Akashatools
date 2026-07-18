@@ -550,7 +550,9 @@ function parseDateValue(value, options) {
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
-  const date = dateFromInputText(source, options.dateAssumption);
+  const validationAssumption =
+    options.dateOutput === "string" && options.dateAssumption === "reject" ? "utc" : options.dateAssumption;
+  const date = dateFromInputText(source, validationAssumption);
   return options.dateOutput === "string" ? source : formatParsedDate(date, options.dateOutput);
 }
 

@@ -141,6 +141,7 @@ test("feature collections validate and rebuild feature data", () => {
   assert.notEqual(collection.features[0], source);
   assert.notEqual(collection.features[0].properties, source.properties);
   assert.throws(() => createGeoJsonFeatureCollection([source], { maximumFeatures: 0 }), /maximumFeatures/);
+  assert.throws(() => createGeoJsonFeatureCollection([source, source], { maximumPropertyBytes: 30 }), /maximumBytes/);
   assert.throws(
     () => createGeoJsonFeatureCollection([{ type: "Feature", geometry: null, properties: null }]),
     /geometry/,

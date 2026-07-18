@@ -234,6 +234,7 @@ test("date and native temporal input parsing makes ambiguity explicit", () => {
   assert.equal(parseInputValue("23:59:30.125", "time"), "23:59:30.125");
   assert.equal(parseInputValue("2024-02", "month"), "2024-02");
   assert.equal(parseInputValue("2020-W53", "week"), "2020-W53");
+  assert.equal(parseInputValue("2026-07-18T12:30", Date, { dateOutput: "string" }), "2026-07-18T12:30");
 
   assert.throws(() => parseInputValue("2026-07-18T12:30", Date), /dateAssumption/);
   assert.throws(() => parseInputValue("2025-02-29", Date), /valid UTC/);
