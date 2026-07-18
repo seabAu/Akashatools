@@ -36,6 +36,7 @@ drop-in compatibility.
 | `createConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createConcurrencyLimiter` | None |
 | `createGeoJsonFeature` | geo | universal | no input mutation | `akashatools/geo/createGeoJsonFeature` | None |
 | `createGeoJsonFeatureCollection` | geo | universal | no input mutation | `akashatools/geo/createGeoJsonFeatureCollection` | None |
+| `createInputValueParser` | input | universal | no input mutation | `akashatools/input/createInputValueParser` | None |
 | `createKeyedConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createKeyedConcurrencyLimiter` | None |
 | `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async/createKeyedSingleFlight` | None |
 | `createSingleFlight` | async | universal | no input mutation | `akashatools/async/createSingleFlight` | None |
@@ -141,6 +142,7 @@ drop-in compatibility.
 | `omit` | object | universal | no input mutation | `akashatools/object/omit` | `AO.removeKey` |
 | `once` | function | universal | no input mutation | `akashatools/function/once` | None |
 | `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http/parseContentDispositionFilename` | None |
+| `parseInputValue` | input | universal | no input mutation | `akashatools/input/parseInputValue` | None |
 | `parseJsonPointer` | object | universal | no input mutation | `akashatools/object/parseJsonPointer` | None |
 | `parsePath` | object | universal | no input mutation | `akashatools/object/parsePath` | None |
 | `parseRetryAfter` | http | universal | no input mutation | `akashatools/http/parseRetryAfter` | None |

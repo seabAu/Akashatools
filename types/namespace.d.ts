@@ -260,6 +260,8 @@ export declare const input: Readonly<{
         arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
     }>;
     fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: inputModule.FieldsFromDataOptions): readonly ReturnType<typeof inputModule.fieldDescriptorFor>[];
+    createInputValueParser(descriptor: string | Function, options?: inputModule.InputValueParserOptions): (value: unknown) => unknown;
+    parseInputValue(value: unknown, descriptor: string | Function, options?: inputModule.InputValueParserOptions): unknown;
 }>;
 /** Frozen function-control utilities for namespace-style discovery. */
 export declare const functionUtils: Readonly<{
@@ -610,6 +612,8 @@ export declare const akasha: Readonly<{
     controlTypeForValue: typeof inputModule.controlTypeForValue;
     fieldDescriptorFor: typeof inputModule.fieldDescriptorFor;
     fieldsFromData: typeof inputModule.fieldsFromData;
+    createInputValueParser: typeof inputModule.createInputValueParser;
+    parseInputValue: typeof inputModule.parseInputValue;
     clamp: typeof numberModule.clamp;
     wrap: typeof numberModule.wrap;
     roundTo: typeof numberModule.roundTo;
@@ -863,6 +867,8 @@ export declare const akasha: Readonly<{
             arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
         }>;
         fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: inputModule.FieldsFromDataOptions): readonly ReturnType<typeof inputModule.fieldDescriptorFor>[];
+        createInputValueParser(descriptor: string | Function, options?: inputModule.InputValueParserOptions): (value: unknown) => unknown;
+        parseInputValue(value: unknown, descriptor: string | Function, options?: inputModule.InputValueParserOptions): unknown;
     }>;
     function: Readonly<{
         once<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, options?: functionModule.OnceOptions): (this: This, ...args: Args) => Result;

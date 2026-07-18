@@ -1252,6 +1252,34 @@ Throws:
 - `TypeError` — If value, options, labels, or property semantics are invalid.
 - `RangeError` — If the field count exceeds maximumFields.
 
+### createInputValueParser
+
+Compiles a strict serialized-input converter for repeated form handlers. The descriptor and all option policy are normalized once; returned calls perform only value validation/conversion. Decimal numbers stay decimal, empty strings never become zero accidentally, JSON containers are bounded, and local date times require an explicit zone assumption. Correct runtime values that have no lossless serialized representation (such as File, Blob, FormData, Promise, WeakMap, WeakSet, Function, and Symbol) pass through unchanged. Attempting to reconstruct those types from unrelated text throws instead of inventing a value.
+
+- Signature: `createInputValueParser()`
+- Import: `import { createInputValueParser } from "akashatools/input"`
+- Granular import: `import createInputValueParser from "akashatools/input/createInputValueParser"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `(value: unknown) => unknown` — Reusable parser with precomputed policy.
+
+Throws:
+- `TypeError | RangeError` — If descriptor/options are invalid or conversion is unsupported.
+
+### parseInputValue
+
+Converts one serialized input value through the same strict contract as a compiled parser. Use `createInputValueParser` when the same descriptor is applied repeatedly so descriptor and option policy are not recomputed for every event.
+
+- Signature: `parseInputValue()`
+- Import: `import { parseInputValue } from "akashatools/input"`
+- Granular import: `import parseInputValue from "akashatools/input/parseInputValue"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown` — Parsed value appropriate to descriptor.
+
+Throws:
+- `TypeError | RangeError` — If descriptor, options, or value violate the conversion contract.
+
 ## function
 
 Runtime: Universal JavaScript on the supported runtime floor.

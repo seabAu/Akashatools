@@ -670,7 +670,7 @@ browser behavior must not be copied into the canonical package.
 - [x] Add a universal `geo` category with canonical longitude/latitude order,
   range-checked position aliases, Haversine distance, bounded nearby queries,
   and strict deterministic GeoJSON features/collections.
-- [ ] Complete serialized input conversion with a pure, compiled datatype parser
+- [x] Complete serialized input conversion with a pure, compiled datatype parser
   and a one-shot wrapper. Preserve meaningful empty/falsy values, reject lossy
   guesses, and state date/time assumptions literally.
 - [ ] Add a browser control adapter for checkbox, radio, file, multiple-select,
@@ -824,6 +824,7 @@ Acceptance criteria:
 | 2026-07-18 | Promote Jaccard similarity as the final deferred universal atom. | Two independent COMPOSR packages use the same token-Set formula; the shared helper caps combined iterable work, uses SameValueZero identity, treats empty/empty as 1, and excludes weighted or multiset policy. |
 | 2026-07-18 | Recalibrate the stabilized full-discovery bundle guardrail to 90,000 raw/27,000 gzip. | The final default-category measurement is 87,552/26,336, leaving a small explicit review margin while focused imports remain 321/252 and the side-effect-only fixture remains zero bytes. |
 | 2026-07-18 | Replace the excepted Mapbox-era geo helpers with a universal `geo` category. | GeoJSON requires `[longitude, latitude]`; canonical normalization, explicit legacy order, range checks, Haversine units/radius, bounded nearby searches, and deterministic feature construction preserve reusable intent without random jitter, HTML, React, Mapbox, or broken degree-box predicates. |
+| 2026-07-18 | Separate serialized datatype parsing from browser control extraction. | `createInputValueParser` precomputes reusable descriptor/options policy and `parseInputValue` provides one-shot convenience; strict numeric, date, JSON, collection, URL, RegExp, binary, and branded-value branches replace lossy `parseInt`, truthiness, event-shape, and implicit-zone behavior. |
 
 ## Definition of done
 

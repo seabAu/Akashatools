@@ -4,10 +4,12 @@ import test from "node:test";
 import {
   controlTypeForType,
   controlTypeForValue,
+  createInputValueParser,
   fieldDescriptorFor,
   fieldsFromData,
   inputTypeForType,
   inputTypeForValue,
+  parseInputValue,
 } from "akashatools/input";
 
 test("inputTypeForType separates scalar HTML inputs from composite controls", () => {
@@ -198,4 +200,103 @@ test("fieldsFromData rejects active/unsafe properties and excessive output", () 
   assert.throws(() => fieldsFromData({ one: 1 }, { maximumFields: -1 }), /non-negative/);
   assert.throws(() => fieldsFromData({ one: 1 }, { labelFor: () => 1 }), /return a string/);
   assert.throws(() => fieldsFromData(null), /plain object or array/);
+});
+
+test("compiled input parsers preserve scalar meaning without loose coercion", () => {
+  const parseAmount = createInputValueParser(Number);
+  assert.equal(parseAmount("12.50"), 12.5);
+  assert.equal(parseAmount(".25e2"), 25);
+  assert.equal(parseInputValue("-4", "integer"), -4);
+  assert.equal(parseInputValue("false", Boolean), false);
+  assert.equal(parseInputValue(true, "checkbox"), true);
+  assert.equal(parseInputValue("9007199254740993", BigInt), 9_007_199_254_740_993n);
+  assert.equal(parseInputValue("", String), "");
+  assert.equal(parseInputValue("", Number, { empty: "null" }), null);
+  assert.equal(parseInputValue(" 12 ", Number, { trim: true }), 12);
+
+  assert.throws(() => parseAmount("12px"), /complete finite/);
+  assert.throws(() => parseAmount(""), /Empty input/);
+  assert.throws(() => parseInputValue("1.5", "integer"), /safe integer/);
+  assert.throws(() => parseInputValue("true ", Boolean), /Boolean input/);
+  assert.throws(() => createInputValueParser(class Model {}), /Custom constructors/);
+});
+
+test("date and native temporal input parsing makes ambiguity explicit", () => {
+  assert.equal(parseInputValue("2026-07-18", Date, { dateOutput: "timestamp" }), Date.UTC(2026, 6, 18));
+  assert.equal(parseInputValue("2026-07-18T12:30:15.250Z", Date, { dateOutput: "string" }), "2026-07-18T12:30:15.250Z");
+  assert.equal(
+    parseInputValue("2026-07-18T12:30", "datetime-local", {
+      dateAssumption: "utc",
+      dateOutput: "timestamp",
+    }),
+    Date.UTC(2026, 6, 18, 12, 30),
+  );
+  assert.equal(parseInputValue("23:59:30.125", "time"), "23:59:30.125");
+  assert.equal(parseInputValue("2024-02", "month"), "2024-02");
+  assert.equal(parseInputValue("2020-W53", "week"), "2020-W53");
+
+  assert.throws(() => parseInputValue("2026-07-18T12:30", Date), /dateAssumption/);
+  assert.throws(() => parseInputValue("2025-02-29", Date), /valid UTC/);
+  assert.throws(() => parseInputValue("24:00", "time"), /Time input/);
+  assert.throws(() => parseInputValue("2021-W53", "week"), /Week input/);
+});
+
+test("structured input parsers cover JSON containers and platform value types", () => {
+  assert.deepEqual(parseInputValue('[1,"two",false]', Array), [1, "two", false]);
+  assert.deepEqual(parseInputValue('{"active":false,"count":0}', Object), { active: false, count: 0 });
+  assert.deepEqual(
+    [...parseInputValue('[["one",1],["two",2]]', Map)],
+    [
+      ["one", 1],
+      ["two", 2],
+    ],
+  );
+  assert.deepEqual([...parseInputValue('["one","one","two"]', Set)], ["one", "two"]);
+  assert.deepEqual(parseInputValue("[0,127,255]", Uint8Array), new Uint8Array([0, 127, 255]));
+  assert.deepEqual([...new Uint8Array(parseInputValue("[1,2,3]", ArrayBuffer))], [1, 2, 3]);
+  assert.equal(
+    parseInputValue("/child", URL, { baseUrl: "https://example.com/root" }).href,
+    "https://example.com/child",
+  );
+  assert.equal(parseInputValue("a=1&a=2", URLSearchParams).getAll("a").length, 2);
+  assert.equal(parseInputValue("^item+$", RegExp, { regexpFlags: "i" }).flags, "i");
+  assert.equal(parseInputValue("problem", Error).message, "problem");
+});
+
+test("structured parsing rejects lossy conversion, active data, and excess work", () => {
+  assert.throws(() => parseInputValue("{}", Array), /must contain an array/);
+  assert.throws(() => parseInputValue("[[1]]", Map), /two-item/);
+  assert.throws(() => parseInputValue("[256]", Uint8Array), /representable range/);
+  assert.throws(() => parseInputValue("[-1]", Uint8ClampedArray), /representable range/);
+  assert.throws(() => parseInputValue("[1.5]", Int16Array), /must be integers/);
+  assert.throws(() => parseInputValue('["18446744073709551616"]', BigUint64Array), /representable range/);
+  assert.throws(() => parseInputValue("[1,2]", Array, { maximumItems: 1 }), /maximumArrayLength/);
+  assert.throws(() => parseInputValue("12345", Number, { maximumLength: 4 }), /maximumLength/);
+
+  const active = {};
+  Object.defineProperty(active, "value", { enumerable: true, get: () => 1 });
+  assert.throws(() => parseInputValue(active, Object), /accessors/);
+});
+
+test("non-serializable datatypes pass through only with the correct runtime brand", async () => {
+  const promise = Promise.resolve(1);
+  const weakMap = new WeakMap();
+  const symbol = Symbol("id");
+  const callback = () => 1;
+  assert.equal(parseInputValue(promise, Promise), promise);
+  assert.equal(parseInputValue(weakMap, WeakMap), weakMap);
+  assert.equal(parseInputValue(symbol, Symbol), symbol);
+  assert.equal(parseInputValue(callback, Function), callback);
+  assert.equal(await parseInputValue(promise, Promise), 1);
+  assert.throws(() => parseInputValue("callback", Function), /serialized reconstruction/);
+  assert.throws(() => parseInputValue("id", Symbol), /serialized reconstruction/);
+});
+
+test("input parser options are validated once by the compiled factory", () => {
+  assert.throws(() => createInputValueParser(Number, { empty: "zero" }), /empty must/);
+  assert.throws(() => createInputValueParser(Number, { maximumLength: -1 }), /maximumLength/);
+  assert.throws(() => createInputValueParser(Date, { dateOutput: "seconds" }), /dateOutput/);
+  assert.throws(() => createInputValueParser(Date, { dateAssumption: "guess" }), /dateAssumption/);
+  assert.throws(() => createInputValueParser(RegExp, { regexpFlags: "ii" }), /regexpFlags/);
+  assert.throws(() => createInputValueParser(URL, { baseUrl: "/relative" }), /baseUrl/);
 });

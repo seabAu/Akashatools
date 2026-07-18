@@ -6,6 +6,10 @@
   added a universal `geo` category with canonical GeoJSON coordinate order,
   explicit legacy-order conversion, range-checked aliases, Haversine distance,
   bounded nearby queries, and deterministic feature construction.
+- Replaced the unfinished Schema `formatInputValue` intent with strict
+  `parseInputValue` and reusable `createInputValueParser` APIs covering scalar,
+  date/time, JSON, collection, URL, RegExp, binary, typed-array, and branded
+  runtime values without decimal loss or implicit local-time assumptions.
 - Completed the reopened 2026-07-18 regression and utility-surface expansion;
   the current Node 22/24 audits, 15-test browser matrix, package, bundle,
   coverage, declaration, and API totals replace the historical snapshot.

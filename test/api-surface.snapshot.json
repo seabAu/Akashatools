@@ -33,6 +33,7 @@
       "createConcurrencyLimiter",
       "createGeoJsonFeature",
       "createGeoJsonFeatureCollection",
+      "createInputValueParser",
       "createKeyedConcurrencyLimiter",
       "createKeyedSingleFlight",
       "createSingleFlight",
@@ -146,6 +147,7 @@
       "omit",
       "once",
       "parseContentDispositionFilename",
+      "parseInputValue",
       "parseJsonPointer",
       "parsePath",
       "parseRetryAfter",
@@ -303,10 +305,12 @@
     "./input": [
       "controlTypeForType",
       "controlTypeForValue",
+      "createInputValueParser",
       "fieldDescriptorFor",
       "fieldsFromData",
       "inputTypeForType",
-      "inputTypeForValue"
+      "inputTypeForValue",
+      "parseInputValue"
     ],
     "./function": [
       "debounce",

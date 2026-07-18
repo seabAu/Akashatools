@@ -99,6 +99,21 @@ fieldsFromData({ name: "Ada", active: false });
 // Frozen descriptors with text/checkbox input types and literal defaults.
 ```
 
+Serialized input conversion is strict and can be precompiled for repeated
+handlers:
+
+```js
+import { createInputValueParser, parseInputValue } from "akashatools/input";
+
+const parseAmount = createInputValueParser(Number);
+parseAmount("12.50"); // 12.5
+parseInputValue("false", Boolean); // false
+parseInputValue("2026-07-18T12:30", Date, {
+  dateAssumption: "utc",
+  dateOutput: "timestamp",
+});
+```
+
 Set-style similarity remains generic and bounded:
 
 ```js

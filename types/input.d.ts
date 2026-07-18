@@ -23,6 +23,40 @@ export type FieldsFromDataOptions = InputTypeOptions & {
     labelFor?: (name: string, value: unknown, index: number) => string;
     maximumFields?: number;
 };
+export type InputValueParserOptions = {
+    /**
+     * Empty-string policy. Text preserves by default; other types throw by default.
+     */
+    empty?: "preserve" | "null" | "undefined" | "throw";
+    /**
+     * Whether syntactic scalar parsers ignore outer whitespace. String output is never trimmed.
+     */
+    trim?: boolean;
+    /**
+     * Greatest serialized string length and strict JSON byte budget.
+     */
+    maximumLength?: number;
+    /**
+     * Greatest direct item count for parsed containers and binary arrays.
+     */
+    maximumItems?: number;
+    /**
+     * Representation returned for Date data.
+     */
+    dateOutput?: "date" | "timestamp" | "string";
+    /**
+     * Zone policy for a date-time string without an offset.
+     */
+    dateAssumption?: "reject" | "utc" | "local";
+    /**
+     * Flags used when constructing a RegExp from text.
+     */
+    regexpFlags?: string;
+    /**
+     * Explicit base for relative URL input.
+     */
+    baseUrl?: string | URL;
+};
 /**
  * Returns the native HTML input type suited to one scalar data type. Composite
  * containers return `undefined` by default because they require a higher-level
@@ -121,3 +155,41 @@ export declare function fieldDescriptorFor(name: string, value: unknown, options
  * @since 2.0.0
  */
 export declare function fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: FieldsFromDataOptions): readonly ReturnType<typeof fieldDescriptorFor>[];
+/**
+ * Compiles a strict serialized-input converter for repeated form handlers. The
+ * descriptor and all option policy are normalized once; returned calls perform
+ * only value validation/conversion. Decimal numbers stay decimal, empty strings
+ * never become zero accidentally, JSON containers are bounded, and local date
+ * times require an explicit zone assumption.
+ *
+ * Correct runtime values that have no lossless serialized representation (such
+ * as File, Blob, FormData, Promise, WeakMap, WeakSet, Function, and Symbol) pass
+ * through unchanged. Attempting to reconstruct those types from unrelated text
+ * throws instead of inventing a value.
+ *
+ * @param {string | Function} descriptor Declared JavaScript datatype, schema label, or native input type.
+ * @param {InputValueParserOptions} [options] Empty, whitespace, work-bound, date, RegExp, and URL policies.
+ * @returns {(value: unknown) => unknown} Reusable parser with precomputed policy.
+ * @throws {TypeError | RangeError} If descriptor/options are invalid or conversion is unsupported.
+ * @example
+ * const parseAmount = createInputValueParser(Number);
+ * parseAmount("12.50"); // 12.5
+ * @since 2.0.0
+ */
+export declare function createInputValueParser(descriptor: string | Function, options?: InputValueParserOptions): (value: unknown) => unknown;
+/**
+ * Converts one serialized input value through the same strict contract as a
+ * compiled parser. Use `createInputValueParser` when the same descriptor is
+ * applied repeatedly so descriptor and option policy are not recomputed for
+ * every event.
+ *
+ * @param {unknown} value Serialized or already-branded input value.
+ * @param {string | Function} descriptor Declared JavaScript datatype, schema label, or native input type.
+ * @param {InputValueParserOptions} [options] Empty, whitespace, work-bound, date, RegExp, and URL policies.
+ * @returns {unknown} Parsed value appropriate to descriptor.
+ * @throws {TypeError | RangeError} If descriptor, options, or value violate the conversion contract.
+ * @example
+ * parseInputValue("12.50", Number); // 12.5
+ * @since 2.0.0
+ */
+export declare function parseInputValue(value: unknown, descriptor: string | Function, options?: InputValueParserOptions): unknown;

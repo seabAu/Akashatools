@@ -17,7 +17,11 @@ const expectations = [
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
   ["hash", "akasha.hash.", ["crc32", "sha256Hex", "sha256Json", "stableJsonId"]],
   ["geo", "akasha.geo.", ["haversineDistance", "isGeoPosition", "normalizeGeoPosition"]],
-  ["input", "akasha.input.", ["controlTypeForValue", "fieldsFromData", "inputTypeForType"]],
+  [
+    "input",
+    "akasha.input.",
+    ["controlTypeForValue", "createInputValueParser", "fieldsFromData", "inputTypeForType", "parseInputValue"],
+  ],
   ["function", "akasha.function.", ["debounce", "memoize", "once", "throttle"]],
   ["object", "akasha.object.", ["deepQuery", "findAllDeepValues", "hasDeep"]],
   [
@@ -35,6 +39,7 @@ const expectations = [
       "memoize",
       "normalizePortableRelativePath",
       "once",
+      "parseInputValue",
       "request",
       "throttle",
     ],
