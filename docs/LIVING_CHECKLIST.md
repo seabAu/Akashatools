@@ -1,7 +1,8 @@
 # Akashatools 2026 living checklist
 
-> Status: active project plan. Update this document in the same commit as each
-> meaningful implementation batch. Check an item only when its acceptance
+> Status: active project plan; the 2026-07-18 regression expansion reopened the
+> previously completed local release-candidate evidence. Update this document in
+> the same commit as each meaningful implementation batch. Check an item only when its acceptance
 > criteria are verified. Add newly discovered work instead of keeping it in chat.
 
 ## Goal-slot directive
@@ -43,9 +44,10 @@ import { chunk, isEmail } from "akashatools";
 import { chunk } from "akashatools/array";
 ```
 
-The default namespace will be a plain, frozen utility object. It will not be a
-callable wrapper and will not implement implicit chaining in 2.0. Those features
-would add API and type complexity and require demonstrated consumer value.
+The default namespace remains a plain, frozen utility object. The 2026-07-18
+regression phase will add a separate, safe fluent deep-query wrapper because a
+concrete discovery/use case now exists. Normal imports will not mutate built-in
+or `Object.prototype` behavior.
 
 ## Lessons adopted without copying another library
 
@@ -70,11 +72,12 @@ would add API and type complexity and require demonstrated consumer value.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; 122 tests currently pass.
+- [x] Add dependency-free runtime tests; 122 tests passed at the 2026-07-16
+  release-readiness snapshot. Recount after the reopened regression phase.
 - [x] Verify root, category, and legacy imports.
-- [x] Verify npm tarball contents with `npm pack --dry-run`: the current alpha
+- [x] Verify npm tarball contents with `npm pack --dry-run`: the 2026-07-16 alpha
   selects 86 files at approximately 240 kB packed and 901 kB unpacked.
-- [x] Verify focused-import tree-shaking after adding the default namespace:
+- [x] Verify focused-import tree-shaking at the 2026-07-16 snapshot:
   esbuild 0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus
   54,330 raw/17,101 gzip bytes for the complete flat namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
@@ -396,10 +399,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 134 public declarations are complete, with parameter/return prose,
+  All 139 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  134 public declarations by `npm run check:docs`.
+  139 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -409,7 +412,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 17 declaration files.
+  byte-for-byte drift check across 18 declaration files.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
   service in JavaScript and TypeScript consumers.
@@ -552,6 +555,59 @@ edits. When authorized, migrate one bounded area at a time.
   blank-value fallback. The residual usage audit findings are native,
   application-owned, composition-only, or provably broken.
 
+## Phase 9.5 — 2026-07-18 regression and utility-surface expansion
+
+The user explicitly reopened scope after the earlier local release-readiness
+snapshot. Overlapping utilities may remain when each has a documented semantic
+distinction; the most atomic operation is the core and broader versions compose
+or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
+
+- [x] Re-audit the Mindspace `data.js`, `input.js`, `array.js`, validation, and
+  form-generator families at function and active-call-site level.
+- [x] Separate runtime branding, descriptor normalization, full-array type
+  analysis, fresh default construction, and recursive shape initialization.
+- [x] Add the universal `data` category with tested `normalizeDataType`,
+  `analyzeArrayTypes`, `defaultValueForType`, `defaultValueFor`, and
+  `initializeLike` contracts.
+- [ ] Add pure input/control inference that composes the atomic data layer,
+  including value/type-to-input mapping and data-to-field descriptors without
+  importing React, Mongoose, or application schemas.
+- [ ] Expand bounded deep query/search operations into an explicit `has` family
+  that can return boolean, first match, value, parent, or all matches without
+  changing return shape behind boolean flags.
+- [ ] Add a side-effect-free fluent query wrapper for discoverable dot syntax.
+  Normal imports must remain inert; direct arbitrary `value.has()` would require
+  `Object.prototype` mutation and is not permitted on the default surface.
+- [ ] Decide and test whether an explicit opt-in augmentation entry can safely
+  provide non-enumerable, collision-checked `Array.prototype` conveniences with
+  an uninstall path. Do not augment `Object.prototype`.
+- [ ] Add generated granular method subpaths beneath their category, such as
+  `akashatools/array/chunk`, while keeping one package and one canonical function
+  identity. Re-measure focused bundles even though the prior simulation was
+  byte-identical, because granular dependency declarations are now an explicit
+  ergonomics requirement rather than only a byte-saving proposal.
+- [ ] Refresh the changed-source delta across Mindspace, portfolio rebuild,
+  COMPOSR, and SPLICR after the 2026-07-16 snapshot; disposition every new or
+  changed generic candidate.
+- [ ] Review rejected/deferred families for useful atomic variants and add
+  justified missing utilities in small, independently tested batches.
+- [ ] Re-run API collision, types, editor completions, package smoke, bundle,
+  coverage, Node 22/24, and browser regression gates after the expanded surface
+  stabilizes. Replace the superseded release-readiness measurements.
+
+Acceptance criteria:
+
+- Similar names or capabilities coexist only when their behavior, return shape,
+  or policy differs in a way documented by JSDoc and tests.
+- Type/default/input functions preserve `0`, `false`, and empty-string semantics
+  literally rather than selecting fallbacks through truthiness.
+- Generic data/input operations do not absorb Mongoose, React, database-ID,
+  product-schema, or form-layout policy.
+- Every default returned for a mutable type is fresh unless an explicit caller
+  factory chooses otherwise.
+- All recursive work is cycle-aware, bounded, non-mutating, and safe around
+  accessors, symbols, custom properties, and prototype-mutating keys.
+
 ## Phase 10 — release gates
 
 ### Alpha exit
@@ -559,22 +615,23 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Complete the disposition ledger for all four active consumer source sets,
   alongside the complete 1.0.2 legacy manifest.
 - [x] Stabilize default/named/category namespace architecture.
-- [x] Cover the universal core with contract tests and JSDoc. The reviewed
-  surface has 134 documented declarations and 122 passing contract tests.
+- [ ] Reconfirm the expanded universal core with contract tests and JSDoc. The
+  earlier 2026-07-16 snapshot had 134 documented declarations and 122 passing
+  contract tests; the 2026-07-18 scope expansion supersedes those totals.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [x] Freeze canonical names and option shapes except for critical corrections.
+- [ ] Re-freeze canonical names and option shapes after the regression expansion.
 - [x] Complete security review and initial performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
 
 ### Release candidate exit
 
 - [x] Complete API docs, migration guide, declarations, and package smoke tests.
-- [x] Resolve all known breaking-change questions recorded in this checklist and
+- [ ] Resolve all newly reopened breaking-change questions recorded in this checklist and
   the decision documents.
 - [x] Confirm clean install and the local supported-runtime matrix on Node
   22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
@@ -600,18 +657,20 @@ edits. When authorized, migrate one bounded area at a time.
   Recommendation: yes, with automated collision detection.
 - [x] Whether abbreviated namespaces remain outside a legacy-only surface.
   Recommendation: legacy-only with JSDoc migration guidance.
-- [x] Whether per-method package subpaths materially improve bundles beyond named
-  exports and category subpaths: no; the esbuild simulation is byte-identical at
-  321 raw / 252 gzip bytes, so 2.0 will not add redundant per-method exports.
+- [ ] How generated per-method package subpaths should be exposed beneath each
+  category. The earlier bundle-only rationale was byte-identical at 321 raw / 252
+  gzip bytes, but explicit granular dependency declarations are now a user
+  requirement and must be designed and re-measured.
 - [x] Whether generated declarations are needed beyond JSDoc for downstream IDEs:
   yes, expose deterministic conditional type targets generated from source.
 - [x] Whether ESM-only is acceptable for all active consumers: yes; retain ESM
   for 2.0 unless a future real consumer supplies contrary evidence.
-- [x] Which advanced date/timezone and schema helpers are truly generic: keep
-  incompatible Mongoose/form/product schemas app-local; retain strict JSON
-  contracts, Intl formatting, and explicit instant/local-date primitives while
-  deferring ambiguous zoned-local conversion until the runtime floor supports a
-  stable Temporal contract.
+- [x] Which advanced date/timezone and schema helpers are truly generic: adopt
+  atomic data introspection/initialization and pure input inference, while
+  keeping incompatible Mongoose, React, layout, and product schemas app-local;
+  retain strict JSON contracts, Intl formatting, and explicit instant/local-date
+  primitives while deferring ambiguous zoned-local conversion until the runtime
+  floor supports a stable Temporal contract.
 - [x] Whether HTTP retry and filesystem globbing justify dependencies: neither.
   Retry remains application policy; stable Node 22.17 native globbing underpins
   bounded `globPaths` without adding a dependency.
@@ -662,6 +721,12 @@ edits. When authorized, migrate one bounded area at a time.
 | 2026-07-16 | Verify the preserved 1.0.2 baseline by Git tree identity. | Local baseline `3a245be` and public release commit `c52129b` share tree `e63dcb7`, proving the rollback point is exact without rewriting either history. |
 | 2026-07-16 | Prepare a trusted-publishing runbook without adding release automation or credentials. | A precise candidate, provenance, dist-tag, verification, and recovery procedure improves readiness while preserving the user's approval boundary for every external write. |
 | 2026-07-16 | Pin hosted CI actions by full commit identity and enforce the workflow contract in tests. | Mutable major tags weaken reproducibility; ordinary CI needs only read access and must retain Node 22/24, coverage, package, and three-browser gates without silently broadening permissions. |
+| 2026-07-18 | Reopen the local release-candidate evidence for a regression expansion. | The user explicitly requested another changed-source scan, deeper semantic preservation, additional utility design, granular imports, and dot-style ergonomics; earlier measurements remain historical evidence rather than current release gates. |
+| 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
+| 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
+| 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
+| 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
+| 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
 
 ## Definition of done
 

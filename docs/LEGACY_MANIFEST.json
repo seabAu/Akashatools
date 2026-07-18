@@ -89,10 +89,19 @@
     {
       "module": "AO.js",
       "name": "cleanJSON",
-      "canonicalReferences": [],
-      "decision": "Reject the misleading name; reconsider only as schema-driven example/model initialization.",
+      "canonicalReferences": [
+        {
+          "name": "initializeLike",
+          "category": "data",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/data",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject the misleading name; related explicit replacement is `data.initializeLike(value, { arrays: \"sample\" })`.",
       "behavior": "Recursively replaces scalar values with type defaults and keeps only the first array element.",
-      "evidence": "Defect/behavior proven from source."
+      "evidence": "Defect/behavior proven from source; 2.x initialization tests."
     },
     {
       "module": "AO.js",
@@ -1072,28 +1081,53 @@
           "runtime": "universal",
           "mutation": "no input mutation",
           "importPath": "akashatools/validation",
-          "relation": "replacement"
+          "relation": "related"
+        },
+        {
+          "name": "normalizeDataType",
+          "category": "data",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/data",
+          "relation": "related"
+        },
+        {
+          "name": "analyzeArrayTypes",
+          "category": "data",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/data",
+          "relation": "related"
         }
       ],
-      "decision": "Adopted basic replacement `validation.typeOf`; richer array analysis remains separate.",
+      "decision": "Split into atomic `validation.typeOf`, `data.normalizeDataType`, and full-slot `data.analyzeArrayTypes`.",
       "behavior": "Returns custom strings and infers array type from only the first element.",
-      "evidence": "2.x type tests."
+      "evidence": "2.x type/data tests."
     },
     {
       "module": "Val.js",
       "name": "getFieldType",
       "canonicalReferences": [],
-      "decision": "App-local/schema UI adapter.",
+      "decision": "Merge into pending pure `input` inference; keep component/layout/schema policy app-local.",
       "behavior": "Maps runtime values to HTML/form control concepts.",
-      "evidence": "Source reviewed."
+      "evidence": "Active-call-site regression review."
     },
     {
       "module": "Val.js",
       "name": "getArrayType",
-      "canonicalReferences": [],
-      "decision": "Defer a structured `inspectArrayTypes` result if consumer evidence warrants it.",
+      "canonicalReferences": [
+        {
+          "name": "analyzeArrayTypes",
+          "category": "data",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/data",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted structured replacement `data.analyzeArrayTypes`.",
       "behavior": "Walks array elements to report a custom homogeneous/mixed type string.",
-      "evidence": "Source reviewed."
+      "evidence": "Full-slot, sparse, heterogeneous, and frozen-result tests."
     },
     {
       "module": "Time.js",

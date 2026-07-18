@@ -5,6 +5,7 @@ const categories = [
   "async",
   "browser",
   "collection",
+  "data",
   "date",
   "http",
   "number",

@@ -406,6 +406,78 @@ Excludes objects whose `id` properties occur in a Set.
 Throws:
 - `TypeError` — If delegated exclusion arguments are invalid.
 
+## data
+
+Runtime: Universal JavaScript on the supported runtime floor.
+
+Focused import: `akashatools/data`
+
+### normalizeDataType
+
+Normalizes a built-in constructor or common schema-style type name to the lowercase runtime vocabulary used by `typeOf`. Array descriptors such as `[String]`, `String[]`, and `array<object>` normalize to `array`; custom constructors normalize to `object` without being invoked.
+
+- Signature: `normalizeDataType()`
+- Import: `import { normalizeDataType } from "akashatools/data"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string` — Canonical lowercase data type.
+
+Throws:
+- `TypeError` — If descriptor is neither a nonblank string nor a function.
+
+### analyzeArrayTypes
+
+Scans every slot in an array and reports its complete runtime type profile. Sparse slots are intentionally counted as `undefined`, making the result reflect indexed reads rather than only present properties.
+
+- Signature: `analyzeArrayTypes()`
+- Import: `import { analyzeArrayTypes } from "akashatools/data"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `{length: number, empty: boolean, homogeneous: boolean, primaryType: string | undefined, types: readonly string[], counts: Readonly<Record<string, number>>}` — Frozen type analysis in first-seen order.
+
+Throws:
+- `TypeError` — If values is not an array.
+
+### defaultValueForType
+
+Creates a fresh initialized value for a type descriptor without invoking custom constructors. Built-in collection, buffer, URL, Blob, File, and typed array defaults are supported when the current runtime exposes them.
+
+- Signature: `defaultValueForType()`
+- Import: `import { defaultValueForType } from "akashatools/data"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown` — Fresh initialized value for the normalized type.
+
+Throws:
+- `TypeError` — If descriptor/options are invalid or no default is supported.
+
+### defaultValueFor
+
+Creates a fresh initialized value based on a runtime value's intrinsic type. This is the value-oriented counterpart to `defaultValueForType`; it does not preserve the input's content or invoke custom constructors.
+
+- Signature: `defaultValueFor()`
+- Import: `import { defaultValueFor } from "akashatools/data"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown` — Fresh initialized value for the runtime type.
+
+Throws:
+- `TypeError` — If options are invalid or no default is supported.
+
+### initializeLike
+
+Builds an initialized skeleton from plain data without mutating it. Objects can retain their key shape or collapse to empty containers; arrays can be emptied, initialize every item, or retain one representative item. Circular plain-data references are recreated. Enumerable accessors, symbols, custom array properties, and prototype-mutating keys are rejected without executing getters.
+
+- Signature: `initializeLike()`
+- Import: `import { initializeLike } from "akashatools/data"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown` — Independent initialized skeleton.
+
+Throws:
+- `TypeError` — If options or traversed property semantics are unsafe.
+- `RangeError` — If maxDepth or maxNodes is exceeded.
+
 ## date
 
 Runtime: Universal JavaScript on the supported runtime floor.

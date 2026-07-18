@@ -12,6 +12,7 @@ drop-in compatibility.
 
 | Name | Category | Runtime | Mutation/effect | Focused import | Related 1.x names |
 | --- | --- | --- | --- | --- | --- |
+| `analyzeArrayTypes` | data | universal | no input mutation | `akashatools/data` | `Val.getType`, `Val.getArrayType` |
 | `asArray` | array | universal | no input mutation | `akashatools/array` | None |
 | `assertJsonContract` | validation | universal | no input mutation | `akashatools/validation` | None |
 | `camelCase` | string | universal | no input mutation | `akashatools/string` | None |
@@ -34,6 +35,8 @@ drop-in compatibility.
 | `deepClone` | object | universal | no input mutation | `akashatools/object` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
 | `deepMerge` | object | universal | no input mutation | `akashatools/object` | None |
 | `defaultIfBlank` | validation | universal | no input mutation | `akashatools/validation` | `AO.replaceIfInvalid`, `Val.cleanInvalid` |
+| `defaultValueFor` | data | universal | no input mutation | `akashatools/data` | None |
+| `defaultValueForType` | data | universal | no input mutation | `akashatools/data` | None |
 | `delay` | async | universal | timer effect | `akashatools/async` | None |
 | `differenceInLocalDays` | date | universal | no input mutation | `akashatools/date` | None |
 | `distance` | number | universal | no input mutation | `akashatools/number` | `Math.distance` |
@@ -61,6 +64,7 @@ drop-in compatibility.
 | `hasAtPath` | object | universal | no input mutation | `akashatools/object` | `AO.has` |
 | `HttpError` | http | universal | no input mutation | `akashatools/http` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
 | `includesText` | string | universal | no input mutation | `akashatools/string` | `AO.valContains`, `String.subStringSearch` |
+| `initializeLike` | data | universal | no input mutation | `akashatools/data` | `AO.cleanJSON` |
 | `insertItem` | array | universal | no input mutation | `akashatools/array` | None |
 | `intersection` | array | universal | no input mutation | `akashatools/array` | None |
 | `isArray` | validation | universal | no input mutation | `akashatools/validation` | `Val.isArray`, `Val.isValidArray`, `Val.isAO` |
@@ -94,6 +98,7 @@ drop-in compatibility.
 | `mapSettledWithConcurrency` | async | universal | no input mutation | `akashatools/async` | None |
 | `minutesToClockTime` | date | universal | no input mutation | `akashatools/date` | None |
 | `moveItem` | array | universal | no input mutation | `akashatools/array` | None |
+| `normalizeDataType` | data | universal | no input mutation | `akashatools/data` | `Val.getType` |
 | `normalizeInstantRange` | date | universal | no input mutation | `akashatools/date` | None |
 | `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation` | None |
 | `omit` | object | universal | no input mutation | `akashatools/object` | `AO.removeKey` |
@@ -158,7 +163,7 @@ drop-in compatibility.
 | `AO.replaceIfInvalid` | replacement: `validation.defaultIfBlank` | Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback. |
 | `AO.removeEmpty` | related: `array.compact` | Merge as an explicit predicate/filter recipe; `compact` remains nullish-only. |
 | `AO.parseTextToArray` | None | Merge into a future `splitMany` with escaped alternation or deterministic scanning. |
-| `AO.cleanJSON` | None | Reject the misleading name; reconsider only as schema-driven example/model initialization. |
+| `AO.cleanJSON` | related: `data.initializeLike` | Reject the misleading name; related explicit replacement is `data.initializeLike(value, { arrays: "sample" })`. |
 | `AO.sanitizeObj` | None | Reject. |
 | `AO.sanitizeObjArray` | None | Reject. |
 | `AO.formatObjArray` | None | App-local formatting or redesign as a mapper supplied by the caller. |
@@ -227,9 +232,9 @@ drop-in compatibility.
 | `Val.arrayContainsObjects` | None | Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes. |
 | `Val.isObjectArray` | related: `validation.isPlainObjectArray` | Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array. |
 | `Val.isAO` | related: `validation.isArray`, related: `validation.isNonArrayObject` | Reject abbreviation; compose `validation.isArray` and `validation.isNonArrayObject` explicitly. |
-| `Val.getType` | replacement: `validation.typeOf` | Adopted basic replacement `validation.typeOf`; richer array analysis remains separate. |
-| `Val.getFieldType` | None | App-local/schema UI adapter. |
-| `Val.getArrayType` | None | Defer a structured `inspectArrayTypes` result if consumer evidence warrants it. |
+| `Val.getType` | related: `validation.typeOf`, related: `data.normalizeDataType`, related: `data.analyzeArrayTypes` | Split into atomic `validation.typeOf`, `data.normalizeDataType`, and full-slot `data.analyzeArrayTypes`. |
+| `Val.getFieldType` | None | Merge into pending pure `input` inference; keep component/layout/schema policy app-local. |
+| `Val.getArrayType` | replacement: `data.analyzeArrayTypes` | Adopted structured replacement `data.analyzeArrayTypes`. |
 | `Time.convertDate` | related: `date.formatDate` | Merge into adopted `date.formatDate` with explicit `Intl` options. |
 | `Time.sec2str` | None | Defer a duration formatter with a stable grammar. |
 | `Time.elapsed` | None | Merge into a named duration/difference helper with unit-explicit inputs. |

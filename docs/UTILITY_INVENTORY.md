@@ -41,7 +41,7 @@ Runtime: universal JavaScript, but coupled through the circular legacy
 | `replaceIfInvalid` | Replaces null, undefined, empty string, or exactly one space. | Adopted `validation.defaultIfBlank`; all whitespace-only strings now select the fallback. | Current consumer audit and 2.x validation tests. |
 | `removeEmpty` | Removes null, undefined, and empty strings while retaining `0` and `false`. | Merge as an explicit predicate/filter recipe; `compact` remains nullish-only. | Source reviewed; behavior differs from 2.x `compact`. |
 | `parseTextToArray` | Splits by one or multiple literal delimiters using a collision-prone sentinel. | Merge into a future `splitMany` with escaped alternation or deterministic scanning. | Source reviewed; sentinel can corrupt input. |
-| `cleanJSON` | Recursively replaces scalar values with type defaults and keeps only the first array element. | Reject the misleading name; reconsider only as schema-driven example/model initialization. | Defect/behavior proven from source. |
+| `cleanJSON` | Recursively replaces scalar values with type defaults and keeps only the first array element. | Reject the misleading name; related explicit replacement is `data.initializeLike(value, { arrays: "sample" })`. | Defect/behavior proven from source; 2.x initialization tests. |
 | `sanitizeObj` | Mutates recursively, calls an undefined `cleanInvalid`, and returns `forEach`'s `undefined`. | Reject. | Defect proven from source. |
 | `sanitizeObjArray` | Maps through broken `sanitizeObj`, producing undefined entries. | Reject. | Defect proven from source. |
 | `formatObjArray` | Mutates object entries and assumes every nested value has string methods. | App-local formatting or redesign as a mapper supplied by the caller. | Source reviewed; mutation/throw risk. |
@@ -118,9 +118,9 @@ globals. Export count: 30.
 | `arrayContainsObjects` | Returns true for any `typeof "object"` item, including null and arrays. | Merge into explicit `some(isPlainObject)` or `every(isPlainObject)` recipes. | Source reviewed. |
 | `isObjectArray` | Means an array containing at least one object-like item, not an array entirely of objects. | Reject ambiguous semantics; adopted `validation.isPlainObjectArray`, which requires every item to be a plain object and explicitly accepts an empty array. | 2.x type-guard tests. |
 | `isAO` | Uses `instanceof Array/Object`, with cross-realm and semantic ambiguity. | Reject abbreviation; compose `validation.isArray` and `validation.isNonArrayObject` explicitly. | Current consumer audit and 2.x cross-realm tests. |
-| `getType` | Returns custom strings and infers array type from only the first element. | Adopted basic replacement `validation.typeOf`; richer array analysis remains separate. | 2.x type tests. |
-| `getFieldType` | Maps runtime values to HTML/form control concepts. | App-local/schema UI adapter. | Source reviewed. |
-| `getArrayType` | Walks array elements to report a custom homogeneous/mixed type string. | Defer a structured `inspectArrayTypes` result if consumer evidence warrants it. | Source reviewed. |
+| `getType` | Returns custom strings and infers array type from only the first element. | Split into atomic `validation.typeOf`, `data.normalizeDataType`, and full-slot `data.analyzeArrayTypes`. | 2.x type/data tests. |
+| `getFieldType` | Maps runtime values to HTML/form control concepts. | Merge into pending pure `input` inference; keep component/layout/schema policy app-local. | Active-call-site regression review. |
+| `getArrayType` | Walks array elements to report a custom homogeneous/mixed type string. | Adopted structured replacement `data.analyzeArrayTypes`. | Full-slot, sparse, heterogeneous, and frozen-result tests. |
 
 ## Akashatools 1.0.2 — `lib/Time.js`
 

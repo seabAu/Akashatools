@@ -2,6 +2,7 @@ import * as arrayModule from "./array.js";
 import * as asyncModule from "./async.js";
 import * as browserModule from "./browser.js";
 import * as collectionModule from "./collection.js";
+import * as dataModule from "./data.js";
 import * as dateModule from "./date.js";
 import * as httpModule from "./http.js";
 import * as numberModule from "./number.js";
@@ -19,6 +20,8 @@ export const asyncUtils = /* @__PURE__ */ Object.freeze({ ...asyncModule });
 export const browser = /* @__PURE__ */ Object.freeze({ ...browserModule });
 /** Frozen collection utilities for namespace-style discovery. */
 export const collection = /* @__PURE__ */ Object.freeze({ ...collectionModule });
+/** Frozen data introspection and initialization utilities. */
+export const data = /* @__PURE__ */ Object.freeze({ ...dataModule });
 /** Frozen date and time utilities for namespace-style discovery. */
 export const date = /* @__PURE__ */ Object.freeze({ ...dateModule });
 /** Frozen HTTP request and error utilities. */
@@ -53,6 +56,7 @@ export const akasha = /* @__PURE__ */ Object.freeze({
   ...asyncUtils,
   ...browser,
   ...collection,
+  ...data,
   ...date,
   ...http,
   ...number,
@@ -65,6 +69,7 @@ export const akasha = /* @__PURE__ */ Object.freeze({
   async: asyncUtils,
   browser,
   collection,
+  data,
   date,
   http,
   number,

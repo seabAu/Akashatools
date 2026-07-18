@@ -1,8 +1,8 @@
 # Akashatools
 
 Akashatools is a dependency-free collection of focused JavaScript utilities for
-arrays, objects, strings, numbers, dates, validation, asynchronous workflows,
-collections, and browser file downloads.
+arrays, objects, strings, numbers, dates, data introspection/initialization,
+validation, asynchronous workflows, collections, and browser file downloads.
 
 Version 2 is an ES module package for Node.js 22.17+ and modern browsers. Functions
 are side-effect free unless their names explicitly describe an effect.
@@ -45,7 +45,25 @@ Category subpaths provide the smallest and clearest import boundary:
 
 ```js
 import { chunk, removeFromArray } from "akashatools/array";
+import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { deepClone, setAtPath } from "akashatools/object";
+```
+
+The `data` category keeps related operations distinct and composable:
+
+```js
+import {
+  analyzeArrayTypes,
+  defaultValueForType,
+  initializeLike,
+  normalizeDataType,
+} from "akashatools/data";
+
+normalizeDataType("DateTimeLocal"); // "date"
+analyzeArrayTypes([1, "2", 3]).types; // ["number", "string"]
+defaultValueForType(Boolean); // false
+initializeLike({ name: "Ada", rows: [{ id: 1 }] });
+// { name: "", rows: [] }
 ```
 
 Category namespaces are also available when that style is more readable:

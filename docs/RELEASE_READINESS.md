@@ -1,11 +1,14 @@
 # Release readiness
 
-> Status on 2026-07-16: the library-side alpha, beta, and release-candidate
-> evidence is complete, including local Node 22/24 and three-engine browser
-> matrices. Hosted workflow evidence, real-application migrations, and every
-> publication action remain external gates.
+> Status on 2026-07-18: release-candidate evidence is reopened. The user expanded
+> the data/input/query/import surface after the complete 2026-07-16 local
+> snapshot. The measurements below remain reproducible historical evidence but
+> are not current release gates until the regression expansion stabilizes and
+> the complete Node 22/24 and three-engine browser matrices are rerun. Hosted
+> workflow evidence, real-application migrations, and every publication action
+> remain external gates.
 
-## Package snapshot
+## Superseded 2026-07-16 package snapshot
 
 | Field | Verified value |
 | --- | --- |
@@ -44,7 +47,7 @@ The public commit tree identity is
 commit `3a245be`. This proves the preserved rollback/source-comparison point is
 the public 1.0.2 source tree rather than an approximate reconstruction.
 
-## Reproducible evidence
+## Superseded 2026-07-16 reproducible evidence
 
 `npm run audit:release` completed successfully on Node.js 22.18.0 and through an
 isolated Node.js 24.18.0 runtime on Windows. The command performs the dependency

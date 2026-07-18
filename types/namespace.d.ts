@@ -2,6 +2,7 @@ import * as arrayModule from "./array.js";
 import * as asyncModule from "./async.js";
 import * as browserModule from "./browser.js";
 import * as collectionModule from "./collection.js";
+import * as dataModule from "./data.js";
 import * as dateModule from "./date.js";
 import * as httpModule from "./http.js";
 import * as numberModule from "./number.js";
@@ -92,6 +93,21 @@ export declare const collection: Readonly<{
     excludeIds: <T extends {
         id: K;
     }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
+}>;
+/** Frozen data introspection and initialization utilities. */
+export declare const data: Readonly<{
+    normalizeDataType(descriptor: string | Function): string;
+    analyzeArrayTypes(values: readonly unknown[]): {
+        length: number;
+        empty: boolean;
+        homogeneous: boolean;
+        primaryType: string | undefined;
+        types: readonly string[];
+        counts: Readonly<Record<string, number>>;
+    };
+    defaultValueForType(descriptor: string | Function, options?: dataModule.DefaultValueOptions): unknown;
+    defaultValueFor(value: unknown, options?: dataModule.DefaultValueOptions): unknown;
+    initializeLike(value: unknown, options?: dataModule.InitializeLikeOptions): unknown;
 }>;
 /** Frozen date and time utilities for namespace-style discovery. */
 export declare const date: Readonly<{
@@ -362,6 +378,36 @@ export declare const akasha: Readonly<{
     excludeIds: <T extends {
         id: K;
     }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
+    isDefined: typeof validationModule.isDefined;
+    isArray: typeof validationModule.isArray;
+    isString: typeof validationModule.isString;
+    isNumber: typeof validationModule.isNumber;
+    isBoolean: typeof validationModule.isBoolean;
+    isNonArrayObject: typeof validationModule.isNonArrayObject;
+    isBlank: typeof validationModule.isBlank;
+    defaultIfBlank: typeof validationModule.defaultIfBlank;
+    isEmpty: typeof validationModule.isEmpty;
+    isFiniteNumber: typeof validationModule.isFiniteNumber;
+    isFiniteNonInteger: typeof validationModule.isFiniteNonInteger;
+    isSafeInteger: typeof validationModule.isSafeInteger;
+    isMap: typeof validationModule.isMap;
+    isSet: typeof validationModule.isSet;
+    isTypedArray: typeof validationModule.isTypedArray;
+    isPlainObjectArray: typeof validationModule.isPlainObjectArray;
+    isBlob: typeof validationModule.isBlob;
+    isFile: typeof validationModule.isFile;
+    typeOf: typeof validationModule.typeOf;
+    isJson: typeof validationModule.isJson;
+    isEmail: typeof validationModule.isEmail;
+    normalizeNanpPhone: typeof validationModule.normalizeNanpPhone;
+    formatNanpPhone: typeof validationModule.formatNanpPhone;
+    validateJsonContract: typeof validationModule.validateJsonContract;
+    assertJsonContract: typeof validationModule.assertJsonContract;
+    normalizeDataType: typeof dataModule.normalizeDataType;
+    analyzeArrayTypes: typeof dataModule.analyzeArrayTypes;
+    defaultValueForType: typeof dataModule.defaultValueForType;
+    defaultValueFor: typeof dataModule.defaultValueFor;
+    initializeLike: typeof dataModule.initializeLike;
     isValidDate: typeof dateModule.isValidDate;
     toDate: typeof dateModule.toDate;
     daysInMonth: typeof dateModule.daysInMonth;
@@ -410,31 +456,6 @@ export declare const akasha: Readonly<{
     compareValues: typeof sortModule.compareValues;
     compareNumericOrder: typeof sortModule.compareNumericOrder;
     sortByNumericOrder: typeof sortModule.sortByNumericOrder;
-    isDefined: typeof validationModule.isDefined;
-    isArray: typeof validationModule.isArray;
-    isString: typeof validationModule.isString;
-    isNumber: typeof validationModule.isNumber;
-    isBoolean: typeof validationModule.isBoolean;
-    isNonArrayObject: typeof validationModule.isNonArrayObject;
-    isBlank: typeof validationModule.isBlank;
-    defaultIfBlank: typeof validationModule.defaultIfBlank;
-    isEmpty: typeof validationModule.isEmpty;
-    isFiniteNumber: typeof validationModule.isFiniteNumber;
-    isFiniteNonInteger: typeof validationModule.isFiniteNonInteger;
-    isSafeInteger: typeof validationModule.isSafeInteger;
-    isMap: typeof validationModule.isMap;
-    isSet: typeof validationModule.isSet;
-    isTypedArray: typeof validationModule.isTypedArray;
-    isPlainObjectArray: typeof validationModule.isPlainObjectArray;
-    isBlob: typeof validationModule.isBlob;
-    isFile: typeof validationModule.isFile;
-    typeOf: typeof validationModule.typeOf;
-    isJson: typeof validationModule.isJson;
-    isEmail: typeof validationModule.isEmail;
-    normalizeNanpPhone: typeof validationModule.normalizeNanpPhone;
-    formatNanpPhone: typeof validationModule.formatNanpPhone;
-    validateJsonContract: typeof validationModule.validateJsonContract;
-    assertJsonContract: typeof validationModule.assertJsonContract;
     array: Readonly<{
         asArray<T>(value: unknown, fallback?: readonly T[]): T[];
         isNonEmptyArray<T>(value: unknown): value is T[];
@@ -513,6 +534,20 @@ export declare const akasha: Readonly<{
         excludeIds: <T extends {
             id: K;
         }, K>(values: readonly T[], excluded: ReadonlySet<K>) => T[];
+    }>;
+    data: Readonly<{
+        normalizeDataType(descriptor: string | Function): string;
+        analyzeArrayTypes(values: readonly unknown[]): {
+            length: number;
+            empty: boolean;
+            homogeneous: boolean;
+            primaryType: string | undefined;
+            types: readonly string[];
+            counts: Readonly<Record<string, number>>;
+        };
+        defaultValueForType(descriptor: string | Function, options?: dataModule.DefaultValueOptions): unknown;
+        defaultValueFor(value: unknown, options?: dataModule.DefaultValueOptions): unknown;
+        initializeLike(value: unknown, options?: dataModule.InitializeLikeOptions): unknown;
     }>;
     date: Readonly<{
         isValidDate(value: unknown): value is Date;

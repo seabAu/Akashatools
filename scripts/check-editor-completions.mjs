@@ -8,9 +8,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const temporaryDirectory = path.join(root, ".completion-check");
 const expectations = [
   ["array", "akasha.array.", ["chunk", "removeFromArray", "shuffle"]],
+  ["data", "akasha.data.", ["analyzeArrayTypes", "defaultValueForType", "initializeLike"]],
   ["validation", "akasha.validation.", ["isEmail", "isJson", "isPlainObjectArray"]],
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
-  ["flat", "akasha.", ["chunk", "isEmail", "request"]],
+  ["flat", "akasha.", ["chunk", "initializeLike", "isEmail", "request"]],
 ];
 const files = [];
 

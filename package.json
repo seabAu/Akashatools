@@ -32,6 +32,11 @@
       "import": "./src/collection.js",
       "default": "./src/collection.js"
     },
+    "./data": {
+      "types": "./types/data.d.ts",
+      "import": "./src/data.js",
+      "default": "./src/data.js"
+    },
     "./date": {
       "types": "./types/date.d.ts",
       "import": "./src/date.js",

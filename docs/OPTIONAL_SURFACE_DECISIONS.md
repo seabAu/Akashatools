@@ -1,7 +1,9 @@
 # Optional surface decisions
 
-This document closes the 2.0 category decisions for schema/data-model behavior
-and debug/diagnostic behavior. Neither becomes an Akashatools 2.0 category.
+This document records the 2.0 category boundary for schema/data-model behavior
+and debug/diagnostic behavior. The 2026-07-18 regression review split generic
+data operations from application schema adapters: `data` is now a universal
+category, while `schema` and `debug` remain outside the core.
 
 ## Schema and data models
 
@@ -21,8 +23,19 @@ Schema support also brings reference resolution, dialect/version selection,
 formats, dependencies, and code-generation choices that should not be hidden in
 a general utility module. If multiple consumers eventually need that surface,
 evaluate a maintained validator dependency or a separately versioned add-on.
-Mongoose adapters, UI field definitions, application defaults, and data-model
-migrations remain application-owned.
+
+The earlier all-or-nothing disposition hid a reusable lower layer, however.
+Akashatools now adopts these dependency-free operations under `data`:
+
+- normalize a built-in constructor or schema-like type label;
+- analyze every slot in an array rather than guessing from its first item;
+- create a fresh initialized value for a type or runtime value; and
+- recursively initialize a plain-data shape with explicit array/object policies.
+
+Pure HTML input/control inference and generic data-to-field descriptors may
+compose that layer under a separate `input` category. Mongoose adapters, custom
+database-ID construction, React components, validation/layout metadata,
+application defaults, and data-model migrations remain application-owned.
 
 ## Debug and diagnostics
 

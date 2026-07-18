@@ -40,6 +40,7 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import akasha, { chunk, isEmail } from "akashatools";
 import { chunk as categoryChunk } from "akashatools/array";
+import { defaultValueForType, initializeLike } from "akashatools/data";
 import { resolveContainedPath } from "akashatools/node";
 
 assert.deepEqual(chunk([1, 2, 3], 2), [[1, 2], [3]]);
@@ -47,6 +48,8 @@ assert.equal(categoryChunk, chunk);
 assert.equal(akasha.array.chunk, chunk);
 assert.equal(akasha.chunk, chunk);
 assert.equal(isEmail("person@example.com"), true);
+assert.equal(defaultValueForType(Boolean), false);
+assert.deepEqual(initializeLike({ title: "Draft" }), { title: "" });
 assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/srv/data", "report.json"));
 `,
   );
@@ -56,15 +59,17 @@ assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/sr
     path.join(consumer, "smoke.ts"),
     `
 import akasha, { chunk, request } from "akashatools";
+import { analyzeArrayTypes } from "akashatools/data";
 import { HttpError } from "akashatools/http";
 import type { JsonContract } from "akashatools/validation";
 
 const chunks: number[][] = chunk([1, 2, 3], 2);
 const nested: number[][] = akasha.array.chunk([1, 2, 3], 2);
+const primaryType: string | undefined = analyzeArrayTypes([1, 2]).primaryType;
 const response: Promise<{ ok: boolean }> = request<{ ok: boolean }>("https://example.com");
 const contract: JsonContract = { type: "object", properties: { ok: { type: "boolean" } } };
 const code: HttpError["code"] = "TIMEOUT";
-void [chunks, nested, response, contract, code];
+void [chunks, nested, primaryType, response, contract, code];
 `,
   );
   await writeFile(

@@ -5,6 +5,7 @@
     ".": [
       "HttpError",
       "akasha",
+      "analyzeArrayTypes",
       "array",
       "asArray",
       "assertJsonContract",
@@ -27,12 +28,15 @@
       "createCollatorComparator",
       "createKeyedSingleFlight",
       "createSingleFlight",
+      "data",
       "date",
       "daysInMonth",
       "deepClone",
       "deepMerge",
       "default",
       "defaultIfBlank",
+      "defaultValueFor",
+      "defaultValueForType",
       "delay",
       "differenceInLocalDays",
       "distance",
@@ -59,6 +63,7 @@
       "hasAtPath",
       "http",
       "includesText",
+      "initializeLike",
       "insertItem",
       "intersection",
       "isArray",
@@ -92,6 +97,7 @@
       "mapSettledWithConcurrency",
       "minutesToClockTime",
       "moveItem",
+      "normalizeDataType",
       "normalizeInstantRange",
       "normalizeNanpPhone",
       "number",
@@ -184,6 +190,13 @@
       "excludeIds",
       "upsertBy",
       "upsertById"
+    ],
+    "./data": [
+      "analyzeArrayTypes",
+      "defaultValueFor",
+      "defaultValueForType",
+      "initializeLike",
+      "normalizeDataType"
     ],
     "./date": [
       "clock12To24",

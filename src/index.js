@@ -9,6 +9,7 @@ export * from "./array.js";
 export * from "./async.js";
 export * from "./browser.js";
 export * from "./collection.js";
+export * from "./data.js";
 export * from "./date.js";
 export * from "./http.js";
 export * from "./number.js";
@@ -25,6 +26,7 @@ export {
   asyncUtils as async,
   browser,
   collection,
+  data,
   date,
   http,
   number,

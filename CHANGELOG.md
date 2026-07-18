@@ -2,6 +2,20 @@
 
 ## 2.0.0-alpha.1
 
+- Reopened the local release-candidate evidence for a 2026-07-18 regression and
+  utility-surface expansion; prior package, bundle, test, coverage, and runtime
+  totals remain historical until the expanded surface is fully reverified.
+- Added the universal `data` category with atomic type-descriptor normalization,
+  complete array type analysis, fresh type/value defaults, and bounded recursive
+  shape initialization.
+- Reclassified the Mindspace/portfolio data and input families so generic
+  introspection/default/control primitives can compose beneath application-owned
+  Mongoose, React, layout, custom-ID, and product-schema adapters.
+- Reopened generated category/method subpaths and safe fluent deep-query syntax
+  as explicit ergonomics work while retaining side-effect-free normal imports.
+- Kept focused imports at 321 raw/252 gzip bytes after the first data batch and
+  temporarily widened the full default-namespace guardrail for the explicitly
+  approved input/query expansion; final limits will be recalibrated before RC.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.
