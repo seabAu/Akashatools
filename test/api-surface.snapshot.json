@@ -125,6 +125,8 @@
       "normalizeDataType",
       "normalizeInstantRange",
       "normalizeNanpPhone",
+      "normalizePortableRelativePath",
+      "normalizePortableRelativePaths",
       "number",
       "object",
       "omit",
@@ -383,6 +385,8 @@
       "isString",
       "isTypedArray",
       "normalizeNanpPhone",
+      "normalizePortableRelativePath",
+      "normalizePortableRelativePaths",
       "typeOf",
       "validateJsonContract"
     ]

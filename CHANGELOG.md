@@ -197,6 +197,9 @@
 - Added a universal `hash` category with native Web Crypto `sha256Hex`, clearly
   non-security `crc32`, strict `sha256Json`, and configurable `stableJsonId`
   composition; streaming/archive/trust policy stays with its owning packages.
+- Added single and set-level portable relative-path normalization with explicit
+  Unicode, separator, file/directory, case-collision, reserved-name, traversal,
+  and work-bound contracts while making no filesystem-write authorization claim.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

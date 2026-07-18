@@ -69,7 +69,7 @@ edited again after this dated review.
 - [x] Add strict `Retry-After` parsing without adding implicit HTTP retries.
 - [x] Design and add native hashing/checksum atoms plus stable JSON composition;
   keep cryptographic and non-cryptographic names visibly distinct.
-- [ ] Add portable relative/archive path validation if its write-authorization
+- [x] Add portable relative/archive path validation if its write-authorization
   boundary can remain unambiguous.
 - [ ] Reopen the reserved `function` category for independently useful
   once/memoize/debounce/throttle contracts after receiver, async result,

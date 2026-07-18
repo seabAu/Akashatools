@@ -47,3 +47,24 @@ test("native browser hashing matches standard vectors and stable JSON", async ({
   });
   expect(errors).toEqual([]);
 });
+
+test("portable paths retain Unicode and collision contracts in browsers", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  await page.goto(fixturePath);
+  const result = await page.evaluate(async () => {
+    const { normalizePortableRelativePath, normalizePortableRelativePaths } = await import("/src/validation.js");
+    let collisionRejected = false;
+    try {
+      normalizePortableRelativePaths(["Files/A.txt", "files/a.TXT"]);
+    } catch (error) {
+      collisionRejected = error instanceof RangeError;
+    }
+    return {
+      normalized: normalizePortableRelativePath("cafe\u0301\\menu.txt", { allowBackslash: true }),
+      collisionRejected,
+    };
+  });
+
+  expect(result).toEqual({ normalized: "caf\u00e9/menu.txt", collisionRejected: true });
+  expect(errors).toEqual([]);
+});

@@ -25,9 +25,74 @@ import {
   isSet,
   isString,
   isTypedArray,
+  normalizePortableRelativePath,
+  normalizePortableRelativePaths,
   typeOf,
   validateJsonContract,
 } from "akashatools/validation";
+
+test("portable relative paths normalize separators, Unicode, and directory intent", () => {
+  assert.equal(normalizePortableRelativePath("reports/2026.json"), "reports/2026.json");
+  assert.equal(normalizePortableRelativePath("cafe\u0301/menu.txt"), "caf\u00e9/menu.txt");
+  assert.equal(normalizePortableRelativePath("folder\\report.txt", { allowBackslash: true }), "folder/report.txt");
+  assert.equal(normalizePortableRelativePath("assets", { kind: "directory" }), "assets/");
+  assert.equal(normalizePortableRelativePath("assets/", { kind: "either" }), "assets/");
+  assert.equal(normalizePortableRelativePath("assets", { kind: "either" }), "assets");
+  assert.equal(normalizePortableRelativePath("folder\uff0ffile.txt", { normalization: "NFKC" }), "folder/file.txt");
+});
+
+test("portable relative paths reject traversal, absolute, reserved, and active-looking names", () => {
+  for (const value of [
+    "../secret",
+    "folder/./file",
+    "/absolute/file",
+    "C:/drive/file",
+    "//server/share",
+    "folder//file",
+    "folder/CON.txt",
+    "folder/file. ",
+    "folder/name?.txt",
+    "folder/name\u202e.txt",
+    "folder\\file.txt",
+    "folder/",
+  ]) {
+    assert.throws(() => normalizePortableRelativePath(value), TypeError, value);
+  }
+  assert.throws(() => normalizePortableRelativePath(""), TypeError);
+  assert.throws(() => normalizePortableRelativePath(/** @type {any} */ (1)), TypeError);
+});
+
+test("portable path collections reject normalized, case, and file-prefix collisions", () => {
+  assert.throws(() => normalizePortableRelativePaths(["Files/A.txt", "files/a.TXT"]), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(["caf\u00e9.txt", "cafe\u0301.txt"]), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(["\uff21.txt", "A.txt"], { normalization: "NFKC" }), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(["folder/item.txt", "folder"], { kind: "either" }), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(["folder", "folder/item.txt"], { kind: "either" }), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(["folder/", "folder"], { kind: "either" }), RangeError);
+
+  const normalized = normalizePortableRelativePaths(["Folder/", "folder/item.txt"], { kind: "either" });
+  assert.deepEqual(normalized, ["Folder/", "folder/item.txt"]);
+  assert.equal(Object.isFrozen(normalized), true);
+  assert.deepEqual(normalizePortableRelativePaths(["Files/A.txt", "files/a.TXT"], { caseSensitive: true }), [
+    "Files/A.txt",
+    "files/a.TXT",
+  ]);
+});
+
+test("portable path policies validate literal options and bounded dense input", () => {
+  assert.throws(() => normalizePortableRelativePath("a", /** @type {any} */ ([])), TypeError);
+  assert.throws(() => normalizePortableRelativePath("a", { kind: /** @type {any} */ ("link") }), TypeError);
+  assert.throws(() => normalizePortableRelativePath("a", { normalization: /** @type {any} */ ("NFD") }), TypeError);
+  assert.throws(() => normalizePortableRelativePath("a", { allowBackslash: /** @type {any} */ (1) }), TypeError);
+  assert.throws(() => normalizePortableRelativePath("abc", { maximumLength: 2 }), RangeError);
+  assert.throws(() => normalizePortableRelativePath("a/b", { maximumSegments: 1 }), RangeError);
+  assert.throws(() => normalizePortableRelativePath("abc", { maximumSegmentLength: 2 }), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(/** @type {any} */ (null)), TypeError);
+  assert.throws(() => normalizePortableRelativePaths([], { maximumPaths: 0 }), RangeError);
+  assert.throws(() => normalizePortableRelativePaths(["a", "b"], { maximumPaths: 1 }), RangeError);
+  assert.throws(() => normalizePortableRelativePaths([], { caseSensitive: /** @type {any} */ (1) }), TypeError);
+  assert.throws(() => normalizePortableRelativePaths(["a", , "b"]), TypeError);
+});
 
 test("validation helpers distinguish blank, empty, invalid, and falsy", () => {
   const record = {};

@@ -9,6 +9,7 @@ import { parseContentDispositionFilename } from "akashatools/http";
 import { resolveContainedPath } from "akashatools/node";
 import { cloneJson, deepMerge, getAtPath, setAtPath } from "akashatools/object";
 import { replaceMany, splitTextByLimits, stableJson } from "akashatools/string";
+import { normalizePortableRelativePath, normalizePortableRelativePaths } from "akashatools/validation";
 
 test("source regressions: array transforms preserve falsy data and expose invalid operations", () => {
   assert.deepEqual(compact([0, false, "", null, undefined, 1]), [0, false, "", 1]);
@@ -113,6 +114,9 @@ test("source regressions: response filenames and filesystem paths cannot escape 
   const root = path.resolve("storage");
   assert.equal(resolveContainedPath(root, "exports/report.json"), path.join(root, "exports", "report.json"));
   assert.throws(() => resolveContainedPath(root, "../secret.json"), RangeError);
+  assert.equal(normalizePortableRelativePath("exports/report.json"), "exports/report.json");
+  assert.throws(() => normalizePortableRelativePath("../secret.json"), TypeError);
+  assert.throws(() => normalizePortableRelativePaths(["Files/A.txt", "files/a.TXT"]), RangeError);
 });
 
 test("source regressions: invalidated single-flight generations cannot repopulate cache", async () => {

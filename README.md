@@ -123,6 +123,18 @@ requires both paths to exist, resolves symlinks, and rejects a real target
 outside the real root. A resolved string is still a point-in-time check, not
 permanent authorization for a later destructive filesystem operation.
 
+Portable archive/manifest names have a separate universal lexical contract:
+
+```js
+import { normalizePortableRelativePaths } from "akashatools/validation";
+
+normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" });
+```
+
+This rejects traversal, reserved names, normalized/case collisions, and file
+prefix conflicts. It validates names only and does not authorize extraction or
+a filesystem write.
+
 ## Unified array removal
 
 `removeFromArray` handles indices, values, and predicates without mutating the

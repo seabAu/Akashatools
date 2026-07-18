@@ -377,6 +377,11 @@ export declare const validation: Readonly<{
     isEmail(value: unknown): value is string;
     normalizeNanpPhone(value: unknown): string | null;
     formatNanpPhone(value: unknown): string | null;
+    normalizePortableRelativePath(value: string, options?: validationModule.PortableRelativePathOptions): string;
+    normalizePortableRelativePaths(values: readonly string[], options?: validationModule.PortableRelativePathOptions & {
+        maximumPaths?: number;
+        caseSensitive?: boolean;
+    }): ReadonlyArray<string>;
     validateJsonContract(value: unknown, schema: validationModule.JsonContract): string[];
     assertJsonContract<T>(value: T, schema: validationModule.JsonContract): T;
 }>;
@@ -502,6 +507,8 @@ export declare const akasha: Readonly<{
     isEmail: typeof validationModule.isEmail;
     normalizeNanpPhone: typeof validationModule.normalizeNanpPhone;
     formatNanpPhone: typeof validationModule.formatNanpPhone;
+    normalizePortableRelativePath: typeof validationModule.normalizePortableRelativePath;
+    normalizePortableRelativePaths: typeof validationModule.normalizePortableRelativePaths;
     validateJsonContract: typeof validationModule.validateJsonContract;
     assertJsonContract: typeof validationModule.assertJsonContract;
     normalizeDataType: typeof dataModule.normalizeDataType;
@@ -911,6 +918,11 @@ export declare const akasha: Readonly<{
         isEmail(value: unknown): value is string;
         normalizeNanpPhone(value: unknown): string | null;
         formatNanpPhone(value: unknown): string | null;
+        normalizePortableRelativePath(value: string, options?: validationModule.PortableRelativePathOptions): string;
+        normalizePortableRelativePaths(values: readonly string[], options?: validationModule.PortableRelativePathOptions & {
+            maximumPaths?: number;
+            caseSensitive?: boolean;
+        }): ReadonlyArray<string>;
         validateJsonContract(value: unknown, schema: validationModule.JsonContract): string[];
         assertJsonContract<T>(value: T, schema: validationModule.JsonContract): T;
     }>;

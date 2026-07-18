@@ -47,6 +47,7 @@ import { crc32, sha256Hex } from "akashatools/hash";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
 import granularHasDeep from "akashatools/object/hasDeep";
 import { resolveContainedPath } from "akashatools/node";
+import { normalizePortableRelativePath, normalizePortableRelativePaths } from "akashatools/validation";
 
 assert.deepEqual(chunk([1, 2, 3], 2), [[1, 2], [3]]);
 assert.equal(categoryChunk, chunk);
@@ -64,6 +65,11 @@ assert.deepEqual(findAllDeepValues({ one: { id: 1 } }, "id", { by: "key" }), [1]
 assert.equal(granularHasDeep({ id: 1 }, "id", { by: "key" }), true);
 assert.equal(crc32("123456789"), 0xcbf43926);
 assert.match(await sha256Hex("abc"), /^[a-f0-9]{64}$/u);
+assert.equal(normalizePortableRelativePath("reports/2026.json"), "reports/2026.json");
+assert.deepEqual(
+  normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" }),
+  ["assets/", "assets/logo.svg"],
+);
 assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/srv/data", "report.json"));
 `,
   );
@@ -80,6 +86,7 @@ import { deepQuery } from "akashatools/object";
 import granularDeepQuery from "akashatools/object/deepQuery";
 import { HttpError } from "akashatools/http";
 import { crc32, sha256Hex } from "akashatools/hash";
+import { normalizePortableRelativePath, normalizePortableRelativePaths } from "akashatools/validation";
 import type { JsonContract } from "akashatools/validation";
 
 const chunks: number[][] = chunk([1, 2, 3], 2);
@@ -94,7 +101,9 @@ const contract: JsonContract = { type: "object", properties: { ok: { type: "bool
 const code: HttpError["code"] = "TIMEOUT";
 const checksum: number = crc32("content");
 const digest: Promise<string> = sha256Hex("content");
-void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest];
+const archivePath: string = normalizePortableRelativePath("reports/2026.json");
+const archivePaths: ReadonlyArray<string> = normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" });
+void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths];
 `,
   );
   await writeFile(

@@ -18,6 +18,10 @@ import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
 import granularHasDeep from "akashatools/object/hasDeep";
+import {
+  normalizePortableRelativePath,
+  normalizePortableRelativePaths,
+} from "akashatools/validation";
 import type { JsonContract } from "akashatools/validation";
 
 const values: number[][] = chunk([1, 2, 3], 2);
@@ -38,6 +42,11 @@ const granularHasId: boolean = granularHasDeep({ id: 1 }, "id", { by: "key" });
 const validEmail: boolean = validation.isEmail("person@example.com");
 const rootPredicate: boolean = isEmail("person@example.com");
 const path: string = resolveContainedPath("/srv/data", "report.json");
+const archivePath: string = normalizePortableRelativePath("reports/2026.json");
+const archivePaths: ReadonlyArray<string> = normalizePortableRelativePaths(
+  ["assets/", "assets/logo.svg"],
+  { kind: "either" },
+);
 const contract: JsonContract = {
   type: "object",
   required: ["ok"],
@@ -64,7 +73,7 @@ void [
   initialized, primaryType, defaultString,
   textInput, fieldName, nestedInput,
   hasId, ids, granularHasId,
-  validEmail, rootPredicate, path, contract, response, categoryResponse,
+  validEmail, rootPredicate, path, archivePath, archivePaths, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract,
   checksum, digest, deterministicId, namespacedDigest,
 ];

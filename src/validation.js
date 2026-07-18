@@ -1,6 +1,17 @@
 import { isPlainObject } from "./object.js";
 
 /** @typedef {"array" | "object" | "integer" | "null" | "string" | "number" | "boolean"} JsonContractType */
+/** @typedef {"file" | "directory" | "either"} PortablePathKind */
+/** @typedef {"NFC" | "NFKC" | "none"} PortablePathNormalization */
+/**
+ * @typedef {object} PortableRelativePathOptions
+ * @property {PortablePathKind} [kind="file"] Expected final path kind and trailing-slash policy.
+ * @property {PortablePathNormalization} [normalization="NFC"] Explicit Unicode normalization policy.
+ * @property {boolean} [allowBackslash=false] Whether backslashes are accepted and canonicalized to slashes.
+ * @property {number} [maximumLength=512] Positive safe-integer path code-unit bound.
+ * @property {number} [maximumSegments=32] Positive safe-integer segment-count bound.
+ * @property {number} [maximumSegmentLength=255] Positive safe-integer segment code-unit bound.
+ */
 
 /**
  * @typedef {object} JsonContract
@@ -31,6 +42,9 @@ const supportedJsonTypes = new Set(["array", "object", "integer", "null", "strin
 const emailLocalPattern = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
 const domainLabelPattern = /^[A-Za-z0-9-]+$/;
 const nanpInputPattern = /^[\d\s()+.-]+$/;
+const portablePathBidiControls = /[\u202a-\u202e\u2066-\u2069]/u;
+const portablePathInvalidCharacters = /[<>:"|?*]/u;
+const portableReservedSegment = /^(?:con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/iu;
 
 /**
  * Checks whether a value is neither null nor undefined.
@@ -396,6 +410,82 @@ export function formatNanpPhone(value) {
 }
 
 /**
+ * Validates and canonicalizes one portable relative path without touching the
+ * filesystem. Output uses `/`, applies an explicit Unicode policy, and rejects
+ * absolute/drive paths, traversal, empty segments, controls/bidi overrides,
+ * Windows-invalid characters/names, and dot/space segment suffixes.
+ *
+ * A successful result proves only that the text satisfies this lexical
+ * contract. It does not authorize extraction or a filesystem write, follow
+ * symlinks, reserve a destination, or protect against time-of-check races.
+ *
+ * @param {string} value Candidate portable relative path.
+ * @param {PortableRelativePathOptions} [options] Path kind, Unicode/separator policy, and work bounds.
+ * @returns {string} Canonical forward-slash relative path; directory output ends in `/`.
+ * @throws {TypeError} If value, options, policies, or path syntax is invalid.
+ * @throws {RangeError} If a length/segment bound is invalid or exceeded.
+ * @example
+ * normalizePortableRelativePath("reports/2026.json"); // "reports/2026.json"
+ * @since 2.0.0
+ */
+export function normalizePortableRelativePath(value, options = {}) {
+  return normalizePortablePathWithPolicy(value, readPortablePathPolicy(options));
+}
+
+/**
+ * Canonicalizes a bounded path list and rejects exact, Unicode-normalized,
+ * optional case-folded, and file/directory-prefix collisions independent of
+ * input order. Sparse slots are treated as `undefined` and therefore rejected.
+ * Directory entries can contain descendants; a file entry cannot.
+ *
+ * This remains lexical validation only and does not authorize archive
+ * extraction or any filesystem operation.
+ *
+ * @param {readonly string[]} values Candidate portable relative paths.
+ * @param {PortableRelativePathOptions & {maximumPaths?: number, caseSensitive?: boolean}} [options] Per-path policy plus a positive list bound and collision case policy.
+ * @returns {ReadonlyArray<string>} Frozen, dense canonical paths in input order.
+ * @throws {TypeError} If values, options, case policy, or a path is invalid.
+ * @throws {RangeError} If a work bound is invalid/exceeded or paths collide.
+ * @example
+ * normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" });
+ * @since 2.0.0
+ */
+export function normalizePortableRelativePaths(values, options = {}) {
+  if (!Array.isArray(values)) throw new TypeError("values must be an array.");
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const { maximumPaths = 10_000, caseSensitive = false } = options;
+  if (!Number.isSafeInteger(maximumPaths) || maximumPaths < 1) {
+    throw new RangeError("maximumPaths must be a positive safe integer.");
+  }
+  if (typeof caseSensitive !== "boolean") throw new TypeError("caseSensitive must be a boolean.");
+  if (values.length > maximumPaths) throw new RangeError("values exceeded maximumPaths.");
+
+  const policy = readPortablePathPolicy(options);
+  const normalized = [...values].map((value) => normalizePortablePathWithPolicy(value, policy));
+  const entries = new Map();
+  normalized.forEach((path) => {
+    const directory = path.endsWith("/");
+    const base = directory ? path.slice(0, -1) : path;
+    const key = caseSensitive ? base : base.toLowerCase();
+    if (entries.has(key)) throw new RangeError(`Portable paths collide after normalization: ${path}`);
+    entries.set(key, { directory, path });
+  });
+
+  for (const [key] of entries) {
+    const segments = key.split("/");
+    let prefix = "";
+    for (let index = 0; index < segments.length - 1; index += 1) {
+      prefix = prefix === "" ? segments[index] : `${prefix}/${segments[index]}`;
+      const parent = entries.get(prefix);
+      if (parent && !parent.directory) {
+        throw new RangeError(`Portable file path conflicts with a descendant: ${parent.path}`);
+      }
+    }
+  }
+  return Object.freeze(normalized);
+}
+
+/**
  * Validates a value against a useful JSON Schema subset. Supported keywords are
  * `$ref`, `type`, `const`, `enum`, `required`, `properties`, `items`,
  * `additionalProperties`, and `definitions`. Unsupported keywords and malformed
@@ -477,6 +567,106 @@ function validateContractNode(value, schema, root, path) {
     }
   }
   return errors;
+}
+
+/**
+ * @param {unknown} options
+ * @returns {{kind: PortablePathKind, normalization: PortablePathNormalization, allowBackslash: boolean, maximumLength: number, maximumSegments: number, maximumSegmentLength: number}}
+ */
+function readPortablePathPolicy(options) {
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const {
+    kind = "file",
+    normalization = "NFC",
+    allowBackslash = false,
+    maximumLength = 512,
+    maximumSegments = 32,
+    maximumSegmentLength = 255,
+  } = options;
+  if (kind !== "file" && kind !== "directory" && kind !== "either") {
+    throw new TypeError(`Unsupported portable path kind: ${kind}`);
+  }
+  if (normalization !== "NFC" && normalization !== "NFKC" && normalization !== "none") {
+    throw new TypeError(`Unsupported portable path normalization: ${normalization}`);
+  }
+  if (typeof allowBackslash !== "boolean") throw new TypeError("allowBackslash must be a boolean.");
+  for (const [name, limit] of [
+    ["maximumLength", maximumLength],
+    ["maximumSegments", maximumSegments],
+    ["maximumSegmentLength", maximumSegmentLength],
+  ]) {
+    if (typeof limit !== "number" || !Number.isSafeInteger(limit) || limit < 1) {
+      throw new RangeError(`${name} must be a positive safe integer.`);
+    }
+  }
+  return {
+    kind: /** @type {PortablePathKind} */ (kind),
+    normalization: /** @type {PortablePathNormalization} */ (normalization),
+    allowBackslash,
+    maximumLength: /** @type {number} */ (maximumLength),
+    maximumSegments: /** @type {number} */ (maximumSegments),
+    maximumSegmentLength: /** @type {number} */ (maximumSegmentLength),
+  };
+}
+
+/**
+ * @param {unknown} value
+ * @param {{kind: PortablePathKind, normalization: PortablePathNormalization, allowBackslash: boolean, maximumLength: number, maximumSegments: number, maximumSegmentLength: number}} policy
+ */
+function normalizePortablePathWithPolicy(value, policy) {
+  if (typeof value !== "string" || value.length === 0) {
+    throw new TypeError("value must be a non-empty string.");
+  }
+  if (value.length > policy.maximumLength) throw new RangeError("value exceeded maximumLength.");
+
+  let path = policy.normalization === "none" ? value : value.normalize(policy.normalization);
+  if (path.length > policy.maximumLength) throw new RangeError("value exceeded maximumLength after normalization.");
+  if (path.includes("\\")) {
+    if (!policy.allowBackslash) throw new TypeError("value cannot contain backslash separators.");
+    path = path.replaceAll("\\", "/");
+  }
+  if (path.startsWith("/") || /^[A-Za-z]:/u.test(path)) {
+    throw new TypeError("value must be a relative path without a drive prefix.");
+  }
+
+  const hadTrailingSlash = path.endsWith("/");
+  if (hadTrailingSlash && policy.kind === "file") throw new TypeError("A file path cannot end with '/'.");
+  const body = hadTrailingSlash ? path.slice(0, -1) : path;
+  if (body === "") throw new TypeError("value must contain at least one path segment.");
+  const segments = body.split("/");
+  if (segments.length > policy.maximumSegments) throw new RangeError("value exceeded maximumSegments.");
+
+  for (const segment of segments) {
+    if (segment === "" || segment === "." || segment === "..") {
+      throw new TypeError("value cannot contain empty, current-directory, or parent-directory segments.");
+    }
+    if (segment.length > policy.maximumSegmentLength) {
+      throw new RangeError("value exceeded maximumSegmentLength.");
+    }
+    if (hasPortablePathControl(segment)) throw new TypeError("value cannot contain control or bidi characters.");
+    if (portablePathInvalidCharacters.test(segment)) {
+      throw new TypeError("value contains characters that are invalid in portable filenames.");
+    }
+    if (portableReservedSegment.test(segment) || /[. ]$/u.test(segment)) {
+      throw new TypeError("value contains a reserved platform filename segment.");
+    }
+  }
+
+  const directory = policy.kind === "directory" || (policy.kind === "either" && hadTrailingSlash);
+  const normalized = `${segments.join("/")}${directory ? "/" : ""}`;
+  if (normalized.length > policy.maximumLength)
+    throw new RangeError("value exceeded maximumLength after normalization.");
+  return normalized;
+}
+
+/** @param {string} value */
+function hasPortablePathControl(value) {
+  if (portablePathBidiControls.test(value)) return true;
+  for (const character of value) {
+    const codePoint = /** @type {number} */ (character.codePointAt(0));
+    if (codePoint <= 0x1f || (codePoint >= 0x7f && codePoint <= 0x9f)) return true;
+  }
+  return false;
 }
 
 /** @param {JsonContract} root @param {string} reference */

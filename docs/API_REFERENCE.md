@@ -2337,6 +2337,36 @@ Formats a valid North American phone number as `(555) 123-4567`.
 - Since: 2.0.0
 - Returns: `string | null` — `(555) 123-4567` text, or null when normalization fails.
 
+### normalizePortableRelativePath
+
+Validates and canonicalizes one portable relative path without touching the filesystem. Output uses `/`, applies an explicit Unicode policy, and rejects absolute/drive paths, traversal, empty segments, controls/bidi overrides, Windows-invalid characters/names, and dot/space segment suffixes. A successful result proves only that the text satisfies this lexical contract. It does not authorize extraction or a filesystem write, follow symlinks, reserve a destination, or protect against time-of-check races.
+
+- Signature: `normalizePortableRelativePath()`
+- Import: `import { normalizePortableRelativePath } from "akashatools/validation"`
+- Granular import: `import normalizePortableRelativePath from "akashatools/validation/normalizePortableRelativePath"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string` — Canonical forward-slash relative path; directory output ends in `/`.
+
+Throws:
+- `TypeError` — If value, options, policies, or path syntax is invalid.
+- `RangeError` — If a length/segment bound is invalid or exceeded.
+
+### normalizePortableRelativePaths
+
+Canonicalizes a bounded path list and rejects exact, Unicode-normalized, optional case-folded, and file/directory-prefix collisions independent of input order. Sparse slots are treated as `undefined` and therefore rejected. Directory entries can contain descendants; a file entry cannot. This remains lexical validation only and does not authorize archive extraction or any filesystem operation.
+
+- Signature: `normalizePortableRelativePaths()`
+- Import: `import { normalizePortableRelativePaths } from "akashatools/validation"`
+- Granular import: `import normalizePortableRelativePaths from "akashatools/validation/normalizePortableRelativePaths"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `ReadonlyArray<string>` — Frozen, dense canonical paths in input order.
+
+Throws:
+- `TypeError` — If values, options, case policy, or a path is invalid.
+- `RangeError` — If a work bound is invalid/exceeded or paths collide.
+
 ### validateJsonContract
 
 Validates a value against a useful JSON Schema subset. Supported keywords are `$ref`, `type`, `const`, `enum`, `required`, `properties`, `items`, `additionalProperties`, and `definitions`. Unsupported keywords and malformed schemas throw instead of being silently ignored.

@@ -32,6 +32,14 @@ objects; use `deepClone` separately when reference isolation is required.
 
 ## Filesystem containment
 
+`normalizePortableRelativePath` and `normalizePortableRelativePaths` provide a
+universal lexical boundary for archive/manifest names before any Node path is
+resolved. They reject absolute/traversal/platform-reserved syntax, apply an
+explicit Unicode normalization policy, bound path work, and detect normalized,
+case, duplicate, and file/directory-prefix collisions. They inspect no
+filesystem state and do not authorize extraction or writing. The complete
+boundary is in [`PORTABLE_PATH_CONTRACTS.md`](./PORTABLE_PATH_CONTRACTS.md).
+
 `resolveContainedPath` is lexical planning, not filesystem authorization. It
 rejects absolute/rooted/UNC/drive-relative paths, null bytes, and `..` escapes
 with platform-aware separator, drive, UNC, and case tests.

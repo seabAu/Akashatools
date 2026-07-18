@@ -124,6 +124,8 @@ drop-in compatibility.
 | `normalizeDataType` | data | universal | no input mutation | `akashatools/data/normalizeDataType` | `Val.getType` |
 | `normalizeInstantRange` | date | universal | no input mutation | `akashatools/date/normalizeInstantRange` | None |
 | `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation/normalizeNanpPhone` | None |
+| `normalizePortableRelativePath` | validation | universal | no input mutation | `akashatools/validation/normalizePortableRelativePath` | None |
+| `normalizePortableRelativePaths` | validation | universal | no input mutation | `akashatools/validation/normalizePortableRelativePaths` | None |
 | `omit` | object | universal | no input mutation | `akashatools/object/omit` | `AO.removeKey` |
 | `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http/parseContentDispositionFilename` | None |
 | `parseJsonPointer` | object | universal | no input mutation | `akashatools/object/parseJsonPointer` | None |

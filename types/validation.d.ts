@@ -1,4 +1,32 @@
 export type JsonContractType = "array" | "object" | "integer" | "null" | "string" | "number" | "boolean";
+export type PortablePathKind = "file" | "directory" | "either";
+export type PortablePathNormalization = "NFC" | "NFKC" | "none";
+export type PortableRelativePathOptions = {
+    /**
+     * Expected final path kind and trailing-slash policy.
+     */
+    kind?: PortablePathKind;
+    /**
+     * Explicit Unicode normalization policy.
+     */
+    normalization?: PortablePathNormalization;
+    /**
+     * Whether backslashes are accepted and canonicalized to slashes.
+     */
+    allowBackslash?: boolean;
+    /**
+     * Positive safe-integer path code-unit bound.
+     */
+    maximumLength?: number;
+    /**
+     * Positive safe-integer segment-count bound.
+     */
+    maximumSegments?: number;
+    /**
+     * Positive safe-integer segment code-unit bound.
+     */
+    maximumSegmentLength?: number;
+};
 export type JsonContract = {
     $ref?: string;
     type?: JsonContractType | readonly JsonContractType[];
@@ -255,6 +283,48 @@ export declare function normalizeNanpPhone(value: unknown): string | null;
  * @since 2.0.0
  */
 export declare function formatNanpPhone(value: unknown): string | null;
+/**
+ * Validates and canonicalizes one portable relative path without touching the
+ * filesystem. Output uses `/`, applies an explicit Unicode policy, and rejects
+ * absolute/drive paths, traversal, empty segments, controls/bidi overrides,
+ * Windows-invalid characters/names, and dot/space segment suffixes.
+ *
+ * A successful result proves only that the text satisfies this lexical
+ * contract. It does not authorize extraction or a filesystem write, follow
+ * symlinks, reserve a destination, or protect against time-of-check races.
+ *
+ * @param {string} value Candidate portable relative path.
+ * @param {PortableRelativePathOptions} [options] Path kind, Unicode/separator policy, and work bounds.
+ * @returns {string} Canonical forward-slash relative path; directory output ends in `/`.
+ * @throws {TypeError} If value, options, policies, or path syntax is invalid.
+ * @throws {RangeError} If a length/segment bound is invalid or exceeded.
+ * @example
+ * normalizePortableRelativePath("reports/2026.json"); // "reports/2026.json"
+ * @since 2.0.0
+ */
+export declare function normalizePortableRelativePath(value: string, options?: PortableRelativePathOptions): string;
+/**
+ * Canonicalizes a bounded path list and rejects exact, Unicode-normalized,
+ * optional case-folded, and file/directory-prefix collisions independent of
+ * input order. Sparse slots are treated as `undefined` and therefore rejected.
+ * Directory entries can contain descendants; a file entry cannot.
+ *
+ * This remains lexical validation only and does not authorize archive
+ * extraction or any filesystem operation.
+ *
+ * @param {readonly string[]} values Candidate portable relative paths.
+ * @param {PortableRelativePathOptions & {maximumPaths?: number, caseSensitive?: boolean}} [options] Per-path policy plus a positive list bound and collision case policy.
+ * @returns {ReadonlyArray<string>} Frozen, dense canonical paths in input order.
+ * @throws {TypeError} If values, options, case policy, or a path is invalid.
+ * @throws {RangeError} If a work bound is invalid/exceeded or paths collide.
+ * @example
+ * normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" });
+ * @since 2.0.0
+ */
+export declare function normalizePortableRelativePaths(values: readonly string[], options?: PortableRelativePathOptions & {
+    maximumPaths?: number;
+    caseSensitive?: boolean;
+}): ReadonlyArray<string>;
 /**
  * Validates a value against a useful JSON Schema subset. Supported keywords are
  * `$ref`, `type`, `const`, `enum`, `required`, `properties`, `items`,

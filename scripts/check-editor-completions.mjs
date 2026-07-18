@@ -9,12 +9,29 @@ const temporaryDirectory = path.join(root, ".completion-check");
 const expectations = [
   ["array", "akasha.array.", ["chunk", "removeFromArray", "shuffle"]],
   ["data", "akasha.data.", ["analyzeArrayTypes", "defaultValueForType", "initializeLike"]],
-  ["validation", "akasha.validation.", ["isEmail", "isJson", "isPlainObjectArray"]],
+  [
+    "validation",
+    "akasha.validation.",
+    ["isEmail", "isJson", "isPlainObjectArray", "normalizePortableRelativePath", "normalizePortableRelativePaths"],
+  ],
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
   ["hash", "akasha.hash.", ["crc32", "sha256Hex", "sha256Json", "stableJsonId"]],
   ["input", "akasha.input.", ["controlTypeForValue", "fieldsFromData", "inputTypeForType"]],
   ["object", "akasha.object.", ["deepQuery", "findAllDeepValues", "hasDeep"]],
-  ["flat", "akasha.", ["chunk", "crc32", "deepQuery", "fieldsFromData", "initializeLike", "isEmail", "request"]],
+  [
+    "flat",
+    "akasha.",
+    [
+      "chunk",
+      "crc32",
+      "deepQuery",
+      "fieldsFromData",
+      "initializeLike",
+      "isEmail",
+      "normalizePortableRelativePath",
+      "request",
+    ],
+  ],
 ];
 const files = [];
 
