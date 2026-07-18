@@ -13,6 +13,7 @@ export * from "./data/index.js";
 export * from "./date/index.js";
 export * from "./http/index.js";
 export * from "./hash/index.js";
+export * from "./geo/index.js";
 export * from "./input/index.js";
 export * from "./function/index.js";
 export * from "./number/index.js";
@@ -33,6 +34,7 @@ export {
   date,
   http,
   hash,
+  geo,
   input,
   functionUtils as function,
   number,

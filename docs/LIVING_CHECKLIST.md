@@ -667,7 +667,7 @@ browser behavior must not be copied into the canonical package.
 - [x] Inventory every active export and the comment-only `ObjMap.js` source,
   record source hashes, and assign an explicit adopt/covered/reject/owned
   disposition.
-- [ ] Add a universal `geo` category with canonical longitude/latitude order,
+- [x] Add a universal `geo` category with canonical longitude/latitude order,
   range-checked position aliases, Haversine distance, bounded nearby queries,
   and strict deterministic GeoJSON features/collections.
 - [ ] Complete serialized input conversion with a pure, compiled datatype parser
@@ -823,6 +823,7 @@ Acceptance criteria:
 | 2026-07-18 | Treat the second source refresh as a delta, not a bulk copy. | Current dirty and untracked consumer source is evidence for atomic contracts, but thread archives, TTS providers, UI components, storage, and application policy remain with their owning projects; the dated ledger records every new family and the reusable implementation queue. |
 | 2026-07-18 | Promote Jaccard similarity as the final deferred universal atom. | Two independent COMPOSR packages use the same token-Set formula; the shared helper caps combined iterable work, uses SameValueZero identity, treats empty/empty as 1, and excludes weighted or multiset policy. |
 | 2026-07-18 | Recalibrate the stabilized full-discovery bundle guardrail to 90,000 raw/27,000 gzip. | The final default-category measurement is 87,552/26,336, leaving a small explicit review margin while focused imports remain 321/252 and the side-effect-only fixture remains zero bytes. |
+| 2026-07-18 | Replace the excepted Mapbox-era geo helpers with a universal `geo` category. | GeoJSON requires `[longitude, latitude]`; canonical normalization, explicit legacy order, range checks, Haversine units/radius, bounded nearby searches, and deterministic feature construction preserve reusable intent without random jitter, HTML, React, Mapbox, or broken degree-box predicates. |
 
 ## Definition of done
 

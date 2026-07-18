@@ -6,6 +6,7 @@ import * as dataModule from "./data/index.js";
 import * as dateModule from "./date/index.js";
 import * as httpModule from "./http/index.js";
 import * as hashModule from "./hash/index.js";
+import * as geoModule from "./geo/index.js";
 import * as inputModule from "./input/index.js";
 import * as functionModule from "./function/index.js";
 import * as numberModule from "./number/index.js";
@@ -208,6 +209,39 @@ export declare const hash: Readonly<{
     stableJsonId(prefix: string, value: unknown, options?: hashModule.JsonHashOptions & {
         hashLength?: number;
     }): Promise<string>;
+}>;
+/** Frozen geospatial and GeoJSON utilities. */
+export declare const geo: Readonly<{
+    normalizeGeoPosition(value: unknown, options?: geoModule.GeoPositionOptions): [number, number] | [number, number, number];
+    isGeoPosition(value: unknown, options?: geoModule.GeoPositionOptions): boolean;
+    geoPositionToObject(value: unknown, options?: geoModule.GeoPositionOptions & {
+        objectKeys?: "canonical" | "short";
+    }): {
+        longitude: number;
+        latitude: number;
+        altitude?: number;
+    } | {
+        lng: number;
+        lat: number;
+        alt?: number;
+    };
+    haversineDistance(left: unknown, right: unknown, options?: geoModule.GeoDistanceOptions): number;
+    isWithinGeoDistance(left: unknown, right: unknown, maximumDistance: number, options?: geoModule.GeoDistanceOptions): boolean;
+    hasPositionWithinDistance(target: unknown, positions: readonly unknown[], maximumDistance: number, options?: geoModule.GeoSearchOptions): boolean;
+    filterPositionsWithinDistance(target: unknown, positions: readonly unknown[], maximumDistance: number, options?: geoModule.GeoSearchOptions): unknown[];
+    createGeoJsonFeature(geometryType: "Point" | "MultiPoint" | "LineString" | "MultiLineString" | "Polygon" | "MultiPolygon", coordinates: unknown, options?: geoModule.GeoJsonFeatureOptions): {
+        type: "Feature";
+        geometry: {
+            type: string;
+            coordinates: unknown;
+        };
+        properties: Record<PropertyKey, unknown> | null;
+        id?: string | number;
+    };
+    createGeoJsonFeatureCollection(features: readonly unknown[], options?: geoModule.GeoJsonCollectionOptions): {
+        type: "FeatureCollection";
+        features: ReturnType<typeof geoModule.createGeoJsonFeature>[];
+    };
 }>;
 /** Frozen form-input inference and descriptor utilities. */
 export declare const input: Readonly<{
@@ -552,6 +586,15 @@ export declare const akasha: Readonly<{
     memoize: typeof functionModule.memoize;
     debounce: typeof functionModule.debounce;
     throttle: typeof functionModule.throttle;
+    normalizeGeoPosition: typeof geoModule.normalizeGeoPosition;
+    isGeoPosition: typeof geoModule.isGeoPosition;
+    geoPositionToObject: typeof geoModule.geoPositionToObject;
+    haversineDistance: typeof geoModule.haversineDistance;
+    isWithinGeoDistance: typeof geoModule.isWithinGeoDistance;
+    hasPositionWithinDistance: typeof geoModule.hasPositionWithinDistance;
+    filterPositionsWithinDistance: typeof geoModule.filterPositionsWithinDistance;
+    createGeoJsonFeature: typeof geoModule.createGeoJsonFeature;
+    createGeoJsonFeatureCollection: typeof geoModule.createGeoJsonFeatureCollection;
     sha256Hex: typeof hashModule.sha256Hex;
     crc32: typeof hashModule.crc32;
     sha256Json: typeof hashModule.sha256Json;
@@ -771,6 +814,38 @@ export declare const akasha: Readonly<{
         stableJsonId(prefix: string, value: unknown, options?: hashModule.JsonHashOptions & {
             hashLength?: number;
         }): Promise<string>;
+    }>;
+    geo: Readonly<{
+        normalizeGeoPosition(value: unknown, options?: geoModule.GeoPositionOptions): [number, number] | [number, number, number];
+        isGeoPosition(value: unknown, options?: geoModule.GeoPositionOptions): boolean;
+        geoPositionToObject(value: unknown, options?: geoModule.GeoPositionOptions & {
+            objectKeys?: "canonical" | "short";
+        }): {
+            longitude: number;
+            latitude: number;
+            altitude?: number;
+        } | {
+            lng: number;
+            lat: number;
+            alt?: number;
+        };
+        haversineDistance(left: unknown, right: unknown, options?: geoModule.GeoDistanceOptions): number;
+        isWithinGeoDistance(left: unknown, right: unknown, maximumDistance: number, options?: geoModule.GeoDistanceOptions): boolean;
+        hasPositionWithinDistance(target: unknown, positions: readonly unknown[], maximumDistance: number, options?: geoModule.GeoSearchOptions): boolean;
+        filterPositionsWithinDistance(target: unknown, positions: readonly unknown[], maximumDistance: number, options?: geoModule.GeoSearchOptions): unknown[];
+        createGeoJsonFeature(geometryType: "Point" | "MultiPoint" | "LineString" | "MultiLineString" | "Polygon" | "MultiPolygon", coordinates: unknown, options?: geoModule.GeoJsonFeatureOptions): {
+            type: "Feature";
+            geometry: {
+                type: string;
+                coordinates: unknown;
+            };
+            properties: Record<PropertyKey, unknown> | null;
+            id?: string | number;
+        };
+        createGeoJsonFeatureCollection(features: readonly unknown[], options?: geoModule.GeoJsonCollectionOptions): {
+            type: "FeatureCollection";
+            features: ReturnType<typeof geoModule.createGeoJsonFeature>[];
+        };
     }>;
     input: Readonly<{
         inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): string | undefined;

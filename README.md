@@ -2,8 +2,8 @@
 
 Akashatools is a dependency-free collection of focused JavaScript utilities for
 arrays, objects, strings, numbers, dates, data introspection/initialization,
-validation, asynchronous workflows, collections, hashing, HTTP operations, and
-browser file downloads, with explicit function-control primitives.
+validation, asynchronous workflows, collections, geospatial data, hashing, HTTP
+operations, and browser file downloads, with explicit function-control primitives.
 
 Version 2 is an ES module package for Node.js 22.17+ and modern browsers. Functions
 are side-effect free unless their names explicitly describe an effect.
@@ -49,9 +49,21 @@ import { chunk, removeFromArray } from "akashatools/array";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { deepClone, setAtPath } from "akashatools/object";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
+import { haversineDistance, normalizeGeoPosition } from "akashatools/geo";
 import { crc32, sha256Hex, sha256Json } from "akashatools/hash";
 import { debounce, memoize, once, throttle } from "akashatools/function";
 import { jaccardSimilarity } from "akashatools/collection";
+```
+
+Geospatial helpers use GeoJSON `[longitude, latitude]` order by default and
+make legacy array order explicit:
+
+```js
+import { createGeoJsonFeature, haversineDistance, normalizeGeoPosition } from "akashatools/geo";
+
+normalizeGeoPosition({ lat: 40.7, lng: -74 }); // [-74, 40.7]
+haversineDistance([-74, 40.7], [-73.99, 40.75], { unit: "kilometers" });
+createGeoJsonFeature("Point", { lat: 40.7, lng: -74 }, { properties: { name: "New York" } });
 ```
 
 Generated method subpaths make a dependency maximally explicit while exporting

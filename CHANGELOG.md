@@ -2,6 +2,10 @@
 
 ## 2.0.0-alpha.1
 
+- Reopened the candidate for the omitted `(excepted modules)` source set and
+  added a universal `geo` category with canonical GeoJSON coordinate order,
+  explicit legacy-order conversion, range-checked aliases, Haversine distance,
+  bounded nearby queries, and deterministic feature construction.
 - Completed the reopened 2026-07-18 regression and utility-surface expansion;
   the current Node 22/24 audits, 15-test browser matrix, package, bundle,
   coverage, declaration, and API totals replace the historical snapshot.

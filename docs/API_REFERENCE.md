@@ -1028,6 +1028,139 @@ Throws:
 - `TypeError` — If prefix, value, options, crypto, or JSON shape is unsupported.
 - `RangeError` — If hashLength or a work bound is invalid or exceeded.
 
+## geo
+
+Runtime: Universal JavaScript on the supported runtime floor.
+
+Focused import: `akashatools/geo`
+
+### normalizeGeoPosition
+
+Converts an array or plain coordinate object to a fresh GeoJSON-order position. Arrays are `[longitude, latitude]` unless the legacy order is explicitly requested. Objects accept `longitude`/`lng`/`lon`, `latitude`/`lat`, and optional `altitude`/`alt` aliases. Duplicate aliases must agree. Longitude and latitude ranges are validated.
+
+- Signature: `normalizeGeoPosition()`
+- Import: `import { normalizeGeoPosition } from "akashatools/geo"`
+- Granular import: `import normalizeGeoPosition from "akashatools/geo/normalizeGeoPosition"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `[number, number] | [number, number, number]` — Fresh `[longitude, latitude, altitude?]` position.
+
+Throws:
+- `TypeError` — If the value or options do not match the coordinate contract.
+- `RangeError` — If longitude or latitude is outside its legal range.
+
+### isGeoPosition
+
+Checks whether a value is a valid coordinate position without accepting truthy strings, sparse arrays, accessors, or out-of-range coordinates. Invalid options still throw so configuration errors are not disguised as invalid data.
+
+- Signature: `isGeoPosition()`
+- Import: `import { isGeoPosition } from "akashatools/geo"`
+- Granular import: `import isGeoPosition from "akashatools/geo/isGeoPosition"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `boolean` — Whether the value can be normalized safely.
+
+Throws:
+- `TypeError` — If options are invalid.
+
+### geoPositionToObject
+
+Converts any accepted position to a fresh coordinate object. Canonical long property names are the default; short Mapbox-style aliases require an explicit output option.
+
+- Signature: `geoPositionToObject()`
+- Import: `import { geoPositionToObject } from "akashatools/geo"`
+- Granular import: `import geoPositionToObject from "akashatools/geo/geoPositionToObject"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `{longitude: number, latitude: number, altitude?: number} | {lng: number, lat: number, alt?: number}` — Fresh coordinate object.
+
+Throws:
+- `TypeError | RangeError` — If the value or options violate the coordinate contract.
+
+### haversineDistance
+
+Calculates great-circle surface distance with the Haversine formula. Altitude, when present, is intentionally ignored. The default IUGG mean Earth radius is explicit and may be overridden in meters for another spherical body or domain model.
+
+- Signature: `haversineDistance()`
+- Import: `import { haversineDistance } from "akashatools/geo"`
+- Granular import: `import haversineDistance from "akashatools/geo/haversineDistance"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — Finite surface distance in the selected unit.
+
+Throws:
+- `TypeError | RangeError` — If positions or options violate the contract.
+
+### isWithinGeoDistance
+
+Checks whether two positions are within an inclusive great-circle distance. Maximum distance uses the same selected unit as the returned value from `haversineDistance`.
+
+- Signature: `isWithinGeoDistance()`
+- Import: `import { isWithinGeoDistance } from "akashatools/geo"`
+- Granular import: `import isWithinGeoDistance from "akashatools/geo/isWithinGeoDistance"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `boolean` — Whether the positions are within maximumDistance.
+
+Throws:
+- `TypeError | RangeError` — If distance, positions, or options violate the contract.
+
+### hasPositionWithinDistance
+
+Stops at the first position within an inclusive great-circle distance. The list and every candidate are validated, and work is capped before iteration.
+
+- Signature: `hasPositionWithinDistance()`
+- Import: `import { hasPositionWithinDistance } from "akashatools/geo"`
+- Granular import: `import hasPositionWithinDistance from "akashatools/geo/hasPositionWithinDistance"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `boolean` — Whether any candidate is within maximumDistance.
+
+Throws:
+- `TypeError | RangeError` — If input or options violate the contract.
+
+### filterPositionsWithinDistance
+
+Returns the original candidate values whose great-circle distance from a target is within an inclusive threshold. Candidate order and references are preserved; the input array is never mutated.
+
+- Signature: `filterPositionsWithinDistance()`
+- Import: `import { filterPositionsWithinDistance } from "akashatools/geo"`
+- Granular import: `import filterPositionsWithinDistance from "akashatools/geo/filterPositionsWithinDistance"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown[]` — Original candidate values that fall within the distance.
+
+Throws:
+- `TypeError | RangeError` — If input or options violate the contract.
+
+### createGeoJsonFeature
+
+Creates a deterministic GeoJSON Feature for Point, MultiPoint, LineString, MultiLineString, Polygon, or MultiPolygon geometry. Coordinate objects and an explicit legacy array order are accepted as input, but output coordinates always use GeoJSON `[longitude, latitude]` order. Polygon rings must already be closed so the helper never silently changes geometry.
+
+- Signature: `createGeoJsonFeature()`
+- Import: `import { createGeoJsonFeature } from "akashatools/geo"`
+- Granular import: `import createGeoJsonFeature from "akashatools/geo/createGeoJsonFeature"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `{type: "Feature", geometry: {type: string, coordinates: unknown}, properties: Record<PropertyKey, unknown> | null, id?: string | number}` — Fresh strict core GeoJSON Feature.
+
+Throws:
+- `TypeError | RangeError` — If geometry, properties, identifier, or bounds violate the contract.
+
+### createGeoJsonFeatureCollection
+
+Creates a bounded deterministic GeoJSON FeatureCollection. Each input feature is rebuilt through `createGeoJsonFeature`, so coordinate order, geometry nesting, properties, identifiers, and accessors receive the same validation. Foreign GeoJSON members are intentionally omitted from the canonical output.
+
+- Signature: `createGeoJsonFeatureCollection()`
+- Import: `import { createGeoJsonFeatureCollection } from "akashatools/geo"`
+- Granular import: `import createGeoJsonFeatureCollection from "akashatools/geo/createGeoJsonFeatureCollection"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `{type: "FeatureCollection", features: ReturnType<typeof createGeoJsonFeature>[]}` — Fresh GeoJSON FeatureCollection.
+
+Throws:
+- `TypeError | RangeError` — If features or options violate the contract.
+
 ## input
 
 Runtime: Universal JavaScript on the supported runtime floor.

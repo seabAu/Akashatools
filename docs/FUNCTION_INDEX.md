@@ -34,6 +34,8 @@ drop-in compatibility.
 | `crc32` | hash | universal | no input mutation | `akashatools/hash/crc32` | None |
 | `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort/createCollatorComparator` | None |
 | `createConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createConcurrencyLimiter` | None |
+| `createGeoJsonFeature` | geo | universal | no input mutation | `akashatools/geo/createGeoJsonFeature` | None |
+| `createGeoJsonFeatureCollection` | geo | universal | no input mutation | `akashatools/geo/createGeoJsonFeatureCollection` | None |
 | `createKeyedConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createKeyedConcurrencyLimiter` | None |
 | `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async/createKeyedSingleFlight` | None |
 | `createSingleFlight` | async | universal | no input mutation | `akashatools/async/createSingleFlight` | None |
@@ -58,6 +60,7 @@ drop-in compatibility.
 | `fibonacci` | number | universal | no input mutation | `akashatools/number/fibonacci` | None |
 | `fieldDescriptorFor` | input | universal | no input mutation | `akashatools/input/fieldDescriptorFor` | None |
 | `fieldsFromData` | input | universal | no input mutation | `akashatools/input/fieldsFromData` | None |
+| `filterPositionsWithinDistance` | geo | universal | no input mutation | `akashatools/geo/filterPositionsWithinDistance` | None |
 | `findAllDeep` | object | universal | no input mutation | `akashatools/object/findAllDeep` | `AO.objContains` |
 | `findAllDeepMatches` | object | universal | no input mutation | `akashatools/object/findAllDeepMatches` | `AO.deepSearchItems` |
 | `findAllDeepParents` | object | universal | no input mutation | `akashatools/object/findAllDeepParents` | None |
@@ -75,6 +78,7 @@ drop-in compatibility.
 | `formatRelativeTime` | date | universal | no input mutation | `akashatools/date/formatRelativeTime` | None |
 | `fromUnixSeconds` | date | universal | no input mutation | `akashatools/date/fromUnixSeconds` | None |
 | `fulfilledValues` | async | universal | no input mutation | `akashatools/async/fulfilledValues` | None |
+| `geoPositionToObject` | geo | universal | no input mutation | `akashatools/geo/geoPositionToObject` | None |
 | `getAtJsonPointer` | object | universal | no input mutation | `akashatools/object/getAtJsonPointer` | None |
 | `getAtPath` | object | universal | no input mutation | `akashatools/object/getAtPath` | None |
 | `globPaths` | node | node | no input mutation | `akashatools/node/globPaths` | None |
@@ -82,6 +86,8 @@ drop-in compatibility.
 | `hasAtJsonPointer` | object | universal | no input mutation | `akashatools/object/hasAtJsonPointer` | None |
 | `hasAtPath` | object | universal | no input mutation | `akashatools/object/hasAtPath` | `AO.has` |
 | `hasDeep` | object | universal | no input mutation | `akashatools/object/hasDeep` | `AO.has`, `AO.hasAll`, `AO.objContains`, `AO.arrayContains` |
+| `hasPositionWithinDistance` | geo | universal | no input mutation | `akashatools/geo/hasPositionWithinDistance` | None |
+| `haversineDistance` | geo | universal | no input mutation | `akashatools/geo/haversineDistance` | None |
 | `HttpError` | http | universal | no input mutation | `akashatools/http/HttpError` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
 | `includesText` | string | universal | no input mutation | `akashatools/string/includesText` | `AO.valContains`, `String.subStringSearch` |
 | `initializeLike` | data | universal | no input mutation | `akashatools/data/initializeLike` | `AO.cleanJSON` |
@@ -99,6 +105,7 @@ drop-in compatibility.
 | `isFile` | validation | universal | no input mutation | `akashatools/validation/isFile` | `Val.isFile` |
 | `isFiniteNonInteger` | validation | universal | no input mutation | `akashatools/validation/isFiniteNonInteger` | `Val.isFloat` |
 | `isFiniteNumber` | validation | universal | no input mutation | `akashatools/validation/isFiniteNumber` | `Val.isNumber` |
+| `isGeoPosition` | geo | universal | no input mutation | `akashatools/geo/isGeoPosition` | None |
 | `isJson` | validation | universal | no input mutation | `akashatools/validation/isJson` | `Val.isJSON` |
 | `isMap` | validation | universal | no input mutation | `akashatools/validation/isMap` | `Val.isMap` |
 | `isNonArrayObject` | validation | universal | no input mutation | `akashatools/validation/isNonArrayObject` | `Val.isObject`, `Val.isAO` |
@@ -113,6 +120,7 @@ drop-in compatibility.
 | `isToday` | date | universal | no input mutation | `akashatools/date/isToday` | None |
 | `isTypedArray` | validation | universal | no input mutation | `akashatools/validation/isTypedArray` | None |
 | `isValidDate` | date | universal | no input mutation | `akashatools/date/isValidDate` | None |
+| `isWithinGeoDistance` | geo | universal | no input mutation | `akashatools/geo/isWithinGeoDistance` | None |
 | `isWithinInstantRange` | date | universal | no input mutation | `akashatools/date/isWithinInstantRange` | None |
 | `jaccardSimilarity` | collection | universal | no input mutation | `akashatools/collection/jaccardSimilarity` | None |
 | `kebabCase` | string | universal | no input mutation | `akashatools/string/kebabCase` | `String.toKebabCase` |
@@ -125,6 +133,7 @@ drop-in compatibility.
 | `minutesToClockTime` | date | universal | no input mutation | `akashatools/date/minutesToClockTime` | None |
 | `moveItem` | array | universal | no input mutation | `akashatools/array/moveItem` | None |
 | `normalizeDataType` | data | universal | no input mutation | `akashatools/data/normalizeDataType` | `Val.getType` |
+| `normalizeGeoPosition` | geo | universal | no input mutation | `akashatools/geo/normalizeGeoPosition` | None |
 | `normalizeInstantRange` | date | universal | no input mutation | `akashatools/date/normalizeInstantRange` | None |
 | `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation/normalizeNanpPhone` | None |
 | `normalizePortableRelativePath` | validation | universal | no input mutation | `akashatools/validation/normalizePortableRelativePath` | None |

@@ -93,6 +93,16 @@
       "import": "./src/hash/*.js",
       "default": "./src/hash/*.js"
     },
+    "./geo": {
+      "types": "./types/geo/index.d.ts",
+      "import": "./src/geo/index.js",
+      "default": "./src/geo/index.js"
+    },
+    "./geo/*": {
+      "types": "./types/geo/*.d.ts",
+      "import": "./src/geo/*.js",
+      "default": "./src/geo/*.js"
+    },
     "./input": {
       "types": "./types/input/index.d.ts",
       "import": "./src/input/index.js",

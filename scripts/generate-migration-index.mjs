@@ -9,6 +9,7 @@ const categories = [
   "date",
   "http",
   "hash",
+  "geo",
   "input",
   "function",
   "number",

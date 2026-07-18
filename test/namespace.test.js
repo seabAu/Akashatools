@@ -18,6 +18,7 @@ const categoryNames = [
   "date",
   "http",
   "hash",
+  "geo",
   "input",
   "function",
   "number",
