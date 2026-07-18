@@ -74,13 +74,17 @@ case. No package entry mutates built-in constructors or prototypes.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; all 217 current contracts pass on the
+- [x] Add dependency-free runtime tests; all 219 current contracts pass on the
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 533 files at approximately 384 KB packed and 1.43 MB unpacked. Capture
+  selects 533 files at approximately 386 KB packed and 1.43 MB unpacked. Capture
   exact bytes only for an immutable release candidate because a self-recorded
   compressed size changes the packaged payload.
+- [x] Enforce the exact 533-file tarball manifest, 400,000-byte packed and
+  1,500,000-byte unpacked ceilings, selected portable roots, non-executable
+  modes, no bundled dependencies, no development-only or credential-like
+  paths, and npm-reported file-count/size consistency before install smoke tests.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
   116,220 raw/34,939 gzip bytes for the complete discoverable namespace.
@@ -951,6 +955,7 @@ Acceptance criteria:
 | 2026-07-18 | Treat call-site syntax as migration-risk evidence, not runtime compatibility proof. | The refreshed scanner classifies all 1,981 parsed root reads, direct legacy bindings, result use, try containment, dynamic access, and malformed-file candidates. It can prove discarded-result absence and specific source defects, but only authorized app tests can establish runtime values, alias identity, rendering, and fallback intent. |
 | 2026-07-18 | Make residual release hygiene a deterministic local gate. | A passing feature suite cannot reveal skipped tests, unfinished markers, accidental production logging, lifecycle scripts, runtime dependencies, or manifest/lock drift. Run the cheap hygiene scan before costly generation, bundle, package, and test gates. |
 | 2026-07-18 | Treat packaged Markdown integrity as release behavior. | README and contract links are part of the npm artifact. Strict UTF-8 decoding plus target, package-selection, and heading-fragment checks prevent a green runtime suite from shipping unreadable or dead documentation while excluding link syntax shown only in code examples. |
+| 2026-07-18 | Treat the npm pack manifest as a bounded release contract. | Installing a tarball proves resolution but does not by itself prove the artifact is small, path-safe, dependency-free, non-executable, or free of development and credential-like filenames. Validate npm's exact file manifest and internal totals before using that same tarball in fresh consumers. |
 
 ## Definition of done
 

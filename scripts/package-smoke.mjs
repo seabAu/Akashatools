@@ -6,6 +6,10 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const expectedEntryCount = 533;
+const maximumPackedBytes = 400_000;
+const maximumUnpackedBytes = 1_500_000;
+const packageJson = JSON.parse(await readFile(path.join(root, "package.json"), "utf8"));
 const temporaryRoot = await mkdtemp(path.join(tmpdir(), "akashatools-package-"));
 const npmCli = process.env.npm_execpath;
 if (!npmCli) throw new Error("test:package must be launched through npm.");
@@ -14,7 +18,9 @@ try {
   const packed = run(process.execPath, [npmCli, "pack", "--json", "--pack-destination", temporaryRoot], root, true);
   const packResult = JSON.parse(packed.stdout);
   assert.equal(packResult.length, 1);
-  const tarball = path.join(temporaryRoot, packResult[0].filename);
+  const [manifest] = packResult;
+  assertPackageManifest(manifest);
+  const tarball = path.join(temporaryRoot, manifest.filename);
   await access(tarball);
 
   const consumer = path.join(temporaryRoot, "consumer");
@@ -166,7 +172,9 @@ void [chunks, granularChunks, nested, primaryType, control, dataType, inputType,
     access(path.join(consumer, "node_modules", "akashatools", "types", "index.d.ts")),
     access(path.join(consumer, "node_modules", "akashatools", "src", "index.js")),
   ]);
-  console.log("Fresh installed-tarball JavaScript and TypeScript smoke tests passed.");
+  console.log(
+    `Exact ${manifest.entryCount}-file artifact safety and fresh installed-tarball JavaScript/TypeScript smoke tests passed.`,
+  );
 } finally {
   await rm(temporaryRoot, { recursive: true, force: true });
 }
@@ -182,4 +190,54 @@ function run(command, args, cwd, capture = false) {
     throw new Error(`${command} ${args.join(" ")} failed with status ${result.status}.`);
   }
   return result;
+}
+
+function assertPackageManifest(manifest) {
+  assert.equal(
+    manifest.entryCount,
+    expectedEntryCount,
+    "packed file count changed without an intentional baseline update",
+  );
+  assert.equal(manifest.files.length, manifest.entryCount, "npm file manifest count is inconsistent");
+  assert.deepEqual(manifest.bundled, [], "runtime dependencies must not be bundled");
+  assert(manifest.size <= maximumPackedBytes, `packed artifact exceeds ${maximumPackedBytes} bytes`);
+  assert(manifest.unpackedSize <= maximumUnpackedBytes, `unpacked artifact exceeds ${maximumUnpackedBytes} bytes`);
+
+  const allowedRoots = new Set(["package.json", ...packageJson.files]);
+  const forbiddenSegments = new Set([
+    ".git",
+    "coverage",
+    "fixtures",
+    "node_modules",
+    "playwright-report",
+    "scripts",
+    "test",
+    "test-results",
+    "tests",
+  ]);
+  let unpackedSize = 0;
+
+  for (const file of manifest.files) {
+    assert.equal(typeof file.path, "string");
+    assert.equal(path.posix.normalize(file.path), file.path, `non-portable artifact path: ${file.path}`);
+    assert.equal(path.posix.isAbsolute(file.path), false, `absolute artifact path: ${file.path}`);
+    const segments = file.path.split("/");
+    assert(allowedRoots.has(segments[0]), `unexpected artifact root: ${file.path}`);
+    for (const segment of segments) {
+      const normalized = segment.toLocaleLowerCase("en-US");
+      assert(!segment.startsWith("."), `hidden artifact path: ${file.path}`);
+      assert(!forbiddenSegments.has(normalized), `development-only artifact path: ${file.path}`);
+    }
+    assert(!/\.(?:jks|key|keystore|p12|pfx|pem)$/iu.test(file.path), `credential-like artifact path: ${file.path}`);
+    assert(
+      !/(?:^|\/)(?:credentials?|id_ed25519|id_rsa|secrets?)(?:\.|$)/iu.test(file.path),
+      `credential-like artifact path: ${file.path}`,
+    );
+    assert(Number.isSafeInteger(file.size) && file.size >= 0, `invalid artifact size: ${file.path}`);
+    assert(Number.isSafeInteger(file.mode), `invalid artifact mode: ${file.path}`);
+    assert.equal(file.mode & 0o111, 0, `unexpected executable artifact: ${file.path}`);
+    unpackedSize += file.size;
+  }
+
+  assert.equal(unpackedSize, manifest.unpackedSize, "npm unpacked-size total is inconsistent");
 }

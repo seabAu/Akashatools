@@ -35,6 +35,13 @@ also checks syntax, lint and formatting, generated artifacts, JSDoc/TypeScript
 declarations, JavaScript and TypeScript consumers, editor completions, and a
 clean installation of the exact packed artifact.
 
+`npm run test:package` first validates npm's exact 533-file pack manifest:
+selected portable roots only, no hidden, development-only, credential-like, or
+executable paths, no bundled dependencies, consistent file-count and unpacked
+size totals, and 400,000-byte packed/1,500,000-byte unpacked ceilings. It then
+installs that same tarball into fresh JavaScript and TypeScript consumers and
+exercises modern, granular, Node-only, and retained compatibility imports.
+
 `npm run check:hygiene` rejects unfinished markers in maintained source/tests,
 focused or disabled tests, production console/debugger calls, runtime dependency
 fields, npm package lifecycle scripts, unexpected packaged roots, incomplete
@@ -93,9 +100,10 @@ when those support windows change.
 
 The local 2026-07-18 expanded release matrix completed the full check and
 coverage gates on Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed
-all 217 tests, fresh JavaScript/TypeScript tarball installation, 194-API and
-236-declaration generation checks, bundle budgets, dependency audit, and package
-inspection. Node 22 measured 98.25% lines, 89.74% branches, and 97.23%
+all 219 tests, exact artifact safety plus fresh JavaScript/TypeScript tarball
+installation, 194-API and 236-declaration generation checks, bundle budgets,
+dependency audit, and package inspection. Node 22 measured 98.25% lines, 89.74%
+branches, and 97.23%
 functions; Node 24 measured 98.25% / 89.66% / 97.23%. Playwright separately
 passed all 18 tests across Chromium, Firefox, and WebKit. The first hosted
 workflow result remains a distinct release gate.

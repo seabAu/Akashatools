@@ -20,7 +20,7 @@
 | Reviewed API surfaces | 19 |
 | License | ISC (`LICENSE`, 741 bytes) |
 | Dry-run files | 533 |
-| Dry-run packed size | Approximately 384 KB |
+| Dry-run packed size | Approximately 386 KB |
 | Dry-run unpacked size | Approximately 1.43 MB |
 
 `npm pack --dry-run --json` verifies the selected package content without
@@ -54,7 +54,8 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Generated declarations | 236 files current |
 | API surface snapshot | 19 surfaces current |
 | Node contract tests | 219 passed, 0 failed on Node 22 and Node 24 |
-| Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
+| Exact package artifact | 533 safe selected files; packed/unpacked output remains below 400,000 / 1,500,000-byte budgets |
+| Installed-package smoke | The exact reviewed tarball passes fresh JavaScript and TypeScript consumers |
 | Node 22 source coverage | 98.25% lines / 89.74% branches / 97.23% functions |
 | Node 24 source coverage | 98.25% lines / 89.66% branches / 97.23% functions |
 | Browser tests | 18 passed across Chromium, Firefox, and WebKit |

@@ -34,6 +34,10 @@
   final newlines, forbidden control text, local link existence and package
   selection, and GitHub-style Markdown heading fragments while ignoring links
   shown only as code examples.
+- Strengthened the exact tarball smoke gate with a 533-entry manifest baseline,
+  packed/unpacked size budgets, selected-root and portable-path checks,
+  development/credential-like path exclusions, non-executable modes, and npm
+  file-count/size consistency before fresh JavaScript and TypeScript installs.
 - Completed the reopened 2026-07-18 regression, adversarial refinement, and
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,
