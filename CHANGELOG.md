@@ -42,9 +42,9 @@
   Mongoose, React, layout, custom-ID, and product-schema adapters.
 - Reopened generated category/method subpaths and safe fluent deep-query syntax
   as explicit ergonomics work while retaining side-effect-free normal imports.
-- Kept focused imports at 321 raw/252 gzip bytes through the expanded 175-method
-  surface and recalibrated the stabilized full default-namespace guardrail to
-  90,000 raw/27,000 gzip around an 87,552/26,336 maximum measurement.
+- Kept focused imports at 321 raw/252 gzip bytes through the expanded 191-method
+  surface and recalibrated only the full default-namespace guardrail to
+  114,000 raw/34,000 gzip around a 110,931/32,760 maximum measurement.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.

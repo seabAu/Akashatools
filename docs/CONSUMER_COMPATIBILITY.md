@@ -62,7 +62,7 @@ dual build would therefore add identity, export, and release complexity without
 a demonstrated active consumer.
 
 The representative bundle comparison in `docs/IMPORTS_AND_BUNDLING.md` shows
-80,274-83,780 raw bytes and 23,717-24,659 gzip bytes saved by the focused import
+103,656-107,162 raw bytes and 30,141-31,084 gzip bytes saved by the focused import
 sets. Runtime behavior is exercised by the same compatibility tests, public
 imports remain side-effect free, and no standalone import-time speed claim is
 made; whole-app runtime profiling requires an authorized migration in each app.

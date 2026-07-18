@@ -827,6 +827,7 @@ Acceptance criteria:
 | 2026-07-18 | Separate serialized datatype parsing from browser control extraction. | `createInputValueParser` precomputes reusable descriptor/options policy and `parseInputValue` provides one-shot convenience; strict numeric, date, JSON, collection, URL, RegExp, binary, and branded-value branches replace lossy `parseInt`, truthiness, event-shape, and implicit-zone behavior. |
 | 2026-07-18 | Recover only late-bound browser atoms from the excepted DOM and LocalDB modules. | Semantic form-control extraction composes with a pure parser; media queries run only when called; and strict JSON storage requires an explicit Storage object. Import-time `window`, React renderers, HTML interpolation, product database layouts, and quota guesses remain excluded. |
 | 2026-07-18 | Retain one-shot/compiled parsing and atomic/batched geo variants. | Equal-output benchmarks show that precompiled parsing removes repeated policy setup and batched geo filtering normalizes shared invariants once. The broader variants have distinct high-volume contracts rather than duplicating their atomic cores. |
+| 2026-07-18 | Recalibrate only the expanded full-discovery bundle guardrail to 114,000 raw/34,000 gzip. | GeoJSON validation and the deliberately complete datatype parser move the largest default namespace to 110,931/32,760. Focused root/category/granular imports remain exactly 321/252, side-effect-only remains zero raw bytes, and real-consumer focused sets save 103,656-107,162 raw bytes. |
 
 ## Definition of done
 
