@@ -463,6 +463,21 @@ Runtime: Universal JavaScript on the supported runtime floor.
 
 Focused import: `akashatools/collection`
 
+### jaccardSimilarity
+
+Computes Jaccard similarity for two finite iterables as the size of their intersection divided by the size of their union. Values are materialized as Sets, so duplicates do not add weight and equality uses SameValueZero object identity. Two empty inputs have similarity 1. Each iterable is consumed once, from left to right. The combined number of yielded items is bounded even when duplicate values collapse in the Sets. Strings are accepted as iterables of Unicode code points. Weighted or multiset similarity is deliberately outside this contract.
+
+- Signature: `jaccardSimilarity()`
+- Import: `import { jaccardSimilarity } from "akashatools/collection"`
+- Granular import: `import jaccardSimilarity from "akashatools/collection/jaccardSimilarity"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — Similarity in the inclusive range 0..1.
+
+Throws:
+- `TypeError` — If either input is not iterable or options is not a plain object.
+- `RangeError` — If maximumItems is invalid or the combined iteration limit is exceeded.
+
 ### upsertBy
 
 Inserts or replaces a value by a derived identity, preserving immutability. Keys are compared with `Object.is`; numeric keys are never treated as indices. Sparse slots are treated as `undefined` items and returned arrays are dense.

@@ -1,4 +1,29 @@
 /**
+ * Computes Jaccard similarity for two finite iterables as the size of their
+ * intersection divided by the size of their union. Values are materialized as
+ * Sets, so duplicates do not add weight and equality uses SameValueZero object
+ * identity. Two empty inputs have similarity 1.
+ *
+ * Each iterable is consumed once, from left to right. The combined number of
+ * yielded items is bounded even when duplicate values collapse in the Sets.
+ * Strings are accepted as iterables of Unicode code points. Weighted or
+ * multiset similarity is deliberately outside this contract.
+ *
+ * @template L, R
+ * @param {Iterable<L>} left First finite iterable.
+ * @param {Iterable<R>} right Second finite iterable.
+ * @param {{maximumItems?: number}} [options] Plain options object with a non-negative safe-integer combined iteration limit.
+ * @returns {number} Similarity in the inclusive range 0..1.
+ * @throws {TypeError} If either input is not iterable or options is not a plain object.
+ * @throws {RangeError} If maximumItems is invalid or the combined iteration limit is exceeded.
+ * @example
+ * jaccardSimilarity(new Set(["a", "b"]), new Set(["b", "c"])); // 1 / 3
+ * @since 2.0.0
+ */
+export declare function jaccardSimilarity<L, R>(left: Iterable<L>, right: Iterable<R>, options?: {
+    maximumItems?: number;
+}): number;
+/**
  * Inserts or replaces a value by a derived identity, preserving immutability.
  * Keys are compared with `Object.is`; numeric keys are never treated as indices.
  * Sparse slots are treated as `undefined` items and returned arrays are dense.

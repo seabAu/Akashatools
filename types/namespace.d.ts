@@ -112,6 +112,9 @@ export declare const browser: Readonly<{
 }>;
 /** Frozen collection utilities for namespace-style discovery. */
 export declare const collection: Readonly<{
+    jaccardSimilarity<L, R>(left: Iterable<L>, right: Iterable<R>, options?: {
+        maximumItems?: number;
+    }): number;
     upsertBy<T, K>(values: readonly T[], nextValue: T, toKey?: (value: T) => K, { prepend }?: {
         prepend?: boolean;
     }): T[];
@@ -484,6 +487,7 @@ export declare const akasha: Readonly<{
     downloadBlob: typeof browserModule.downloadBlob;
     downloadTextFile: typeof browserModule.downloadTextFile;
     downloadJson: typeof browserModule.downloadJson;
+    jaccardSimilarity: typeof collectionModule.jaccardSimilarity;
     upsertBy: typeof collectionModule.upsertBy;
     excludeBy: typeof collectionModule.excludeBy;
     upsertById: <T extends {
@@ -675,6 +679,9 @@ export declare const akasha: Readonly<{
         }): void;
     }>;
     collection: Readonly<{
+        jaccardSimilarity<L, R>(left: Iterable<L>, right: Iterable<R>, options?: {
+            maximumItems?: number;
+        }): number;
         upsertBy<T, K>(values: readonly T[], nextValue: T, toKey?: (value: T) => K, { prepend }?: {
             prepend?: boolean;
         }): T[];

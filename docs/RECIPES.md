@@ -86,6 +86,20 @@ const result = await request("https://api.example.com/items", {
 The helper performs one attempt. Authentication, retry, envelopes, and UI error
 handling compose outside it.
 
+## Compare finite token sets without weighting duplicates
+
+```js
+import { jaccardSimilarity } from "akashatools/collection";
+
+const similarity = jaccardSimilarity(leftTokens, rightTokens, {
+  maximumItems: 20_000,
+});
+```
+
+Inputs may be Sets, arrays, strings, or other finite iterables. Values use
+SameValueZero identity, duplicates collapse, and two empty inputs score 1. The
+limit counts every yielded item across both inputs, including duplicates.
+
 ## Run bounded work and keep successful values
 
 ```js

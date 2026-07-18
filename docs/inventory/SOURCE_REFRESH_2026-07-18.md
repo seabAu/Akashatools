@@ -34,7 +34,7 @@ edited again after this dated review.
 | COMPOSR `crc32`, checksum manifests, and stream measurement | CRC-32 is a small portable integrity primitive. SHA-256 manifests and replayable stream measurement are useful but the current implementation is Node/archive-specific. | Candidate for a focused checksum/hash surface. Keep ZIP streaming and archive manifests in COMPOSR unless an independent archive API is designed. |
 | COMPOSR `safeArchivePath` / `validateArchivePaths` | Rejects absolute, traversal, platform-reserved, control-character, duplicate, and case-colliding archive member paths. This is a strong zip-slip prevention boundary independent of WARC/WACZ policy. | Adopt a bounded portable-relative-path validator only with literal option validation, Unicode normalization policy, deterministic collision rules, and tests. It must not imply that validating a name authorizes a filesystem write. |
 | COMPOSR `lineAt` and registry/index construction | Uses binary search over sorted line offsets; several changed registries repeatedly convert arrays to keyed maps. Mindspace/portfolio also retain `arrayToEnum`/descriptor-registry variants. | Add general `lowerBound`/`upperBound`/`binarySearch` and identity-preserving `keyBy` primitives rather than application-specific registries or unsafe value-to-object enums. |
-| COMPOSR lexical token overlap | Internal synthesis code computes Jaccard-style set similarity for bounded token sets. | A generic set-similarity helper is plausible, but defer until naming, iterable materialization bounds, and weighted/multiset distinctions are designed. It is not required to preserve COMPOSR behavior. |
+| COMPOSR lexical token overlap | Code-health analysis and semantic synthesis independently compute Jaccard-style similarity for token Sets. | Adopt bounded `jaccardSimilarity` under `collection`: consume finite iterables once, cap combined yielded work, collapse duplicates with SameValueZero Set identity, define two empty inputs as identical, and explicitly exclude weighted/multiset policy. |
 | COMPOSR `sourceHtmlToText` | Regexes a source-specific, already-sanitized HTML fragment into text and decodes a small entity subset. | Reject as a generic HTML utility. Correct browser/server HTML-to-text behavior requires a parser, sanitization boundary, entity completeness, and block/whitespace policy. |
 | COMPOSR ZIP/WARC/WACZ readers/writers | Implements bounded archive and web-preservation formats with Node compression/crypto dependencies. | Keep in COMPOSR's dedicated `web-archive` package. A general utility package should not expose partial archive-format support incidentally. |
 | COMPOSR virtual list and record cards | Framework-free browser components with focus, ARIA, measurement, and rendering policy. | Keep in COMPOSR UI. They are components, not atomic data/browser utilities. |
@@ -78,6 +78,16 @@ edited again after this dated review.
   rejected because collision/realm/ownership/type/uninstall hazards remain even
   behind a side-effect subpath. Never augment `Object.prototype`; descriptor
   regression proves that every modern import remains inert.
+- [x] Add bounded `jaccardSimilarity` after two independent COMPOSR packages
+  supplied live demand and resolved iterable, empty-set, identity, and
+  weighted/multiset boundaries.
+
+The remaining deferred families do not hide a universal missing atom: audio
+conversion and resampling belong in a media package; archive formats, templates,
+credentials, persistence, retry execution, UI components, profiling, and record
+schemas retain domain policy. HTML-to-text remains parser/sanitizer work rather
+than a regex utility. Existing path, JSON, HTTP, timing, and traversal atoms are
+the safe composition layer for those systems.
 
 Each adopted batch must update this ledger and the living checklist in the same
 commit, add strict JSDoc/types/package endpoints automatically, and pass the full

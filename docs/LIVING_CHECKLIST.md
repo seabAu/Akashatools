@@ -410,10 +410,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 174 current public declarations are complete, with parameter/return prose,
+  All 175 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  174 current public declarations by `npm run check:docs`.
+  175 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -423,7 +423,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 212 declaration files, including generated
+  byte-for-byte drift check across 213 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -500,8 +500,8 @@ Acceptance criteria:
 - [x] Add bundle fixtures for named root, category named/namespace, default
   flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
-  gzip bytes; the reopened discoverable default namespace temporarily uses the
-  100,000 raw/30,000 gzip expansion guardrail pending final recalibration.
+  gzip bytes; the stabilized discoverable default namespace uses 90,000 raw/
+  27,000 gzip guardrails around the measured 87,552 raw/26,336 gzip maximum.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -607,8 +607,11 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
   COMPOSR, and SPLICR after the 2026-07-16 snapshot. The dated 2026-07-18 ledger
   screens current dirty/untracked source and dispositions every new generic
   family without modifying a consumer.
-- [ ] Review rejected/deferred families for useful atomic variants and add
-  justified missing utilities in small, independently tested batches.
+- [x] Review rejected/deferred families for useful atomic variants and add
+  justified missing utilities in small, independently tested batches. The final
+  pass promoted repeated COMPOSR token overlap as bounded `jaccardSimilarity`;
+  media, archive, template, persistence, UI, retry-policy, profiling, and schema
+  families retain domain contracts rather than entering the universal core.
 - [x] Reopen the universal `function` category with receiver-preserving `once`
   and explicit-key `memoize`; cache exact outcomes, bound memory with LRU
   eviction, expose local controls, and make throw/rejection/reentrancy policy
@@ -770,12 +773,14 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
-| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 174 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 175 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Reject even an explicit opt-in built-in augmentation entry. | Non-enumerability and pre-install collision checks cannot solve future collisions, cross-realm gaps, duplicate-package ownership, ambient-type mismatch, or safe uninstall races; `deepQuery(value).has(...)` supplies local dot syntax while descriptor snapshots enforce inert modern imports. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
 | 2026-07-18 | Raise the temporary full-discovery guardrail to 100,000 raw/30,000 gzip after the Retry-After batch. | Strict support for all standard HTTP-date forms moved the complete namespace to 75,742 raw/22,873 gzip, 742 raw bytes over the prior expansion ceiling. Focused root/category/granular imports remain exactly 321/252 and side-effect-only remains zero; only the intentionally comprehensive namespace receives more headroom, and it must be recalibrated before RC. |
 | 2026-07-18 | Treat the second source refresh as a delta, not a bulk copy. | Current dirty and untracked consumer source is evidence for atomic contracts, but thread archives, TTS providers, UI components, storage, and application policy remain with their owning projects; the dated ledger records every new family and the reusable implementation queue. |
+| 2026-07-18 | Promote Jaccard similarity as the final deferred universal atom. | Two independent COMPOSR packages use the same token-Set formula; the shared helper caps combined iterable work, uses SameValueZero identity, treats empty/empty as 1, and excludes weighted or multiset policy. |
+| 2026-07-18 | Recalibrate the stabilized full-discovery bundle guardrail to 90,000 raw/27,000 gzip. | The final default-category measurement is 87,552/26,336, leaving a small explicit review margin while focused imports remain 321/252 and the side-effect-only fixture remains zero bytes. |
 
 ## Definition of done
 

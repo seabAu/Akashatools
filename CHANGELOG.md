@@ -15,6 +15,8 @@
   explicit exact-needle boolean, entry, value, parent, and all projections.
 - Added frozen `deepQuery(data).has(...)` dot-style syntax without modifying
   `Object.prototype`, `Array.prototype`, constructors, or import-time globals.
+- Added bounded iterable `jaccardSimilarity` after repeated COMPOSR token-set
+  implementations established a shared unweighted identity contract.
 - Rejected an opt-in built-in augmentation entry after collision, realm,
   ownership, ambient-type, and uninstall analysis; modern entrypoint imports now
   have a complete built-in-descriptor regression.
@@ -26,9 +28,9 @@
   Mongoose, React, layout, custom-ID, and product-schema adapters.
 - Reopened generated category/method subpaths and safe fluent deep-query syntax
   as explicit ergonomics work while retaining side-effect-free normal imports.
-- Kept focused imports at 321 raw/252 gzip bytes after the first data batch and
-  temporarily widened the full default-namespace guardrail for the explicitly
-  approved input/query expansion; final limits will be recalibrated before RC.
+- Kept focused imports at 321 raw/252 gzip bytes through the expanded 175-method
+  surface and recalibrated the stabilized full default-namespace guardrail to
+  90,000 raw/27,000 gzip around an 87,552/26,336 maximum measurement.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.

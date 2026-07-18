@@ -114,6 +114,7 @@ drop-in compatibility.
 | `isTypedArray` | validation | universal | no input mutation | `akashatools/validation/isTypedArray` | None |
 | `isValidDate` | date | universal | no input mutation | `akashatools/date/isValidDate` | None |
 | `isWithinInstantRange` | date | universal | no input mutation | `akashatools/date/isWithinInstantRange` | None |
+| `jaccardSimilarity` | collection | universal | no input mutation | `akashatools/collection/jaccardSimilarity` | None |
 | `kebabCase` | string | universal | no input mutation | `akashatools/string/kebabCase` | `String.toKebabCase` |
 | `keyBy` | array | universal | no input mutation | `akashatools/array/keyBy` | `AO.arrayToEnum` |
 | `localDateKey` | date | universal | no input mutation | `akashatools/date/localDateKey` | `Time.convertTimestampToYYYYMMDDDD`, `Time.formatTimestampDDMMYYYY` |

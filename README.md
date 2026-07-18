@@ -51,6 +51,7 @@ import { deepClone, setAtPath } from "akashatools/object";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { crc32, sha256Hex, sha256Json } from "akashatools/hash";
 import { debounce, memoize, once, throttle } from "akashatools/function";
+import { jaccardSimilarity } from "akashatools/collection";
 ```
 
 Generated method subpaths make a dependency maximally explicit while exporting
@@ -85,6 +86,18 @@ controlTypeForValue([{ id: 1 }]); // "object-array"
 fieldsFromData({ name: "Ada", active: false });
 // Frozen descriptors with text/checkbox input types and literal defaults.
 ```
+
+Set-style similarity remains generic and bounded:
+
+```js
+import { jaccardSimilarity } from "akashatools/collection";
+
+jaccardSimilarity(new Set(["search", "index"]), new Set(["index", "cache"]));
+// 1 / 3
+```
+
+Duplicates do not add weight, object values retain identity, and a combined
+iteration limit protects generator and other iterable inputs.
 
 Category namespaces are also available when that style is more readable:
 
