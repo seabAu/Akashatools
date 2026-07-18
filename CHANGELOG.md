@@ -30,6 +30,10 @@
   or focused tests, runtime logging/debuggers, dependency-free publish metadata,
   forbidden package lifecycle hooks, exact packaged roots, and package-lock
   identity.
+- Added a packaged-documentation integrity gate covering strict UTF-8 text,
+  final newlines, forbidden control text, local link existence and package
+  selection, and GitHub-style Markdown heading fragments while ignoring links
+  shown only as code examples.
 - Completed the reopened 2026-07-18 regression, adversarial refinement, and
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,

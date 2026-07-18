@@ -18,6 +18,7 @@ fallback for malformed source.
 npm run lint
 npm run format:check
 npm run check:hygiene
+npm run check:markdown
 npm test
 npm run test:browser:install
 npm run test:browser
@@ -39,6 +40,12 @@ focused or disabled tests, production console/debugger calls, runtime dependency
 fields, npm package lifecycle scripts, unexpected packaged roots, incomplete
 publish metadata, and package-lock root drift. The unified check runs it before
 the more expensive generated, bundle, package, and test gates.
+
+`npm run check:markdown` decodes every packaged Markdown document as strict
+UTF-8, requires a final newline, rejects forbidden control text, and verifies
+that local links stay inside the package, select shipped files, resolve to real
+files, and name existing GitHub-style heading fragments. Links displayed inside
+inline or fenced code examples are intentionally ignored.
 
 `npm run test:coverage` uses Node's built-in coverage support and includes only
 shipped `src/**/*.js` code. Tests, scripts, benchmarks, fixtures, generated

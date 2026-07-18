@@ -47,12 +47,13 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Gate | Current result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 311 JavaScript files pass |
+| Maintained syntax | 312 JavaScript files pass |
 | Release hygiene | 236 source and 28 test files clean; publish/lock metadata consistent |
+| Packaged documentation | 41 strict UTF-8 Markdown files; 45 local links and 4 heading fragments resolve |
 | Public documentation | 194 declarations pass |
 | Generated declarations | 236 files current |
 | API surface snapshot | 19 surfaces current |
-| Node contract tests | 217 passed, 0 failed on Node 22 and Node 24 |
+| Node contract tests | 219 passed, 0 failed on Node 22 and Node 24 |
 | Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
 | Node 22 source coverage | 98.25% lines / 89.74% branches / 97.23% functions |
 | Node 24 source coverage | 98.25% lines / 89.66% branches / 97.23% functions |
@@ -66,8 +67,9 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 
 The unified gate also verifies formatting, linting, JSDoc/TypeScript checking,
 editor completions, generated documentation and migration data, export-map
-resolution, canonical function identity, side-effect elimination, focused
-bundle equivalence, and representative source-consumer fixtures.
+resolution, packaged Markdown links and encoding, canonical function identity,
+side-effect elimination, focused bundle equivalence, and representative
+source-consumer fixtures.
 
 ## Scope conclusions
 

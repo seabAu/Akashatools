@@ -476,6 +476,10 @@ Acceptance criteria:
   production logging/debuggers; runtime dependency fields and npm
   package-lifecycle hooks remain empty; package, lock, engine, license, files, and
   repository metadata must agree.
+- [x] Validate every packaged Markdown document as strict UTF-8 with a final
+  newline and no forbidden control text; require every local link to remain
+  inside the selected package, resolve to a real shipped file, and name an
+  existing GitHub-style heading fragment when one is present.
 - [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
   are configured, but local multi-runtime evidence cannot prove hosted setup,
   checkout, dependency installation, or runner behavior.
@@ -946,6 +950,7 @@ Acceptance criteria:
 | 2026-07-18 | Recalibrate only the full-discovery namespace guardrail to 117,000 raw/35,250 gzip for the canonical vocabularies. | Keeping all three constant objects, one normalized-name map, and direct canonical built-in dispatch on the discoverable default namespace moves the largest fixture to 116,220/34,939, while focused root/category/granular imports remain 321/252 and side-effect-only output remains zero raw bytes. |
 | 2026-07-18 | Treat call-site syntax as migration-risk evidence, not runtime compatibility proof. | The refreshed scanner classifies all 1,981 parsed root reads, direct legacy bindings, result use, try containment, dynamic access, and malformed-file candidates. It can prove discarded-result absence and specific source defects, but only authorized app tests can establish runtime values, alias identity, rendering, and fallback intent. |
 | 2026-07-18 | Make residual release hygiene a deterministic local gate. | A passing feature suite cannot reveal skipped tests, unfinished markers, accidental production logging, lifecycle scripts, runtime dependencies, or manifest/lock drift. Run the cheap hygiene scan before costly generation, bundle, package, and test gates. |
+| 2026-07-18 | Treat packaged Markdown integrity as release behavior. | README and contract links are part of the npm artifact. Strict UTF-8 decoding plus target, package-selection, and heading-fragment checks prevent a green runtime suite from shipping unreadable or dead documentation while excluding link syntax shown only in code examples. |
 
 ## Definition of done
 
