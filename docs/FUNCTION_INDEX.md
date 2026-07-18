@@ -119,6 +119,7 @@ drop-in compatibility.
 | `longestStringLength` | string | universal | no input mutation | `akashatools/string/longestStringLength` | `String.getLongest` |
 | `lowerBound` | array | universal | no input mutation | `akashatools/array/lowerBound` | None |
 | `mapSettledWithConcurrency` | async | universal | no input mutation | `akashatools/async/mapSettledWithConcurrency` | None |
+| `memoize` | function | universal | no input mutation | `akashatools/function/memoize` | None |
 | `minutesToClockTime` | date | universal | no input mutation | `akashatools/date/minutesToClockTime` | None |
 | `moveItem` | array | universal | no input mutation | `akashatools/array/moveItem` | None |
 | `normalizeDataType` | data | universal | no input mutation | `akashatools/data/normalizeDataType` | `Val.getType` |
@@ -127,6 +128,7 @@ drop-in compatibility.
 | `normalizePortableRelativePath` | validation | universal | no input mutation | `akashatools/validation/normalizePortableRelativePath` | None |
 | `normalizePortableRelativePaths` | validation | universal | no input mutation | `akashatools/validation/normalizePortableRelativePaths` | None |
 | `omit` | object | universal | no input mutation | `akashatools/object/omit` | `AO.removeKey` |
+| `once` | function | universal | no input mutation | `akashatools/function/once` | None |
 | `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http/parseContentDispositionFilename` | None |
 | `parseJsonPointer` | object | universal | no input mutation | `akashatools/object/parseJsonPointer` | None |
 | `parsePath` | object | universal | no input mutation | `akashatools/object/parsePath` | None |

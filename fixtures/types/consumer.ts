@@ -2,10 +2,12 @@ import akasha, {
   array,
   chunk,
   data,
+  function as functionUtils,
   hash,
   http,
   input,
   isEmail,
+  once,
   request,
   validation,
 } from "akashatools";
@@ -14,6 +16,7 @@ import granularChunk from "akashatools/array/chunk";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { HttpError, request as categoryRequest } from "akashatools/http";
 import { crc32, sha256Hex, stableJsonId } from "akashatools/hash";
+import granularOnce from "akashatools/function/once";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
@@ -60,6 +63,10 @@ const checksum: number = crc32("content");
 const digest: Promise<string> = sha256Hex("content");
 const deterministicId: Promise<string> = stableJsonId("item", { id: 1 });
 const namespacedDigest: Promise<string> = hash.sha256Json({ id: 1 });
+const initializedOnce: () => { ready: boolean } = once(() => ({ ready: true }));
+const granularInitialized: () => string = granularOnce(() => "ready");
+const memoizedLength = functionUtils.memoize((value: string) => value.length, (value: string) => value);
+const cachedLength: number = memoizedLength("Akasha");
 
 // @ts-expect-error Node-only helpers are intentionally absent from the root.
 akasha.resolveContainedPath;
@@ -76,4 +83,5 @@ void [
   validEmail, rootPredicate, path, archivePath, archivePaths, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract,
   checksum, digest, deterministicId, namespacedDigest,
+  initializedOnce, granularInitialized, memoizedLength, cachedLength,
 ];

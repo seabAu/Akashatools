@@ -74,6 +74,7 @@
       "formatRelativeTime",
       "fromUnixSeconds",
       "fulfilledValues",
+      "function",
       "getAtJsonPointer",
       "getAtPath",
       "groupBy",
@@ -120,6 +121,7 @@
       "longestStringLength",
       "lowerBound",
       "mapSettledWithConcurrency",
+      "memoize",
       "minutesToClockTime",
       "moveItem",
       "normalizeDataType",
@@ -130,6 +132,7 @@
       "number",
       "object",
       "omit",
+      "once",
       "parseContentDispositionFilename",
       "parseJsonPointer",
       "parsePath",
@@ -279,6 +282,10 @@
       "fieldsFromData",
       "inputTypeForType",
       "inputTypeForValue"
+    ],
+    "./function": [
+      "memoize",
+      "once"
     ],
     "./node": [
       "globPaths",

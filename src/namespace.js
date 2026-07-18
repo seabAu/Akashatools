@@ -7,6 +7,7 @@ import * as dateModule from "./date/index.js";
 import * as httpModule from "./http/index.js";
 import * as hashModule from "./hash/index.js";
 import * as inputModule from "./input/index.js";
+import * as functionModule from "./function/index.js";
 import * as numberModule from "./number/index.js";
 import * as objectModule from "./object/index.js";
 import * as randomModule from "./random/index.js";
@@ -32,6 +33,8 @@ export const http = /* @__PURE__ */ Object.freeze({ ...httpModule });
 export const hash = /* @__PURE__ */ Object.freeze({ ...hashModule });
 /** Frozen form-input inference and descriptor utilities. */
 export const input = /* @__PURE__ */ Object.freeze({ ...inputModule });
+/** Frozen function-control utilities for namespace-style discovery. */
+export const functionUtils = /* @__PURE__ */ Object.freeze({ ...functionModule });
 /** Frozen numeric utilities for namespace-style discovery. */
 export const number = /* @__PURE__ */ Object.freeze({ ...numberModule });
 /** Frozen object utilities for namespace-style discovery. */
@@ -67,6 +70,7 @@ export const akasha = /* @__PURE__ */ Object.freeze({
   ...http,
   ...hash,
   ...input,
+  ...functionUtils,
   ...number,
   ...object,
   ...random,
@@ -82,6 +86,7 @@ export const akasha = /* @__PURE__ */ Object.freeze({
   http,
   hash,
   input,
+  function: functionUtils,
   number,
   object,
   random,

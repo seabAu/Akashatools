@@ -55,7 +55,7 @@ import granularChunk from "akashatools/array/chunk";
 | `sort` | implemented | Stable comparison and immutable ordering. |
 | `string` | implemented | Case, replacement, escaping, and serialization helpers. |
 | `validation` | implemented | Literal predicates, normalization, and contract checks. |
-| `function` | reserved | Function control such as once/debounce/throttle if adopted. |
+| `function` | implemented | Receiver-preserving once, memoization, and timer control with explicit outcome policy. |
 | `node` | implemented subpath | Node-only filesystem, path, and runtime operations; never flattened into the universal root. |
 
 `schema` and `debug` are explicitly not 2.0 categories. The reviewed schema

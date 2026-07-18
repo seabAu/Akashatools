@@ -103,6 +103,16 @@
       "import": "./src/input/*.js",
       "default": "./src/input/*.js"
     },
+    "./function": {
+      "types": "./types/function/index.d.ts",
+      "import": "./src/function/index.js",
+      "default": "./src/function/index.js"
+    },
+    "./function/*": {
+      "types": "./types/function/*.d.ts",
+      "import": "./src/function/*.js",
+      "default": "./src/function/*.js"
+    },
     "./node": {
       "types": "./types/node/index.d.ts",
       "node": "./src/node/index.js",

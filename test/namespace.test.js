@@ -5,6 +5,7 @@ import akasha, * as root from "akashatools";
 import * as arrayModule from "akashatools/array";
 import * as dataModule from "akashatools/data";
 import * as inputModule from "akashatools/input";
+import * as functionModule from "akashatools/function";
 import * as validationModule from "akashatools/validation";
 import { assertNamespaceIsCollisionFree } from "../src/namespace.js";
 
@@ -18,6 +19,7 @@ const categoryNames = [
   "http",
   "hash",
   "input",
+  "function",
   "number",
   "object",
   "random",
@@ -31,6 +33,7 @@ test("root API exposes named functions and category namespaces", () => {
   assert.equal(typeof root.date.formatDate, "function");
   assert.equal(typeof root.data.initializeLike, "function");
   assert.equal(typeof root.input.fieldsFromData, "function");
+  assert.equal(typeof root.function.once, "function");
   assert.equal(root.formatDate, root.date.formatDate);
 });
 
@@ -54,6 +57,7 @@ test("flat, categorized, named, and subpath functions retain identity", () => {
   assert.equal(akasha.isEmail, validationModule.isEmail);
   assert.equal(akasha.initializeLike, dataModule.initializeLike);
   assert.equal(akasha.fieldsFromData, inputModule.fieldsFromData);
+  assert.equal(akasha.once, functionModule.once);
 });
 
 test("every category utility is represented flat and as a named root export", () => {

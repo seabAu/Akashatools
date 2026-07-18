@@ -1104,6 +1104,43 @@ Throws:
 - `TypeError` — If value, options, labels, or property semantics are invalid.
 - `RangeError` — If the field count exceeds maximumFields.
 
+## function
+
+Runtime: Universal JavaScript on the supported runtime floor.
+
+Focused import: `akashatools/function`
+
+### once
+
+Creates a receiver-preserving wrapper that invokes a function at most once and replays its exact return value or thrown error. Reentrant calls made before the first invocation returns throw instead of observing a partially initialized result. Native Promise identity is preserved. By default, throws and rejected Promises are cached, which gives "at most once" literal meaning. Explicit retry options reset only after the matching failure; calls made while a returned Promise is pending still share it.
+
+- Signature: `once()`
+- Import: `import { once } from "akashatools/function"`
+- Granular import: `import once from "akashatools/function/once"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `(this: This, ...args: Args) => Result` — Wrapper returning or throwing the cached outcome.
+
+Throws:
+- `TypeError` — If callback or options are invalid.
+- `Error` — If the wrapper is synchronously reentered before its first invocation returns.
+
+### memoize
+
+Memoizes a receiver-preserving function through an explicit key selector and a bounded SameValueZero-keyed least-recently-used Map. Cache hits replay the exact value or native Promise. Pending Promises therefore coalesce while they remain cached; rejected Promises are removed after settlement by default. Synchronous throws are never cached. The selector receives the same dynamic receiver and arguments as the wrapped function, so receiver identity is included only when the selector chooses it. Same-key synchronous reentrancy throws; different keys may recurse. The returned function has non-enumerable `clear`, `delete`, `has`, and read-only `size` controls. Eviction and removal never cancel ongoing work.
+
+- Signature: `memoize()`
+- Import: `import { memoize } from "akashatools/function"`
+- Granular import: `import memoize from "akashatools/function/memoize"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `((this: This, ...args: Args) => Result) & MemoizedControls<Key>` — Memoized wrapper with cache controls.
+
+Throws:
+- `TypeError` — If callback, selector, or options are invalid.
+- `RangeError` — If maximumSize is not a positive safe integer.
+- `Error` — If callback synchronously reenters the wrapper with the same key.
+
 ## number
 
 Runtime: Universal JavaScript on the supported runtime floor.

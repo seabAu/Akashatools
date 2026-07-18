@@ -43,6 +43,7 @@ import { chunk as categoryChunk } from "akashatools/array";
 import methodChunk, { chunk as granularChunk } from "akashatools/array/chunk";
 import { defaultValueForType, initializeLike } from "akashatools/data";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
+import { memoize, once } from "akashatools/function";
 import { crc32, sha256Hex } from "akashatools/hash";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
 import granularHasDeep from "akashatools/object/hasDeep";
@@ -65,6 +66,10 @@ assert.deepEqual(findAllDeepValues({ one: { id: 1 } }, "id", { by: "key" }), [1]
 assert.equal(granularHasDeep({ id: 1 }, "id", { by: "key" }), true);
 assert.equal(crc32("123456789"), 0xcbf43926);
 assert.match(await sha256Hex("abc"), /^[a-f0-9]{64}$/u);
+const initialize = once(() => ({ ready: true }));
+assert.equal(initialize(), initialize());
+const cachedLength = memoize((value) => value.length, (value) => value);
+assert.equal(cachedLength("Akasha"), 6);
 assert.equal(normalizePortableRelativePath("reports/2026.json"), "reports/2026.json");
 assert.deepEqual(
   normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" }),
@@ -86,6 +91,7 @@ import { deepQuery } from "akashatools/object";
 import granularDeepQuery from "akashatools/object/deepQuery";
 import { HttpError } from "akashatools/http";
 import { crc32, sha256Hex } from "akashatools/hash";
+import { memoize, once } from "akashatools/function";
 import { normalizePortableRelativePath, normalizePortableRelativePaths } from "akashatools/validation";
 import type { JsonContract } from "akashatools/validation";
 
@@ -103,7 +109,10 @@ const checksum: number = crc32("content");
 const digest: Promise<string> = sha256Hex("content");
 const archivePath: string = normalizePortableRelativePath("reports/2026.json");
 const archivePaths: ReadonlyArray<string> = normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" });
-void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths];
+const initialize: () => { ready: boolean } = once(() => ({ ready: true }));
+const cachedLength = memoize((value: string) => value.length, (value: string) => value);
+const length: number = cachedLength("Akasha");
+void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths, initialize, cachedLength, length];
 `,
   );
   await writeFile(

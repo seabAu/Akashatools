@@ -12,6 +12,7 @@ const categories = [
   "http",
   "hash",
   "input",
+  "function",
   "number",
   "object",
   "random",

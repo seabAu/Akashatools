@@ -17,6 +17,7 @@ const expectations = [
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
   ["hash", "akasha.hash.", ["crc32", "sha256Hex", "sha256Json", "stableJsonId"]],
   ["input", "akasha.input.", ["controlTypeForValue", "fieldsFromData", "inputTypeForType"]],
+  ["function", "akasha.function.", ["memoize", "once"]],
   ["object", "akasha.object.", ["deepQuery", "findAllDeepValues", "hasDeep"]],
   [
     "flat",
@@ -28,7 +29,9 @@ const expectations = [
       "fieldsFromData",
       "initializeLike",
       "isEmail",
+      "memoize",
       "normalizePortableRelativePath",
+      "once",
       "request",
     ],
   ],

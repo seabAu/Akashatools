@@ -28,6 +28,17 @@ every settlement. A queued AbortSignal removes only that waiting operation;
 started work is not implicitly cancellable and must receive/observe a signal in
 its own closure when that behavior is required.
 
+`function.once` preserves the first receiver/arguments and exact synchronous or
+native-Promise outcome. Throws and rejections are cached by default; independent
+retry options reset only for the selected failure mode. Synchronous reentrancy
+fails visibly instead of returning a partially initialized value.
+
+`function.memoize` requires a caller-owned key selector, applies SameValueZero
+key identity and a positive bounded LRU cache, and preserves dynamic receivers.
+Synchronous throws are not cached. Pending native Promises coalesce while they
+remain cached; rejected Promises are evicted after settlement unless explicitly
+retained. Cache controls do not cancel ongoing work.
+
 The reviewed sources do not establish safe shared contracts for the following:
 
 - Mindspace debounce drops superseded async results, loses dynamic `this`, and
@@ -36,10 +47,7 @@ The reviewed sources do not establish safe shared contracts for the following:
   `Retry-After`, jitter, attempt numbering, and an elapsed budget;
 - generic timeout behavior must decide whether timing out only rejects a wrapper
   or actually aborts the underlying operation;
-- general memoization still needs argument-key equality, rejected-Promise
-  caching, receiver semantics, and non-Promise value policy beyond the adopted
-  explicit-loader single-flight contract;
-- once/throttle need receiver, argument, result, reentrancy, and cancellation
+- throttle still needs receiver, argument, result, reentrancy, and cancellation
   rules backed by real consumers.
 
 These remain deferred. Small primitives and caller composition are preferred to

@@ -15,6 +15,7 @@ const granularCategories = [
   "http",
   "hash",
   "input",
+  "function",
   "number",
   "object",
   "random",

@@ -14,6 +14,7 @@ export * from "./date/index.js";
 export * from "./http/index.js";
 export * from "./hash/index.js";
 export * from "./input/index.js";
+export * from "./function/index.js";
 export * from "./number/index.js";
 export * from "./object/index.js";
 export * from "./random/index.js";
@@ -33,6 +34,7 @@ export {
   http,
   hash,
   input,
+  functionUtils as function,
   number,
   object,
   random,

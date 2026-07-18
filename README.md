@@ -3,7 +3,7 @@
 Akashatools is a dependency-free collection of focused JavaScript utilities for
 arrays, objects, strings, numbers, dates, data introspection/initialization,
 validation, asynchronous workflows, collections, hashing, HTTP operations, and
-browser file downloads.
+browser file downloads, with explicit function-control primitives.
 
 Version 2 is an ES module package for Node.js 22.17+ and modern browsers. Functions
 are side-effect free unless their names explicitly describe an effect.
@@ -50,6 +50,7 @@ import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { deepClone, setAtPath } from "akashatools/object";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { crc32, sha256Hex, sha256Json } from "akashatools/hash";
+import { memoize, once } from "akashatools/function";
 ```
 
 Generated method subpaths make a dependency maximally explicit while exporting
@@ -108,6 +109,19 @@ deepQuery({ user: { id: 1 } }).has("id", { by: "key" }); // true
 
 The wrapper is syntactic sugar over the same functions. Normal imports never
 patch built-in or object prototypes.
+
+Function control keeps identity and failure policy explicit:
+
+```js
+import { memoize, once } from "akashatools/function";
+
+const initialize = once(createApplicationState);
+const loadById = memoize(loadRecord, (id) => id, { maximumSize: 500 });
+```
+
+`once` preserves the first exact outcome, including throws and native Promises,
+unless retry behavior is selected. `memoize` requires an explicit key selector,
+uses a bounded identity-safe LRU cache, and exposes local cache controls.
 
 Node-only functions use a separate entry point so browser/shared imports never
 load Node filesystem modules:

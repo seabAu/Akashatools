@@ -7,6 +7,7 @@ import * as dateModule from "./date/index.js";
 import * as httpModule from "./http/index.js";
 import * as hashModule from "./hash/index.js";
 import * as inputModule from "./input/index.js";
+import * as functionModule from "./function/index.js";
 import * as numberModule from "./number/index.js";
 import * as objectModule from "./object/index.js";
 import * as randomModule from "./random/index.js";
@@ -222,6 +223,11 @@ export declare const input: Readonly<{
         arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
     }>;
     fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: inputModule.FieldsFromDataOptions): readonly ReturnType<typeof inputModule.fieldDescriptorFor>[];
+}>;
+/** Frozen function-control utilities for namespace-style discovery. */
+export declare const functionUtils: Readonly<{
+    once<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, options?: functionModule.OnceOptions): (this: This, ...args: Args) => Result;
+    memoize<This, Args extends unknown[], Result, Key>(callback: (this: This, ...args: Args) => Result, toKey: (this: This, ...args: Args) => Key, options?: functionModule.MemoizeOptions): ((this: This, ...args: Args) => Result) & functionModule.MemoizedControls<Key>;
 }>;
 /** Frozen numeric utilities for namespace-style discovery. */
 export declare const number: Readonly<{
@@ -536,6 +542,8 @@ export declare const akasha: Readonly<{
     formatDateTime: typeof dateModule.formatDateTime;
     formatDuration: typeof dateModule.formatDuration;
     formatRelativeTime: typeof dateModule.formatRelativeTime;
+    once: typeof functionModule.once;
+    memoize: typeof functionModule.memoize;
     sha256Hex: typeof hashModule.sha256Hex;
     crc32: typeof hashModule.crc32;
     sha256Json: typeof hashModule.sha256Json;
@@ -769,6 +777,10 @@ export declare const akasha: Readonly<{
             arrayAnalysis: ReturnType<typeof dataModule.analyzeArrayTypes> | undefined;
         }>;
         fieldsFromData(value: Record<PropertyKey, unknown> | readonly unknown[], options?: inputModule.FieldsFromDataOptions): readonly ReturnType<typeof inputModule.fieldDescriptorFor>[];
+    }>;
+    function: Readonly<{
+        once<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, options?: functionModule.OnceOptions): (this: This, ...args: Args) => Result;
+        memoize<This, Args extends unknown[], Result, Key>(callback: (this: This, ...args: Args) => Result, toKey: (this: This, ...args: Args) => Key, options?: functionModule.MemoizeOptions): ((this: This, ...args: Args) => Result) & functionModule.MemoizedControls<Key>;
     }>;
     number: Readonly<{
         clamp(value: number, minimum: number, maximum: number): number;
