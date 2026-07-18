@@ -45,11 +45,12 @@ percentage. The release audit runs coverage after the unified check.
 
 ## Deterministic invariants
 
-`test/invariants.test.js` uses a fixed seed and reusable helpers from
+`test/invariants.test.js` uses fixed seeds and reusable helpers from
 `fixtures/test-support/contracts.js`. It exercises nested-path round trips,
-integer range construction, stable sorting, deduplication, and Unix date
-round-trips over 1,750 generated cases. Keep failures reproducible: record a new
-seed explicitly instead of depending on ambient randomness.
+integer range construction, stable sorting, deduplication, Unix date round-trips,
+strict ISO calendar boundaries, and world-spanning geospatial symmetry over more
+than 3,400 generated cases. Keep failures reproducible: record a new seed
+explicitly instead of depending on ambient randomness.
 
 ## Runtime boundaries
 
@@ -72,9 +73,9 @@ when those support windows change.
 
 The local 2026-07-18 expanded release matrix completed the full check and
 coverage gates on Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed
-all 199 tests, fresh JavaScript/TypeScript tarball installation, 191-API and
+all 207 tests, fresh JavaScript/TypeScript tarball installation, 191-API and
 231-declaration generation checks, bundle budgets, dependency audit, and package
-inspection. Node 22 measured 97.41% lines, 87.76% branches, and 95.90%
-functions; Node 24 measured 97.41% / 87.67% / 95.90%. Playwright separately
+inspection. Node 22 measured 98.09% lines, 88.96% branches, and 97.17%
+functions; Node 24 measured 98.09% / 88.87% / 97.17%. Playwright separately
 passed all 18 tests across Chromium, Firefox, and WebKit. The first hosted
 workflow result remains a distinct release gate.

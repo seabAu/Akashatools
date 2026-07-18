@@ -103,12 +103,12 @@ and accepting trailing junk would make that a different contract.
 
 | Strategy | Scale | Calls | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| one-shot `parseInputValue` | small | 1,000 | 21 | 0.458 | 0.360-0.933 | 0.154 | 1.0x |
-| reused compiled parser | small | 1,000 | 21 | 0.037 | 0.036-0.040 | 0.001 | 12.5x |
-| one-shot `parseInputValue` | medium | 100,000 | 11 | 41.566 | 37.133-45.355 | 2.428 | 1.0x |
-| reused compiled parser | medium | 100,000 | 11 | 4.428 | 3.853-4.740 | 0.288 | 9.4x |
-| one-shot `parseInputValue` | large | 1,000,000 | 5 | 416.033 | 367.792-472.167 | 34.577 | 1.0x |
-| reused compiled parser | large | 1,000,000 | 5 | 43.632 | 41.734-48.204 | 2.446 | 9.5x |
+| one-shot `parseInputValue` | small | 1,000 | 21 | 0.339 | 0.278-0.934 | 0.170 | 1.0x |
+| reused compiled parser | small | 1,000 | 21 | 0.035 | 0.035-0.113 | 0.016 | 9.6x |
+| one-shot `parseInputValue` | medium | 100,000 | 11 | 34.851 | 30.550-41.258 | 3.020 | 1.0x |
+| reused compiled parser | medium | 100,000 | 11 | 3.683 | 3.549-4.011 | 0.124 | 9.5x |
+| one-shot `parseInputValue` | large | 1,000,000 | 5 | 339.993 | 317.510-363.273 | 16.996 | 1.0x |
+| reused compiled parser | large | 1,000,000 | 5 | 41.583 | 37.905-42.120 | 1.537 | 8.2x |
 
 Decision: keep the one-shot wrapper for clarity and low-volume work, and use a
 compiled parser in repeated input handlers. Parser compilation improves the hot
@@ -124,12 +124,12 @@ its list bound and normalizes the shared target/options once.
 
 | Strategy | Scale | Positions | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| repeated atomic predicate | small | 100 | 21 | 0.357 | 0.270-0.636 | 0.091 | 1.0x |
-| bounded batched filter | small | 100 | 21 | 0.109 | 0.088-0.191 | 0.025 | 3.3x |
-| repeated atomic predicate | medium | 10,000 | 11 | 23.353 | 17.697-25.231 | 2.284 | 1.0x |
-| bounded batched filter | medium | 10,000 | 11 | 12.824 | 11.957-30.706 | 5.149 | 1.8x |
-| repeated atomic predicate | large | 100,000 | 5 | 204.992 | 197.142-225.432 | 9.523 | 1.0x |
-| bounded batched filter | large | 100,000 | 5 | 139.130 | 124.882-146.313 | 8.373 | 1.5x |
+| repeated atomic predicate | small | 100 | 21 | 0.364 | 0.213-0.846 | 0.144 | 1.0x |
+| bounded batched filter | small | 100 | 21 | 0.131 | 0.109-0.333 | 0.047 | 2.8x |
+| repeated atomic predicate | medium | 10,000 | 11 | 20.862 | 19.565-24.692 | 1.736 | 1.0x |
+| bounded batched filter | medium | 10,000 | 11 | 10.990 | 9.100-12.672 | 0.887 | 1.9x |
+| repeated atomic predicate | large | 100,000 | 5 | 182.694 | 168.629-221.820 | 19.938 | 1.0x |
+| bounded batched filter | large | 100,000 | 5 | 114.171 | 109.239-151.791 | 15.469 | 1.6x |
 
 Decision: retain both variants. The atomic predicate is the composable core;
 the bounded batch wrapper is the semantically distinct high-volume path and

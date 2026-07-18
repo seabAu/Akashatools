@@ -281,6 +281,7 @@ export function createGeoJsonFeatureCollection(features, options = {}) {
     }
     const properties = ownDataValue(value, "properties", "Feature");
     const id = optionalOwnDataValue(value, "id", "Feature");
+    if (id.found) assertGeoJsonId(id.value);
     const copied = createGeoJsonFeature(
       /** @type {"Point" | "MultiPoint" | "LineString" | "MultiLineString" | "Polygon" | "MultiPolygon"} */ (
         geometryType
@@ -560,10 +561,11 @@ function samePosition(left, right) {
 
 /** @param {unknown} properties @param {number} maximumPropertyBytes */
 function cloneGeoJsonProperties(properties, maximumPropertyBytes) {
-  if (properties === undefined) return {};
-  if (properties === null) return null;
-  if (!isPlainObject(properties)) throw new TypeError("GeoJSON properties must be a plain object or null.");
-  return cloneJson(properties, { maximumBytes: maximumPropertyBytes });
+  const normalized = properties === undefined ? {} : properties;
+  if (normalized !== null && !isPlainObject(normalized)) {
+    throw new TypeError("GeoJSON properties must be a plain object or null.");
+  }
+  return cloneJson(normalized, { maximumBytes: maximumPropertyBytes });
 }
 
 /** @param {unknown} id */

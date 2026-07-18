@@ -1324,7 +1324,7 @@ Throws:
 
 ### createInputValueParser
 
-Compiles a strict serialized-input converter for repeated form handlers. The descriptor and all option policy are normalized once; returned calls perform only value validation/conversion. Decimal numbers stay decimal, empty strings never become zero accidentally, JSON containers are bounded, and local date times require an explicit zone assumption. Correct runtime values that have no lossless serialized representation (such as File, Blob, FormData, Promise, WeakMap, WeakSet, Function, and Symbol) pass through unchanged. Attempting to reconstruct those types from unrelated text throws instead of inventing a value.
+Compiles a strict serialized-input converter for repeated form handlers. The descriptor and all option policy are normalized once; returned calls perform only value validation/conversion. Decimal numbers stay decimal, empty strings never become zero accidentally, JSON containers are bounded, and local date times require an explicit zone assumption. Host-local offset gaps are invalid, and repeated times require an explicit earlier/later disambiguation. Correct runtime values that have no lossless serialized representation (such as File, Blob, FormData, Promise, WeakMap, WeakSet, Function, and Symbol) pass through unchanged. Attempting to reconstruct those types from unrelated text throws instead of inventing a value.
 
 - Signature: `createInputValueParser()`
 - Import: `import { createInputValueParser } from "akashatools/input"`

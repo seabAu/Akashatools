@@ -129,6 +129,12 @@ test("GeoJSON helpers reject malformed geometry and bound work", () => {
   );
   assert.throws(() => createGeoJsonFeature("Point", [0, 0], { properties: new Date() }), /properties/);
   assert.throws(() => createGeoJsonFeature("Point", [0, 0], { id: Number.NaN }), /id/);
+  assert.deepEqual(createGeoJsonFeature("Point", [0, 0], { maximumPropertyBytes: 2 }).properties, {});
+  assert.throws(() => createGeoJsonFeature("Point", [0, 0], { maximumPropertyBytes: 1 }), /maximumBytes/);
+  assert.throws(
+    () => createGeoJsonFeature("Point", [0, 0], { properties: null, maximumPropertyBytes: 3 }),
+    /maximumBytes/,
+  );
 });
 
 test("feature collections validate and rebuild feature data", () => {
@@ -143,7 +149,18 @@ test("feature collections validate and rebuild feature data", () => {
   assert.throws(() => createGeoJsonFeatureCollection([source], { maximumFeatures: 0 }), /maximumFeatures/);
   assert.throws(() => createGeoJsonFeatureCollection([source, source], { maximumPropertyBytes: 30 }), /maximumBytes/);
   assert.throws(
+    () => createGeoJsonFeatureCollection([{ ...source, properties: null }], { maximumPropertyBytes: 3 }),
+    /maximumBytes/,
+  );
+  assert.throws(
     () => createGeoJsonFeatureCollection([{ type: "Feature", geometry: null, properties: null }]),
     /geometry/,
+  );
+  assert.throws(
+    () =>
+      createGeoJsonFeatureCollection([
+        { type: "Feature", geometry: { type: "Point", coordinates: [0, 0] }, properties: null, id: undefined },
+      ]),
+    /id/,
   );
 });

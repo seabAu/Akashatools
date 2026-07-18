@@ -1,7 +1,18 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { fromUnixSeconds, getAtPath, range, setAtPath, sortBy, toUnixSeconds, unique } from "akashatools";
+import {
+  createInputValueParser,
+  fromUnixSeconds,
+  getAtPath,
+  haversineDistance,
+  normalizeGeoPosition,
+  range,
+  setAtPath,
+  sortBy,
+  toUnixSeconds,
+  unique,
+} from "akashatools";
 import { assertDoesNotMutate, assertInvalidCallsThrow } from "../fixtures/test-support/contracts.js";
 
 const random = createDeterministicRandom(0xa5a5_2026);
@@ -73,6 +84,41 @@ test("randomized whole-second dates round-trip through strict Unix seconds", () 
   }
 });
 
+test("generated ISO calendar boundaries parse without native date normalization", () => {
+  const parseTimestamp = createInputValueParser(Date, { dateOutput: "timestamp" });
+  for (let year = 1996; year <= 2032; year += 1) {
+    for (let month = 1; month <= 12; month += 1) {
+      const finalDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
+      for (const day of [1, finalDay]) {
+        const source = `${year}-${padTwo(month)}-${padTwo(day)}T23:59:59.999Z`;
+        assert.equal(parseTimestamp(source), Date.UTC(year, month - 1, day, 23, 59, 59, 999));
+      }
+      const invalid = `${year}-${padTwo(month)}-${padTwo(finalDay + 1)}T12:00:00Z`;
+      assert.throws(() => parseTimestamp(invalid), /valid ISO/);
+    }
+  }
+});
+
+test("generated geospatial distances remain symmetric across world boundaries", () => {
+  const geoRandom = createDeterministicRandom(0x6e6f_7274);
+  for (let iteration = 0; iteration < 400; iteration += 1) {
+    const left = [geoRandom() * 360 - 180, geoRandom() * 180 - 90];
+    const right = [geoRandom() * 360 - 180, geoRandom() * 180 - 90];
+    const forward = haversineDistance(left, right);
+    const reverse = haversineDistance(right, left);
+    assert.ok(Math.abs(forward - reverse) <= Math.max(1, forward) * Number.EPSILON * 8);
+    assert.equal(haversineDistance(left, left), 0);
+    assert.deepEqual(normalizeGeoPosition({ longitude: left[0], latitude: left[1] }), left);
+  }
+
+  const acrossAntimeridian = haversineDistance([179.9, 0], [-179.9, 0]);
+  assert.ok(acrossAntimeridian > 22_000 && acrossAntimeridian < 23_000);
+  assert.ok(
+    Math.abs(haversineDistance([0, 0], [0, 1]) / 1_000 - haversineDistance([0, 0], [0, 1], { unit: "kilometers" })) <
+      1e-9,
+  );
+});
+
 function createDeterministicRandom(seed) {
   let state = seed >>> 0;
   return () => {
@@ -83,4 +129,8 @@ function createDeterministicRandom(seed) {
 
 function randomInteger(minimum, maximum) {
   return Math.floor(random() * (maximum - minimum + 1)) + minimum;
+}
+
+function padTwo(value) {
+  return String(value).padStart(2, "0");
 }

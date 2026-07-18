@@ -159,6 +159,43 @@ test("inputValueFromControl extracts semantic control values before parsing", ()
   assert.throws(() => inputValueFromControl(/** @type {any} */ ({ type: "text", value: 1 })), /value must/);
 });
 
+test("inputValueFromControl rejects malformed controls and skips absent values", () => {
+  let parserCalls = 0;
+  const parser = (value) => {
+    parserCalls += 1;
+    return value;
+  };
+  assert.equal(inputValueFromControl(/** @type {any} */ ({ type: "radio", checked: false }), parser), undefined);
+  assert.equal(
+    inputValueFromControl(/** @type {any} */ ({ type: "file", files: [], multiple: false }), parser),
+    undefined,
+  );
+  assert.equal(inputValueFromControl(/** @type {any} */ ({ type: "file", files: null }), parser), undefined);
+  assert.equal(parserCalls, 0);
+
+  assert.throws(() => inputValueFromControl(null), /control/);
+  assert.throws(() => inputValueFromControl(/** @type {any} */ ({}), /** @type {any} */ (1)), /parser/);
+  assert.throws(() => inputValueFromControl(/** @type {any} */ ({}), undefined, /** @type {any} */ ([])), /options/);
+  assert.throws(() => inputValueFromControl(/** @type {any} */ ({}), undefined, { maximumItems: -1 }), /maximumItems/);
+  assert.throws(() => inputValueFromControl(/** @type {any} */ ({ type: "checkbox" })), /checked/);
+  assert.throws(() => inputValueFromControl(/** @type {any} */ ({ type: "file" })), /files/);
+  assert.throws(
+    () => inputValueFromControl(/** @type {any} */ ({ type: "file", files: { length: -1 } })),
+    /array-like/,
+  );
+  assert.throws(
+    () => inputValueFromControl(/** @type {any} */ ({ multiple: true, selectedOptions: { length: -1 } })),
+    /array-like/,
+  );
+  assert.throws(
+    () =>
+      inputValueFromControl(/** @type {any} */ ({ multiple: true, selectedOptions: [{ value: "one" }] }), undefined, {
+        maximumItems: 0,
+      }),
+    /maximumItems/,
+  );
+});
+
 test("media-query helpers are late-bound and injectable", () => {
   const queries = [];
   const environment = {
@@ -173,6 +210,9 @@ test("media-query helpers are late-bound and injectable", () => {
   assert.throws(() => matchesMediaQuery("", environment), /nonblank/);
   assert.throws(() => prefersColorScheme(/** @type {any} */ ("auto"), environment), /scheme/);
   assert.throws(() => matchesMediaQuery("(color)", { matchMedia: /** @type {any} */ (() => ({})) }), /boolean matches/);
+  assert.throws(() => matchesMediaQuery("(color)"), /requires a browser-like/);
+  assert.throws(() => matchesMediaQuery("x".repeat(10_001), environment), /10000/);
+  assert.throws(() => matchesMediaQuery("(color)", /** @type {any} */ ([])), /plain object/);
 });
 
 test("JSON storage helpers use explicit storage and strict bounded data", () => {
@@ -208,4 +248,42 @@ test("JSON storage helpers use explicit storage and strict bounded data", () => 
   assert.throws(() => readJsonStorage(storage, "broken"), /valid JSON/);
   values.set("deep", `${"[".repeat(101)}0${"]".repeat(101)}`);
   assert.throws(() => readJsonStorage(storage, "deep"), /maximumDepth/);
+});
+
+test("JSON storage validates adapters and preserves operational errors", () => {
+  assert.throws(() => readJsonStorage(/** @type {any} */ ({}), "key"), /getItem/);
+  assert.throws(() => writeJsonStorage(/** @type {any} */ ({}), "key", null), /setItem/);
+  assert.throws(() => readJsonStorage({ getItem: () => null }, /** @type {any} */ (1)), /key/);
+  assert.throws(() => readJsonStorage({ getItem: () => null }, "x".repeat(10_001)), /10000/);
+  assert.throws(() => readJsonStorage({ getItem: () => null }, "key", { maximumBytes: -1 }), /maximumBytes/);
+  assert.throws(() => readJsonStorage(/** @type {any} */ ({ getItem: () => 1 }), "key"), /string or null/);
+  assert.throws(() => readJsonStorage({ getItem: () => '"é"' }, "key", { maximumBytes: 3 }), /maximumBytes/);
+
+  const readFailure = new Error("storage read failed");
+  assert.throws(
+    () =>
+      readJsonStorage(
+        {
+          getItem: () => {
+            throw readFailure;
+          },
+        },
+        "key",
+      ),
+    (error) => error === readFailure,
+  );
+  const writeFailure = new Error("storage write failed");
+  assert.throws(
+    () =>
+      writeJsonStorage(
+        {
+          setItem: () => {
+            throw writeFailure;
+          },
+        },
+        "key",
+        null,
+      ),
+    (error) => error === writeFailure,
+  );
 });

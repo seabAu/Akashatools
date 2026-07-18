@@ -114,6 +114,10 @@ parseInputValue("2026-07-18T12:30", Date, {
 });
 ```
 
+Text bounds and empty-value policy apply consistently across parser families.
+Host-local clock gaps are rejected, and repeated clocks default to rejection
+unless `dateDisambiguation: "earlier"` or `"later"` is selected explicitly.
+
 Browser control extraction remains a separate adapter, so repeated handlers can
 reuse the compiled parser:
 

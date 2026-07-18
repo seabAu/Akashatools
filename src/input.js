@@ -33,6 +33,7 @@ import { typeOf } from "./validation.js";
  * @property {number} [maximumItems=100000] Greatest direct item count for parsed containers and binary arrays.
  * @property {"date" | "timestamp" | "string"} [dateOutput="date"] Representation returned for Date data.
  * @property {"reject" | "utc" | "local"} [dateAssumption="reject"] Zone policy for a date-time string without an offset.
+ * @property {"reject" | "earlier" | "later"} [dateDisambiguation="reject"] Selection policy when a host-local date-time occurs twice during an offset transition.
  * @property {string} [regexpFlags=""] Flags used when constructing a RegExp from text.
  * @property {string | URL} [baseUrl] Explicit base for relative URL input.
  */
@@ -252,7 +253,8 @@ export function fieldsFromData(value, options = {}) {
  * descriptor and all option policy are normalized once; returned calls perform
  * only value validation/conversion. Decimal numbers stay decimal, empty strings
  * never become zero accidentally, JSON containers are bounded, and local date
- * times require an explicit zone assumption.
+ * times require an explicit zone assumption. Host-local offset gaps are invalid,
+ * and repeated times require an explicit earlier/later disambiguation.
  *
  * Correct runtime values that have no lossless serialized representation (such
  * as File, Blob, FormData, Promise, WeakMap, WeakSet, Function, and Symbol) pass
@@ -277,11 +279,11 @@ export function createInputValueParser(descriptor, options = {}) {
     throw new TypeError("Custom constructors cannot be reconstructed from serialized input.");
   }
 
-  if (isTextDescriptor(key, type)) return (value) => parseStringValue(value);
+  if (isTextDescriptor(key, type)) return (value) => parseStringValue(value, parserOptions);
   if (key === "time") return (value) => parseTemporalText(value, "time", parserOptions);
   if (key === "month") return (value) => parseTemporalText(value, "month", parserOptions);
   if (key === "week") return (value) => parseTemporalText(value, "week", parserOptions);
-  if (key === "radio") return (value) => parseStringValue(value);
+  if (key === "radio") return (value) => parseStringValue(value, parserOptions);
 
   switch (type) {
     case "boolean":
@@ -422,6 +424,10 @@ function normalizeInputValueParserOptions(options) {
   if (dateAssumption !== "reject" && dateAssumption !== "utc" && dateAssumption !== "local") {
     throw new TypeError('dateAssumption must be "reject", "utc", or "local".');
   }
+  const dateDisambiguation = options.dateDisambiguation ?? "reject";
+  if (dateDisambiguation !== "reject" && dateDisambiguation !== "earlier" && dateDisambiguation !== "later") {
+    throw new TypeError('dateDisambiguation must be "reject", "earlier", or "later".');
+  }
   const regexpFlags = options.regexpFlags ?? "";
   if (typeof regexpFlags !== "string") throw new TypeError("regexpFlags must be a string.");
   try {
@@ -444,6 +450,7 @@ function normalizeInputValueParserOptions(options) {
     maximumItems,
     dateOutput,
     dateAssumption,
+    dateDisambiguation,
     regexpFlags,
     baseUrl,
   };
@@ -462,10 +469,12 @@ function isTextDescriptor(key, type) {
   return type === "string" || textDescriptorKeys.has(key);
 }
 
-/** @param {unknown} value */
-function parseStringValue(value) {
+/** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
+function parseStringValue(value, options) {
   if (typeof value !== "string") throw new TypeError("value must be a string.");
-  return value;
+  const source = boundedSource(value, options);
+  if (source !== "" || options.empty === undefined) return source;
+  return resolveEmpty(source, options).value;
 }
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
@@ -550,9 +559,8 @@ function parseDateValue(value, options) {
   const source = scalarSource(value, options);
   const empty = resolveEmpty(source, options);
   if (empty.handled) return empty.value;
-  const validationAssumption =
-    options.dateOutput === "string" && options.dateAssumption === "reject" ? "utc" : options.dateAssumption;
-  const date = dateFromInputText(source, validationAssumption);
+  const validationAssumption = options.dateOutput === "string" ? "utc" : options.dateAssumption;
+  const date = dateFromInputText(source, validationAssumption, options.dateDisambiguation);
   return options.dateOutput === "string" ? source : formatParsedDate(date, options.dateOutput);
 }
 
@@ -563,8 +571,12 @@ function formatParsedDate(date, output) {
   return date;
 }
 
-/** @param {string} source @param {"reject" | "utc" | "local"} assumption */
-function dateFromInputText(source, assumption) {
+/**
+ * @param {string} source
+ * @param {"reject" | "utc" | "local"} assumption
+ * @param {"reject" | "earlier" | "later"} disambiguation
+ */
+function dateFromInputText(source, assumption, disambiguation) {
   const dateOnly = source.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (dateOnly) return dateFromParts(dateOnly.slice(1).map(Number), "utc");
 
@@ -575,19 +587,36 @@ function dateFromInputText(source, assumption) {
     }
     const parts = local.slice(1, 7).map((part) => Number(part ?? 0));
     parts.push(Number((local[7] ?? "").padEnd(3, "0")));
-    return dateFromParts(parts, assumption);
+    return dateFromParts(parts, assumption, disambiguation);
   }
 
-  if (!/^\d{4}-\d{2}-\d{2}T.*(?:Z|[+-]\d{2}:\d{2})$/.test(source)) {
+  const zoned = source.match(
+    /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?(Z|[+-](\d{2}):(\d{2}))$/,
+  );
+  if (!zoned) {
     throw new TypeError("Date input must be ISO date or date-time text.");
+  }
+  const parts = zoned.slice(1, 7).map((part) => Number(part ?? 0));
+  parts.push(Number((zoned[7] ?? "").padEnd(3, "0")));
+  try {
+    dateFromParts(parts, "utc");
+  } catch (error) {
+    throw new TypeError("Date input is not a valid ISO calendar value.", { cause: error });
+  }
+  if (zoned[8] !== "Z" && (Number(zoned[9]) > 23 || Number(zoned[10]) > 59)) {
+    throw new TypeError("Date input is not a valid ISO offset value.");
   }
   const date = new Date(source);
   if (!Number.isFinite(date.getTime())) throw new TypeError("Date input must be valid ISO text.");
   return date;
 }
 
-/** @param {number[]} parts @param {"utc" | "local"} assumption */
-function dateFromParts(parts, assumption) {
+/**
+ * @param {number[]} parts
+ * @param {"utc" | "local"} assumption
+ * @param {"reject" | "earlier" | "later"} [disambiguation="reject"]
+ */
+function dateFromParts(parts, assumption, disambiguation = "reject") {
   const [year, month, day, hour = 0, minute = 0, second = 0, millisecond = 0] = parts;
   if (month < 1 || month > 12 || day < 1 || day > 31 || hour > 23 || minute > 59 || second > 59) {
     throw new TypeError("Date input contains an invalid calendar or clock component.");
@@ -619,8 +648,46 @@ function dateFromParts(parts, assumption) {
     ) {
       throw new TypeError("Date input is not a valid local calendar value.");
     }
+    const candidates = localDateCandidates(date, parts);
+    if (candidates.length > 1) {
+      if (disambiguation === "reject") {
+        throw new TypeError('Host-local date-time input is ambiguous; use dateDisambiguation "earlier" or "later".');
+      }
+      const selected = disambiguation === "earlier" ? candidates[0] : candidates[candidates.length - 1];
+      return new Date(/** @type {number} */ (selected));
+    }
   }
   return date;
+}
+
+/** @param {Date} date @param {number[]} parts */
+function localDateCandidates(date, parts) {
+  const timestamp = date.getTime();
+  const currentOffset = date.getTimezoneOffset();
+  const offsets = new Set([currentOffset]);
+  for (const hours of [-48, -36, -24, -12, 12, 24, 36, 48]) {
+    offsets.add(new Date(timestamp + hours * 3_600_000).getTimezoneOffset());
+  }
+  const candidates = new Set([timestamp]);
+  for (const offset of offsets) {
+    const alternative = timestamp + (offset - currentOffset) * 60_000;
+    if (alternative !== timestamp && hasLocalDateParts(new Date(alternative), parts)) candidates.add(alternative);
+  }
+  return [...candidates].sort((left, right) => left - right);
+}
+
+/** @param {Date} date @param {number[]} parts */
+function hasLocalDateParts(date, parts) {
+  const [year, month, day, hour = 0, minute = 0, second = 0, millisecond = 0] = parts;
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day &&
+    date.getHours() === hour &&
+    date.getMinutes() === minute &&
+    date.getSeconds() === second &&
+    date.getMilliseconds() === millisecond
+  );
 }
 
 /**
@@ -704,13 +771,22 @@ function parseRegExpValue(value, options) {
     const expression = /** @type {RegExp} */ (value);
     return new RegExp(expression.source, expression.flags);
   }
-  return new RegExp(scalarSource(value, options), options.regexpFlags);
+  const source = scalarSource(value, options);
+  const empty = resolveEmpty(source, options);
+  if (empty.handled) return empty.value;
+  try {
+    return new RegExp(source, options.regexpFlags);
+  } catch (error) {
+    throw new TypeError("RegExp input must contain a valid expression.", { cause: error });
+  }
 }
 
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseUrlValue(value, options) {
   if (typeOf(value) === "url") return value;
   const source = scalarSource(value, options);
+  const empty = resolveEmpty(source, options);
+  if (empty.handled) return empty.value;
   try {
     return options.baseUrl === undefined ? new URL(source) : new URL(source, options.baseUrl);
   } catch (error) {
@@ -721,7 +797,9 @@ function parseUrlValue(value, options) {
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseUrlSearchParamsValue(value, options) {
   if (typeOf(value) === "urlsearchparams") return value;
-  return new URLSearchParams(scalarSource(value, options));
+  const source = scalarSource(value, options);
+  const empty = resolveEmpty(source, options);
+  return empty.handled ? empty.value : new URLSearchParams(source);
 }
 
 /**
@@ -778,7 +856,11 @@ function normalizeTypedArrayItem(value, type) {
   }
   if (typeof value !== "number" || !Number.isFinite(value))
     throw new TypeError("Typed-array items must be finite numbers.");
-  if (type === "float32array" || type === "float64array") return value;
+  if (type === "float32array") {
+    if (!Number.isFinite(Math.fround(value))) throw new RangeError(`${type} item is outside its representable range.`);
+    return value;
+  }
+  if (type === "float64array") return value;
   if (!Number.isInteger(value)) throw new TypeError("Integer typed-array items must be integers.");
   const [minimum, maximum] = typedArrayRange(type);
   if (value < minimum || value > maximum) throw new RangeError(`${type} item is outside its representable range.`);
@@ -798,7 +880,9 @@ function typedArrayRange(type) {
 /** @param {unknown} value @param {ReturnType<typeof normalizeInputValueParserOptions>} options */
 function parseErrorValue(value, options) {
   if (typeOf(value) === "error") return value;
-  return new Error(scalarSource(value, options));
+  const source = scalarSource(value, options);
+  const empty = resolveEmpty(source, options);
+  return empty.handled ? empty.value : new Error(source);
 }
 
 /** @param {unknown} value @param {string} type */

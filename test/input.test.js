@@ -221,6 +221,14 @@ test("compiled input parsers preserve scalar meaning without loose coercion", ()
   assert.throws(() => createInputValueParser(class Model {}), /Custom constructors/);
 });
 
+test("text parsers enforce bounds and explicit empty policy without trimming output", () => {
+  assert.equal(parseInputValue("  Ada  ", String, { trim: true }), "  Ada  ");
+  assert.equal(parseInputValue("", String, { empty: "null" }), null);
+  assert.equal(parseInputValue("", "text", { empty: "undefined" }), undefined);
+  assert.throws(() => parseInputValue("", String, { empty: "throw" }), /Empty input/);
+  assert.throws(() => parseInputValue("toolong", String, { maximumLength: 6 }), /maximumLength/);
+});
+
 test("date and native temporal input parsing makes ambiguity explicit", () => {
   assert.equal(parseInputValue("2026-07-18", Date, { dateOutput: "timestamp" }), Date.UTC(2026, 6, 18));
   assert.equal(parseInputValue("2026-07-18T12:30:15.250Z", Date, { dateOutput: "string" }), "2026-07-18T12:30:15.250Z");
@@ -238,8 +246,55 @@ test("date and native temporal input parsing makes ambiguity explicit", () => {
 
   assert.throws(() => parseInputValue("2026-07-18T12:30", Date), /dateAssumption/);
   assert.throws(() => parseInputValue("2025-02-29", Date), /valid UTC/);
+  assert.throws(() => parseInputValue("2025-02-29T12:00:00Z", Date), /valid ISO/);
+  assert.throws(() => parseInputValue("2026-04-31T12:00:00-04:00", Date), /valid ISO/);
   assert.throws(() => parseInputValue("24:00", "time"), /Time input/);
   assert.throws(() => parseInputValue("2021-W53", "week"), /Week input/);
+});
+
+test("host-local date parsing rejects gaps and makes repeated-hour selection explicit", { concurrency: false }, () => {
+  const originalTimeZone = process.env.TZ;
+  process.env.TZ = "America/New_York";
+  try {
+    assert.throws(() => parseInputValue("2026-03-08T02:30", Date, { dateAssumption: "local" }), /valid local calendar/);
+    assert.throws(() => parseInputValue("2026-11-01T01:30", Date, { dateAssumption: "local" }), /ambiguous/);
+    assert.equal(
+      parseInputValue("2026-11-01T01:30", Date, {
+        dateAssumption: "local",
+        dateDisambiguation: "earlier",
+        dateOutput: "timestamp",
+      }),
+      Date.UTC(2026, 10, 1, 5, 30),
+    );
+    assert.equal(
+      parseInputValue("2026-11-01T01:30", Date, {
+        dateAssumption: "local",
+        dateDisambiguation: "later",
+        dateOutput: "timestamp",
+      }),
+      Date.UTC(2026, 10, 1, 6, 30),
+    );
+    assert.equal(
+      parseInputValue("2026-11-01T01:30", Date, { dateAssumption: "local", dateOutput: "string" }),
+      "2026-11-01T01:30",
+    );
+
+    process.env.TZ = "Australia/Lord_Howe";
+    const lordHoweEarlier = parseInputValue("2026-04-05T01:45", Date, {
+      dateAssumption: "local",
+      dateDisambiguation: "earlier",
+      dateOutput: "timestamp",
+    });
+    const lordHoweLater = parseInputValue("2026-04-05T01:45", Date, {
+      dateAssumption: "local",
+      dateDisambiguation: "later",
+      dateOutput: "timestamp",
+    });
+    assert.equal(lordHoweLater - lordHoweEarlier, 30 * 60_000);
+  } finally {
+    if (originalTimeZone === undefined) delete process.env.TZ;
+    else process.env.TZ = originalTimeZone;
+  }
 });
 
 test("structured input parsers cover JSON containers and platform value types", () => {
@@ -264,6 +319,35 @@ test("structured input parsers cover JSON containers and platform value types", 
   assert.equal(parseInputValue("problem", Error).message, "problem");
 });
 
+test("input parsing covers sentinel, binary-view, and typed-array datatype families", () => {
+  assert.equal(Number.isNaN(parseInputValue("NaN", "nan")), true);
+  assert.equal(parseInputValue("null", "null"), null);
+  assert.equal(parseInputValue("undefined", "undefined"), undefined);
+  assert.deepEqual(parseInputValue('{"items":[1,false]}', "data"), { items: [1, false] });
+
+  const view = parseInputValue("[0,127,255]", DataView);
+  assert.equal(view instanceof DataView, true);
+  assert.deepEqual([view.getUint8(0), view.getUint8(1), view.getUint8(2)], [0, 127, 255]);
+  const shared = parseInputValue("[1,2,3]", SharedArrayBuffer);
+  assert.equal(shared instanceof SharedArrayBuffer, true);
+  assert.deepEqual([...new Uint8Array(shared)], [1, 2, 3]);
+
+  assert.deepEqual(
+    [...parseInputValue('["-9223372036854775808","9223372036854775807"]', BigInt64Array)],
+    [-(2n ** 63n), 2n ** 63n - 1n],
+  );
+  assert.deepEqual([...parseInputValue('["0","18446744073709551615"]', BigUint64Array)], [0n, 2n ** 64n - 1n]);
+  assert.deepEqual([...parseInputValue("[-128,127]", Int8Array)], [-128, 127]);
+  assert.deepEqual([...parseInputValue("[-32768,32767]", Int16Array)], [-32_768, 32_767]);
+  assert.deepEqual([...parseInputValue("[-2147483648,2147483647]", Int32Array)], [-2_147_483_648, 2_147_483_647]);
+  assert.deepEqual([...parseInputValue("[0,255]", Uint8Array)], [0, 255]);
+  assert.deepEqual([...parseInputValue("[0,255]", Uint8ClampedArray)], [0, 255]);
+  assert.deepEqual([...parseInputValue("[0,65535]", Uint16Array)], [0, 65_535]);
+  assert.deepEqual([...parseInputValue("[0,4294967295]", Uint32Array)], [0, 4_294_967_295]);
+  assert.deepEqual([...parseInputValue("[-1.5,1.5]", Float32Array)], [-1.5, 1.5]);
+  assert.deepEqual([...parseInputValue("[-1.5,1.5]", Float64Array)], [-1.5, 1.5]);
+});
+
 test("structured parsing rejects lossy conversion, active data, and excess work", () => {
   assert.throws(() => parseInputValue("{}", Array), /must contain an array/);
   assert.throws(() => parseInputValue("[[1]]", Map), /two-item/);
@@ -271,6 +355,7 @@ test("structured parsing rejects lossy conversion, active data, and excess work"
   assert.throws(() => parseInputValue("[-1]", Uint8ClampedArray), /representable range/);
   assert.throws(() => parseInputValue("[1.5]", Int16Array), /must be integers/);
   assert.throws(() => parseInputValue('["18446744073709551616"]', BigUint64Array), /representable range/);
+  assert.throws(() => parseInputValue("[3.4028236e38]", Float32Array), /representable range/);
   assert.throws(() => parseInputValue("[1,2]", Array, { maximumItems: 1 }), /maximumArrayLength/);
   assert.throws(() => parseInputValue("12345", Number, { maximumLength: 4 }), /maximumLength/);
 
@@ -279,15 +364,35 @@ test("structured parsing rejects lossy conversion, active data, and excess work"
   assert.throws(() => parseInputValue(active, Object), /accessors/);
 });
 
+test("structured scalar parsers apply empty policy and normalize constructor failures", () => {
+  assert.throws(() => parseInputValue("", URL, { baseUrl: "https://example.com/root" }), /Empty input/);
+  assert.throws(() => parseInputValue("", URLSearchParams), /Empty input/);
+  assert.throws(() => parseInputValue("", RegExp), /Empty input/);
+  assert.throws(() => parseInputValue("", Error), /Empty input/);
+  assert.equal(parseInputValue("", URLSearchParams, { empty: "null" }), null);
+  assert.throws(
+    () => parseInputValue("[", RegExp),
+    (error) => error instanceof TypeError && error.cause instanceof SyntaxError,
+  );
+});
+
 test("non-serializable datatypes pass through only with the correct runtime brand", async () => {
   const promise = Promise.resolve(1);
   const weakMap = new WeakMap();
+  const weakSet = new WeakSet();
   const symbol = Symbol("id");
   const callback = () => 1;
+  const blob = new Blob(["data"]);
+  const file = new File(["data"], "data.txt");
+  const formData = new FormData();
   assert.equal(parseInputValue(promise, Promise), promise);
   assert.equal(parseInputValue(weakMap, WeakMap), weakMap);
+  assert.equal(parseInputValue(weakSet, WeakSet), weakSet);
   assert.equal(parseInputValue(symbol, Symbol), symbol);
   assert.equal(parseInputValue(callback, Function), callback);
+  assert.equal(parseInputValue(blob, Blob), blob);
+  assert.equal(parseInputValue(file, File), file);
+  assert.equal(parseInputValue(formData, FormData), formData);
   assert.equal(await parseInputValue(promise, Promise), 1);
   assert.throws(() => parseInputValue("callback", Function), /serialized reconstruction/);
   assert.throws(() => parseInputValue("id", Symbol), /serialized reconstruction/);
@@ -298,6 +403,7 @@ test("input parser options are validated once by the compiled factory", () => {
   assert.throws(() => createInputValueParser(Number, { maximumLength: -1 }), /maximumLength/);
   assert.throws(() => createInputValueParser(Date, { dateOutput: "seconds" }), /dateOutput/);
   assert.throws(() => createInputValueParser(Date, { dateAssumption: "guess" }), /dateAssumption/);
+  assert.throws(() => createInputValueParser(Date, { dateDisambiguation: "compatible" }), /dateDisambiguation/);
   assert.throws(() => createInputValueParser(RegExp, { regexpFlags: "ii" }), /regexpFlags/);
   assert.throws(() => createInputValueParser(URL, { baseUrl: "/relative" }), /baseUrl/);
 });

@@ -74,14 +74,14 @@ case. No package entry mutates built-in constructors or prototypes.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; all 199 current contracts pass on the
+- [x] Add dependency-free runtime tests; all 207 current contracts pass on the
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 521 files at approximately 367 kB packed and 1.37 MB unpacked.
+  selects 521 files at approximately 369 kB packed and 1.38 MB unpacked.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
-  111,079 raw/32,793 gzip bytes for the complete discoverable namespace.
+  112,770 raw/33,244 gzip bytes for the complete discoverable namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -464,8 +464,8 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The stabilized surface measures
-  97.41% lines / 87.76% branches / 95.90% functions on Node 22.18.0 and
-  97.41% / 87.67% / 95.90% on Node 24.18.0. Branch accounting varies slightly
+  98.09% lines / 88.96% branches / 97.17% functions on Node 22.18.0 and
+  98.09% / 88.87% / 97.17% on Node 24.18.0. Branch accounting varies slightly
   by runtime; see `docs/TESTING.md`.
 - [x] Run the complete release gates locally on supported Node 22.18.0 and
   Node 24.18.0, and run all 18 Chromium/Firefox/WebKit browser contracts.
@@ -500,7 +500,7 @@ Acceptance criteria:
   flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
   gzip bytes; the stabilized discoverable default namespace uses 114,000 raw/
-  34,000 gzip guardrails around the measured 111,079 raw/32,793 gzip maximum.
+  34,000 gzip guardrails around the measured 112,770 raw/33,244 gzip maximum.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -549,7 +549,7 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 103,804-107,310 raw and 30,176-31,119 gzip bytes;
+  imports. Focused sets save 105,495-109,001 raw and 30,637-31,569 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
@@ -698,6 +698,34 @@ Acceptance criteria:
 - Universal imports remain inert in Node and do not touch `window`, Storage,
   built-in prototypes, React, Mapbox, or the DOM.
 
+### 9.7 Adversarial regression refinement
+
+- [x] Probe every reconstructible parser datatype family, including sentinel,
+  buffer/view, signed/unsigned integer, Float32/64, BigInt-array, and branded
+  pass-through values.
+- [x] Enforce text length and explicit empty policy across parser families;
+  prevent empty relative URLs from silently becoming their configured base.
+- [x] Validate zoned ISO calendar components before native Date construction and
+  reject host-local clock gaps or ambiguous repeated clocks by default.
+- [x] Add explicit `dateDisambiguation: "earlier" | "later"` overrides and verify
+  one-hour and 30-minute offset transitions in New York and Lord Howe.
+- [x] Reject Float32 overflow, normalize RegExp construction errors, and enforce
+  GeoJSON property-byte budgets for `{}` and `null` as well as object values.
+- [x] Add deterministic ISO and world-spanning geo sweeps plus browser adapter,
+  media-query, and Storage error-boundary contracts.
+- [x] Repeat Node 22/24, coverage, package-install, bundle, benchmark, and
+  Chromium/Firefox/WebKit gates without widening focused or default budgets.
+
+Acceptance criteria:
+
+- No parser branch may bypass its documented length, empty, finite-range, or
+  calendar policy merely because a native constructor accepts/coerces it.
+- Converting a host-local wall clock into an instant never selects one repeated
+  occurrence unless the caller chooses `earlier` or `later` explicitly.
+- GeoJSON property work bounds include canonical empty and null properties.
+- Generated boundary sweeps remain deterministic and elapsed benchmark time is
+  reporting evidence, never a pass/fail threshold.
+
 ## Phase 10 — release gates
 
 ### Alpha exit
@@ -706,14 +734,14 @@ Acceptance criteria:
   `(excepted modules)` source set.
 - [x] Stabilize default/named/category namespace architecture.
 - [x] Reconfirm the expanded universal core, generated declarations, and
-  contracts on both supported Node audit runtimes after Phase 9.6.
+  contracts on both supported Node audit runtimes after Phase 9.7.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [x] Re-freeze canonical names and option shapes after Phase 9.6 through the
+- [x] Re-freeze canonical names and option shapes after Phase 9.7 through the
   reviewed API snapshot, generated surfaces, types, and explicit decisions.
 - [x] Refresh security review and performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
@@ -722,7 +750,7 @@ Acceptance criteria:
 
 - [x] Refresh API docs, migration guide, declarations, and package smoke tests.
 - [x] Resolve the newly reopened geo, input parsing, browser adapter, and storage
-  contract questions recorded in Phase 9.6 and its source ledger.
+  contract questions recorded in Phases 9.6-9.7 and their source ledger.
 - [x] Reconfirm clean install and the local supported-runtime matrix on Node
   22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
   remains a separate open gate under Phase 7.
@@ -828,6 +856,9 @@ Acceptance criteria:
 | 2026-07-18 | Recover only late-bound browser atoms from the excepted DOM and LocalDB modules. | Semantic form-control extraction composes with a pure parser; media queries run only when called; and strict JSON storage requires an explicit Storage object. Import-time `window`, React renderers, HTML interpolation, product database layouts, and quota guesses remain excluded. |
 | 2026-07-18 | Retain one-shot/compiled parsing and atomic/batched geo variants. | Equal-output benchmarks show that precompiled parsing removes repeated policy setup and batched geo filtering normalizes shared invariants once. The broader variants have distinct high-volume contracts rather than duplicating their atomic cores. |
 | 2026-07-18 | Recalibrate only the expanded full-discovery bundle guardrail to 114,000 raw/34,000 gzip. | GeoJSON validation and the deliberately complete datatype parser move the largest default namespace to 111,079/32,793. Focused root/category/granular imports remain exactly 321/252, side-effect-only remains zero raw bytes, and real-consumer focused sets save 103,804-107,310 raw bytes. |
+| 2026-07-18 | Reject native-constructor normalization when it violates the declared parser contract. | Adversarial probes proved that native Date and Float32 construction can accept finite input while silently changing its meaning, and that empty URLs can resolve to a base. Text/empty bounds, strict zoned calendars, Float32 finite output, normalized RegExp errors, and exact GeoJSON property budgets now run before or around native construction. |
+| 2026-07-18 | Make repeated host-local times an explicit selection policy. | `dateAssumption: "local"` chooses a host zone but not one of two overlap instants. `dateDisambiguation` therefore defaults to `reject` and permits literal `earlier`/`later` overrides; New York and Lord Howe cases cover one-hour and 30-minute transitions. |
+| 2026-07-18 | Keep the 114,000 raw/34,000 gzip full-discovery guardrail after refinement. | The stricter parser and transition policy move the largest default namespace to 112,770/33,244 while focused imports remain 321/252 and side-effect-only remains zero. The remaining margin is intentionally not widened; focused consumer sets save 105,495-109,001 raw bytes. |
 
 ## Definition of done
 

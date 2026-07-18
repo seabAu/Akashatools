@@ -49,6 +49,10 @@ export type InputValueParserOptions = {
      */
     dateAssumption?: "reject" | "utc" | "local";
     /**
+     * Selection policy when a host-local date-time occurs twice during an offset transition.
+     */
+    dateDisambiguation?: "reject" | "earlier" | "later";
+    /**
      * Flags used when constructing a RegExp from text.
      */
     regexpFlags?: string;
@@ -160,7 +164,8 @@ export declare function fieldsFromData(value: Record<PropertyKey, unknown> | rea
  * descriptor and all option policy are normalized once; returned calls perform
  * only value validation/conversion. Decimal numbers stay decimal, empty strings
  * never become zero accidentally, JSON containers are bounded, and local date
- * times require an explicit zone assumption.
+ * times require an explicit zone assumption. Host-local offset gaps are invalid,
+ * and repeated times require an explicit earlier/later disambiguation.
  *
  * Correct runtime values that have no lossless serialized representation (such
  * as File, Blob, FormData, Promise, WeakMap, WeakSet, Function, and Symbol) pass

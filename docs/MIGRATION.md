@@ -178,8 +178,10 @@ writeJsonStorage(localStorage, "settings", { ...settings, theme });
 
 Legacy latitude-first arrays must opt in with the documented `arrayOrder`
 option. Date/time parsing similarly requires explicit policy whenever converting
-a local wall-clock value into an instant. These choices prevent silent axis
-swaps and host-timezone-dependent results.
+a local wall-clock value into an instant. Offset gaps are rejected, and repeated
+host-local times require `dateDisambiguation: "earlier"` or `"later"`; rejection
+is the default. These choices prevent silent axis swaps and host-timezone-dependent
+results.
 
 ## Legacy path lifetime
 

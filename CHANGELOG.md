@@ -9,14 +9,17 @@
 - Replaced the unfinished Schema `formatInputValue` intent with strict
   `parseInputValue` and reusable `createInputValueParser` APIs covering scalar,
   date/time, JSON, collection, URL, RegExp, binary, typed-array, and branded
-  runtime values without decimal loss or implicit local-time assumptions.
+  runtime values without decimal loss or implicit local-time assumptions;
+  follow-up boundary sweeps enforce text/empty limits, strict zoned calendars,
+  Float32 range, normalized RegExp errors, and explicit local-time overlap policy.
 - Added browser-only `inputValueFromControl`, late-bound `matchesMediaQuery` and
   `prefersColorScheme`, and explicit-Storage `readJsonStorage`/
   `writeJsonStorage`; normal imports remain free of browser-global reads.
 - Added equal-output high-volume benchmarks for one-shot versus compiled input
   parsing and repeated atomic versus bounded batched geo filtering; elapsed time
   remains reporting evidence rather than a test pass/fail condition.
-- Completed the reopened 2026-07-18 regression and utility-surface expansion;
+- Completed the reopened 2026-07-18 regression, adversarial refinement, and
+  utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,
   coverage, declaration, and API totals replace the historical snapshot.
 - Added the universal `data` category with atomic type-descriptor normalization,
@@ -44,7 +47,7 @@
   as explicit ergonomics work while retaining side-effect-free normal imports.
 - Kept focused imports at 321 raw/252 gzip bytes through the expanded 191-method
   surface and recalibrated only the full default-namespace guardrail to
-  114,000 raw/34,000 gzip around a 111,079/32,793 maximum measurement.
+  114,000 raw/34,000 gzip around a refined 112,770/33,244 maximum measurement.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.

@@ -3,9 +3,8 @@
 > Status on 2026-07-18: the `(excepted modules)` redesign and complete local
 > release-candidate evidence are finished. All local gates pass on both supported
 > Node runtimes and all three browser engines. Hosted workflow evidence, bounded
-> real-app migrations, and
-> every push, tag, automation, and publication action remain external approval
-> gates.
+> real-app migrations, and every push, tag, automation, and publication action
+> remain external approval gates.
 
 ## Current local candidate snapshot
 
@@ -21,8 +20,8 @@
 | Reviewed API surfaces | 19 |
 | License | ISC (`LICENSE`, 741 bytes) |
 | Dry-run files | 521 |
-| Dry-run packed size | Approximately 367 kB |
-| Dry-run unpacked size | Approximately 1.37 MB |
+| Dry-run packed size | Approximately 369 kB |
+| Dry-run unpacked size | Approximately 1.38 MB |
 
 `npm pack --dry-run --json` verifies the selected package content without
 creating or publishing an artifact. The package includes runtime sources,
@@ -50,15 +49,15 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Public documentation | 191 declarations pass |
 | Generated declarations | 231 files current |
 | API surface snapshot | 19 surfaces current |
-| Node contract tests | 199 passed, 0 failed on Node 22 and Node 24 |
+| Node contract tests | 207 passed, 0 failed on Node 22 and Node 24 |
 | Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
-| Node 22 source coverage | 97.41% lines / 87.76% branches / 95.90% functions |
-| Node 24 source coverage | 97.41% lines / 87.67% branches / 95.90% functions |
+| Node 22 source coverage | 98.09% lines / 88.96% branches / 97.17% functions |
+| Node 24 source coverage | 98.09% lines / 88.87% branches / 97.17% functions |
 | Browser tests | 18 passed across Chromium, Firefox, and WebKit |
 | Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
-| Default namespace maximum | 111,079 raw / 32,793 gzip; budget 114,000 / 34,000 |
+| Default namespace maximum | 112,770 raw / 33,244 gzip; budget 114,000 / 34,000 |
 | Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |
-| Consumer bundle evidence | Focused fixtures save 103,804-107,310 raw and 30,176-31,119 gzip bytes |
+| Consumer bundle evidence | Focused fixtures save 105,495-109,001 raw and 30,637-31,569 gzip bytes |
 | Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven strict APIs |
 | Modern import inertness | Root, all 18 category surfaces, and all 191 granular methods preserve complete Array/Object/Date descriptors |
 
@@ -79,7 +78,9 @@ profiling, application schema, retry-execution, and application-record behavior
 remains with its owning domain.
 
 Meaningfully distinct variants remain only where their documented return shape
-or policy differs. The atomic type/default/input and deep-query functions
+or policy differs. Adversarial follow-up verifies exact text/JSON/GeoJSON work
+bounds, strict zoned calendars, Float32 range, and explicit repeated-local-time
+selection. The atomic type/default/input and deep-query functions
 compose broader behavior without truthiness loss, hidden mutation, accessor
 invocation, prototype pollution, or unbounded recursion. Dot-style discovery is
 available through frozen namespaces and `deepQuery(value)`, while no normal or
