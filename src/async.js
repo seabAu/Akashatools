@@ -140,6 +140,74 @@ export function createKeyedSingleFlight(loader, options = {}) {
 }
 
 /**
+ * Creates a reusable scheduler for independent operations submitted over time.
+ * At most `maximumConcurrency` callbacks run together and at most
+ * `maximumPending` callbacks wait in memory. A queued caller may abort without
+ * affecting work that has already started; pass the same signal into the
+ * operation itself when running work is also cancellable.
+ *
+ * @param {number} maximumConcurrency Positive safe-integer global concurrency ceiling.
+ * @param {{maximumPending?: number}} [options] Non-negative safe-integer bound for callbacks waiting to start; defaults to 1,000.
+ * @returns {Readonly<{run: <T>(operation: () => T | PromiseLike<T>, options?: {signal?: AbortSignal}) => Promise<T>, readonly activeCount: number, readonly pendingCount: number}>} Frozen controller whose run method preserves each callback result or error and whose counts reflect live scheduler state.
+ * @throws {TypeError} If options, an operation, or an AbortSignal is invalid.
+ * @throws {RangeError} If a concurrency/queue limit is invalid; a run Promise also rejects with RangeError when the pending queue is full.
+ * @example
+ * const uploads = createConcurrencyLimiter(3, { maximumPending: 50 });
+ * await uploads.run(() => uploadFile(file), { signal });
+ * @since 2.0.0
+ */
+export function createConcurrencyLimiter(maximumConcurrency, options = {}) {
+  const maximumPending = normalizeConcurrencyOptions(maximumConcurrency, maximumConcurrency, options);
+  const key = Symbol("unkeyed concurrency");
+  const core = createLimiterCore(maximumConcurrency, maximumConcurrency, maximumPending);
+
+  return Object.freeze({
+    run: (operation, runOptions) => core.run(key, operation, runOptions),
+    get activeCount() {
+      return core.activeCount;
+    },
+    get pendingCount() {
+      return core.pendingCount;
+    },
+  });
+}
+
+/**
+ * Creates a scheduler with both global and SameValueZero per-key concurrency
+ * ceilings. Work is selected in arrival order among entries whose key currently
+ * has capacity, so a saturated key cannot block unrelated keys. Queued aborts
+ * remove their listener and queue entry; callbacks already running settle
+ * normally and always release capacity after fulfillment or rejection.
+ *
+ * @param {number} maximumConcurrency Positive safe-integer global concurrency ceiling.
+ * @param {number} maximumConcurrencyPerKey Positive safe-integer ceiling for one Map-identity key, not greater than the global ceiling.
+ * @param {{maximumPending?: number}} [options] Non-negative safe-integer total bound for callbacks waiting across all keys; defaults to 1,000.
+ * @returns {Readonly<{run: <K, T>(key: K, operation: () => T | PromiseLike<T>, options?: {signal?: AbortSignal}) => Promise<T>, activeFor: (key: unknown) => number, pendingFor: (key: unknown) => number, readonly activeCount: number, readonly pendingCount: number}>} Frozen keyed controller with live global/per-key counts and Promise-preserving execution.
+ * @throws {TypeError} If options, an operation, or an AbortSignal is invalid.
+ * @throws {RangeError} If a concurrency/queue limit is invalid; a run Promise also rejects with RangeError when the pending queue is full.
+ * @example
+ * const requests = createKeyedConcurrencyLimiter(8, 2);
+ * await requests.run(new URL(url).origin, () => fetch(url));
+ * @since 2.0.0
+ */
+export function createKeyedConcurrencyLimiter(maximumConcurrency, maximumConcurrencyPerKey, options = {}) {
+  const maximumPending = normalizeConcurrencyOptions(maximumConcurrency, maximumConcurrencyPerKey, options);
+  const core = createLimiterCore(maximumConcurrency, maximumConcurrencyPerKey, maximumPending);
+
+  return Object.freeze({
+    run: core.run,
+    activeFor: core.activeFor,
+    pendingFor: core.pendingFor,
+    get activeCount() {
+      return core.activeCount;
+    },
+    get pendingCount() {
+      return core.pendingCount;
+    },
+  });
+}
+
+/**
  * Maps values with a fixed concurrency ceiling. Results retain input order and
  * individual failures are represented like `Promise.allSettled`.
  *
@@ -213,16 +281,7 @@ export function delay(milliseconds, { signal } = {}) {
   if (!Number.isFinite(milliseconds) || milliseconds < 0 || milliseconds > 2_147_483_647) {
     throw new RangeError("milliseconds must be between 0 and 2147483647.");
   }
-  if (
-    signal !== undefined &&
-    (signal === null ||
-      typeof signal !== "object" ||
-      typeof signal.aborted !== "boolean" ||
-      typeof signal.addEventListener !== "function" ||
-      typeof signal.removeEventListener !== "function")
-  ) {
-    throw new TypeError("signal must be an AbortSignal.");
-  }
+  assertAbortSignal(signal);
   if (signal?.aborted) return Promise.reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
   const abortSignal = signal;
 
@@ -267,4 +326,171 @@ function readClock(now) {
   const value = now();
   if (!Number.isFinite(value)) throw new RangeError("now must return a finite number.");
   return value;
+}
+
+/**
+ * @param {number} maximumConcurrency
+ * @param {number} maximumConcurrencyPerKey
+ * @param {unknown} options
+ */
+function normalizeConcurrencyOptions(maximumConcurrency, maximumConcurrencyPerKey, options) {
+  if (!Number.isSafeInteger(maximumConcurrency) || maximumConcurrency < 1) {
+    throw new RangeError("maximumConcurrency must be a positive safe integer.");
+  }
+  if (
+    !Number.isSafeInteger(maximumConcurrencyPerKey) ||
+    maximumConcurrencyPerKey < 1 ||
+    maximumConcurrencyPerKey > maximumConcurrency
+  ) {
+    throw new RangeError(
+      "maximumConcurrencyPerKey must be a positive safe integer no greater than maximumConcurrency.",
+    );
+  }
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const maximumPending = /** @type {{maximumPending?: unknown}} */ (options).maximumPending ?? 1_000;
+  if (typeof maximumPending !== "number" || !Number.isSafeInteger(maximumPending) || maximumPending < 0) {
+    throw new RangeError("maximumPending must be a non-negative safe integer.");
+  }
+  return maximumPending;
+}
+
+/**
+ * @param {number} maximumConcurrency
+ * @param {number} maximumConcurrencyPerKey
+ * @param {number} maximumPending
+ */
+function createLimiterCore(maximumConcurrency, maximumConcurrencyPerKey, maximumPending) {
+  /**
+   * @typedef {{key: unknown, operation: () => any, resolve: (value: any) => void, reject: (reason?: any) => void, signal?: AbortSignal, onAbort?: () => void}} QueueEntry
+   */
+  /** @type {QueueEntry[]} */
+  const queue = [];
+  const activeByKey = new Map();
+  const pendingByKey = new Map();
+  let activeCount = 0;
+
+  /** @param {Map<any, number>} counts @param {any} key @param {number} change */
+  const changeCount = (counts, key, change) => {
+    const next = (counts.get(key) ?? 0) + change;
+    if (next === 0) counts.delete(key);
+    else counts.set(key, next);
+  };
+
+  /** @param {unknown} key */
+  const canStart = (key) => activeCount < maximumConcurrency && (activeByKey.get(key) ?? 0) < maximumConcurrencyPerKey;
+
+  /** @param {QueueEntry} entry */
+  const start = (entry) => {
+    if (entry.onAbort) entry.signal?.removeEventListener("abort", entry.onAbort);
+    activeCount += 1;
+    changeCount(activeByKey, entry.key, 1);
+
+    const release = () => {
+      activeCount -= 1;
+      changeCount(activeByKey, entry.key, -1);
+      dispatch();
+    };
+
+    Promise.resolve()
+      .then(entry.operation)
+      .then(
+        (value) => {
+          release();
+          entry.resolve(value);
+        },
+        (reason) => {
+          release();
+          entry.reject(reason);
+        },
+      );
+  };
+
+  const dispatch = () => {
+    while (activeCount < maximumConcurrency) {
+      const index = queue.findIndex((entry) => canStart(entry.key));
+      if (index === -1) return;
+      const [entry] = queue.splice(index, 1);
+      changeCount(pendingByKey, entry.key, -1);
+      start(entry);
+    }
+  };
+
+  /**
+   * @template T
+   * @param {unknown} key
+   * @param {() => T | PromiseLike<T>} operation
+   * @param {{signal?: AbortSignal}} [options]
+   * @returns {Promise<T>}
+   */
+  const run = (key, operation, options = {}) => {
+    if (typeof operation !== "function") throw new TypeError("operation must be a function.");
+    if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+    const { signal } = options;
+    assertAbortSignal(signal);
+    if (signal?.aborted) return Promise.reject(abortReason(signal));
+
+    if (!canStart(key) && queue.length >= maximumPending) {
+      return Promise.reject(new RangeError("The concurrency limiter pending queue is full."));
+    }
+
+    return new Promise((resolve, reject) => {
+      /** @type {QueueEntry} */
+      const entry = { key, operation, resolve, reject, signal };
+      if (canStart(key)) {
+        start(entry);
+        return;
+      }
+
+      const onAbort = () => {
+        const index = queue.indexOf(entry);
+        if (index === -1) return;
+        queue.splice(index, 1);
+        changeCount(pendingByKey, key, -1);
+        signal?.removeEventListener("abort", onAbort);
+        reject(abortReason(signal));
+        dispatch();
+      };
+      entry.onAbort = onAbort;
+      queue.push(entry);
+      changeCount(pendingByKey, key, 1);
+      signal?.addEventListener("abort", onAbort, { once: true });
+    });
+  };
+
+  /** @param {unknown} key */
+  const activeFor = (key) => activeByKey.get(key) ?? 0;
+  /** @param {unknown} key */
+  const pendingFor = (key) => pendingByKey.get(key) ?? 0;
+
+  return {
+    run,
+    activeFor,
+    pendingFor,
+    get activeCount() {
+      return activeCount;
+    },
+    get pendingCount() {
+      return queue.length;
+    },
+  };
+}
+
+/** @param {unknown} signal */
+function assertAbortSignal(signal) {
+  const candidate = /** @type {any} */ (signal);
+  if (
+    signal !== undefined &&
+    (signal === null ||
+      typeof signal !== "object" ||
+      typeof candidate.aborted !== "boolean" ||
+      typeof candidate.addEventListener !== "function" ||
+      typeof candidate.removeEventListener !== "function")
+  ) {
+    throw new TypeError("signal must be an AbortSignal.");
+  }
+}
+
+/** @param {AbortSignal | undefined} signal */
+function abortReason(signal) {
+  return signal?.reason ?? new DOMException("Aborted", "AbortError");
 }

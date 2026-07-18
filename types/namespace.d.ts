@@ -56,6 +56,26 @@ export declare const asyncUtils: Readonly<{
         invalidateAll: () => number;
         readonly size: number;
     }>;
+    createConcurrencyLimiter(maximumConcurrency: number, options?: {
+        maximumPending?: number;
+    }): Readonly<{
+        run: <T>(operation: () => T | PromiseLike<T>, options?: {
+            signal?: AbortSignal;
+        }) => Promise<T>;
+        readonly activeCount: number;
+        readonly pendingCount: number;
+    }>;
+    createKeyedConcurrencyLimiter(maximumConcurrency: number, maximumConcurrencyPerKey: number, options?: {
+        maximumPending?: number;
+    }): Readonly<{
+        run: <K, T>(key: K, operation: () => T | PromiseLike<T>, options?: {
+            signal?: AbortSignal;
+        }) => Promise<T>;
+        activeFor: (key: unknown) => number;
+        pendingFor: (key: unknown) => number;
+        readonly activeCount: number;
+        readonly pendingCount: number;
+    }>;
     mapSettledWithConcurrency<T, R>(values: readonly T[], concurrency: number, mapper: (value: T, index: number) => R | PromiseLike<R>): Promise<PromiseSettledResult<R>[]>;
     fulfilledValues<T>(results: readonly PromiseSettledResult<T>[]): T[];
     delay(milliseconds: number, { signal }?: {
@@ -386,6 +406,8 @@ export declare const akasha: Readonly<{
     shuffle: typeof arrayModule.shuffle;
     createSingleFlight: typeof asyncModule.createSingleFlight;
     createKeyedSingleFlight: typeof asyncModule.createKeyedSingleFlight;
+    createConcurrencyLimiter: typeof asyncModule.createConcurrencyLimiter;
+    createKeyedConcurrencyLimiter: typeof asyncModule.createKeyedConcurrencyLimiter;
     mapSettledWithConcurrency: typeof asyncModule.mapSettledWithConcurrency;
     fulfilledValues: typeof asyncModule.fulfilledValues;
     delay: typeof asyncModule.delay;
@@ -542,6 +564,26 @@ export declare const akasha: Readonly<{
             invalidate: (key: K) => boolean;
             invalidateAll: () => number;
             readonly size: number;
+        }>;
+        createConcurrencyLimiter(maximumConcurrency: number, options?: {
+            maximumPending?: number;
+        }): Readonly<{
+            run: <T>(operation: () => T | PromiseLike<T>, options?: {
+                signal?: AbortSignal;
+            }) => Promise<T>;
+            readonly activeCount: number;
+            readonly pendingCount: number;
+        }>;
+        createKeyedConcurrencyLimiter(maximumConcurrency: number, maximumConcurrencyPerKey: number, options?: {
+            maximumPending?: number;
+        }): Readonly<{
+            run: <K, T>(key: K, operation: () => T | PromiseLike<T>, options?: {
+                signal?: AbortSignal;
+            }) => Promise<T>;
+            activeFor: (key: unknown) => number;
+            pendingFor: (key: unknown) => number;
+            readonly activeCount: number;
+            readonly pendingCount: number;
         }>;
         mapSettledWithConcurrency<T, R>(values: readonly T[], concurrency: number, mapper: (value: T, index: number) => R | PromiseLike<R>): Promise<PromiseSettledResult<R>[]>;
         fulfilledValues<T>(results: readonly PromiseSettledResult<T>[]): T[];

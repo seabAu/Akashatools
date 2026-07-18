@@ -275,6 +275,36 @@ Throws:
 - `TypeError` — If loader/options/callbacks are invalid or shouldCache does not return a boolean.
 - `RangeError` — If ttl, maximumSize, or a clock result is outside its documented range.
 
+### createConcurrencyLimiter
+
+Creates a reusable scheduler for independent operations submitted over time. At most `maximumConcurrency` callbacks run together and at most `maximumPending` callbacks wait in memory. A queued caller may abort without affecting work that has already started; pass the same signal into the operation itself when running work is also cancellable.
+
+- Signature: `createConcurrencyLimiter()`
+- Import: `import { createConcurrencyLimiter } from "akashatools/async"`
+- Granular import: `import createConcurrencyLimiter from "akashatools/async/createConcurrencyLimiter"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Readonly<{run: <T>(operation: () => T | PromiseLike<T>, options?: {signal?: AbortSignal}) => Promise<T>, readonly activeCount: number, readonly pendingCount: number}>` — Frozen controller whose run method preserves each callback result or error and whose counts reflect live scheduler state.
+
+Throws:
+- `TypeError` — If options, an operation, or an AbortSignal is invalid.
+- `RangeError` — If a concurrency/queue limit is invalid; a run Promise also rejects with RangeError when the pending queue is full.
+
+### createKeyedConcurrencyLimiter
+
+Creates a scheduler with both global and SameValueZero per-key concurrency ceilings. Work is selected in arrival order among entries whose key currently has capacity, so a saturated key cannot block unrelated keys. Queued aborts remove their listener and queue entry; callbacks already running settle normally and always release capacity after fulfillment or rejection.
+
+- Signature: `createKeyedConcurrencyLimiter()`
+- Import: `import { createKeyedConcurrencyLimiter } from "akashatools/async"`
+- Granular import: `import createKeyedConcurrencyLimiter from "akashatools/async/createKeyedConcurrencyLimiter"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Readonly<{run: <K, T>(key: K, operation: () => T | PromiseLike<T>, options?: {signal?: AbortSignal}) => Promise<T>, activeFor: (key: unknown) => number, pendingFor: (key: unknown) => number, readonly activeCount: number, readonly pendingCount: number}>` — Frozen keyed controller with live global/per-key counts and Promise-preserving execution.
+
+Throws:
+- `TypeError` — If options, an operation, or an AbortSignal is invalid.
+- `RangeError` — If a concurrency/queue limit is invalid; a run Promise also rejects with RangeError when the pending queue is full.
+
 ### mapSettledWithConcurrency
 
 Maps values with a fixed concurrency ceiling. Results retain input order and individual failures are represented like `Promise.allSettled`.

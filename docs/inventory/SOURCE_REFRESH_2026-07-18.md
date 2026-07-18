@@ -62,7 +62,7 @@ edited again after this dated review.
 
 ## Implementation queue
 
-- [ ] Add global and keyed bounded concurrency limiters with cancellation and
+- [x] Add global and keyed bounded concurrency limiters with cancellation and
   release-on-settlement regression tests.
 - [ ] Add strict RFC 6901 JSON Pointer parsing, reading, and presence checks.
 - [ ] Add identity-preserving `keyBy` and comparator-based binary-search bounds.

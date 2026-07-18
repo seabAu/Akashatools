@@ -28,6 +28,8 @@
       "countBy",
       "countWords",
       "createCollatorComparator",
+      "createConcurrencyLimiter",
+      "createKeyedConcurrencyLimiter",
       "createKeyedSingleFlight",
       "createSingleFlight",
       "data",
@@ -190,6 +192,8 @@
       "zip"
     ],
     "./async": [
+      "createConcurrencyLimiter",
+      "createKeyedConcurrencyLimiter",
       "createKeyedSingleFlight",
       "createSingleFlight",
       "delay",

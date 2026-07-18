@@ -19,6 +19,15 @@ infinite TTL requires explicit invalidation. The keyed controller applies a
 least-recently accessed size bound so arbitrary keys cannot grow memory without
 limit.
 
+`createConcurrencyLimiter` schedules independent operations submitted over time
+under one global ceiling. `createKeyedConcurrencyLimiter` adds a SameValueZero
+per-key ceiling while allowing eligible work for another key to pass a saturated
+key. Both bound the total waiting queue, preserve callback results/rejections,
+normalize synchronous throws into rejected Promises, and release capacity on
+every settlement. A queued AbortSignal removes only that waiting operation;
+started work is not implicitly cancellable and must receive/observe a signal in
+its own closure when that behavior is required.
+
 The reviewed sources do not establish safe shared contracts for the following:
 
 - Mindspace debounce drops superseded async results, loses dynamic `this`, and

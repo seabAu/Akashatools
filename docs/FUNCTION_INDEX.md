@@ -31,6 +31,8 @@ drop-in compatibility.
 | `countBy` | array | universal | no input mutation | `akashatools/array/countBy` | None |
 | `countWords` | string | universal | no input mutation | `akashatools/string/countWords` | None |
 | `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort/createCollatorComparator` | None |
+| `createConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createConcurrencyLimiter` | None |
+| `createKeyedConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createKeyedConcurrencyLimiter` | None |
 | `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async/createKeyedSingleFlight` | None |
 | `createSingleFlight` | async | universal | no input mutation | `akashatools/async/createSingleFlight` | None |
 | `daysInMonth` | date | universal | no input mutation | `akashatools/date/daysInMonth` | None |

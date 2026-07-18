@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  createConcurrencyLimiter,
+  createKeyedConcurrencyLimiter,
   createKeyedSingleFlight,
   createSingleFlight,
   delay,
@@ -92,6 +94,142 @@ test("keyed single-flight bounds least-recently used entries without allocating 
   assert.equal(flight.invalidateAll(), 1);
   assert.equal(flight.size, 0);
   assert.throws(() => createKeyedSingleFlight(async () => 1, { maximumSize: 0 }), RangeError);
+});
+
+test("concurrency limiter bounds ongoing work and releases after every settlement", async () => {
+  const limiter = createConcurrencyLimiter(2, { maximumPending: 3 });
+  const resolvers = [];
+  const started = [];
+  const operation = (value) =>
+    limiter.run(() => {
+      started.push(value);
+      return new Promise((resolve) => resolvers.push(() => resolve(value)));
+    });
+
+  const first = operation(1);
+  const second = operation(2);
+  const third = operation(3);
+  await Promise.resolve();
+  assert.deepEqual(started, [1, 2]);
+  assert.equal(limiter.activeCount, 2);
+  assert.equal(limiter.pendingCount, 1);
+
+  resolvers.shift()();
+  assert.equal(await first, 1);
+  await Promise.resolve();
+  assert.deepEqual(started, [1, 2, 3]);
+  assert.equal(limiter.activeCount, 2);
+  assert.equal(limiter.pendingCount, 0);
+  resolvers.shift()();
+  resolvers.shift()();
+  assert.deepEqual(await Promise.all([second, third]), [2, 3]);
+  assert.equal(limiter.activeCount, 0);
+
+  await assert.rejects(
+    limiter.run(() => {
+      throw new Error("sync failure");
+    }),
+    /sync failure/,
+  );
+  assert.equal(await limiter.run(() => 4), 4);
+  assert.equal(limiter.activeCount, 0);
+});
+
+test("keyed concurrency skips saturated keys without exceeding either ceiling", async () => {
+  const limiter = createKeyedConcurrencyLimiter(2, 1, { maximumPending: 4 });
+  const resolvers = new Map();
+  const started = [];
+  const operation = (key, value) =>
+    limiter.run(key, () => {
+      started.push(value);
+      return new Promise((resolve) => resolvers.set(value, () => resolve(value)));
+    });
+
+  const a1 = operation("a", "a1");
+  const a2 = operation("a", "a2");
+  const b1 = operation("b", "b1");
+  await Promise.resolve();
+  assert.deepEqual(started, ["a1", "b1"]);
+  assert.equal(limiter.activeFor("a"), 1);
+  assert.equal(limiter.pendingFor("a"), 1);
+  assert.equal(limiter.activeCount, 2);
+
+  resolvers.get("b1")();
+  assert.equal(await b1, "b1");
+  const objectKey = {};
+  const c1 = operation(objectKey, "c1");
+  await Promise.resolve();
+  assert.deepEqual(started, ["a1", "b1", "c1"]);
+  assert.equal(limiter.activeFor(objectKey), 1);
+  assert.equal(limiter.pendingCount, 1);
+
+  resolvers.get("a1")();
+  assert.equal(await a1, "a1");
+  await Promise.resolve();
+  assert.deepEqual(started, ["a1", "b1", "c1", "a2"]);
+  resolvers.get("c1")();
+  resolvers.get("a2")();
+  assert.deepEqual(await Promise.all([a2, c1]), ["a2", "c1"]);
+  assert.equal(limiter.activeCount, 0);
+  assert.equal(limiter.pendingCount, 0);
+});
+
+test("concurrency queues are bounded and queued aborts clean up safely", async () => {
+  class TrackingSignal extends EventTarget {
+    aborted = false;
+    reason = undefined;
+    added = 0;
+    removed = 0;
+    addEventListener(type, listener, options) {
+      this.added += 1;
+      return super.addEventListener(type, listener, options);
+    }
+    removeEventListener(type, listener, options) {
+      this.removed += 1;
+      return super.removeEventListener(type, listener, options);
+    }
+  }
+
+  const limiter = createConcurrencyLimiter(1, { maximumPending: 1 });
+  let release;
+  const active = limiter.run(() => new Promise((resolve) => (release = resolve)));
+  const signal = new TrackingSignal();
+  const queued = limiter.run(() => "never", { signal });
+  assert.equal(limiter.pendingCount, 1);
+  await assert.rejects(
+    limiter.run(() => "full"),
+    RangeError,
+  );
+
+  signal.aborted = true;
+  signal.reason = new Error("leave queue");
+  signal.dispatchEvent(new Event("abort"));
+  await assert.rejects(queued, /leave queue/);
+  assert.equal(limiter.pendingCount, 0);
+  assert.equal(signal.added, 1);
+  assert.equal(signal.removed, 1);
+  release("done");
+  assert.equal(await active, "done");
+
+  const alreadyAborted = new AbortController();
+  alreadyAborted.abort(new Error("already stopped"));
+  await assert.rejects(
+    limiter.run(() => "never", { signal: alreadyAborted.signal }),
+    /already stopped/,
+  );
+  assert.equal(limiter.activeCount, 0);
+});
+
+test("concurrency limiter contracts reject invalid limits, options, operations, and signals", async () => {
+  assert.throws(() => createConcurrencyLimiter(0), RangeError);
+  assert.throws(() => createConcurrencyLimiter(1, { maximumPending: -1 }), RangeError);
+  assert.throws(() => createConcurrencyLimiter(1, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => createKeyedConcurrencyLimiter(2, 3), RangeError);
+  const limiter = createConcurrencyLimiter(1);
+  assert.throws(() => limiter.run(/** @type {any} */ (null)), TypeError);
+  assert.throws(() => limiter.run(() => 1, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => limiter.run(() => 1, { signal: /** @type {any} */ ({ aborted: false }) }), TypeError);
+  assert.equal(await limiter.run(() => Promise.resolve("valid")), "valid");
 });
 
 test("bounded async mapping preserves order and filters fulfilled values", async () => {

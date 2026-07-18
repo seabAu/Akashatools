@@ -182,6 +182,9 @@
   dirty and untracked consumer code, and separated new atomic concurrency,
   JSON-Pointer, retry-advice, hashing, indexing, and portable-path candidates
   from application/archive/media/UI policy.
+- Added bounded global and keyed concurrency limiters with per-key eligible-work
+  scheduling, queued AbortSignal cancellation, live counts, queue limits, and
+  automatic release after synchronous or asynchronous settlement.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

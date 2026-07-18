@@ -52,6 +52,61 @@ export declare function createKeyedSingleFlight<K, V>(loader: (key: K) => V | Pr
     readonly size: number;
 }>;
 /**
+ * Creates a reusable scheduler for independent operations submitted over time.
+ * At most `maximumConcurrency` callbacks run together and at most
+ * `maximumPending` callbacks wait in memory. A queued caller may abort without
+ * affecting work that has already started; pass the same signal into the
+ * operation itself when running work is also cancellable.
+ *
+ * @param {number} maximumConcurrency Positive safe-integer global concurrency ceiling.
+ * @param {{maximumPending?: number}} [options] Non-negative safe-integer bound for callbacks waiting to start; defaults to 1,000.
+ * @returns {Readonly<{run: <T>(operation: () => T | PromiseLike<T>, options?: {signal?: AbortSignal}) => Promise<T>, readonly activeCount: number, readonly pendingCount: number}>} Frozen controller whose run method preserves each callback result or error and whose counts reflect live scheduler state.
+ * @throws {TypeError} If options, an operation, or an AbortSignal is invalid.
+ * @throws {RangeError} If a concurrency/queue limit is invalid; a run Promise also rejects with RangeError when the pending queue is full.
+ * @example
+ * const uploads = createConcurrencyLimiter(3, { maximumPending: 50 });
+ * await uploads.run(() => uploadFile(file), { signal });
+ * @since 2.0.0
+ */
+export declare function createConcurrencyLimiter(maximumConcurrency: number, options?: {
+    maximumPending?: number;
+}): Readonly<{
+    run: <T>(operation: () => T | PromiseLike<T>, options?: {
+        signal?: AbortSignal;
+    }) => Promise<T>;
+    readonly activeCount: number;
+    readonly pendingCount: number;
+}>;
+/**
+ * Creates a scheduler with both global and SameValueZero per-key concurrency
+ * ceilings. Work is selected in arrival order among entries whose key currently
+ * has capacity, so a saturated key cannot block unrelated keys. Queued aborts
+ * remove their listener and queue entry; callbacks already running settle
+ * normally and always release capacity after fulfillment or rejection.
+ *
+ * @param {number} maximumConcurrency Positive safe-integer global concurrency ceiling.
+ * @param {number} maximumConcurrencyPerKey Positive safe-integer ceiling for one Map-identity key, not greater than the global ceiling.
+ * @param {{maximumPending?: number}} [options] Non-negative safe-integer total bound for callbacks waiting across all keys; defaults to 1,000.
+ * @returns {Readonly<{run: <K, T>(key: K, operation: () => T | PromiseLike<T>, options?: {signal?: AbortSignal}) => Promise<T>, activeFor: (key: unknown) => number, pendingFor: (key: unknown) => number, readonly activeCount: number, readonly pendingCount: number}>} Frozen keyed controller with live global/per-key counts and Promise-preserving execution.
+ * @throws {TypeError} If options, an operation, or an AbortSignal is invalid.
+ * @throws {RangeError} If a concurrency/queue limit is invalid; a run Promise also rejects with RangeError when the pending queue is full.
+ * @example
+ * const requests = createKeyedConcurrencyLimiter(8, 2);
+ * await requests.run(new URL(url).origin, () => fetch(url));
+ * @since 2.0.0
+ */
+export declare function createKeyedConcurrencyLimiter(maximumConcurrency: number, maximumConcurrencyPerKey: number, options?: {
+    maximumPending?: number;
+}): Readonly<{
+    run: <K, T>(key: K, operation: () => T | PromiseLike<T>, options?: {
+        signal?: AbortSignal;
+    }) => Promise<T>;
+    activeFor: (key: unknown) => number;
+    pendingFor: (key: unknown) => number;
+    readonly activeCount: number;
+    readonly pendingCount: number;
+}>;
+/**
  * Maps values with a fixed concurrency ceiling. Results retain input order and
  * individual failures are represented like `Promise.allSettled`.
  *
