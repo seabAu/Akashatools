@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const windowsReservedFilename = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i;
@@ -258,7 +259,7 @@ export function countWords(value) {
  */
 export function splitTextByLimits(value, options = {}) {
   assertString(value, "value");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const {
     maximumBytes = 3_800,
     maximumWords = 350,
@@ -451,7 +452,7 @@ export function prettyJson(value, space = 2) {
  * @since 2.0.0
  */
 export function stableJson(value, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumDepth = 100, maximumNodes = 10_000, maximumLength = 1_000_000 } = options;
   if (!Number.isSafeInteger(maximumDepth) || maximumDepth < 0) {
     throw new RangeError("maximumDepth must be a non-negative safe integer.");

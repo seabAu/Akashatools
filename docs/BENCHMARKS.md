@@ -27,7 +27,7 @@ to the baseline before timing. The shared harness performs three warmups, uses
 standard deviation, runtime, operating system, architecture, and processor.
 Construction work is included when it would occur in the compared operation.
 
-The results below were measured 2026-07-16 on Node.js 22.18.0, Windows
+The results below were measured 2026-07-18 on Node.js 22.18.0, Windows
 10.0.19045 x64, Intel Core Ultra 9 285K.
 
 ## Repeated membership checks
@@ -37,15 +37,15 @@ Set/Map construction is included.
 
 | Strategy | Scale | Items | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `Array.includes` | small | 1,000 | 15 | 0.557 | 0.450-1.085 | 0.155 | 1.0x |
-| `Set.has` | small | 1,000 | 15 | 0.056 | 0.033-0.398 | 0.089 | 10.0x |
-| `Map.has` | small | 1,000 | 15 | 0.050 | 0.040-0.168 | 0.040 | 11.2x |
-| `Array.includes` | medium | 5,000 | 7 | 12.885 | 12.734-13.760 | 0.331 | 1.0x |
-| `Set.has` | medium | 5,000 | 7 | 0.350 | 0.274-0.502 | 0.070 | 36.8x |
-| `Map.has` | medium | 5,000 | 7 | 0.372 | 0.345-0.493 | 0.050 | 34.6x |
-| `Array.includes` | large | 20,000 | 3 | 190.830 | 168.529-192.078 | 10.819 | 1.0x |
-| `Set.has` | large | 20,000 | 3 | 1.429 | 1.400-2.229 | 0.384 | 133.5x |
-| `Map.has` | large | 20,000 | 3 | 2.416 | 2.058-2.615 | 0.230 | 79.0x |
+| `Array.includes` | small | 1,000 | 15 | 0.702 | 0.491-1.615 | 0.280 | 1.0x |
+| `Set.has` | small | 1,000 | 15 | 0.049 | 0.039-0.718 | 0.166 | 14.2x |
+| `Map.has` | small | 1,000 | 15 | 0.076 | 0.061-0.355 | 0.076 | 9.3x |
+| `Array.includes` | medium | 5,000 | 7 | 17.902 | 15.772-20.409 | 1.531 | 1.0x |
+| `Set.has` | medium | 5,000 | 7 | 0.450 | 0.293-0.503 | 0.067 | 39.8x |
+| `Map.has` | medium | 5,000 | 7 | 0.481 | 0.384-0.677 | 0.102 | 37.2x |
+| `Array.includes` | large | 20,000 | 3 | 208.459 | 198.849-227.175 | 11.762 | 1.0x |
+| `Set.has` | large | 20,000 | 3 | 1.541 | 1.474-2.368 | 0.406 | 135.2x |
+| `Map.has` | large | 20,000 | 3 | 4.566 | 2.375-4.705 | 1.067 | 45.7x |
 
 Decision: retain `Set` membership for `intersection`/`excludeBy` and `Map` for
 keyed grouping/counting. Do not build an index for a single lookup by default;
@@ -59,12 +59,12 @@ locale/options on every call versus one comparator from
 
 | Strategy | Scale | Items | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `localeCompare` options | small | 1,000 | 15 | 31.276 | 28.931-38.423 | 2.346 | 1.0x |
-| reused `Intl.Collator` | small | 1,000 | 15 | 0.842 | 0.812-3.219 | 0.592 | 37.2x |
-| `localeCompare` options | medium | 10,000 | 7 | 423.268 | 417.884-438.921 | 6.506 | 1.0x |
-| reused `Intl.Collator` | medium | 10,000 | 7 | 12.747 | 12.642-13.243 | 0.214 | 33.2x |
-| `localeCompare` options | large | 50,000 | 3 | 2,615.381 | 2,590.018-2,647.299 | 23.436 | 1.0x |
-| reused `Intl.Collator` | large | 50,000 | 3 | 89.376 | 88.533-95.860 | 3.274 | 29.3x |
+| `localeCompare` options | small | 1,000 | 15 | 38.886 | 34.619-69.872 | 8.668 | 1.0x |
+| reused `Intl.Collator` | small | 1,000 | 15 | 1.196 | 1.170-1.371 | 0.054 | 32.5x |
+| `localeCompare` options | medium | 10,000 | 7 | 587.822 | 534.884-1,234.193 | 231.143 | 1.0x |
+| reused `Intl.Collator` | medium | 10,000 | 7 | 17.358 | 14.476-22.444 | 2.262 | 33.9x |
+| `localeCompare` options | large | 50,000 | 3 | 3,237.126 | 3,061.444-3,320.553 | 107.992 | 1.0x |
+| reused `Intl.Collator` | large | 50,000 | 3 | 134.772 | 113.117-142.154 | 12.322 | 24.0x |
 
 Decision: retain reusable collators for repeated sort comparisons. Callers with
 explicit locale/options can create one comparator and pass it to
@@ -81,15 +81,15 @@ the unavoidable output allocation is the relevant exact memory difference.
 
 | Strategy | Scale | Code units | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| `TextEncoder.encode` | small | 3,840 | 21 | 0.004 | 0.004-0.043 | 0.008 | 1.0x |
-| `utf8ByteLength` | small | 3,840 | 21 | 0.050 | 0.049-0.112 | 0.013 | 0.1x |
-| `TextEncoder.encode` | medium | 100,032 | 11 | 0.119 | 0.110-0.257 | 0.044 | 1.0x |
-| `utf8ByteLength` | medium | 100,032 | 11 | 0.143 | 0.142-0.149 | 0.002 | 0.8x |
-| `TextEncoder.encode` | large | 1,000,000 | 5 | 0.987 | 0.975-1.003 | 0.009 | 1.0x |
-| `utf8ByteLength` | large | 1,000,000 | 5 | 1.424 | 1.423-1.436 | 0.005 | 0.7x |
+| `TextEncoder.encode` | small | 3,840 | 21 | 0.006 | 0.005-0.051 | 0.012 | 1.0x |
+| `utf8ByteLength` | small | 3,840 | 21 | 0.061 | 0.010-0.110 | 0.022 | 0.1x |
+| `TextEncoder.encode` | medium | 100,032 | 11 | 0.148 | 0.143-0.154 | 0.003 | 1.0x |
+| `utf8ByteLength` | medium | 100,032 | 11 | 0.167 | 0.142-0.257 | 0.049 | 0.9x |
+| `TextEncoder.encode` | large | 1,000,000 | 5 | 1.269 | 0.969-1.362 | 0.153 | 1.0x |
+| `utf8ByteLength` | large | 1,000,000 | 5 | 1.453 | 1.451-1.724 | 0.108 | 0.9x |
 
 Decision: retain the allocation-free implementation. Its absolute small-input
-cost remains about 0.05 ms, and the large-input path avoids allocating roughly
+cost remains about 0.06 ms, and the large-input path avoids allocating roughly
 the entire encoded payload for a modest measured timing tradeoff. This also
 matches the bounded text splitter's prefix-metric design.
 
@@ -103,12 +103,12 @@ and accepting trailing junk would make that a different contract.
 
 | Strategy | Scale | Calls | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| one-shot `parseInputValue` | small | 1,000 | 21 | 0.339 | 0.278-0.934 | 0.170 | 1.0x |
-| reused compiled parser | small | 1,000 | 21 | 0.035 | 0.035-0.113 | 0.016 | 9.6x |
-| one-shot `parseInputValue` | medium | 100,000 | 11 | 34.851 | 30.550-41.258 | 3.020 | 1.0x |
-| reused compiled parser | medium | 100,000 | 11 | 3.683 | 3.549-4.011 | 0.124 | 9.5x |
-| one-shot `parseInputValue` | large | 1,000,000 | 5 | 339.993 | 317.510-363.273 | 16.996 | 1.0x |
-| reused compiled parser | large | 1,000,000 | 5 | 41.583 | 37.905-42.120 | 1.537 | 8.2x |
+| one-shot `parseInputValue` | small | 1,000 | 21 | 0.396 | 0.284-0.873 | 0.162 | 1.0x |
+| reused compiled parser | small | 1,000 | 21 | 0.045 | 0.044-0.145 | 0.021 | 8.8x |
+| one-shot `parseInputValue` | medium | 100,000 | 11 | 40.974 | 34.872-49.174 | 3.611 | 1.0x |
+| reused compiled parser | medium | 100,000 | 11 | 4.131 | 3.779-4.825 | 0.333 | 9.9x |
+| one-shot `parseInputValue` | large | 1,000,000 | 5 | 339.055 | 309.093-360.642 | 17.838 | 1.0x |
+| reused compiled parser | large | 1,000,000 | 5 | 39.359 | 38.516-40.438 | 0.669 | 8.6x |
 
 Decision: keep the one-shot wrapper for clarity and low-volume work, and use a
 compiled parser in repeated input handlers. Parser compilation improves the hot
@@ -124,12 +124,12 @@ its list bound and normalizes the shared target/options once.
 
 | Strategy | Scale | Positions | Samples | Median ms | Min-max ms | Std dev ms | Relative |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| repeated atomic predicate | small | 100 | 21 | 0.364 | 0.213-0.846 | 0.144 | 1.0x |
-| bounded batched filter | small | 100 | 21 | 0.131 | 0.109-0.333 | 0.047 | 2.8x |
-| repeated atomic predicate | medium | 10,000 | 11 | 20.862 | 19.565-24.692 | 1.736 | 1.0x |
-| bounded batched filter | medium | 10,000 | 11 | 10.990 | 9.100-12.672 | 0.887 | 1.9x |
-| repeated atomic predicate | large | 100,000 | 5 | 182.694 | 168.629-221.820 | 19.938 | 1.0x |
-| bounded batched filter | large | 100,000 | 5 | 114.171 | 109.239-151.791 | 15.469 | 1.6x |
+| repeated atomic predicate | small | 100 | 21 | 0.229 | 0.195-0.529 | 0.101 | 1.0x |
+| bounded batched filter | small | 100 | 21 | 0.084 | 0.080-0.235 | 0.034 | 2.7x |
+| repeated atomic predicate | medium | 10,000 | 11 | 17.974 | 15.728-19.639 | 1.203 | 1.0x |
+| bounded batched filter | medium | 10,000 | 11 | 9.356 | 8.603-11.804 | 0.862 | 1.9x |
+| repeated atomic predicate | large | 100,000 | 5 | 179.811 | 177.310-199.398 | 9.156 | 1.0x |
+| bounded batched filter | large | 100,000 | 5 | 112.085 | 101.853-121.489 | 7.740 | 1.6x |
 
 Decision: retain both variants. The atomic predicate is the composable core;
 the bounded batch wrapper is the semantically distinct high-volume path and

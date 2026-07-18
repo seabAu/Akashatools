@@ -1,3 +1,5 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
+
 const blockedPathSegments = new Set(["__proto__", "prototype", "constructor"]);
 const maximumPathLength = 10_000;
 const maximumPathSegments = 100;
@@ -339,7 +341,7 @@ export function findDeep(value, predicate, options = {}) {
  */
 export function findAllDeep(value, predicate, options = {}) {
   if (typeof predicate !== "function") throw new TypeError("predicate must be a function.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const maxMatches = options.maxMatches ?? 10_000;
   assertPositiveSafeInteger(maxMatches, "maxMatches");
   /** @type {ObjectTraversalEntry[]} */
@@ -596,7 +598,7 @@ export function deepClone(value, options) {
  * @since 2.0.0
  */
 export function cloneJson(value, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const {
     maximumArrayLength = 10_000,
     maximumBytes = 1_000_000,
@@ -946,7 +948,7 @@ function visitObject(value, options = {}, visitor) {
 /** @param {unknown} value @param {ObjectTraversalOptions} options */
 function assertTraversalOptions(value, options) {
   if (!isTraversable(value)) throw new TypeError("value must be a plain object or array.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { includeRoot = false, maxDepth = 100, maxNodes = 10_000 } = options;
   if (typeof includeRoot !== "boolean") throw new TypeError("includeRoot must be a boolean.");
   if (maxDepth !== Infinity && (!Number.isSafeInteger(maxDepth) || maxDepth < 0)) {
@@ -963,7 +965,7 @@ function assertTraversalOptions(value, options) {
  * @returns {(entry: ObjectTraversalEntry) => boolean}
  */
 function createDeepMatcher(needle, options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { by = "value", equals = Object.is } = options;
   if (by !== "value" && by !== "key" && by !== "either") {
     throw new TypeError('by must be "value", "key", or "either".');

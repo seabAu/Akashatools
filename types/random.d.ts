@@ -6,7 +6,7 @@
  * @param {() => number} [random=Math.random] Source returning a finite value in `[0, 1)`.
  * @returns {number} Random value in the requested half-open interval.
  * @throws {TypeError} If bounds or the random source are not finite/function values.
- * @throws {RangeError} If boundaries are reversed, their width overflows, or random violates `[0, 1)`.
+ * @throws {RangeError} If the range is empty/reversed, its width overflows, or random violates `[0, 1)`.
  * @example
  * randomFloat(10, 20); // 10 <= result < 20
  * @since 2.0.0
@@ -20,13 +20,13 @@ export declare function randomFloat(minimum?: number, maximum?: number, random?:
  * @param {number} maximum Safe-integer upper boundary.
  * @param {{inclusiveMaximum?: boolean, random?: () => number}} [options] Upper-bound inclusion and injectable `[0, 1)` source.
  * @returns {number} Random safe integer in the requested range.
- * @throws {TypeError} If bounds, inclusiveMaximum, or random do not match their contracts.
+ * @throws {TypeError} If bounds, options, inclusiveMaximum, or random do not match their contracts.
  * @throws {RangeError} If the range is reversed, empty, too wide, or random violates `[0, 1)`.
  * @example
  * randomInt(1, 6); // inclusive dice roll
  * @since 2.0.0
  */
-export declare function randomInt(minimum: number, maximum: number, { inclusiveMaximum, random }?: {
+export declare function randomInt(minimum: number, maximum: number, options?: {
     inclusiveMaximum?: boolean;
     random?: () => number;
 }): number;

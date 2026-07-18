@@ -130,6 +130,40 @@ test("request parses bounded JSON, text, binary, Blob, empty, and raw responses"
   );
 });
 
+test("request recognizes JSON media types exactly and ignores malformed length metadata", async () => {
+  assert.deepEqual(
+    await request("https://example.test/problem", {
+      fetchFn: async () =>
+        new Response(JSON.stringify({ title: "problem" }), {
+          headers: { "content-type": "Application/Problem+JSON; charset=utf-8" },
+        }),
+    }),
+    { title: "problem" },
+  );
+  assert.equal(
+    await request("https://example.test/text", {
+      maxResponseBytes: 16,
+      fetchFn: async () =>
+        new Response('"plain text"', {
+          headers: { "content-type": "application/notjson", "content-length": "1e3" },
+        }),
+    }),
+    '"plain text"',
+  );
+});
+
+test("request and redaction reject ambiguous option and header-name contracts", async () => {
+  const arrayOptions = /** @type {any} */ ([]);
+  arrayOptions.fetchFn = async () => new Response("ok");
+
+  await assert.rejects(request("https://example.test", arrayOptions), TypeError);
+  await assert.rejects(request("file:///tmp/data"), TypeError);
+  await assert.rejects(request("https://example.test", { method: "bad method" }), TypeError);
+  await assert.rejects(request("https://example.test", { maxResponseBytes: -1 }), RangeError);
+  await assert.rejects(request("https://example.test", { signal: /** @type {any} */ ({}) }), TypeError);
+  assert.throws(() => redactHeaders({ authorization: "secret" }, [" authorization "]), TypeError);
+});
+
 test("request exposes typed, bounded, and redacted HTTP and JSON errors", async () => {
   await withServer(
     (request, response) => {

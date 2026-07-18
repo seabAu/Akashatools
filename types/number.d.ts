@@ -13,7 +13,8 @@
  */
 export declare function clamp(value: number, minimum: number, maximum: number): number;
 /**
- * Wraps a finite number into the half-open interval [minimum, maximum).
+ * Wraps a finite number into the half-open interval [minimum, maximum) without
+ * overflowing when subtracting distant finite boundaries.
  *
  * @param {number} value Finite value to wrap.
  * @param {number} minimum Finite inclusive lower boundary.

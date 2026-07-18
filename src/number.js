@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const decimalByteUnits = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
@@ -23,7 +24,8 @@ export function clamp(value, minimum, maximum) {
 }
 
 /**
- * Wraps a finite number into the half-open interval [minimum, maximum).
+ * Wraps a finite number into the half-open interval [minimum, maximum) without
+ * overflowing when subtracting distant finite boundaries.
  *
  * @param {number} value Finite value to wrap.
  * @param {number} minimum Finite inclusive lower boundary.
@@ -40,7 +42,13 @@ export function wrap(value, minimum, maximum) {
   if (minimum >= maximum) throw new RangeError("minimum must be less than maximum.");
   const span = maximum - minimum;
   if (!Number.isFinite(span)) throw new RangeError("The wrap interval is outside the finite range.");
-  return ((((value - minimum) % span) + span) % span) + minimum;
+  const shifted = value - minimum;
+  if (Number.isFinite(shifted)) return finishWrappedValue(minimum, maximum, positiveRemainder(shifted, span));
+  const valueRemainder = positiveRemainder(value, span);
+  const minimumRemainder = positiveRemainder(minimum, span);
+  const offset =
+    valueRemainder >= minimumRemainder ? valueRemainder - minimumRemainder : span - (minimumRemainder - valueRemainder);
+  return finishWrappedValue(minimum, maximum, offset);
 }
 
 /**
@@ -191,7 +199,7 @@ export function toBinary(value) {
 export function formatBytes(bytes, options = {}) {
   if (!Number.isFinite(bytes)) throw new TypeError("bytes must be a finite number.");
   if (bytes < 0) throw new RangeError("bytes must be non-negative.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { system = "decimal", maximumFractionDigits = 1 } = options;
   if (system !== "decimal" && system !== "binary") {
     throw new TypeError('system must be "decimal" or "binary".');
@@ -299,8 +307,21 @@ function interpolatedPercentile(sorted, percentile) {
 
 /** @param {number} value @param {number} exponent */
 function shiftExponent(value, exponent) {
+  if (Object.is(value, -0)) return -0;
   const [coefficient, currentExponent = "0"] = String(value).split("e");
   return Number(`${coefficient}e${Number(currentExponent) + exponent}`);
+}
+
+/** @param {number} value @param {number} modulus */
+function positiveRemainder(value, modulus) {
+  const remainder = value % modulus;
+  return remainder < 0 ? remainder + modulus : remainder;
+}
+
+/** @param {number} minimum @param {number} maximum @param {number} offset */
+function finishWrappedValue(minimum, maximum, offset) {
+  const wrapped = minimum + offset;
+  return wrapped < maximum ? wrapped : minimum;
 }
 
 /** @param {Record<string, number>} values */

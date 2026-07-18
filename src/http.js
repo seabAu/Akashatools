@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const sensitiveHeaderNames = new Set(["authorization", "proxy-authorization", "cookie", "set-cookie", "x-api-key"]);
@@ -83,7 +84,10 @@ export class HttpError extends Error {
 /**
  * Performs one HTTP(S) request without application auth, envelopes, delays, or
  * automatic retries. Bodies are size-bounded unless `responseType: "response"`
- * transfers raw response ownership to the caller. Empty JSON bodies return null.
+ * transfers raw response ownership to the caller. Auto parsing recognizes the
+ * exact `application/json` media type and structured `+json` suffixes. Empty
+ * JSON bodies return null; malformed Content-Length metadata is ignored while
+ * the streamed body remains bounded.
  *
  * @template T
  * @param {string | URL} input Absolute HTTP or HTTPS URL; credentials, query, and fragment are removed from error metadata.
@@ -103,6 +107,7 @@ export class HttpError extends Error {
  * @since 2.0.0
  */
 export async function request(input, options = {}) {
+  if (!isPlainObject(/** @type {unknown} */ (options))) throw new TypeError(plainObjectOptionsErrorMessage);
   const {
     responseType = "auto",
     timeoutMs = 30_000,
@@ -252,7 +257,7 @@ export function parseRetryAfter(value, options = {}) {
   if (value !== null && value !== undefined && typeof value !== "string") {
     throw new TypeError("value must be a string or nullish.");
   }
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const {
     now = Date.now(),
     maximumDelaySeconds = Number.POSITIVE_INFINITY,
@@ -306,7 +311,7 @@ export function parseContentDispositionFilename(value, options = {}) {
   if (value !== null && value !== undefined && typeof value !== "string") {
     throw new TypeError("value must be a string or nullish.");
   }
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { fallback, maximumHeaderLength = 8_192, maximumLength = 255 } = options;
   if (fallback !== undefined && typeof fallback !== "string") throw new TypeError("fallback must be a string.");
   assertPositiveSafeInteger(maximumHeaderLength, "maximumHeaderLength");
@@ -333,8 +338,8 @@ export function parseContentDispositionFilename(value, options = {}) {
 
 /** @param {readonly string[]} names */
 function validateSensitiveHeaderNames(names) {
-  if (!Array.isArray(names) || names.some((name) => typeof name !== "string")) {
-    throw new TypeError("sensitive header names must be an array of strings.");
+  if (!Array.isArray(names) || names.some((name) => typeof name !== "string" || !httpToken.test(name))) {
+    throw new TypeError("sensitive header names must be an array of valid HTTP field names.");
   }
 }
 
@@ -578,8 +583,7 @@ function composeRequestSignal(signal, timeoutMs) {
 
 /** @param {Response} response @param {number} maximumBytes */
 async function readResponseBytes(response, maximumBytes) {
-  const declaredLength = Number(response.headers.get("content-length"));
-  if (Number.isFinite(declaredLength) && declaredLength > maximumBytes) {
+  if (declaredLengthExceedsLimit(response.headers.get("content-length"), maximumBytes)) {
     await cancelResponseBody(response);
     throw new ResponseTooLargeError();
   }
@@ -628,8 +632,7 @@ async function cancelResponseBody(response) {
 
 /** @param {Uint8Array} bytes @param {string} responseType @param {string | null} contentType */
 function parseResponseBody(bytes, responseType, contentType) {
-  const resolvedType =
-    responseType === "auto" ? (contentType?.toLowerCase().includes("json") ? "json" : "text") : responseType;
+  const resolvedType = responseType === "auto" ? (isJsonMediaType(contentType) ? "json" : "text") : responseType;
   const buffer = copyArrayBuffer(bytes);
   if (resolvedType === "arrayBuffer") return buffer;
   if (resolvedType === "blob") return new Blob([buffer], { type: contentType ?? "" });
@@ -649,7 +652,7 @@ function copyArrayBuffer(bytes) {
 function parseErrorBody(bytes, contentType) {
   const text = new TextDecoder().decode(bytes);
   if (text === "") return null;
-  if (contentType?.toLowerCase().includes("json")) {
+  if (isJsonMediaType(contentType)) {
     try {
       return JSON.parse(text);
     } catch {
@@ -657,6 +660,28 @@ function parseErrorBody(bytes, contentType) {
     }
   }
   return text;
+}
+
+/** @param {string | null} contentType */
+function isJsonMediaType(contentType) {
+  if (contentType === null) return false;
+  const essence = contentType.split(";", 1)[0].trim().toLowerCase();
+  if (essence === "application/json") return true;
+  const separator = essence.indexOf("/");
+  if (separator <= 0 || separator !== essence.lastIndexOf("/")) return false;
+  const type = essence.slice(0, separator);
+  const subtype = essence.slice(separator + 1);
+  return httpToken.test(type) && httpToken.test(subtype) && subtype.endsWith("+json");
+}
+
+/** @param {string | null} value @param {number} maximumBytes */
+function declaredLengthExceedsLimit(value, maximumBytes) {
+  if (value === null) return false;
+  const normalized = value.trim();
+  if (!/^\d+$/u.test(normalized)) return false;
+  const significant = normalized.replace(/^0+(?=\d)/u, "");
+  const maximum = String(maximumBytes);
+  return significant.length > maximum.length || (significant.length === maximum.length && significant > maximum);
 }
 
 /** @param {string | URL} input */

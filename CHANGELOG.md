@@ -22,6 +22,15 @@
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,
   coverage, declaration, and API totals replace the historical snapshot.
+- Hardened `wrap`, `roundTo`, and half-open random ranges at IEEE-754 extremes,
+  including overflow-safe wrapping, preserved negative zero, empty-range
+  rejection, and protection against rounding to an excluded upper endpoint.
+- Defined deterministic mixed-type sorting, comparator-law coverage, one-time
+  criterion snapshots, and numeric-order handling that keeps valid extreme
+  numbers ahead of missing, symbolic, and non-numeric values.
+- Tightened HTTP option and header-name validation, exact JSON media-type
+  recognition, and canonical decimal `Content-Length` preflight while retaining
+  decoded-stream enforcement for absent or malformed declarations.
 - Added the universal `data` category with atomic type-descriptor normalization,
   complete array type analysis, fresh type/value defaults, and bounded recursive
   shape initialization.
@@ -47,7 +56,7 @@
   as explicit ergonomics work while retaining side-effect-free normal imports.
 - Kept focused imports at 321 raw/252 gzip bytes through the expanded 191-method
   surface and recalibrated only the full default-namespace guardrail to
-  114,000 raw/34,000 gzip around a refined 112,770/33,244 maximum measurement.
+  114,000 raw/34,000 gzip around a refined 113,294/33,705 maximum measurement.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.

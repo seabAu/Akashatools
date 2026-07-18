@@ -1,13 +1,62 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { compareValues, createCollatorComparator, sortBy, sortByMany, sortByNumericOrder } from "akashatools/sort";
+import {
+  compareNumericOrder,
+  compareValues,
+  createCollatorComparator,
+  sortBy,
+  sortByMany,
+  sortByNumericOrder,
+} from "akashatools/sort";
 
 test("default comparison remains finite for invalid dates and extreme numbers", () => {
   assert.equal(compareValues(new Date(Number.NaN), new Date(0)), 1);
   assert.equal(compareValues(new Date(Number.NaN), new Date(Number.NaN)), 0);
   assert.equal(compareValues(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY), -1);
   assert.equal(compareValues(Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY), 1);
+});
+
+test("default comparison remains antisymmetric and transitive across supported value families", () => {
+  const values = [
+    Number.NEGATIVE_INFINITY,
+    -1,
+    -1n,
+    0,
+    0n,
+    1,
+    1n,
+    Number.POSITIVE_INFINITY,
+    Number.NaN,
+    false,
+    true,
+    new Date(0),
+    new Date(Number.NaN),
+    "-1",
+    "0",
+    "10",
+    "alpha",
+    Symbol.for("alpha"),
+    {},
+    null,
+    undefined,
+  ];
+  const sign = (value) => (value < 0 ? -1 : value > 0 ? 1 : 0);
+
+  for (const left of values) {
+    for (const right of values) {
+      assert.equal(sign(compareValues(left, right)) + sign(compareValues(right, left)), 0);
+    }
+  }
+  for (const left of values) {
+    for (const middle of values) {
+      for (const right of values) {
+        if (compareValues(left, middle) <= 0 && compareValues(middle, right) <= 0) {
+          assert.ok(compareValues(left, right) <= 0);
+        }
+      }
+    }
+  }
 });
 
 test("sorting returns stable copies and handles missing order fields", () => {
@@ -70,4 +119,38 @@ test("multi-key sorting evaluates selectors once and preserves stable ties", () 
   assert.equal(calls, values.length * 2);
   assert.throws(() => sortByMany(values, []), TypeError);
   assert.throws(() => sortBy(values, ({ rank }) => rank, { compare: () => Number.NaN }), TypeError);
+});
+
+test("sort criteria are validated and snapshotted once before selector work", () => {
+  let directionReads = 0;
+  const criterion = {
+    toKey: (value) => value,
+    get direction() {
+      directionReads += 1;
+      return directionReads === 1 ? "asc" : "desc";
+    },
+  };
+
+  assert.deepEqual(sortByMany([3, 1, 2], [criterion]), [1, 2, 3]);
+  assert.equal(directionReads, 1);
+  assert.throws(() => sortBy([1], (value) => value, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => sortByMany([1], [/** @type {any} */ (null)]), TypeError);
+});
+
+test("numeric ordering keeps every finite number ahead of invalid values", () => {
+  const source = [
+    { id: "missing" },
+    { id: "symbol", order: Symbol("invalid") },
+    { id: "safe-max", order: Number.MAX_SAFE_INTEGER },
+    { id: "finite-max", order: Number.MAX_VALUE },
+    { id: "string", order: "2" },
+    { id: "blank", order: " " },
+  ];
+
+  assert.deepEqual(
+    sortByNumericOrder(source).map(({ id }) => id),
+    ["string", "safe-max", "finite-max", "missing", "symbol", "blank"],
+  );
+  assert.equal(compareNumericOrder({ order: Number.MAX_VALUE }, {}), -1);
+  assert.throws(() => compareNumericOrder({}, {}, [/** @type {any} */ (Symbol("order"))]), TypeError);
 });

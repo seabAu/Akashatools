@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const durationRoundingModes = new Set(["round", "floor", "ceil", "trunc"]);
@@ -337,7 +338,7 @@ export function formatDateTime(value, locales, options = { dateStyle: "medium", 
  */
 export function formatDuration(minutes, options = {}) {
   if (!Number.isFinite(minutes)) throw new TypeError("minutes must be a finite number.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { rounding = "round" } = options;
   if (minutes < 0 || minutes > Number.MAX_SAFE_INTEGER) {
     throw new RangeError("minutes must be between 0 and Number.MAX_SAFE_INTEGER.");
@@ -366,7 +367,7 @@ export function formatDuration(minutes, options = {}) {
  * @since 2.0.0
  */
 export function formatRelativeTime(value, locales, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { base = new Date(), ...formatOptions } = options;
   const difference =
     requiredDate(value).getTime() - requiredDate(/** @type {Date | string | number} */ (base)).getTime();

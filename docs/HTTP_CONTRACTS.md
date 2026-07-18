@@ -26,9 +26,10 @@ const profile = await request("https://api.example.com/profile", {
 - A caller `AbortSignal` and the timeout feed an internal signal. Caller aborts
   become `ABORTED`; expiry becomes `TIMEOUT`. Event listeners and timers are
   removed when the request settles.
-- `maxResponseBytes` defaults to 10,000,000 bytes. Both declared length and bytes
-  read from the decoded response stream are checked. This remains active for
-  error bodies when `includeErrorBody` is true.
+- `maxResponseBytes` defaults to 10,000,000 bytes. A syntactically valid decimal
+  `Content-Length` is checked before reading; absent or malformed declarations
+  are not trusted. Bytes read from the decoded response stream are always
+  checked. This remains active for error bodies when `includeErrorBody` is true.
 - Non-2xx responses throw `HttpError`. Error-body parsing is opt-in because an
   error body may contain credentials or personal data. An oversized opted-in
   body is replaced by an omission marker while the HTTP status error is kept.
@@ -39,7 +40,7 @@ const profile = await request("https://api.example.com/profile", {
 
 | `responseType` | Result |
 | --- | --- |
-| `"auto"` | JSON when the media type contains `json`; otherwise text. |
+| `"auto"` | JSON for `application/json` and valid structured `+json` media types; otherwise text. |
 | `"json"` | Parsed JSON; a whitespace-only or absent body returns `null`. |
 | `"text"` | UTF-8 text, including `""` for an empty body. |
 | `"blob"` | A `Blob` carrying the response media type. |
@@ -60,7 +61,9 @@ an explicitly requested error `body`, and the originating `cause`.
 The top-level URL removes user information, query parameters, and fragments.
 Authorization, proxy authorization, cookies, set-cookie, and API-key headers are
 redacted. Applications can add response-header names with
-`sensitiveHeaderNames`; `redactHeaders` provides the same operation directly.
+`sensitiveHeaderNames`; every supplied name must be a valid HTTP token so a
+mistyped or whitespace-padded secret name cannot silently miss redaction.
+`redactHeaders` provides the same operation directly.
 An original `cause` and an opted-in `body` are opaque third-party values and must
 not be serialized blindly into logs or user-visible diagnostics.
 

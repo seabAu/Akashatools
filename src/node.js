@@ -2,6 +2,7 @@ import { glob as fsGlob, realpath } from "node:fs/promises";
 import * as path from "node:path";
 
 import { assertContainedPath, resolveContainedPathWith } from "./internal/contained-path.js";
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const maximumGlobPatterns = 100;
@@ -66,7 +67,7 @@ export async function resolveExistingContainedPath(root, relativePath) {
  * @since 2.0.0
  */
 export async function globPaths(pattern, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { cwd = process.cwd(), exclude = [], absolute = false, maximumMatches = 100_000 } = options;
   const patterns = normalizeGlobPatterns(pattern, "pattern", false);
   const exclusions = normalizeGlobPatterns(exclude, "exclude", true);

@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 import { typeOf } from "./validation.js";
 
@@ -313,7 +314,7 @@ export function initializeLike(value, options = {}) {
 
 /** @param {DefaultValueOptions} options */
 function assertDefaultOptions(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   if (options.date !== undefined && options.date !== "epoch" && options.date !== "now") {
     throw new TypeError('date must be "epoch" or "now".');
   }

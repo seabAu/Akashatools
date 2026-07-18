@@ -50,6 +50,13 @@ test("numeric boundaries reject coercion, overflow, and non-finite values", () =
   assert.throws(() => roundTo(Number.MAX_VALUE, -308), RangeError);
 });
 
+test("wrapping and rounding preserve finite IEEE-754 boundary contracts", () => {
+  assert.equal(wrap(Number.MAX_VALUE, -Number.MAX_VALUE, 0), -Number.MAX_VALUE);
+  assert.equal(wrap(-Number.MAX_VALUE, 0, Number.MAX_VALUE), 0);
+  assert.equal(Object.is(roundTo(-0.1), -0), true);
+  assert.equal(Object.is(roundTo(-0, 8), -0), true);
+});
+
 test("summarizeNumbers reports interpolated percentiles and population deviation", () => {
   const source = [40, 10, 30, 20];
   const summary = summarizeNumbers(source);

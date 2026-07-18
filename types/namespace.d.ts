@@ -336,7 +336,7 @@ export declare const object: Readonly<{
 /** Frozen pseudo-random utilities for namespace-style discovery. */
 export declare const random: Readonly<{
     randomFloat(minimum?: number, maximum?: number, random?: () => number): number;
-    randomInt(minimum: number, maximum: number, { inclusiveMaximum, random }?: {
+    randomInt(minimum: number, maximum: number, options?: {
         inclusiveMaximum?: boolean;
         random?: () => number;
     }): number;
@@ -348,7 +348,7 @@ export declare const random: Readonly<{
 }>;
 /** Frozen sorting utilities for namespace-style discovery. */
 export declare const sort: Readonly<{
-    sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, { direction, nulls, compare }?: {
+    sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, options?: {
         direction?: sortModule.SortDirection;
         nulls?: sortModule.NullPlacement;
         compare?: (left: K, right: K) => number;
@@ -949,7 +949,7 @@ export declare const akasha: Readonly<{
     }>;
     random: Readonly<{
         randomFloat(minimum?: number, maximum?: number, random?: () => number): number;
-        randomInt(minimum: number, maximum: number, { inclusiveMaximum, random }?: {
+        randomInt(minimum: number, maximum: number, options?: {
             inclusiveMaximum?: boolean;
             random?: () => number;
         }): number;
@@ -960,7 +960,7 @@ export declare const akasha: Readonly<{
         randomDate(start: Date | string | number, end?: Date | string | number, random?: () => number): Date;
     }>;
     sort: Readonly<{
-        sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, { direction, nulls, compare }?: {
+        sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, options?: {
             direction?: sortModule.SortDirection;
             nulls?: sortModule.NullPlacement;
             compare?: (left: K, right: K) => number;

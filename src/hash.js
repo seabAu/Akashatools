@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 import { stableJson, utf8ByteLength } from "./string.js";
 
@@ -33,7 +34,7 @@ let crcTable;
  * @since 2.0.0
  */
 export async function sha256Hex(value, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumBytes = 10_000_000, crypto = globalThis.crypto } = options;
   assertMaximumBytes(maximumBytes);
   if (!crypto || typeof crypto !== "object" || typeof crypto.subtle?.digest !== "function") {
@@ -62,7 +63,7 @@ export async function sha256Hex(value, options = {}) {
  * @since 2.0.0
  */
 export function crc32(value, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumBytes = 10_000_000 } = options;
   assertMaximumBytes(maximumBytes);
   const bytes = copyHashBytes(value, maximumBytes);
@@ -88,7 +89,7 @@ export function crc32(value, options = {}) {
  * @since 2.0.0
  */
 export async function sha256Json(value, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const {
     maximumDepth = 100,
     maximumNodes = 10_000,
@@ -120,7 +121,7 @@ export async function stableJsonId(prefix, value, options = {}) {
   if (typeof prefix !== "string" || !/^[A-Za-z][A-Za-z0-9_-]{0,63}$/u.test(prefix)) {
     throw new TypeError("prefix must be a 1-to-64-character ASCII identifier beginning with a letter.");
   }
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { hashLength = 24, ...hashOptions } = options;
   if (!Number.isSafeInteger(hashLength) || hashLength < 8 || hashLength > 64) {
     throw new RangeError("hashLength must be a safe integer from 8 through 64.");

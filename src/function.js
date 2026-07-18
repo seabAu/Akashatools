@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 /**
@@ -56,7 +57,7 @@ const defaultTimerScheduler = Object.freeze({
  */
 export function once(callback, options = {}) {
   if (typeof callback !== "function") throw new TypeError("callback must be a function.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { retryOnThrow = false, retryOnRejection = false } = options;
   if (typeof retryOnThrow !== "boolean") throw new TypeError("retryOnThrow must be a boolean.");
   if (typeof retryOnRejection !== "boolean") throw new TypeError("retryOnRejection must be a boolean.");
@@ -130,7 +131,7 @@ export function once(callback, options = {}) {
 export function memoize(callback, toKey, options = {}) {
   if (typeof callback !== "function") throw new TypeError("callback must be a function.");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumSize = 1_000, cacheRejected = false } = options;
   if (!Number.isSafeInteger(maximumSize) || maximumSize < 1) {
     throw new RangeError("maximumSize must be a positive safe integer.");
@@ -535,7 +536,7 @@ function assertScheduledArguments(callback, wait, options) {
   if (typeof wait !== "number" || !Number.isFinite(wait) || wait < 0 || wait > 2_147_483_647) {
     throw new RangeError("wait must be between 0 and 2147483647 milliseconds.");
   }
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
 }
 
 /** @param {Record<PropertyKey, unknown>} options @returns {TimerScheduler} */

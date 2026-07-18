@@ -975,7 +975,7 @@ A stable HTTP/network error with redacted response metadata.
 
 ### request
 
-Performs one HTTP(S) request without application auth, envelopes, delays, or automatic retries. Bodies are size-bounded unless `responseType: "response"` transfers raw response ownership to the caller. Empty JSON bodies return null.
+Performs one HTTP(S) request without application auth, envelopes, delays, or automatic retries. Bodies are size-bounded unless `responseType: "response"` transfers raw response ownership to the caller. Auto parsing recognizes the exact `application/json` media type and structured `+json` suffixes. Empty JSON bodies return null; malformed Content-Length metadata is ignored while the streamed body remains bounded.
 
 - Signature: `request()`
 - Import: `import { request } from "akashatools/http"`
@@ -1441,7 +1441,7 @@ Throws:
 
 ### wrap
 
-Wraps a finite number into the half-open interval [minimum, maximum).
+Wraps a finite number into the half-open interval [minimum, maximum) without overflowing when subtracting distant finite boundaries.
 
 - Signature: `wrap()`
 - Import: `import { wrap } from "akashatools/number"`
@@ -1970,7 +1970,7 @@ Returns a random float in the half-open range [minimum, maximum).
 
 Throws:
 - `TypeError` — If bounds or the random source are not finite/function values.
-- `RangeError` — If boundaries are reversed, their width overflows, or random violates `[0, 1)`.
+- `RangeError` — If the range is empty/reversed, its width overflows, or random violates `[0, 1)`.
 
 ### randomInt
 
@@ -1984,7 +1984,7 @@ Returns a random integer. The minimum is inclusive; the maximum can be inclusive
 - Returns: `number` — Random safe integer in the requested range.
 
 Throws:
-- `TypeError` — If bounds, inclusiveMaximum, or random do not match their contracts.
+- `TypeError` — If bounds, options, inclusiveMaximum, or random do not match their contracts.
 - `RangeError` — If the range is reversed, empty, too wide, or random violates `[0, 1)`.
 
 ### randomBoolean
@@ -2084,7 +2084,7 @@ Throws:
 
 ### sortByMany
 
-Returns a stable copy ordered by multiple selector criteria. Criteria are evaluated once per item and applied in array order. Sparse slots are treated as `undefined` items and the result is dense.
+Returns a stable copy ordered by multiple selector criteria. Criteria are snapshotted once, evaluated once per item, and applied in array order. Sparse slots are treated as `undefined` items and the result is dense.
 
 - Signature: `sortByMany()`
 - Import: `import { sortByMany } from "akashatools/sort"`
@@ -2112,7 +2112,7 @@ Throws:
 
 ### compareValues
 
-Compares strings, numbers, bigints, booleans, and Dates with nullish values ordered last. Other values fall back to locale-aware string comparison. Invalid Dates and NaN sort after their valid peers. Numeric and Date results are normalized to -1, 0, or 1 so extreme values remain valid comparators.
+Compares numbers/bigints, booleans, Dates, strings, and then other values in that deterministic type order, with nullish values ordered last. Values in the final group fall back to locale-aware string comparison. Invalid Dates and NaN sort after their valid peers. Numeric and Date results are normalized to -1, 0, or 1 so extreme values remain valid comparators.
 
 - Signature: `compareValues()`
 - Import: `import { compareValues } from "akashatools/sort"`
@@ -2150,7 +2150,7 @@ Returns a stable copy ordered by common numeric position fields.
 - Returns: `T[]` — Stable sorted copy with absent/invalid order fields last.
 
 Throws:
-- `TypeError` — If values or delegated comparator inputs are invalid.
+- `TypeError` — If values, their items, or keys do not match their contracts.
 
 ## string
 

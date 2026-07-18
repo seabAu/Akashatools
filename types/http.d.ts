@@ -42,7 +42,10 @@ export declare class HttpError extends Error {
 /**
  * Performs one HTTP(S) request without application auth, envelopes, delays, or
  * automatic retries. Bodies are size-bounded unless `responseType: "response"`
- * transfers raw response ownership to the caller. Empty JSON bodies return null.
+ * transfers raw response ownership to the caller. Auto parsing recognizes the
+ * exact `application/json` media type and structured `+json` suffixes. Empty
+ * JSON bodies return null; malformed Content-Length metadata is ignored while
+ * the streamed body remains bounded.
  *
  * @template T
  * @param {string | URL} input Absolute HTTP or HTTPS URL; credentials, query, and fragment are removed from error metadata.

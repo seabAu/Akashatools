@@ -1,8 +1,12 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
+import { isPlainObject } from "./object.js";
+
 /** @typedef {"asc" | "desc"} SortDirection */
 /** @typedef {"first" | "last"} NullPlacement */
 
 /** @type {Intl.Collator | undefined} */
 let defaultCollator;
+const defaultNumericOrderKeys = ["showIndex", "index", "order"];
 
 /**
  * Returns a stably sorted copy based on a derived key. Nullish keys sort last.
@@ -22,15 +26,17 @@ let defaultCollator;
 export function sortBy(
   values,
   toKey = /** @type {(value: T) => K} */ ((value) => /** @type {K} */ (/** @type {unknown} */ (value))),
-  { direction = "asc", nulls = "last", compare = compareValues } = {},
+  options = {},
 ) {
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
+  const { direction = "asc", nulls = "last", compare = compareValues } = options;
   return sortByMany(values, [{ toKey, direction, nulls, compare }]);
 }
 
 /**
  * Returns a stable copy ordered by multiple selector criteria. Criteria are
- * evaluated once per item and applied in array order. Sparse slots are treated
- * as `undefined` items and the result is dense.
+ * snapshotted once, evaluated once per item, and applied in array order. Sparse
+ * slots are treated as `undefined` items and the result is dense.
  *
  * @template T
  * @param {readonly T[]} values Values to copy and sort; sparse slots become undefined items.
@@ -44,18 +50,25 @@ export function sortBy(
 export function sortByMany(values, criteria) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
   if (!Array.isArray(criteria) || criteria.length === 0) throw new TypeError("criteria must be a non-empty array.");
-  criteria.forEach(({ toKey, direction = "asc", nulls = "last", compare = compareValues }, index) => {
+  const normalizedCriteria = criteria.map((criterion, index) => {
+    if (!isPlainObject(criterion)) throw new TypeError(`criteria[${index}] must be a plain object.`);
+    const { toKey, direction = "asc", nulls = "last", compare = compareValues } = criterion;
     if (typeof toKey !== "function") throw new TypeError(`criteria[${index}].toKey must be a function.`);
     if (typeof compare !== "function") throw new TypeError(`criteria[${index}].compare must be a function.`);
     if (direction !== "asc" && direction !== "desc") throw new TypeError(`Unsupported sort direction: ${direction}`);
     if (nulls !== "first" && nulls !== "last") throw new TypeError(`Unsupported null placement: ${nulls}`);
+    return { toKey, direction, nulls, compare };
   });
 
   return [...values]
-    .map((value, index) => ({ value, index, keys: criteria.map(({ toKey }) => toKey(value, index)) }))
+    .map((value, index) => ({
+      value,
+      index,
+      keys: normalizedCriteria.map(({ toKey }) => toKey(value, index)),
+    }))
     .toSorted((left, right) => {
-      for (let index = 0; index < criteria.length; index += 1) {
-        const { direction = "asc", nulls = "last", compare = compareValues } = criteria[index];
+      for (let index = 0; index < normalizedCriteria.length; index += 1) {
+        const { direction, nulls, compare } = normalizedCriteria[index];
         const leftKey = left.keys[index];
         const rightKey = right.keys[index];
         const leftNullish = leftKey === null || leftKey === undefined;
@@ -91,8 +104,9 @@ export function createCollatorComparator(locales, options = { numeric: true, sen
 }
 
 /**
- * Compares strings, numbers, bigints, booleans, and Dates with nullish values
- * ordered last. Other values fall back to locale-aware string comparison.
+ * Compares numbers/bigints, booleans, Dates, strings, and then other values in
+ * that deterministic type order, with nullish values ordered last. Values in
+ * the final group fall back to locale-aware string comparison.
  *
  * Invalid Dates and NaN sort after their valid peers. Numeric and Date results
  * are normalized to -1, 0, or 1 so extreme values remain valid comparators.
@@ -107,14 +121,17 @@ export function createCollatorComparator(locales, options = { numeric: true, sen
  */
 export function compareValues(left, right) {
   if (Object.is(left, right)) return 0;
+  if ((left === null || left === undefined) && (right === null || right === undefined)) return 0;
   if (left === null || left === undefined) return 1;
   if (right === null || right === undefined) return -1;
-  if (left instanceof Date && right instanceof Date) return compareNumbers(left.getTime(), right.getTime());
-  if (typeof left === "number" && typeof right === "number") {
-    return compareNumbers(left, right);
-  }
-  if (typeof left === "bigint" && typeof right === "bigint") return left < right ? -1 : 1;
-  if (typeof left === "boolean" && typeof right === "boolean") return Number(left) - Number(right);
+  const leftRank = comparisonRank(left);
+  const rightRank = comparisonRank(right);
+  if (leftRank !== rightRank) return leftRank - rightRank;
+  if (leftRank === 0)
+    return compareNumericValues(/** @type {number | bigint} */ (left), /** @type {number | bigint} */ (right));
+  if (leftRank === 1) return Number(left) - Number(right);
+  if (leftRank === 2)
+    return compareNumbers(/** @type {Date} */ (left).getTime(), /** @type {Date} */ (right).getTime());
   defaultCollator ??= new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
   return defaultCollator.compare(String(left), String(right));
 }
@@ -133,17 +150,11 @@ export function compareValues(left, right) {
  * compareNumericOrder({ order: 1 }, { order: 2 }); // negative
  * @since 2.0.0
  */
-export function compareNumericOrder(left, right, keys = ["showIndex", "index", "order"]) {
-  if (!left || typeof left !== "object" || !right || typeof right !== "object") {
-    throw new TypeError("left and right must be objects.");
-  }
-  if (!Array.isArray(keys)) throw new TypeError("keys must be an array.");
-
-  for (const key of keys) {
-    const difference = finiteOrder(left[key]) - finiteOrder(right[key]);
-    if (difference !== 0) return difference;
-  }
-  return 0;
+export function compareNumericOrder(left, right, keys = defaultNumericOrderKeys) {
+  assertOrderRecord(left, "left");
+  assertOrderRecord(right, "right");
+  const normalizedKeys = normalizeOrderKeys(keys);
+  return compareNumericOrderKeys(left, right, normalizedKeys);
 }
 
 /**
@@ -153,20 +164,70 @@ export function compareNumericOrder(left, right, keys = ["showIndex", "index", "
  * @param {readonly T[]} values Objects to copy and sort.
  * @param {readonly string[]} [keys] Priority-ordered numeric field names.
  * @returns {T[]} Stable sorted copy with absent/invalid order fields last.
- * @throws {TypeError} If values or delegated comparator inputs are invalid.
+ * @throws {TypeError} If values, their items, or keys do not match their contracts.
  * @example
  * sortByNumericOrder([{ order: 2 }, { order: 1 }]);
  * @since 2.0.0
  */
-export function sortByNumericOrder(values, keys) {
+export function sortByNumericOrder(values, keys = defaultNumericOrderKeys) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
-  return values.toSorted((left, right) => compareNumericOrder(left, right, keys));
+  values.forEach((value, index) => assertOrderRecord(value, `values[${index}]`));
+  const normalizedKeys = normalizeOrderKeys(keys);
+  return values.toSorted((left, right) => compareNumericOrderKeys(left, right, normalizedKeys));
+}
+
+/** @param {Record<string, unknown>} left @param {Record<string, unknown>} right @param {readonly string[]} keys */
+function compareNumericOrderKeys(left, right, keys) {
+  for (const key of keys) {
+    const leftOrder = finiteOrder(left[key]);
+    const rightOrder = finiteOrder(right[key]);
+    if (leftOrder === undefined || rightOrder === undefined) {
+      if (leftOrder === rightOrder) continue;
+      return leftOrder === undefined ? 1 : -1;
+    }
+    const result = compareNumbers(leftOrder, rightOrder);
+    if (result !== 0) return result;
+  }
+  return 0;
 }
 
 /** @param {unknown} value */
 function finiteOrder(value) {
+  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
+  if (typeof value !== "string" || value.trim() === "") return undefined;
   const numeric = Number(value);
-  return Number.isFinite(numeric) ? numeric : Number.MAX_SAFE_INTEGER;
+  return Number.isFinite(numeric) ? numeric : undefined;
+}
+
+/** @param {unknown} value */
+function comparisonRank(value) {
+  if (typeof value === "number" || typeof value === "bigint") return 0;
+  if (typeof value === "boolean") return 1;
+  if (value instanceof Date) return 2;
+  if (typeof value === "string") return 3;
+  return 4;
+}
+
+/** @param {number | bigint} left @param {number | bigint} right */
+function compareNumericValues(left, right) {
+  if (typeof left === "number" && Number.isNaN(left)) {
+    return typeof right === "number" && Number.isNaN(right) ? 0 : 1;
+  }
+  if (typeof right === "number" && Number.isNaN(right)) return -1;
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
+/** @param {unknown} value @param {string} name */
+function assertOrderRecord(value, name) {
+  if (!value || typeof value !== "object") throw new TypeError(`${name} must be an object.`);
+}
+
+/** @param {readonly string[]} keys */
+function normalizeOrderKeys(keys) {
+  if (!Array.isArray(keys) || keys.some((key) => typeof key !== "string")) {
+    throw new TypeError("keys must be an array of strings.");
+  }
+  return [...keys];
 }
 
 /** @param {number} left @param {number} right */

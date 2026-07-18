@@ -74,14 +74,14 @@ case. No package entry mutates built-in constructors or prototypes.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; all 207 current contracts pass on the
+- [x] Add dependency-free runtime tests; all 215 current contracts pass on the
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 521 files at approximately 369 kB packed and 1.38 MB unpacked.
+  selects 523 files at 370,795 bytes packed and 1,389,292 bytes unpacked.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
-  112,770 raw/33,244 gzip bytes for the complete discoverable namespace.
+  113,294 raw/33,705 gzip bytes for the complete discoverable namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -422,7 +422,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 231 declaration files, including generated
+  byte-for-byte drift check across 232 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -464,8 +464,8 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The stabilized surface measures
-  98.09% lines / 88.96% branches / 97.17% functions on Node 22.18.0 and
-  98.09% / 88.87% / 97.17% on Node 24.18.0. Branch accounting varies slightly
+  98.21% lines / 89.56% branches / 97.23% functions on Node 22.18.0 and
+  98.21% / 89.51% / 97.23% on Node 24.18.0. Branch accounting varies slightly
   by runtime; see `docs/TESTING.md`.
 - [x] Run the complete release gates locally on supported Node 22.18.0 and
   Node 24.18.0, and run all 18 Chromium/Firefox/WebKit browser contracts.
@@ -500,7 +500,7 @@ Acceptance criteria:
   flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
   gzip bytes; the stabilized discoverable default namespace uses 114,000 raw/
-  34,000 gzip guardrails around the measured 112,770 raw/33,244 gzip maximum.
+  34,000 gzip guardrails around the measured 113,294 raw/33,705 gzip maximum.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -549,7 +549,7 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 105,495-109,001 raw and 30,637-31,569 gzip bytes;
+  imports. Focused sets save 106,018-109,518 raw and 31,050-32,026 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
@@ -726,6 +726,39 @@ Acceptance criteria:
 - Generated boundary sweeps remain deterministic and elapsed benchmark time is
   reporting evidence, never a pass/fail threshold.
 
+### 9.8 Numeric, sort, and HTTP boundary refinement
+
+- [x] Probe finite wrapping where `value - minimum` overflows, and preserve
+  negative zero through decimal rounding.
+- [x] Enforce genuinely nonempty half-open random ranges and prevent IEEE-754
+  rounding from producing the excluded maximum.
+- [x] Exhaustively verify comparator antisymmetry and transitivity across mixed
+  primitive, temporal, symbolic, object, and nullish values.
+- [x] Snapshot sort criteria exactly once before selector work and separate
+  numeric validity from legitimate extreme finite values.
+- [x] Validate all options objects consistently, including request, random, and
+  sorting APIs.
+- [x] Recognize only exact JSON or structured `+json` media types, validate
+  custom sensitive header names, and trust only canonical decimal declared
+  response lengths while retaining decoded-stream limits.
+- [x] Extend the browser fixture server to serve validated nested source modules
+  after internal helpers became shared across category modules.
+- [x] Repeat the complete Node 22/24, coverage, package, dependency, bundle,
+  benchmark, and Chromium/Firefox/WebKit evidence without widening any budget.
+
+Acceptance criteria:
+
+- Every finite wrap result remains inside its half-open interval even when an
+  intermediate subtraction would overflow.
+- A random half-open range rejects equal endpoints and never returns its upper
+  endpoint after representational rounding.
+- Default comparison is deterministic and satisfies comparator laws for every
+  supported mixed-type pair; numeric-order invalid values remain after all
+  valid finite values.
+- HTTP media, declared-length, and redaction decisions follow explicit grammar
+  rather than substring or coercion heuristics, while streamed bytes stay
+  bounded regardless of headers.
+
 ## Phase 10 — release gates
 
 ### Alpha exit
@@ -734,14 +767,14 @@ Acceptance criteria:
   `(excepted modules)` source set.
 - [x] Stabilize default/named/category namespace architecture.
 - [x] Reconfirm the expanded universal core, generated declarations, and
-  contracts on both supported Node audit runtimes after Phase 9.7.
+  contracts on both supported Node audit runtimes after Phase 9.8.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [x] Re-freeze canonical names and option shapes after Phase 9.7 through the
+- [x] Re-freeze canonical names and option shapes after Phase 9.8 through the
   reviewed API snapshot, generated surfaces, types, and explicit decisions.
 - [x] Refresh security review and performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
@@ -859,6 +892,10 @@ Acceptance criteria:
 | 2026-07-18 | Reject native-constructor normalization when it violates the declared parser contract. | Adversarial probes proved that native Date and Float32 construction can accept finite input while silently changing its meaning, and that empty URLs can resolve to a base. Text/empty bounds, strict zoned calendars, Float32 finite output, normalized RegExp errors, and exact GeoJSON property budgets now run before or around native construction. |
 | 2026-07-18 | Make repeated host-local times an explicit selection policy. | `dateAssumption: "local"` chooses a host zone but not one of two overlap instants. `dateDisambiguation` therefore defaults to `reject` and permits literal `earlier`/`later` overrides; New York and Lord Howe cases cover one-hour and 30-minute transitions. |
 | 2026-07-18 | Keep the 114,000 raw/34,000 gzip full-discovery guardrail after refinement. | The stricter parser and transition policy move the largest default namespace to 112,770/33,244 while focused imports remain 321/252 and side-effect-only remains zero. The remaining margin is intentionally not widened; focused consumer sets save 105,495-109,001 raw bytes. |
+| 2026-07-18 | Define half-open numeric behavior at IEEE-754 boundaries rather than relying on overflowing subtraction or representational luck. | Overflow-safe wrapping, signed-zero preservation, strict nonempty random ranges, and a next-representable-value guard keep finite results inside the public contracts. |
+| 2026-07-18 | Give default sorting a deterministic mixed-type total preorder and snapshot configuration once. | Comparator laws must hold across nullish and heterogeneous values; valid extreme numbers cannot share a sentinel with invalid numeric-order inputs, and mutable getters must not change policy mid-sort. |
+| 2026-07-18 | Parse HTTP metadata by exact grammar and keep stream limits authoritative. | JSON substring matching, numeric coercion of malformed lengths, and silently invalid redaction names create ambiguous or unsafe behavior; exact media/token/decimal validation makes the boundary observable without trusting response declarations. |
+| 2026-07-18 | Share repeated internal option-error text instead of widening the full-namespace budget. | Centralizing one private constant keeps all public messages unchanged while the final default-category bundle measures 113,294/33,705 under the existing 114,000/34,000 ceiling; focused imports remain 321/252 and consumer sets save 106,018-109,518 raw bytes. |
 
 ## Definition of done
 

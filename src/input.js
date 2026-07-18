@@ -1,4 +1,5 @@
 import { analyzeArrayTypes, normalizeDataType } from "./data.js";
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { cloneJson, isPlainObject } from "./object.js";
 import { typeOf } from "./validation.js";
 
@@ -187,7 +188,7 @@ export function controlTypeForValue(value, options = {}) {
 export function fieldDescriptorFor(name, value, options = {}) {
   if (typeof name !== "string" || name.trim() === "") throw new TypeError("name must be a nonblank string.");
   if (blockedKeys.has(name)) throw new TypeError(`Unsafe field name: ${name}`);
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   assertInputTypeOptions(options);
   if (options.label !== undefined && typeof options.label !== "string") throw new TypeError("label must be a string.");
   const path = options.path === undefined ? [name] : copyPath(options.path);
@@ -221,7 +222,7 @@ export function fieldDescriptorFor(name, value, options = {}) {
  */
 export function fieldsFromData(value, options = {}) {
   if (!Array.isArray(value) && !isPlainObject(value)) throw new TypeError("value must be a plain object or array.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   assertInputTypeOptions(options);
   if (options.labelFor !== undefined && typeof options.labelFor !== "function") {
     throw new TypeError("labelFor must be a function.");
@@ -402,7 +403,7 @@ const typedArrayConstructors = new Map([
 
 /** @param {InputValueParserOptions} options */
 function normalizeInputValueParserOptions(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const empty = options.empty;
   if (empty !== undefined && empty !== "preserve" && empty !== "null" && empty !== "undefined" && empty !== "throw") {
     throw new TypeError('empty must be "preserve", "null", "undefined", or "throw".');
@@ -923,7 +924,7 @@ function resolveEmpty(source, options) {
 
 /** @param {InputTypeOptions} options */
 function assertInputTypeOptions(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   if (options.dateType !== undefined && options.dateType !== "date" && options.dateType !== "datetime-local") {
     throw new TypeError('dateType must be "date" or "datetime-local".');
   }

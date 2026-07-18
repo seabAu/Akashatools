@@ -1,4 +1,5 @@
 import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 import { compareValues } from "./sort.js";
 
@@ -202,7 +203,7 @@ export function insertItem(values, index, item) {
  */
 export function removeFromArray(values, selector, options = {}) {
   assertArray(values, "values");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { mode = "auto", all = false } = options;
   if (!["auto", "index", "value", "predicate"].includes(mode)) {
     throw new TypeError(`Unsupported removal mode: ${mode}`);
@@ -292,7 +293,7 @@ export function groupBy(values, toKey) {
 export function keyBy(values, toKey, options = {}) {
   assertArray(values, "values");
   if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { onDuplicate = "last" } = options;
   if (onDuplicate !== "first" && onDuplicate !== "last" && onDuplicate !== "error") {
     throw new TypeError(`Unsupported duplicate-key policy: ${onDuplicate}`);

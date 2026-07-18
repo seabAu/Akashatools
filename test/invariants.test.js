@@ -7,11 +7,13 @@ import {
   getAtPath,
   haversineDistance,
   normalizeGeoPosition,
+  randomFloat,
   range,
   setAtPath,
   sortBy,
   toUnixSeconds,
   unique,
+  wrap,
 } from "akashatools";
 import { assertDoesNotMutate, assertInvalidCallsThrow } from "../fixtures/test-support/contracts.js";
 
@@ -49,6 +51,32 @@ test("randomized integer ranges preserve half-open length and step invariants", 
   }
 
   assertInvalidCallsThrow([() => range(0, 10, Number.NaN)], RangeError);
+});
+
+test("generated floating ranges stay finite and honor half-open boundaries", () => {
+  const boundaryRandom = createDeterministicRandom(0x7545_ee11);
+  const highestSample = 1 - Number.EPSILON / 2;
+
+  for (let iteration = 0; iteration < 1_000; iteration += 1) {
+    const minimum = boundaryRandom() * 2e12 - 1e12;
+    const maximum = minimum + boundaryRandom() * 1e9 + 1;
+    const value = boundaryRandom() * 2e15 - 1e15;
+    const wrapped = wrap(value, minimum, maximum);
+    const sampled = randomFloat(minimum, maximum, () => highestSample);
+
+    assert.ok(Number.isFinite(wrapped) && wrapped >= minimum && wrapped < maximum);
+    assert.ok(Number.isFinite(sampled) && sampled >= minimum && sampled < maximum);
+  }
+
+  for (const [value, minimum, maximum] of [
+    [Number.MAX_VALUE, -Number.MAX_VALUE, 0],
+    [-Number.MAX_VALUE, 0, Number.MAX_VALUE],
+    [Number.MAX_VALUE, -1, Number.MAX_VALUE],
+    [-Number.MAX_VALUE, -Number.MAX_VALUE, 1],
+  ]) {
+    const wrapped = wrap(value, minimum, maximum);
+    assert.ok(Number.isFinite(wrapped) && wrapped >= minimum && wrapped < maximum);
+  }
 });
 
 test("randomized stable sorting orders keys, preserves ties, and does not mutate", () => {

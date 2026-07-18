@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 /** @typedef {"array" | "object" | "integer" | "null" | "string" | "number" | "boolean"} JsonContractType */
@@ -452,7 +453,7 @@ export function normalizePortableRelativePath(value, options = {}) {
  */
 export function normalizePortableRelativePaths(values, options = {}) {
   if (!Array.isArray(values)) throw new TypeError("values must be an array.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumPaths = 10_000, caseSensitive = false } = options;
   if (!Number.isSafeInteger(maximumPaths) || maximumPaths < 1) {
     throw new RangeError("maximumPaths must be a positive safe integer.");
@@ -574,7 +575,7 @@ function validateContractNode(value, schema, root, path) {
  * @returns {{kind: PortablePathKind, normalization: PortablePathNormalization, allowBackslash: boolean, maximumLength: number, maximumSegments: number, maximumSegmentLength: number}}
  */
 function readPortablePathPolicy(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const {
     kind = "file",
     normalization = "NFC",

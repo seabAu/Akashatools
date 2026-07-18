@@ -1,5 +1,3 @@
-/** @typedef {"asc" | "desc"} SortDirection */
-/** @typedef {"first" | "last"} NullPlacement */
 export type SortDirection = "asc" | "desc";
 export type NullPlacement = "first" | "last";
 /**
@@ -17,15 +15,15 @@ export type NullPlacement = "first" | "last";
  * sortBy(users, ({ name }) => name);
  * @since 2.0.0
  */
-export declare function sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, { direction, nulls, compare }?: {
+export declare function sortBy<T, K>(values: readonly T[], toKey?: (value: T, index: number) => K, options?: {
     direction?: SortDirection;
     nulls?: NullPlacement;
     compare?: (left: K, right: K) => number;
 }): T[];
 /**
  * Returns a stable copy ordered by multiple selector criteria. Criteria are
- * evaluated once per item and applied in array order. Sparse slots are treated
- * as `undefined` items and the result is dense.
+ * snapshotted once, evaluated once per item, and applied in array order. Sparse
+ * slots are treated as `undefined` items and the result is dense.
  *
  * @template T
  * @param {readonly T[]} values Values to copy and sort; sparse slots become undefined items.
@@ -56,8 +54,9 @@ export declare function sortByMany<T>(values: readonly T[], criteria: ReadonlyAr
  */
 export declare function createCollatorComparator(locales?: Intl.LocalesArgument, options?: Intl.CollatorOptions): (left: unknown, right: unknown) => number;
 /**
- * Compares strings, numbers, bigints, booleans, and Dates with nullish values
- * ordered last. Other values fall back to locale-aware string comparison.
+ * Compares numbers/bigints, booleans, Dates, strings, and then other values in
+ * that deterministic type order, with nullish values ordered last. Values in
+ * the final group fall back to locale-aware string comparison.
  *
  * Invalid Dates and NaN sort after their valid peers. Numeric and Date results
  * are normalized to -1, 0, or 1 so extreme values remain valid comparators.
@@ -93,7 +92,7 @@ export declare function compareNumericOrder(left: Record<string, unknown>, right
  * @param {readonly T[]} values Objects to copy and sort.
  * @param {readonly string[]} [keys] Priority-ordered numeric field names.
  * @returns {T[]} Stable sorted copy with absent/invalid order fields last.
- * @throws {TypeError} If values or delegated comparator inputs are invalid.
+ * @throws {TypeError} If values, their items, or keys do not match their contracts.
  * @example
  * sortByNumericOrder([{ order: 2 }, { order: 1 }]);
  * @since 2.0.0

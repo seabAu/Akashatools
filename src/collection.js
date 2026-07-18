@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const defaultMaximumSimilarityItems = 100_000;
@@ -25,7 +26,7 @@ const defaultMaximumSimilarityItems = 100_000;
  * @since 2.0.0
  */
 export function jaccardSimilarity(left, right, options = {}) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumItems = defaultMaximumSimilarityItems } = options;
   if (!Number.isSafeInteger(maximumItems) || maximumItems < 0) {
     throw new RangeError("maximumItems must be a non-negative safe integer.");

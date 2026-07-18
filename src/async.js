@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 /**
@@ -86,7 +87,7 @@ export function createSingleFlight(loader, options = {}) {
  */
 export function createKeyedSingleFlight(loader, options = {}) {
   if (typeof loader !== "function") throw new TypeError("loader must be a function.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { maximumSize = 1_000, ...singleFlightOptions } = options;
   if (!Number.isSafeInteger(maximumSize) || maximumSize < 1) {
     throw new RangeError("maximumSize must be a positive safe integer.");
@@ -305,7 +306,7 @@ export function delay(milliseconds, { signal } = {}) {
  * @returns {{ttl: number, now: () => number, shouldCache: (value: T) => boolean}}
  */
 function normalizeSingleFlightOptions(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const ttl = options.ttl ?? 0;
   const now = options.now ?? Date.now;
   const shouldCache = options.shouldCache ?? (() => true);
@@ -346,7 +347,7 @@ function normalizeConcurrencyOptions(maximumConcurrency, maximumConcurrencyPerKe
       "maximumConcurrencyPerKey must be a positive safe integer no greater than maximumConcurrency.",
     );
   }
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const maximumPending = /** @type {{maximumPending?: unknown}} */ (options).maximumPending ?? 1_000;
   if (typeof maximumPending !== "number" || !Number.isSafeInteger(maximumPending) || maximumPending < 0) {
     throw new RangeError("maximumPending must be a non-negative safe integer.");
@@ -424,7 +425,7 @@ function createLimiterCore(maximumConcurrency, maximumConcurrencyPerKey, maximum
    */
   const run = (key, operation, options = {}) => {
     if (typeof operation !== "function") throw new TypeError("operation must be a function.");
-    if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+    if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
     const { signal } = options;
     assertAbortSignal(signal);
     if (signal?.aborted) return Promise.reject(abortReason(signal));

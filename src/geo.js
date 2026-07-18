@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { cloneJson, isPlainObject } from "./object.js";
 import { utf8ByteLength } from "./string.js";
 
@@ -305,7 +306,7 @@ export function createGeoJsonFeatureCollection(features, options = {}) {
 
 /** @param {GeoPositionOptions} options */
 function normalizePositionOptions(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const arrayOrder = options.arrayOrder ?? "longitude-latitude";
   if (arrayOrder !== "longitude-latitude" && arrayOrder !== "latitude-longitude") {
     throw new TypeError('arrayOrder must be "longitude-latitude" or "latitude-longitude".');

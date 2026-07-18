@@ -1,3 +1,4 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { cloneJson, isPlainObject } from "./object.js";
 import { safeFilename, utf8ByteLength } from "./string.js";
 
@@ -135,7 +136,7 @@ export function downloadJson(filename, value, { space = 2, ...environment } = {}
 export function inputValueFromControl(control, parser = identityValue, options = {}) {
   if (control === null || typeof control !== "object") throw new TypeError("control must be a browser form control.");
   if (typeof parser !== "function") throw new TypeError("parser must be a function.");
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const maximumItems = options.maximumItems ?? 100_000;
   if (!Number.isSafeInteger(maximumItems) || maximumItems < 0) {
     throw new RangeError("maximumItems must be a non-negative safe integer.");
@@ -290,7 +291,7 @@ function assertStorageKey(key) {
 
 /** @param {JsonStorageOptions} options */
 function jsonStorageMaximumBytes(options) {
-  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const maximumBytes = options.maximumBytes ?? 1_000_000;
   if (!Number.isSafeInteger(maximumBytes) || maximumBytes < 0) {
     throw new RangeError("maximumBytes must be a non-negative safe integer.");

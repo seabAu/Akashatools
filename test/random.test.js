@@ -37,11 +37,28 @@ test("random float and date helpers honor deterministic range boundaries", () =>
   assert.throws(() => randomInt(-Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER), RangeError);
 });
 
+test("random floats never escape their non-empty half-open interval after rounding", () => {
+  const nextAfterOne = 1 + Number.EPSILON;
+  const nextBeforeZero = -Number.MIN_VALUE;
+  const highestSample = 1 - Number.EPSILON / 2;
+
+  assert.throws(() => randomFloat(1, 1, () => 0), RangeError);
+  assert.equal(
+    randomFloat(1, nextAfterOne, () => highestSample),
+    1,
+  );
+  assert.equal(
+    randomFloat(nextBeforeZero, 0, () => highestSample),
+    nextBeforeZero,
+  );
+});
+
 test("injected random sources must obey the Math.random half-open contract", () => {
   assert.throws(() => randomFloat(0, 1, () => -0.01), RangeError);
   assert.throws(() => randomInt(0, 1, { random: () => 1 }), RangeError);
   assert.throws(() => randomString(1, "a", () => Number.NaN), RangeError);
   assert.throws(() => randomInt(0, 1, { inclusiveMaximum: /** @type {any} */ ("yes") }), TypeError);
+  assert.throws(() => randomInt(0, 1, /** @type {any} */ ([])), TypeError);
 });
 
 test("secure random helpers use explicit Web Crypto contracts", () => {

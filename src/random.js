@@ -1,7 +1,11 @@
+import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
+import { isPlainObject } from "./object.js";
 
 const maximumRandomStringLength = 1_000_000;
 const secureAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
+const adjacentFloat = new Float64Array(1);
+const adjacentFloatBits = new BigUint64Array(adjacentFloat.buffer);
 
 /**
  * Returns a random float in the half-open range [minimum, maximum).
@@ -11,16 +15,18 @@ const secureAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrst
  * @param {() => number} [random=Math.random] Source returning a finite value in `[0, 1)`.
  * @returns {number} Random value in the requested half-open interval.
  * @throws {TypeError} If bounds or the random source are not finite/function values.
- * @throws {RangeError} If boundaries are reversed, their width overflows, or random violates `[0, 1)`.
+ * @throws {RangeError} If the range is empty/reversed, its width overflows, or random violates `[0, 1)`.
  * @example
  * randomFloat(10, 20); // 10 <= result < 20
  * @since 2.0.0
  */
 export function randomFloat(minimum = 0, maximum = 1, random = Math.random) {
   validateRange(minimum, maximum, random);
+  if (minimum === maximum) throw new RangeError("The random float range is empty.");
   const width = maximum - minimum;
   if (!Number.isFinite(width)) throw new RangeError("The random float interval is outside the finite range.");
-  return sampleRandom(random) * width + minimum;
+  const result = sampleRandom(random) * width + minimum;
+  return result < maximum ? result : nextDown(maximum);
 }
 
 /**
@@ -31,13 +37,15 @@ export function randomFloat(minimum = 0, maximum = 1, random = Math.random) {
  * @param {number} maximum Safe-integer upper boundary.
  * @param {{inclusiveMaximum?: boolean, random?: () => number}} [options] Upper-bound inclusion and injectable `[0, 1)` source.
  * @returns {number} Random safe integer in the requested range.
- * @throws {TypeError} If bounds, inclusiveMaximum, or random do not match their contracts.
+ * @throws {TypeError} If bounds, options, inclusiveMaximum, or random do not match their contracts.
  * @throws {RangeError} If the range is reversed, empty, too wide, or random violates `[0, 1)`.
  * @example
  * randomInt(1, 6); // inclusive dice roll
  * @since 2.0.0
  */
-export function randomInt(minimum, maximum, { inclusiveMaximum = true, random = Math.random } = {}) {
+export function randomInt(minimum, maximum, options = {}) {
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
+  const { inclusiveMaximum = true, random = Math.random } = options;
   if (!Number.isSafeInteger(minimum) || !Number.isSafeInteger(maximum)) {
     throw new TypeError("Random integer bounds must be safe integers.");
   }
@@ -182,4 +190,12 @@ function assertRandomStringLength(length) {
   if (!Number.isSafeInteger(length) || length < 0 || length > maximumRandomStringLength) {
     throw new RangeError(`length must be a safe integer between 0 and ${maximumRandomStringLength}.`);
   }
+}
+
+/** @param {number} value */
+function nextDown(value) {
+  if (value === 0) return -Number.MIN_VALUE;
+  adjacentFloat[0] = value;
+  adjacentFloatBits[0] += value > 0 ? -1n : 1n;
+  return adjacentFloat[0];
 }
