@@ -471,6 +471,11 @@ Acceptance criteria:
   by runtime; see `docs/TESTING.md`.
 - [x] Run the complete release gates locally on supported Node 22.18.0 and
   Node 24.18.0, and run all 18 Chromium/Firefox/WebKit browser contracts.
+- [x] Enforce residual release hygiene in the unified check: maintained source
+  and tests cannot contain unfinished markers, disabled/focused tests, or
+  production logging/debuggers; runtime dependency fields and npm
+  package-lifecycle hooks remain empty; package, lock, engine, license, files, and
+  repository metadata must agree.
 - [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
   are configured, but local multi-runtime evidence cannot prove hosted setup,
   checkout, dependency installation, or runner behavior.
@@ -940,6 +945,7 @@ Acceptance criteria:
 | 2026-07-18 | Separate canonical runtime datatypes, native input types, and composite control types into three frozen vocabularies. | Their wire values sometimes overlap but their domains and valid sets do not. Shared internal definitions keep data, input, and validation consistent without circular imports; public string values remain compatible and exact TypeScript unions make optional adoption safer. |
 | 2026-07-18 | Recalibrate only the full-discovery namespace guardrail to 117,000 raw/35,250 gzip for the canonical vocabularies. | Keeping all three constant objects, one normalized-name map, and direct canonical built-in dispatch on the discoverable default namespace moves the largest fixture to 116,220/34,939, while focused root/category/granular imports remain 321/252 and side-effect-only output remains zero raw bytes. |
 | 2026-07-18 | Treat call-site syntax as migration-risk evidence, not runtime compatibility proof. | The refreshed scanner classifies all 1,981 parsed root reads, direct legacy bindings, result use, try containment, dynamic access, and malformed-file candidates. It can prove discarded-result absence and specific source defects, but only authorized app tests can establish runtime values, alias identity, rendering, and fallback intent. |
+| 2026-07-18 | Make residual release hygiene a deterministic local gate. | A passing feature suite cannot reveal skipped tests, unfinished markers, accidental production logging, lifecycle scripts, runtime dependencies, or manifest/lock drift. Run the cheap hygiene scan before costly generation, bundle, package, and test gates. |
 
 ## Definition of done
 

@@ -17,6 +17,7 @@ fallback for malformed source.
 ```sh
 npm run lint
 npm run format:check
+npm run check:hygiene
 npm test
 npm run test:browser:install
 npm run test:browser
@@ -32,6 +33,12 @@ files. `npm test` runs the dependency-free Node test suite. `npm run check`
 also checks syntax, lint and formatting, generated artifacts, JSDoc/TypeScript
 declarations, JavaScript and TypeScript consumers, editor completions, and a
 clean installation of the exact packed artifact.
+
+`npm run check:hygiene` rejects unfinished markers in maintained source/tests,
+focused or disabled tests, production console/debugger calls, runtime dependency
+fields, npm package lifecycle scripts, unexpected packaged roots, incomplete
+publish metadata, and package-lock root drift. The unified check runs it before
+the more expensive generated, bundle, package, and test gates.
 
 `npm run test:coverage` uses Node's built-in coverage support and includes only
 shipped `src/**/*.js` code. Tests, scripts, benchmarks, fixtures, generated

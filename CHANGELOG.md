@@ -26,6 +26,10 @@
   direct/unused subpath bindings, dynamic access, and malformed-source
   candidates; the current behavior-risk ledger records the remaining
   migration-only mutation, coercion, fallback, and ambient-global evidence.
+- Added a release-hygiene gate covering unfinished maintained source, disabled
+  or focused tests, runtime logging/debuggers, dependency-free publish metadata,
+  forbidden package lifecycle hooks, exact packaged roots, and package-lock
+  identity.
 - Completed the reopened 2026-07-18 regression, adversarial refinement, and
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const workflowUrl = new URL("../.github/workflows/ci.yml", import.meta.url);
+const packageUrl = new URL("../package.json", import.meta.url);
 
 test("hosted CI pins action identities and retains the supported runtime gates", async () => {
   const workflow = await readFile(workflowUrl, "utf8");
@@ -30,4 +31,8 @@ test("hosted CI pins action identities and retains the supported runtime gates",
   assert.match(workflow, /npm run pack:check/);
   assert.match(workflow, /playwright install --with-deps chromium firefox webkit/);
   assert.match(workflow, /npm run test:browser/);
+
+  const packageJson = JSON.parse(await readFile(packageUrl, "utf8"));
+  assert.equal(packageJson.scripts["check:hygiene"], "node scripts/check-release-hygiene.mjs");
+  assert.match(packageJson.scripts.check, /node --run check:hygiene/);
 });

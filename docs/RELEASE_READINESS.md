@@ -47,7 +47,8 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Gate | Current result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 310 JavaScript files pass |
+| Maintained syntax | 311 JavaScript files pass |
+| Release hygiene | 236 source and 28 test files clean; publish/lock metadata consistent |
 | Public documentation | 194 declarations pass |
 | Generated declarations | 236 files current |
 | API surface snapshot | 19 surfaces current |
