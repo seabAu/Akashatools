@@ -19,6 +19,7 @@ npm run lint
 npm run format:check
 npm run check:hygiene
 npm run check:markdown
+npm run check:readme
 npm test
 npm run test:browser:install
 npm run test:browser
@@ -53,6 +54,13 @@ UTF-8, requires a final newline, rejects forbidden control text, and verifies
 that local links stay inside the package, select shipped files, resolve to real
 files, and name existing GitHub-style heading fragments. Links displayed inside
 inline or fenced code examples are intentionally ignored.
+
+`npm run check:readme` parses all JavaScript-fenced README examples, resolves
+every documented `akashatools` specifier through the actual package export map,
+and verifies every default and named binding. It currently covers 18 examples,
+29 package imports, and 65 bindings; a focused missing-binding fixture verifies
+the failure path. Registry-installed example execution remains a distinct
+post-publication gate.
 
 `npm run test:coverage` uses Node's built-in coverage support and includes only
 shipped `src/**/*.js` code. Tests, scripts, benchmarks, fixtures, generated

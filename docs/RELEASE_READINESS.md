@@ -20,8 +20,8 @@
 | Reviewed API surfaces | 19 |
 | License | ISC (`LICENSE`, 741 bytes) |
 | Dry-run files | 533 |
-| Dry-run packed size | Approximately 386 KB |
-| Dry-run unpacked size | Approximately 1.43 MB |
+| Dry-run packed size | Approximately 387 KB |
+| Dry-run unpacked size | Approximately 1.44 MB |
 
 `npm pack --dry-run --json` verifies the selected package content without
 creating or publishing an artifact. The package includes runtime sources,
@@ -47,9 +47,10 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Gate | Current result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 312 JavaScript files pass |
+| Maintained syntax | 313 JavaScript files pass |
 | Release hygiene | 236 source and 28 test files clean; publish/lock metadata consistent |
 | Packaged documentation | 41 strict UTF-8 Markdown files; 45 local links and 4 heading fragments resolve |
+| README imports | 18 JavaScript examples parse; 29 package imports and 65 bindings resolve |
 | Public documentation | 194 declarations pass |
 | Generated declarations | 236 files current |
 | API surface snapshot | 19 surfaces current |

@@ -38,6 +38,10 @@
   packed/unpacked size budgets, selected-root and portable-path checks,
   development/credential-like path exclusions, non-executable modes, and npm
   file-count/size consistency before fresh JavaScript and TypeScript installs.
+- Fixed missing `debounce`, `throttle`, and `removeFromArray` imports in README
+  examples and added a gate that parses all published JavaScript fences, resolves
+  every documented package specifier through the export map, and verifies each
+  default and named binding.
 - Completed the reopened 2026-07-18 regression, adversarial refinement, and
   utility-surface expansion;
   the current Node 22/24 audits, 18-test browser matrix, package, bundle,

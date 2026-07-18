@@ -188,7 +188,7 @@ package entry patches built-in constructors or prototypes.
 Function control keeps identity and failure policy explicit:
 
 ```js
-import { memoize, once } from "akashatools/function";
+import { debounce, memoize, once, throttle } from "akashatools/function";
 
 const initialize = once(createApplicationState);
 const loadById = memoize(loadRecord, (id) => id, { maximumSize: 500 });
@@ -235,6 +235,8 @@ input. In automatic mode, an integer means an index and a function means a
 predicate. Select `mode: "value"` when removing a numeric value.
 
 ```js
+import { removeFromArray } from "akashatools/array";
+
 removeFromArray(["a", "b", "c"], 1);
 // ["a", "c"]
 

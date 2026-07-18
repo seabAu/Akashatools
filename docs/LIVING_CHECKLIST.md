@@ -78,7 +78,7 @@ case. No package entry mutates built-in constructors or prototypes.
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 533 files at approximately 386 KB packed and 1.43 MB unpacked. Capture
+  selects 533 files at approximately 387 KB packed and 1.44 MB unpacked. Capture
   exact bytes only for an immutable release candidate because a self-recorded
   compressed size changes the packaged payload.
 - [x] Enforce the exact 533-file tarball manifest, 400,000-byte packed and
@@ -484,6 +484,10 @@ Acceptance criteria:
   newline and no forbidden control text; require every local link to remain
   inside the selected package, resolve to a real shipped file, and name an
   existing GitHub-style heading fragment when one is present.
+- [x] Parse all 18 published README JavaScript examples and resolve their 29
+  `akashatools` import declarations through the real export map; all 65 default,
+  named, and namespace bindings are valid, and a missing-binding fixture proves
+  the gate fails visibly.
 - [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
   are configured, but local multi-runtime evidence cannot prove hosted setup,
   checkout, dependency installation, or runner behavior.
@@ -956,6 +960,7 @@ Acceptance criteria:
 | 2026-07-18 | Make residual release hygiene a deterministic local gate. | A passing feature suite cannot reveal skipped tests, unfinished markers, accidental production logging, lifecycle scripts, runtime dependencies, or manifest/lock drift. Run the cheap hygiene scan before costly generation, bundle, package, and test gates. |
 | 2026-07-18 | Treat packaged Markdown integrity as release behavior. | README and contract links are part of the npm artifact. Strict UTF-8 decoding plus target, package-selection, and heading-fragment checks prevent a green runtime suite from shipping unreadable or dead documentation while excluding link syntax shown only in code examples. |
 | 2026-07-18 | Treat the npm pack manifest as a bounded release contract. | Installing a tarball proves resolution but does not by itself prove the artifact is small, path-safe, dependency-free, non-executable, or free of development and credential-like filenames. Validate npm's exact file manifest and internal totals before using that same tarball in fresh consumers. |
+| 2026-07-18 | Resolve README imports as executable release contracts. | Syntax-highlighted examples and local link checks do not catch misspelled exports or missing imports. Parse every JavaScript fence, load each documented `akashatools` specifier through the package export map, and verify its imported bindings while keeping registry-installed execution as a separate post-publication gate. |
 
 ## Definition of done
 

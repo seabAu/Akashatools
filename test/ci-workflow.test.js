@@ -10,6 +10,7 @@ import {
   markdownHeadingAnchors,
   markdownLinks,
 } from "../scripts/check-documentation-integrity.mjs";
+import { checkReadmeExamples, extractJavascriptExamples } from "../scripts/check-readme-examples.mjs";
 
 const workflowUrl = new URL("../.github/workflows/ci.yml", import.meta.url);
 const packageUrl = new URL("../package.json", import.meta.url);
@@ -44,8 +45,10 @@ test("hosted CI pins action identities and retains the supported runtime gates",
   const packageJson = JSON.parse(await readFile(packageUrl, "utf8"));
   assert.equal(packageJson.scripts["check:hygiene"], "node scripts/check-release-hygiene.mjs");
   assert.equal(packageJson.scripts["check:markdown"], "node scripts/check-documentation-integrity.mjs");
+  assert.equal(packageJson.scripts["check:readme"], "node scripts/check-readme-examples.mjs");
   assert.match(packageJson.scripts.check, /node --run check:hygiene/);
   assert.match(packageJson.scripts.check, /node --run check:markdown/);
+  assert.match(packageJson.scripts.check, /node --run check:readme/);
 });
 
 test("documentation integrity helpers follow packaged Markdown link semantics", () => {
@@ -60,6 +63,9 @@ test("documentation integrity helpers follow packaged Markdown link semantics", 
     ).map(({ destination }) => destination),
     ["./guide.md#setup", "./image.png", "https://example.com"],
   );
+  assert.deepEqual(extractJavascriptExamples("```js\nimport value from 'package';\n```\n```sh\nnpm test\n```\n"), [
+    { source: "import value from 'package';\n", line: 2 },
+  ]);
 });
 
 test("documentation integrity rejects escaping and missing package links", async () => {
@@ -95,6 +101,18 @@ test("documentation integrity rejects escaping and missing package links", async
     assert.match(result.failures[0], /links to a missing path/u);
     assert.match(result.failures[1], /escapes the package root/u);
     assert.match(result.failures[2], /uses an absolute filesystem path/u);
+
+    const examplesPath = join(root, "examples.md");
+    await writeFile(examplesPath, '```js\nimport value, { good, missing } from "akashatools/example";\n```\n', "utf8");
+    const readmeResult = await checkReadmeExamples(pathToFileURL(examplesPath), async (specifier) => {
+      assert.equal(specifier, "akashatools/example");
+      return { default: true, good: true };
+    });
+    assert.equal(readmeResult.exampleCount, 1);
+    assert.equal(readmeResult.importCount, 1);
+    assert.equal(readmeResult.bindingCount, 3);
+    assert.equal(readmeResult.failures.length, 1);
+    assert.match(readmeResult.failures[0], /imports missing "missing"/u);
   } finally {
     await rm(root, { force: true, recursive: true });
   }
