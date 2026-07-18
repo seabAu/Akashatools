@@ -16,7 +16,10 @@ derived from the active source shapes:
 - stable string IDs for repeated COMPOSR/Mindspace record membership;
 - natural-number task/project labels for Mindspace and portfolio sorting;
 - multilingual paragraph text at SPLICR's provider-chunk, document, and generic
-  one-million-code-unit work limits.
+  one-million-code-unit work limits;
+- repeated serialized number values from form-style input; and
+- deterministic longitude/latitude positions for repeated and batched distance
+  filtering.
 
 Every strategy receives the same retained input and its output is asserted equal
 to the baseline before timing. The shared harness performs three warmups, uses
@@ -89,6 +92,48 @@ Decision: retain the allocation-free implementation. Its absolute small-input
 cost remains about 0.05 ms, and the large-input path avoids allocating roughly
 the entire encoded payload for a modest measured timing tradeoff. This also
 matches the bounded text splitter's prefix-metric design.
+
+## Compiled serialized-input parsing
+
+This 2026-07-18 comparison parses the same complete finite numeric strings
+through the one-shot `parseInputValue` wrapper and one parser returned by
+`createInputValueParser`. The checksum of every batch is asserted equal before
+timing. This does not compare against legacy `parseInt`, because losing decimals
+and accepting trailing junk would make that a different contract.
+
+| Strategy | Scale | Calls | Samples | Median ms | Min-max ms | Std dev ms | Relative |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| one-shot `parseInputValue` | small | 1,000 | 21 | 0.458 | 0.360-0.933 | 0.154 | 1.0x |
+| reused compiled parser | small | 1,000 | 21 | 0.037 | 0.036-0.040 | 0.001 | 12.5x |
+| one-shot `parseInputValue` | medium | 100,000 | 11 | 41.566 | 37.133-45.355 | 2.428 | 1.0x |
+| reused compiled parser | medium | 100,000 | 11 | 4.428 | 3.853-4.740 | 0.288 | 9.4x |
+| one-shot `parseInputValue` | large | 1,000,000 | 5 | 416.033 | 367.792-472.167 | 34.577 | 1.0x |
+| reused compiled parser | large | 1,000,000 | 5 | 43.632 | 41.734-48.204 | 2.446 | 9.5x |
+
+Decision: keep the one-shot wrapper for clarity and low-volume work, and use a
+compiled parser in repeated input handlers. Parser compilation improves the hot
+path without weakening validation or maintaining a second conversion contract.
+
+## Batched geospatial distance filtering
+
+This 2026-07-18 comparison filters the same positions with repeated
+`isWithinGeoDistance` calls versus `filterPositionsWithinDistance`. Both use the
+same Haversine unit/radius semantics, and the selected original position
+references are asserted deeply equal before timing. The batch helper validates
+its list bound and normalizes the shared target/options once.
+
+| Strategy | Scale | Positions | Samples | Median ms | Min-max ms | Std dev ms | Relative |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| repeated atomic predicate | small | 100 | 21 | 0.357 | 0.270-0.636 | 0.091 | 1.0x |
+| bounded batched filter | small | 100 | 21 | 0.109 | 0.088-0.191 | 0.025 | 3.3x |
+| repeated atomic predicate | medium | 10,000 | 11 | 23.353 | 17.697-25.231 | 2.284 | 1.0x |
+| bounded batched filter | medium | 10,000 | 11 | 12.824 | 11.957-30.706 | 5.149 | 1.8x |
+| repeated atomic predicate | large | 100,000 | 5 | 204.992 | 197.142-225.432 | 9.523 | 1.0x |
+| bounded batched filter | large | 100,000 | 5 | 139.130 | 124.882-146.313 | 8.373 | 1.5x |
+
+Decision: retain both variants. The atomic predicate is the composable core;
+the bounded batch wrapper is the semantically distinct high-volume path and
+avoids repeated invariant setup.
 
 No benchmark result alone justifies a readability regression. The measured
 decisions use established platform data structures/APIs and leave clear

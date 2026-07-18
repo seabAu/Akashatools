@@ -215,9 +215,10 @@
     "node": ">=22.17"
   },
   "scripts": {
-    "benchmark": "node --run benchmark:membership && node --run benchmark:collator && node --run benchmark:text",
+    "benchmark": "node --run benchmark:membership && node --run benchmark:collator && node --run benchmark:text && node --run benchmark:excepted",
     "benchmark:collator": "node benchmark/collator.mjs",
     "benchmark:membership": "node benchmark/membership.mjs",
+    "benchmark:excepted": "node benchmark/excepted-modules.mjs",
     "benchmark:text": "node benchmark/text-measurement.mjs",
     "bundle:check": "node scripts/measure-bundles.mjs && node scripts/measure-consumer-bundles.mjs",
     "bundle:consumers": "node scripts/measure-consumer-bundles.mjs",

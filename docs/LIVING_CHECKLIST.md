@@ -680,7 +680,7 @@ browser behavior must not be copied into the canonical package.
   product database layouts with their owners.
 - [ ] Add contract, generation, type, package, collision, bundle, and
   three-engine browser coverage for every adopted function.
-- [ ] Benchmark semantically equivalent parsing and geo hot paths at high call
+- [x] Benchmark semantically equivalent parsing and geo hot paths at high call
   counts. Keep elapsed time out of deterministic test assertions and document
   when precompiled parsers improve repeated-handler throughput.
 - [ ] Refresh generated declarations, API snapshots/reference, migration notes,
@@ -826,6 +826,7 @@ Acceptance criteria:
 | 2026-07-18 | Replace the excepted Mapbox-era geo helpers with a universal `geo` category. | GeoJSON requires `[longitude, latitude]`; canonical normalization, explicit legacy order, range checks, Haversine units/radius, bounded nearby searches, and deterministic feature construction preserve reusable intent without random jitter, HTML, React, Mapbox, or broken degree-box predicates. |
 | 2026-07-18 | Separate serialized datatype parsing from browser control extraction. | `createInputValueParser` precomputes reusable descriptor/options policy and `parseInputValue` provides one-shot convenience; strict numeric, date, JSON, collection, URL, RegExp, binary, and branded-value branches replace lossy `parseInt`, truthiness, event-shape, and implicit-zone behavior. |
 | 2026-07-18 | Recover only late-bound browser atoms from the excepted DOM and LocalDB modules. | Semantic form-control extraction composes with a pure parser; media queries run only when called; and strict JSON storage requires an explicit Storage object. Import-time `window`, React renderers, HTML interpolation, product database layouts, and quota guesses remain excluded. |
+| 2026-07-18 | Retain one-shot/compiled parsing and atomic/batched geo variants. | Equal-output benchmarks show that precompiled parsing removes repeated policy setup and batched geo filtering normalizes shared invariants once. The broader variants have distinct high-volume contracts rather than duplicating their atomic cores. |
 
 ## Definition of done
 

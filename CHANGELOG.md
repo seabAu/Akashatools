@@ -13,6 +13,9 @@
 - Added browser-only `inputValueFromControl`, late-bound `matchesMediaQuery` and
   `prefersColorScheme`, and explicit-Storage `readJsonStorage`/
   `writeJsonStorage`; normal imports remain free of browser-global reads.
+- Added equal-output high-volume benchmarks for one-shot versus compiled input
+  parsing and repeated atomic versus bounded batched geo filtering; elapsed time
+  remains reporting evidence rather than a test pass/fail condition.
 - Completed the reopened 2026-07-18 regression and utility-surface expansion;
   the current Node 22/24 audits, 15-test browser matrix, package, bundle,
   coverage, declaration, and API totals replace the historical snapshot.
