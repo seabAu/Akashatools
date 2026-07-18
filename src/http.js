@@ -6,6 +6,42 @@ const maximumTimer = 2_147_483_647;
 const httpToken = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
 const windowsReservedFilename = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i;
 const unsafeFilenameCharacters = /[<>:"|?*]/gu;
+const httpMonths = new Map([
+  ["Jan", 0],
+  ["Feb", 1],
+  ["Mar", 2],
+  ["Apr", 3],
+  ["May", 4],
+  ["Jun", 5],
+  ["Jul", 6],
+  ["Aug", 7],
+  ["Sep", 8],
+  ["Oct", 9],
+  ["Nov", 10],
+  ["Dec", 11],
+]);
+const httpWeekdays = new Map([
+  ["Sun", 0],
+  ["Sunday", 0],
+  ["Mon", 1],
+  ["Monday", 1],
+  ["Tue", 2],
+  ["Tuesday", 2],
+  ["Wed", 3],
+  ["Wednesday", 3],
+  ["Thu", 4],
+  ["Thursday", 4],
+  ["Fri", 5],
+  ["Friday", 5],
+  ["Sat", 6],
+  ["Saturday", 6],
+]);
+const imfFixdate =
+  /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat), (\d{2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4}) (\d{2}):(\d{2}):(\d{2}) GMT$/u;
+const rfc850Date =
+  /^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (\d{2})-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)-(\d{2}) (\d{2}):(\d{2}):(\d{2}) GMT$/u;
+const asctimeDate =
+  /^(Sun|Mon|Tue|Wed|Thu|Fri|Sat) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{2}| \d) (\d{2}):(\d{2}):(\d{2}) (\d{4})$/u;
 // Header-supplied control and bidi characters are intentionally matched for removal.
 // eslint-disable-next-line no-control-regex
 const filenameControls = /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/gu;
@@ -197,6 +233,60 @@ export function redactHeaders(headers, additionalSensitiveNames = []) {
 }
 
 /**
+ * Parses a `Retry-After` field into a non-negative delay in seconds without
+ * performing a retry. RFC delay-seconds are decimal integers; the three HTTP
+ * date forms are accepted and calendar/weekday consistency is checked. An
+ * explicit compatibility option accepts non-standard fractional delay values
+ * used by some APIs. Past dates resolve to zero.
+ *
+ * @param {string | null | undefined} value Retry-After field value, or nullish when absent.
+ * @param {{now?: number, maximumDelaySeconds?: number, maximumHeaderLength?: number, allowFractionalSeconds?: boolean}} [options] Injectable current Unix milliseconds, output cap, input bound, and non-standard fractional compatibility policy.
+ * @returns {number | undefined} Finite delay seconds, capped when requested, or undefined for an absent/invalid/unrepresentable field.
+ * @throws {TypeError} If value, options, now, or allowFractionalSeconds violates its literal contract.
+ * @throws {RangeError} If a bound is invalid, now is outside the Date range, or the field exceeds maximumHeaderLength.
+ * @example
+ * parseRetryAfter("120"); // 120
+ * @since 2.0.0
+ */
+export function parseRetryAfter(value, options = {}) {
+  if (value !== null && value !== undefined && typeof value !== "string") {
+    throw new TypeError("value must be a string or nullish.");
+  }
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const {
+    now = Date.now(),
+    maximumDelaySeconds = Number.POSITIVE_INFINITY,
+    maximumHeaderLength = 256,
+    allowFractionalSeconds = false,
+  } = options;
+  if (typeof now !== "number" || !Number.isFinite(now)) throw new TypeError("now must be a finite number.");
+  if (Number.isNaN(new Date(now).getTime())) throw new RangeError("now must be within the Date range.");
+  if (typeof maximumDelaySeconds !== "number" || Number.isNaN(maximumDelaySeconds) || maximumDelaySeconds < 0) {
+    throw new RangeError("maximumDelaySeconds must be a non-negative number.");
+  }
+  assertPositiveSafeInteger(maximumHeaderLength, "maximumHeaderLength");
+  if (typeof allowFractionalSeconds !== "boolean") {
+    throw new TypeError("allowFractionalSeconds must be a boolean.");
+  }
+  if (value == null || value.trim() === "") return undefined;
+  if (value.length > maximumHeaderLength) throw new RangeError("value exceeded maximumHeaderLength.");
+
+  const normalized = value.trim();
+  const delayPattern = allowFractionalSeconds ? /^\d+(?:\.\d+)?$/u : /^\d+$/u;
+  if (delayPattern.test(normalized)) {
+    const delay = Number(normalized);
+    if (!Number.isFinite(delay) || delay > Number.MAX_SAFE_INTEGER) {
+      return Number.isFinite(maximumDelaySeconds) && delay >= maximumDelaySeconds ? maximumDelaySeconds : undefined;
+    }
+    return Math.min(delay, maximumDelaySeconds);
+  }
+
+  const retryAt = parseHttpDate(normalized, now);
+  if (retryAt === undefined) return undefined;
+  return Math.min(Math.max(0, (retryAt - now) / 1_000), maximumDelaySeconds);
+}
+
+/**
  * Extracts a bounded cross-platform-safe filename suggestion from an HTTP
  * `Content-Disposition` value. A valid RFC extended `filename*` takes
  * precedence over `filename`; malformed candidates fall through to the next
@@ -253,6 +343,69 @@ function assertPositiveSafeInteger(value, name) {
   if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 1) {
     throw new RangeError(`${name} must be a positive safe integer.`);
   }
+}
+
+/** @param {string} value @param {number} now */
+function parseHttpDate(value, now) {
+  let match = imfFixdate.exec(value);
+  if (match) {
+    return buildHttpDateTimestamp(match[1], match[2], match[3], match[4], match[5], match[6], match[7]);
+  }
+
+  match = rfc850Date.exec(value);
+  if (match) {
+    const currentYear = new Date(now).getUTCFullYear();
+    let year = Math.floor(currentYear / 100) * 100 + Number(match[4]);
+    if (year > currentYear + 50) year -= 100;
+    return buildHttpDateTimestamp(match[1], match[2], match[3], year, match[5], match[6], match[7]);
+  }
+
+  match = asctimeDate.exec(value);
+  if (match) {
+    return buildHttpDateTimestamp(match[1], match[3].trim(), match[2], match[7], match[4], match[5], match[6]);
+  }
+  return undefined;
+}
+
+/**
+ * @param {string} weekday
+ * @param {string | number} day
+ * @param {string} monthName
+ * @param {string | number} year
+ * @param {string | number} hour
+ * @param {string | number} minute
+ * @param {string | number} second
+ */
+function buildHttpDateTimestamp(weekday, day, monthName, year, hour, minute, second) {
+  const numericYear = Number(year);
+  const month = httpMonths.get(monthName);
+  const numericDay = Number(day);
+  const numericHour = Number(hour);
+  const numericMinute = Number(minute);
+  const numericSecond = Number(second);
+  if (
+    month === undefined ||
+    numericHour > 23 ||
+    numericMinute > 59 ||
+    numericSecond > 59 ||
+    numericDay < 1 ||
+    numericDay > 31
+  ) {
+    return undefined;
+  }
+
+  const date = new Date(0);
+  date.setUTCFullYear(numericYear, month, numericDay);
+  date.setUTCHours(numericHour, numericMinute, numericSecond, 0);
+  if (
+    date.getUTCFullYear() !== numericYear ||
+    date.getUTCMonth() !== month ||
+    date.getUTCDate() !== numericDay ||
+    date.getUTCDay() !== httpWeekdays.get(weekday)
+  ) {
+    return undefined;
+  }
+  return date.getTime();
 }
 
 /** @param {string} value @returns {Array<[string, string]>} */

@@ -83,6 +83,28 @@ export declare function request<T>(input: string | URL, options?: RequestInit & 
  */
 export declare function redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
 /**
+ * Parses a `Retry-After` field into a non-negative delay in seconds without
+ * performing a retry. RFC delay-seconds are decimal integers; the three HTTP
+ * date forms are accepted and calendar/weekday consistency is checked. An
+ * explicit compatibility option accepts non-standard fractional delay values
+ * used by some APIs. Past dates resolve to zero.
+ *
+ * @param {string | null | undefined} value Retry-After field value, or nullish when absent.
+ * @param {{now?: number, maximumDelaySeconds?: number, maximumHeaderLength?: number, allowFractionalSeconds?: boolean}} [options] Injectable current Unix milliseconds, output cap, input bound, and non-standard fractional compatibility policy.
+ * @returns {number | undefined} Finite delay seconds, capped when requested, or undefined for an absent/invalid/unrepresentable field.
+ * @throws {TypeError} If value, options, now, or allowFractionalSeconds violates its literal contract.
+ * @throws {RangeError} If a bound is invalid, now is outside the Date range, or the field exceeds maximumHeaderLength.
+ * @example
+ * parseRetryAfter("120"); // 120
+ * @since 2.0.0
+ */
+export declare function parseRetryAfter(value: string | null | undefined, options?: {
+    now?: number;
+    maximumDelaySeconds?: number;
+    maximumHeaderLength?: number;
+    allowFractionalSeconds?: boolean;
+}): number | undefined;
+/**
  * Extracts a bounded cross-platform-safe filename suggestion from an HTTP
  * `Content-Disposition` value. A valid RFC extended `filename*` takes
  * precedence over `filename`; malformed candidates fall through to the next

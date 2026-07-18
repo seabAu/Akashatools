@@ -127,6 +127,7 @@ drop-in compatibility.
 | `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http/parseContentDispositionFilename` | None |
 | `parseJsonPointer` | object | universal | no input mutation | `akashatools/object/parseJsonPointer` | None |
 | `parsePath` | object | universal | no input mutation | `akashatools/object/parsePath` | None |
+| `parseRetryAfter` | http | universal | no input mutation | `akashatools/http/parseRetryAfter` | None |
 | `partition` | array | universal | no input mutation | `akashatools/array/partition` | None |
 | `pascalCase` | string | universal | no input mutation | `akashatools/string/pascalCase` | `String.toUpperCamelCase` |
 | `pick` | object | universal | no input mutation | `akashatools/object/pick` | `AO.extractKeys`, `AO.filterKeys` |

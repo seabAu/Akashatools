@@ -917,6 +917,21 @@ Copies headers while replacing common credential/cookie values with `[REDACTED]`
 Throws:
 - `TypeError` — If additionalSensitiveNames is not an array of strings or Headers rejects the input.
 
+### parseRetryAfter
+
+Parses a `Retry-After` field into a non-negative delay in seconds without performing a retry. RFC delay-seconds are decimal integers; the three HTTP date forms are accepted and calendar/weekday consistency is checked. An explicit compatibility option accepts non-standard fractional delay values used by some APIs. Past dates resolve to zero.
+
+- Signature: `parseRetryAfter()`
+- Import: `import { parseRetryAfter } from "akashatools/http"`
+- Granular import: `import parseRetryAfter from "akashatools/http/parseRetryAfter"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number | undefined` — Finite delay seconds, capped when requested, or undefined for an absent/invalid/unrepresentable field.
+
+Throws:
+- `TypeError` — If value, options, now, or allowFractionalSeconds violates its literal contract.
+- `RangeError` — If a bound is invalid, now is outside the Date range, or the field exceeds maximumHeaderLength.
+
 ### parseContentDispositionFilename
 
 Extracts a bounded cross-platform-safe filename suggestion from an HTTP `Content-Disposition` value. A valid RFC extended `filename*` takes precedence over `filename`; malformed candidates fall through to the next candidate and then an optional fallback. Path components, controls, bidi overrides, reserved characters, and Windows device names are neutralized.

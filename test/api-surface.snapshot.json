@@ -129,6 +129,7 @@
       "parseContentDispositionFilename",
       "parseJsonPointer",
       "parsePath",
+      "parseRetryAfter",
       "partition",
       "pascalCase",
       "pick",
@@ -254,6 +255,7 @@
     "./http": [
       "HttpError",
       "parseContentDispositionFilename",
+      "parseRetryAfter",
       "redactHeaders",
       "request"
     ],

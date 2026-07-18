@@ -3,7 +3,43 @@ import { once } from "node:events";
 import { createServer } from "node:http";
 import test from "node:test";
 
-import { HttpError, parseContentDispositionFilename, redactHeaders, request } from "akashatools/http";
+import { HttpError, parseContentDispositionFilename, parseRetryAfter, redactHeaders, request } from "akashatools/http";
+
+test("Retry-After parses standard integer delays and all HTTP date forms", () => {
+  const now = Date.UTC(1994, 10, 6, 8, 49, 7);
+  assert.equal(parseRetryAfter("120", { now }), 120);
+  assert.equal(parseRetryAfter(" Sun, 06 Nov 1994 08:49:37 GMT ", { now }), 30);
+  assert.equal(parseRetryAfter("Sunday, 06-Nov-94 08:49:37 GMT", { now }), 30);
+  assert.equal(parseRetryAfter("Sun Nov  6 08:49:37 1994", { now }), 30);
+  assert.equal(parseRetryAfter("Sun, 06 Nov 1994 08:48:37 GMT", { now }), 0);
+});
+
+test("Retry-After keeps fractional API compatibility and caps separate from retry policy", () => {
+  assert.equal(parseRetryAfter("7.5"), undefined);
+  assert.equal(parseRetryAfter("7.5", { allowFractionalSeconds: true }), 7.5);
+  assert.equal(parseRetryAfter("999", { maximumDelaySeconds: 10 }), 10);
+  assert.equal(parseRetryAfter("9".repeat(100), { maximumDelaySeconds: 10 }), 10);
+  assert.equal(parseRetryAfter("9".repeat(100)), undefined);
+  assert.equal(parseRetryAfter(null), undefined);
+  assert.equal(parseRetryAfter("  "), undefined);
+});
+
+test("Retry-After rejects malformed dates and invalid parser contracts", () => {
+  const now = Date.UTC(1994, 10, 6, 8, 49, 7);
+  assert.equal(parseRetryAfter("Monday, 06-Nov-94 08:49:37 GMT", { now }), undefined);
+  assert.equal(parseRetryAfter("Sun, 31 Feb 1994 08:49:37 GMT", { now }), undefined);
+  assert.equal(parseRetryAfter("Sun, 06 Nov 1994 25:49:37 GMT", { now }), undefined);
+  assert.equal(parseRetryAfter("+7", { now }), undefined);
+  assert.equal(parseRetryAfter("7e2", { now }), undefined);
+  assert.throws(() => parseRetryAfter(/** @type {any} */ (1)), TypeError);
+  assert.throws(() => parseRetryAfter("1", /** @type {any} */ ([])), TypeError);
+  assert.throws(() => parseRetryAfter("1", { now: Number.NaN }), TypeError);
+  assert.throws(() => parseRetryAfter("1", { now: Number.MAX_VALUE }), RangeError);
+  assert.throws(() => parseRetryAfter("1", { maximumDelaySeconds: -1 }), RangeError);
+  assert.throws(() => parseRetryAfter("1", { maximumHeaderLength: 0 }), RangeError);
+  assert.throws(() => parseRetryAfter("123", { maximumHeaderLength: 2 }), RangeError);
+  assert.throws(() => parseRetryAfter("1", { allowFractionalSeconds: /** @type {any} */ (1) }), TypeError);
+});
 
 test("content-disposition filenames prefer valid extended values", () => {
   assert.equal(

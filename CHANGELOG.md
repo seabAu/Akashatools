@@ -191,6 +191,9 @@
 - Added identity-preserving `keyBy` indexes with explicit duplicate policy and
   comparator-based `lowerBound`, `upperBound`, and first-match `binarySearch`
   primitives distilled from live registry and sorted-offset consumers.
+- Added bounded `parseRetryAfter` interpretation for RFC integer delays and all
+  HTTP-date forms, with an explicit fractional-seconds compatibility option and
+  no automatic request retry policy.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

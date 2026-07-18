@@ -1,9 +1,10 @@
 # HTTP contracts and threat model
 
-The `akashatools/http` surface provides one dependency-free Fetch primitive:
-`request`. It standardizes transport mechanics without becoming an application
-API client. `HttpError` and `redactHeaders` are also exported from the category,
-the universal root, and the default `akasha` namespace.
+The `akashatools/http` surface provides one dependency-free Fetch primitive,
+`request`, plus atomic header operations. It standardizes transport mechanics
+without becoming an application API client. `HttpError`, `redactHeaders`,
+`parseContentDispositionFilename`, and `parseRetryAfter` are also exported from
+the category, universal root, default `akasha` namespace, and granular paths.
 
 ```js
 import { request } from "akashatools/http";
@@ -79,14 +80,32 @@ transparently decompressed output is counted rather than trusting a compressed
 DNS/IP controls, or an application-wide request budget. Raw-response mode opts
 out of Akashatools body protection explicitly.
 
+## Retry-After interpretation
+
+`parseRetryAfter` interprets one already-extracted field value and returns a
+delay in seconds. It accepts RFC 9110's non-negative decimal integer syntax and
+all three HTTP-date forms, validates calendar and weekday consistency, maps past
+dates to zero, bounds header work, and can cap the result. A `now` timestamp is
+injectable in Unix milliseconds for deterministic decisions. Values too large
+for safe numeric representation are invalid unless a finite cap makes their
+result unambiguous.
+
+Some current APIs emit fractional seconds even though the standard
+`delay-seconds` grammar is integer-only. That extension remains opt-in through
+`allowFractionalSeconds`; it is not silently accepted by the strict default.
+This distinction preserves practical SPLICR compatibility while keeping the
+standard contract visible. See [RFC 9110, Retry-After](https://www.rfc-editor.org/rfc/rfc9110.html#name-retry-after).
+
 ## Retry decision
 
-Akashatools performs exactly one attempt. Automatic retries are deferred until a
-real cross-project contract determines all of the following together:
+Akashatools still performs exactly one attempt. Parsing a server hint does not
+decide whether a request is safe or eligible to repeat. Automatic retries are
+deferred until a real cross-project contract determines all of the following
+together:
 
 - eligible methods, status codes, and network failures;
 - idempotency-key requirements for writes;
-- `Retry-After` parsing and server-delay caps;
+- when a parsed `Retry-After` hint overrides or floors local backoff;
 - exponential backoff, injected jitter, and attempt numbering;
 - maximum attempts and maximum total elapsed time;
 - how caller cancellation interrupts waits and active attempts.

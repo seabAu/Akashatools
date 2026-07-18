@@ -181,6 +181,12 @@ export declare const http: Readonly<{
         fetchFn?: typeof fetch;
     }): Promise<T>;
     redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+    parseRetryAfter(value: string | null | undefined, options?: {
+        now?: number;
+        maximumDelaySeconds?: number;
+        maximumHeaderLength?: number;
+        allowFractionalSeconds?: boolean;
+    }): number | undefined;
     parseContentDispositionFilename(value: string | null | undefined, options?: {
         fallback?: string;
         maximumHeaderLength?: number;
@@ -514,6 +520,7 @@ export declare const akasha: Readonly<{
     HttpError: typeof httpModule.HttpError;
     request: typeof httpModule.request;
     redactHeaders: typeof httpModule.redactHeaders;
+    parseRetryAfter: typeof httpModule.parseRetryAfter;
     parseContentDispositionFilename: typeof httpModule.parseContentDispositionFilename;
     inputTypeForType: typeof inputModule.inputTypeForType;
     inputTypeForValue: typeof inputModule.inputTypeForValue;
@@ -701,6 +708,12 @@ export declare const akasha: Readonly<{
             fetchFn?: typeof fetch;
         }): Promise<T>;
         redactHeaders(headers: HeadersInit, additionalSensitiveNames?: readonly string[]): Record<string, string>;
+        parseRetryAfter(value: string | null | undefined, options?: {
+            now?: number;
+            maximumDelaySeconds?: number;
+            maximumHeaderLength?: number;
+            allowFractionalSeconds?: boolean;
+        }): number | undefined;
         parseContentDispositionFilename(value: string | null | undefined, options?: {
             fallback?: string;
             maximumHeaderLength?: number;
