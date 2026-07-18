@@ -30,6 +30,27 @@ export type ObjectTraversalOptions = {
      */
     maxNodes?: number;
 };
+export type DeepSearchOptions = ObjectTraversalOptions & {
+    by?: "value" | "key" | "either";
+    equals?: (actual: unknown, needle: unknown, entry: ObjectTraversalEntry) => boolean;
+};
+export type DeepMatchCollectionOptions = DeepSearchOptions & {
+    maxMatches?: number;
+};
+export type DeepQueryView = {
+    has: (needle: unknown, options?: DeepSearchOptions) => boolean;
+    first: (needle: unknown, options?: DeepSearchOptions) => ObjectTraversalEntry | undefined;
+    value: (needle: unknown, options?: DeepSearchOptions) => unknown;
+    parent: (needle: unknown, options?: DeepSearchOptions) => ObjectTraversalEntry["parent"];
+    all: (needle: unknown, options?: DeepMatchCollectionOptions) => ObjectTraversalEntry[];
+    values: (needle: unknown, options?: DeepMatchCollectionOptions) => unknown[];
+    parents: (needle: unknown, options?: DeepMatchCollectionOptions) => ObjectTraversalEntry["parent"][];
+    where: (predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions) => ObjectTraversalEntry | undefined;
+    allWhere: (predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions & {
+        maxMatches?: number;
+    }) => ObjectTraversalEntry[];
+    unwrap: () => Record<PropertyKey, unknown> | unknown[];
+};
 export type JsonCloneOptions = {
     /**
      * Greatest permitted array length.
@@ -72,6 +93,28 @@ export type JsonCloneOptions = {
  * @property {boolean} [includeRoot=false] Whether to emit the root entry.
  * @property {number} [maxDepth=100] Maximum entered depth, or Infinity.
  * @property {number} [maxNodes=10000] Maximum emitted entries before failure.
+ */
+/**
+ * @typedef {ObjectTraversalOptions & {
+ *   by?: "value" | "key" | "either",
+ *   equals?: (actual: unknown, needle: unknown, entry: ObjectTraversalEntry) => boolean
+ * }} DeepSearchOptions
+ */
+/**
+ * @typedef {DeepSearchOptions & {maxMatches?: number}} DeepMatchCollectionOptions
+ */
+/**
+ * @typedef {object} DeepQueryView
+ * @property {(needle: unknown, options?: DeepSearchOptions) => boolean} has
+ * @property {(needle: unknown, options?: DeepSearchOptions) => ObjectTraversalEntry | undefined} first
+ * @property {(needle: unknown, options?: DeepSearchOptions) => unknown} value
+ * @property {(needle: unknown, options?: DeepSearchOptions) => ObjectTraversalEntry["parent"]} parent
+ * @property {(needle: unknown, options?: DeepMatchCollectionOptions) => ObjectTraversalEntry[]} all
+ * @property {(needle: unknown, options?: DeepMatchCollectionOptions) => unknown[]} values
+ * @property {(needle: unknown, options?: DeepMatchCollectionOptions) => ObjectTraversalEntry["parent"][]} parents
+ * @property {(predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions) => ObjectTraversalEntry | undefined} where
+ * @property {(predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions & {maxMatches?: number}) => ObjectTraversalEntry[]} allWhere
+ * @property {() => Record<PropertyKey, unknown> | unknown[]} unwrap
  */
 /**
  * @typedef {object} JsonCloneOptions
@@ -183,6 +226,148 @@ export declare function traverseObject(value: Record<PropertyKey, unknown> | unk
  * @since 2.0.0
  */
 export declare function findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions): ObjectTraversalEntry | undefined;
+/**
+ * Returns every deep traversal entry accepted by a predicate. Traversal order,
+ * cycle behavior, property safety, and node/depth limits match `findDeep`.
+ * `maxMatches` adds a separate output bound and throws instead of truncating.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {(entry: ObjectTraversalEntry) => boolean} predicate Match predicate evaluated in preorder.
+ * @param {ObjectTraversalOptions & {maxMatches?: number}} [options] Traversal and output work bounds.
+ * @returns {ObjectTraversalEntry[]} Every accepted entry in traversal order.
+ * @throws {TypeError} If the root, predicate, or options are invalid.
+ * @throws {RangeError} If maxNodes, maxDepth, or maxMatches is invalid/exceeded.
+ * @example
+ * findAllDeep(data, ({ key }) => key === "id");
+ * @since 2.0.0
+ */
+export declare function findAllDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: ObjectTraversalEntry) => boolean, options?: ObjectTraversalOptions & {
+    maxMatches?: number;
+}): ObjectTraversalEntry[];
+/**
+ * Checks whether any deep entry's value, key, or either side matches a needle.
+ * Matching uses `Object.is` by default; object needles therefore use identity,
+ * not implicit serialization or structural equality.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepSearchOptions} [options] Match side, equality callback, and traversal bounds.
+ * @returns {boolean} Whether a matching entry exists.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal bounds are invalid or exceeded.
+ * @example
+ * hasDeep({ user: { id: 1 } }, "id", { by: "key" }); // true
+ * @since 2.0.0
+ */
+export declare function hasDeep(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepSearchOptions): boolean;
+/**
+ * Returns the first deep entry whose value/key matches a needle, retaining its
+ * key, path, parent, and value. Use the dedicated projection wrappers when only
+ * the value or parent is needed.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepSearchOptions} [options] Match side, equality callback, and traversal bounds.
+ * @returns {ObjectTraversalEntry | undefined} First matching entry or undefined.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal bounds are invalid or exceeded.
+ * @example
+ * findDeepMatch({ status: "ready" }, "ready")?.path; // ["status"]
+ * @since 2.0.0
+ */
+export declare function findDeepMatch(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepSearchOptions): ObjectTraversalEntry | undefined;
+/**
+ * Returns the value of the first deep needle match. A matching `undefined`
+ * value and no match both project to undefined; use `findDeepMatch` when that
+ * distinction matters.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepSearchOptions} [options] Match side, equality callback, and traversal bounds.
+ * @returns {unknown} First matched value, or undefined when absent.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal bounds are invalid or exceeded.
+ * @example
+ * findDeepValue({ profile: { name: "Ada" } }, "name", { by: "key" }); // "Ada"
+ * @since 2.0.0
+ */
+export declare function findDeepValue(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepSearchOptions): unknown;
+/**
+ * Returns the immediate container of the first deep needle match. Root matches
+ * and absent matches both project to undefined; use `findDeepMatch` when that
+ * distinction matters.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepSearchOptions} [options] Match side, equality callback, and traversal bounds.
+ * @returns {ObjectTraversalEntry["parent"]} First matching parent or undefined.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal bounds are invalid or exceeded.
+ * @example
+ * findDeepParent({ user: { id: 1 } }, 1); // { id: 1 }
+ * @since 2.0.0
+ */
+export declare function findDeepParent(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepSearchOptions): ObjectTraversalEntry["parent"];
+/**
+ * Returns every entry whose value/key matches a needle, preserving traversal
+ * metadata and deterministic preorder.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepMatchCollectionOptions} [options] Match policy and traversal/output bounds.
+ * @returns {ObjectTraversalEntry[]} All matching entries in traversal order.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal/output bounds are invalid or exceeded.
+ * @example
+ * findAllDeepMatches({ one: 1, nested: { two: 1 } }, 1).length; // 2
+ * @since 2.0.0
+ */
+export declare function findAllDeepMatches(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepMatchCollectionOptions): ObjectTraversalEntry[];
+/**
+ * Returns the value projection of every deep needle match. Repeated values are
+ * retained so indexes stay aligned with `findAllDeepMatches`.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepMatchCollectionOptions} [options] Match policy and traversal/output bounds.
+ * @returns {unknown[]} Matched values in traversal order.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal/output bounds are invalid or exceeded.
+ * @example
+ * findAllDeepValues({ id: 1, nested: { id: 2 } }, "id", { by: "key" }); // [1, 2]
+ * @since 2.0.0
+ */
+export declare function findAllDeepValues(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepMatchCollectionOptions): unknown[];
+/**
+ * Returns the parent projection of every deep needle match. Duplicate parents
+ * are retained, and an included root match contributes undefined.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root.
+ * @param {unknown} needle Value or key sought without coercion.
+ * @param {DeepMatchCollectionOptions} [options] Match policy and traversal/output bounds.
+ * @returns {ObjectTraversalEntry["parent"][]} Matching parents in traversal order.
+ * @throws {TypeError} If the root or options are invalid.
+ * @throws {RangeError} If traversal/output bounds are invalid or exceeded.
+ * @example
+ * findAllDeepParents({ one: 1, two: 1 }, 1).length; // 2
+ * @since 2.0.0
+ */
+export declare function findAllDeepParents(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: DeepMatchCollectionOptions): ObjectTraversalEntry["parent"][];
+/**
+ * Creates a frozen, side-effect-free dot-style query view over structured data.
+ * Methods delegate to the same atomic traversal/search functions; creating a
+ * view never mutates the root or any global/built-in prototype.
+ *
+ * @param {Record<PropertyKey, unknown> | unknown[]} value Plain-object or array root retained by reference.
+ * @param {ObjectTraversalOptions} [options] Base traversal options overridden per method call.
+ * @returns {Readonly<DeepQueryView>} Frozen fluent search/projection view.
+ * @throws {TypeError} If the root or base options are invalid.
+ * @throws {RangeError} If base traversal bounds are invalid.
+ * @example
+ * deepQuery({ user: { id: 1 } }).has("id", { by: "key" }); // true
+ * @since 2.0.0
+ */
+export declare function deepQuery(value: Record<PropertyKey, unknown> | unknown[], options?: ObjectTraversalOptions): Readonly<DeepQueryView>;
 /**
  * Returns an object containing selected own properties.
  *

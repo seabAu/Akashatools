@@ -81,10 +81,16 @@ or absorb renderer validation/layout policy.
 
 ## Deep-query and dot-syntax boundary
 
-Existing `object.hasAtPath`, `traverseObject`, and `findDeep` already provide
-safe path lookup and first-match traversal. The next query batch will build
-explicit boolean/first/value/parent/all variants on those atomic contracts.
-Return modes will use separate names rather than positional booleans.
+Existing `object.hasAtPath`, `traverseObject`, and `findDeep` provide safe path
+lookup and first-match predicate traversal. The adopted query batch adds
+`findAllDeep` plus exact-needle `hasDeep`, first-entry, value, parent, all-entry,
+all-value, and all-parent variants. Match side is explicitly `value`, `key`, or
+`either`; equality defaults to `Object.is` and can be replaced by a callback.
+Return modes use separate names rather than positional booleans.
+
+The frozen `deepQuery(structuredData)` view now exposes `.has`, `.first`,
+`.value`, `.parent`, `.all`, `.values`, `.parents`, `.where`, and `.allWhere`
+while retaining the root by reference and changing no global state.
 
 `structuredData.has()` cannot be attached to arbitrary arrays and objects
 without mutating `Object.prototype`; that is rejected for normal imports.

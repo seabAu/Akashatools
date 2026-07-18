@@ -45,8 +45,8 @@ test("legacy consumer audit classifies root and subpath imports against the mani
     assert.equal(report.modernSubpathImportCount, 1);
     assert.equal(report.accessOccurrenceCount, 3);
     assert.equal(report.uniqueAccessCount, 3);
-    assert.equal(report.directReplacementOccurrenceCount, 2);
-    assert.equal(report.relatedOnlyOccurrenceCount, 1);
+    assert.equal(report.directReplacementOccurrenceCount, 3);
+    assert.equal(report.relatedOnlyOccurrenceCount, 0);
     assert.equal(report.noCanonicalReferenceOccurrenceCount, 0);
     assert.equal(report.unresolvedManifestOccurrenceCount, 0);
   } finally {

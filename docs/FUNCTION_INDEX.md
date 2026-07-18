@@ -36,6 +36,7 @@ drop-in compatibility.
 | `daysInMonth` | date | universal | no input mutation | `akashatools/date` | None |
 | `deepClone` | object | universal | no input mutation | `akashatools/object` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
 | `deepMerge` | object | universal | no input mutation | `akashatools/object` | None |
+| `deepQuery` | object | universal | no input mutation | `akashatools/object` | `AO.has` |
 | `defaultIfBlank` | validation | universal | no input mutation | `akashatools/validation` | `AO.replaceIfInvalid`, `Val.cleanInvalid` |
 | `defaultValueFor` | data | universal | no input mutation | `akashatools/data` | None |
 | `defaultValueForType` | data | universal | no input mutation | `akashatools/data` | None |
@@ -52,7 +53,14 @@ drop-in compatibility.
 | `fibonacci` | number | universal | no input mutation | `akashatools/number` | None |
 | `fieldDescriptorFor` | input | universal | no input mutation | `akashatools/input` | None |
 | `fieldsFromData` | input | universal | no input mutation | `akashatools/input` | None |
-| `findDeep` | object | universal | no input mutation | `akashatools/object` | `AO.has`, `AO.hasAll`, `AO.deepGetKey`, `AO.deepSearch` |
+| `findAllDeep` | object | universal | no input mutation | `akashatools/object` | `AO.objContains` |
+| `findAllDeepMatches` | object | universal | no input mutation | `akashatools/object` | `AO.deepSearchItems` |
+| `findAllDeepParents` | object | universal | no input mutation | `akashatools/object` | None |
+| `findAllDeepValues` | object | universal | no input mutation | `akashatools/object` | `AO.deepGetKey` |
+| `findDeep` | object | universal | no input mutation | `akashatools/object` | `AO.objContains`, `AO.deepSearch` |
+| `findDeepMatch` | object | universal | no input mutation | `akashatools/object` | `AO.deepSearch` |
+| `findDeepParent` | object | universal | no input mutation | `akashatools/object` | `AO.deepSearch` |
+| `findDeepValue` | object | universal | no input mutation | `akashatools/object` | `AO.deepGetKey`, `AO.deepSearch` |
 | `flatten` | array | universal | no input mutation | `akashatools/array` | `AO.flatten` |
 | `formatBytes` | number | universal | no input mutation | `akashatools/number` | None |
 | `formatDate` | date | universal | no input mutation | `akashatools/date` | `Time.convertDate`, `Time.formatDate` |
@@ -66,6 +74,7 @@ drop-in compatibility.
 | `globPaths` | node | node | no input mutation | `akashatools/node` | None |
 | `groupBy` | array | universal | no input mutation | `akashatools/array` | None |
 | `hasAtPath` | object | universal | no input mutation | `akashatools/object` | `AO.has` |
+| `hasDeep` | object | universal | no input mutation | `akashatools/object` | `AO.has`, `AO.hasAll`, `AO.objContains`, `AO.arrayContains` |
 | `HttpError` | http | universal | no input mutation | `akashatools/http` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
 | `includesText` | string | universal | no input mutation | `akashatools/string` | `AO.valContains`, `String.subStringSearch` |
 | `initializeLike` | data | universal | no input mutation | `akashatools/data` | `AO.cleanJSON` |
@@ -196,14 +205,14 @@ drop-in compatibility.
 | `AO.filterKeys` | replacement: `object.pick` | Adopted as `object.pick`. |
 | `AO.filterData` | None | Defer or keep app-local until real query semantics are captured. |
 | `AO.filterDataFast` | None | Reject as a duplicate implementation; disposition behavior-by-behavior with `filterData`. |
-| `AO.has` | related: `object.hasAtPath`, related: `object.findDeep` | Use `hasAtPath` for known paths or `findDeep` for bounded recursive key discovery. |
-| `AO.hasAll` | related: `object.findDeep` | Reject implementation; compose the intended every-key policy explicitly with bounded `findDeep` calls. |
+| `AO.has` | related: `object.hasAtPath`, related: `object.hasDeep`, related: `object.deepQuery` | Use `hasAtPath` for known paths or `hasDeep`/`deepQuery(value).has` for bounded recursive key/value discovery. |
+| `AO.hasAll` | related: `object.hasDeep` | Reject implementation; compose the intended every-key policy explicitly with bounded `hasDeep` calls. |
 | `AO.valContains` | replacement: `string.includesText` | Adopted for actual strings as `string.includesText`; non-string search requires a separate explicit serializer/search API. |
-| `AO.objContains` | None | Merge into canonical traversal/search. |
-| `AO.arrayContains` | None | Merge into canonical traversal/search; primitive membership uses native `includes`. |
-| `AO.deepGetKey` | related: `object.findDeep` | Compose `object.findDeep(value, ({ key }) => key === target)?.value`; missing results now use undefined. |
-| `AO.deepSearch` | related: `object.findDeep` | Compose `object.findDeep` and select its value or parent from the path-aware result. |
-| `AO.deepSearchItems` | None | Reject implementation; merge behavior into canonical traversal. |
+| `AO.objContains` | replacement: `object.hasDeep`, replacement: `object.findDeep`, replacement: `object.findAllDeep` | Adopted exact-match replacement `hasDeep`; predicate search uses `findDeep`/`findAllDeep`. |
+| `AO.arrayContains` | replacement: `object.hasDeep` | Adopted deep replacement `hasDeep`; primitive membership still uses native `includes`. |
+| `AO.deepGetKey` | replacement: `object.findDeepValue`, replacement: `object.findAllDeepValues` | Adopted explicit projections `findDeepValue`/`findAllDeepValues` with `{ by: "key" }`. |
+| `AO.deepSearch` | related: `object.findDeepMatch`, related: `object.findDeepValue`, related: `object.findDeepParent`, related: `object.findDeep` | Split into `findDeepMatch`, `findDeepValue`, and `findDeepParent`; predicate matching retains `findDeep`. |
+| `AO.deepSearchItems` | related: `object.findAllDeepMatches` | Reject implementation; adopted all-match replacement `findAllDeepMatches`. |
 | `AO.deepFindSet` | related: `object.setAtPath` | Reject; use `setAtPath` for known paths and design predicate-based deep update separately. |
 | `AO.cloneObj` | replacement: `object.deepClone` | Adopted replacement `object.deepClone` using `structuredClone`. |
 | `AO.deepCopy` | replacement: `object.deepClone` | Adopted replacement `object.deepClone`. |

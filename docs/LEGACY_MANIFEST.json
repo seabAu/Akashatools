@@ -378,7 +378,15 @@
           "relation": "related"
         },
         {
-          "name": "findDeep",
+          "name": "hasDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        },
+        {
+          "name": "deepQuery",
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
@@ -386,16 +394,16 @@
           "relation": "related"
         }
       ],
-      "decision": "Use `hasAtPath` for known paths or `findDeep` for bounded recursive key discovery.",
+      "decision": "Use `hasAtPath` for known paths or `hasDeep`/`deepQuery(value).has` for bounded recursive key/value discovery.",
       "behavior": "Recursively checks for a key, mixing arrays/objects and legacy validity rules.",
-      "evidence": "Current consumer audit and 2.x path/traversal tests."
+      "evidence": "Current consumer audit and 2.x path/query tests."
     },
     {
       "module": "AO.js",
       "name": "hasAll",
       "canonicalReferences": [
         {
-          "name": "findDeep",
+          "name": "hasDeep",
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
@@ -403,9 +411,9 @@
           "relation": "related"
         }
       ],
-      "decision": "Reject implementation; compose the intended every-key policy explicitly with bounded `findDeep` calls.",
+      "decision": "Reject implementation; compose the intended every-key policy explicitly with bounded `hasDeep` calls.",
       "behavior": "Attempts recursive presence of all keys, with loop-return control-flow defects.",
-      "evidence": "Defect proven; current consumer audit and 2.x traversal tests."
+      "evidence": "Defect proven; current consumer audit and 2.x query tests."
     },
     {
       "module": "AO.js",
@@ -427,40 +435,106 @@
     {
       "module": "AO.js",
       "name": "objContains",
-      "canonicalReferences": [],
-      "decision": "Merge into canonical traversal/search.",
+      "canonicalReferences": [
+        {
+          "name": "hasDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        },
+        {
+          "name": "findDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        },
+        {
+          "name": "findAllDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted exact-match replacement `hasDeep`; predicate search uses `findDeep`/`findAllDeep`.",
       "behavior": "Recursively searches object values but relies on returns inside `forEach`.",
-      "evidence": "Source reviewed; control-flow risk."
+      "evidence": "Source reviewed; 2.x query tests."
     },
     {
       "module": "AO.js",
       "name": "arrayContains",
-      "canonicalReferences": [],
-      "decision": "Merge into canonical traversal/search; primitive membership uses native `includes`.",
+      "canonicalReferences": [
+        {
+          "name": "hasDeep",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
+        }
+      ],
+      "decision": "Adopted deep replacement `hasDeep`; primitive membership still uses native `includes`.",
       "behavior": "Recursively searches array values with inconsistent object handling.",
-      "evidence": "Source reviewed."
+      "evidence": "Source reviewed; 2.x query tests."
     },
     {
       "module": "AO.js",
       "name": "deepGetKey",
       "canonicalReferences": [
         {
-          "name": "findDeep",
+          "name": "findDeepValue",
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
           "importPath": "akashatools/object",
-          "relation": "related"
+          "relation": "replacement"
+        },
+        {
+          "name": "findAllDeepValues",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "replacement"
         }
       ],
-      "decision": "Compose `object.findDeep(value, ({ key }) => key === target)?.value`; missing results now use undefined.",
+      "decision": "Adopted explicit projections `findDeepValue`/`findAllDeepValues` with `{ by: \"key\" }`.",
       "behavior": "Recursively returns values associated with a matching key.",
-      "evidence": "Current consumer audit and 2.x bounded traversal tests."
+      "evidence": "Current consumer audit and 2.x bounded query tests."
     },
     {
       "module": "AO.js",
       "name": "deepSearch",
       "canonicalReferences": [
+        {
+          "name": "findDeepMatch",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        },
+        {
+          "name": "findDeepValue",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        },
+        {
+          "name": "findDeepParent",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        },
         {
           "name": "findDeep",
           "category": "object",
@@ -470,17 +544,26 @@
           "relation": "related"
         }
       ],
-      "decision": "Compose `object.findDeep` and select its value or parent from the path-aware result.",
+      "decision": "Split into `findDeepMatch`, `findDeepValue`, and `findDeepParent`; predicate matching retains `findDeep`.",
       "behavior": "Recursively searches a named key using a predicate and optionally returns a parent.",
-      "evidence": "Current consumer audit and 2.x bounded traversal tests."
+      "evidence": "Current consumer audit and 2.x bounded query tests."
     },
     {
       "module": "AO.js",
       "name": "deepSearchItems",
-      "canonicalReferences": [],
-      "decision": "Reject implementation; merge behavior into canonical traversal.",
+      "canonicalReferences": [
+        {
+          "name": "findAllDeepMatches",
+          "category": "object",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/object",
+          "relation": "related"
+        }
+      ],
+      "decision": "Reject implementation; adopted all-match replacement `findAllDeepMatches`.",
       "behavior": "Deep search variant that calls `this.deepSearchItems`, making module invocation fragile.",
-      "evidence": "Defect proven from source."
+      "evidence": "Defect proven from source; 2.x query tests."
     },
     {
       "module": "AO.js",

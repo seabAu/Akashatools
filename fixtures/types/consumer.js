@@ -1,7 +1,7 @@
 import akasha, { chunk, validation } from "akashatools";
 import { initializeLike } from "akashatools/data";
 import { fieldsFromData } from "akashatools/input";
-import { getAtPath } from "akashatools/object";
+import { deepQuery, getAtPath } from "akashatools/object";
 import { secureRandomUuid } from "akashatools/random";
 
 /** @type {number[][]} */
@@ -16,10 +16,12 @@ const identifier = secureRandomUuid();
 const initialized = initializeLike({ title: "Draft" });
 /** @type {string} */
 const fieldName = fieldsFromData({ title: "Draft" })[0].name;
+/** @type {boolean} */
+const hasTitle = deepQuery({ title: "Draft" }).has("title", { by: "key" });
 
 // @ts-expect-error Unknown categories must not appear on the default namespace.
 akasha.schema;
 // @ts-expect-error Email validation requires exactly one argument.
 validation.isEmail("a@example.com", "extra");
 
-void [chunks, valid, nested, identifier, initialized, fieldName];
+void [chunks, valid, nested, identifier, initialized, fieldName, hasTitle];

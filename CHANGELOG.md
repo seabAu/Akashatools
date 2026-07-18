@@ -11,6 +11,10 @@
 - Added the universal `input` category with separate scalar input inference,
   composite control classification, and frozen framework-neutral field
   descriptors for plain objects and arrays.
+- Expanded bounded object traversal with predicate/all-match collection and
+  explicit exact-needle boolean, entry, value, parent, and all projections.
+- Added frozen `deepQuery(data).has(...)` dot-style syntax without modifying
+  `Object.prototype`, `Array.prototype`, constructors, or import-time globals.
 - Reclassified the Mindspace/portfolio data and input families so generic
   introspection/default/control primitives can compose beneath application-owned
   Mongoose, React, layout, custom-ID, and product-schema adapters.

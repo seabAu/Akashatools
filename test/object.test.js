@@ -6,9 +6,18 @@ import {
   cloneJson,
   deepClone,
   deepMerge,
+  deepQuery,
+  findAllDeep,
+  findAllDeepMatches,
+  findAllDeepParents,
+  findAllDeepValues,
   findDeep,
+  findDeepMatch,
+  findDeepParent,
+  findDeepValue,
   getAtPath,
   hasAtPath,
+  hasDeep,
   isPlainObject,
   parsePath,
   pickAllowed,
@@ -240,5 +249,93 @@ test("object traversal is cycle-safe, bounded, and does not invoke accessors", (
   assert.deepEqual(findDeep(source, ({ value }) => value === "present")?.path, ["sparse", 1]);
   assert.throws(() => traverseObject(source, { maxNodes: 2 }), RangeError);
   assert.throws(() => traverseObject(source, { maxDepth: -1 }), RangeError);
+  assert.throws(() => traverseObject(source, /** @type {any} */ ([])), /plain object/);
   assert.throws(() => findDeep(source, /** @type {any} */ (null)), TypeError);
+});
+
+test("deep predicate collection preserves preorder and bounds match output", () => {
+  const source = { first: { id: 1 }, second: [{ id: 2 }, { other: 3 }] };
+  assert.deepEqual(
+    findAllDeep(source, ({ key }) => key === "id").map(({ path }) => path),
+    [
+      ["first", "id"],
+      ["second", 0, "id"],
+    ],
+  );
+  assert.throws(() => findAllDeep(source, ({ key }) => key === "id", { maxMatches: 1 }), /maxMatches/);
+  assert.throws(() => findAllDeep(source, () => true, { maxMatches: 0 }), /positive safe integer/);
+  assert.throws(() => findAllDeep(source, /** @type {any} */ (null)), /predicate/);
+});
+
+test("deep needle search has explicit match and projection return shapes", () => {
+  const source = {
+    status: "READY",
+    nested: { status: "ready", value: 1 },
+    items: [{ id: 1 }, { id: 2 }],
+  };
+
+  assert.equal(hasDeep(source, "status", { by: "key" }), true);
+  assert.equal(hasDeep(source, "missing", { by: "either" }), false);
+  assert.deepEqual(findDeepMatch(source, 2)?.path, ["items", 1, "id"]);
+  assert.equal(findDeepValue(source, "id", { by: "key" }), 1);
+  assert.equal(findDeepParent(source, 2), source.items[1]);
+  assert.deepEqual(findAllDeepValues(source, "status", { by: "key" }), ["READY", "ready"]);
+  assert.deepEqual(findAllDeepParents(source, "id", { by: "key" }), [source.items[0], source.items[1]]);
+  assert.deepEqual(
+    findAllDeepMatches(source, "ready", {
+      equals: (actual, needle) =>
+        typeof actual === "string" && typeof needle === "string" && actual.toLowerCase() === needle.toLowerCase(),
+    }).map(({ path }) => path),
+    [["status"], ["nested", "status"]],
+  );
+
+  assert.equal(findDeepMatch(source, source, { includeRoot: true })?.parent, undefined);
+  assert.equal(findDeepValue(source, "missing"), undefined);
+  assert.equal(findDeepParent(source, "missing"), undefined);
+  assert.throws(() => hasDeep(source, 1, { by: "property" }), /by must/);
+  assert.throws(() => hasDeep(source, 1, { equals: true }), /equals must/);
+  assert.throws(() => findAllDeepMatches({ one: 1, two: 1 }, 1, { maxMatches: 1 }), /maxMatches/);
+});
+
+test("deepQuery provides frozen dot syntax without prototype mutation", () => {
+  const originalObjectHas = Reflect.get(Object.prototype, "has");
+  const originalArrayHas = Reflect.get(Array.prototype, "has");
+  const source = { user: { id: 1, active: false }, rows: [{ id: 2 }] };
+  const query = deepQuery(source, { maxDepth: 1 });
+
+  assert.equal(Object.isFrozen(query), true);
+  assert.equal(query.unwrap(), source);
+  assert.equal(query.has("user", { by: "key" }), true);
+  assert.equal(query.has("active", { by: "key" }), false);
+  assert.equal(query.has("active", { by: "key", maxDepth: 2 }), true);
+  assert.deepEqual(query.first(2, { maxDepth: 3 })?.path, ["rows", 0, "id"]);
+  assert.equal(query.value("active", { by: "key", maxDepth: 2 }), false);
+  assert.equal(query.parent(false, { maxDepth: 2 }), source.user);
+  assert.deepEqual(query.values("id", { by: "key", maxDepth: 3 }), [1, 2]);
+  assert.deepEqual(query.parents("id", { by: "key", maxDepth: 3 }), [source.user, source.rows[0]]);
+  assert.equal(query.all(1, { maxDepth: 3 }).length, 1);
+  assert.deepEqual(query.where(({ key }) => key === "active", { maxDepth: 2 })?.path, ["user", "active"]);
+  assert.equal(query.allWhere(({ key }) => key === "id", { maxDepth: 3 }).length, 2);
+  assert.equal(Reflect.get(Object.prototype, "has"), originalObjectHas);
+  assert.equal(Reflect.get(Array.prototype, "has"), originalArrayHas);
+  assert.throws(() => deepQuery(source, /** @type {any} */ ([])), /plain object/);
+  assert.throws(() => query.has(1, /** @type {any} */ ([])), /plain object/);
+});
+
+test("deep needle searches retain cycle and accessor safety", () => {
+  let getterCalls = 0;
+  const source = { nested: { value: 1 } };
+  source.self = source;
+  Object.defineProperty(source.nested, "computed", {
+    enumerable: true,
+    get() {
+      getterCalls += 1;
+      return "unsafe";
+    },
+  });
+
+  assert.deepEqual(findAllDeepValues(source, "value", { by: "key" }), [1]);
+  assert.equal(hasDeep(source, "unsafe"), false);
+  assert.equal(getterCalls, 0);
+  assert.throws(() => hasDeep(source, "missing", { maxNodes: 1 }), /maxNodes/);
 });

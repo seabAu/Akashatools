@@ -12,7 +12,8 @@ const expectations = [
   ["validation", "akasha.validation.", ["isEmail", "isJson", "isPlainObjectArray"]],
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
   ["input", "akasha.input.", ["controlTypeForValue", "fieldsFromData", "inputTypeForType"]],
-  ["flat", "akasha.", ["chunk", "fieldsFromData", "initializeLike", "isEmail", "request"]],
+  ["object", "akasha.object.", ["deepQuery", "findAllDeepValues", "hasDeep"]],
+  ["flat", "akasha.", ["chunk", "deepQuery", "fieldsFromData", "initializeLike", "isEmail", "request"]],
 ];
 const files = [];
 

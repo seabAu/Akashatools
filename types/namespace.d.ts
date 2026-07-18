@@ -214,6 +214,17 @@ export declare const object: Readonly<{
     setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
     traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry[];
     findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry | undefined;
+    findAllDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions & {
+        maxMatches?: number;
+    }): objectModule.ObjectTraversalEntry[];
+    hasDeep(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): boolean;
+    findDeepMatch(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): objectModule.ObjectTraversalEntry | undefined;
+    findDeepValue(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): unknown;
+    findDeepParent(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): objectModule.ObjectTraversalEntry["parent"];
+    findAllDeepMatches(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepMatchCollectionOptions): objectModule.ObjectTraversalEntry[];
+    findAllDeepValues(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepMatchCollectionOptions): unknown[];
+    findAllDeepParents(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepMatchCollectionOptions): objectModule.ObjectTraversalEntry["parent"][];
+    deepQuery(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): Readonly<objectModule.DeepQueryView>;
     pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
     omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
     deepClone<T>(value: T, options?: StructuredSerializeOptions): T;
@@ -342,6 +353,15 @@ export declare const akasha: Readonly<{
     setAtPath: typeof objectModule.setAtPath;
     traverseObject: typeof objectModule.traverseObject;
     findDeep: typeof objectModule.findDeep;
+    findAllDeep: typeof objectModule.findAllDeep;
+    hasDeep: typeof objectModule.hasDeep;
+    findDeepMatch: typeof objectModule.findDeepMatch;
+    findDeepValue: typeof objectModule.findDeepValue;
+    findDeepParent: typeof objectModule.findDeepParent;
+    findAllDeepMatches: typeof objectModule.findAllDeepMatches;
+    findAllDeepValues: typeof objectModule.findAllDeepValues;
+    findAllDeepParents: typeof objectModule.findAllDeepParents;
+    deepQuery: typeof objectModule.deepQuery;
     pick: typeof objectModule.pick;
     omit: typeof objectModule.omit;
     deepClone: typeof objectModule.deepClone;
@@ -673,6 +693,17 @@ export declare const akasha: Readonly<{
         setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
         traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry[];
         findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry | undefined;
+        findAllDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions & {
+            maxMatches?: number;
+        }): objectModule.ObjectTraversalEntry[];
+        hasDeep(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): boolean;
+        findDeepMatch(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): objectModule.ObjectTraversalEntry | undefined;
+        findDeepValue(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): unknown;
+        findDeepParent(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepSearchOptions): objectModule.ObjectTraversalEntry["parent"];
+        findAllDeepMatches(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepMatchCollectionOptions): objectModule.ObjectTraversalEntry[];
+        findAllDeepValues(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepMatchCollectionOptions): unknown[];
+        findAllDeepParents(value: Record<PropertyKey, unknown> | unknown[], needle: unknown, options?: objectModule.DeepMatchCollectionOptions): objectModule.ObjectTraversalEntry["parent"][];
+        deepQuery(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): Readonly<objectModule.DeepQueryView>;
         pick<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
         omit<T extends object>(value: T, keys: readonly (keyof T)[]): Partial<T>;
         deepClone<T>(value: T, options?: StructuredSerializeOptions): T;

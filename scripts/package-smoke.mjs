@@ -42,6 +42,7 @@ import akasha, { chunk, isEmail } from "akashatools";
 import { chunk as categoryChunk } from "akashatools/array";
 import { defaultValueForType, initializeLike } from "akashatools/data";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
+import { deepQuery, findAllDeepValues } from "akashatools/object";
 import { resolveContainedPath } from "akashatools/node";
 
 assert.deepEqual(chunk([1, 2, 3], 2), [[1, 2], [3]]);
@@ -53,6 +54,8 @@ assert.equal(defaultValueForType(Boolean), false);
 assert.deepEqual(initializeLike({ title: "Draft" }), { title: "" });
 assert.equal(inputTypeForValue(false), "checkbox");
 assert.equal(fieldsFromData({ title: "Draft" })[0].name, "title");
+assert.equal(deepQuery({ id: 1 }).has("id", { by: "key" }), true);
+assert.deepEqual(findAllDeepValues({ one: { id: 1 } }, "id", { by: "key" }), [1]);
 assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/srv/data", "report.json"));
 `,
   );
@@ -64,6 +67,7 @@ assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/sr
 import akasha, { chunk, request } from "akashatools";
 import { analyzeArrayTypes } from "akashatools/data";
 import { controlTypeForValue } from "akashatools/input";
+import { deepQuery } from "akashatools/object";
 import { HttpError } from "akashatools/http";
 import type { JsonContract } from "akashatools/validation";
 
@@ -71,10 +75,11 @@ const chunks: number[][] = chunk([1, 2, 3], 2);
 const nested: number[][] = akasha.array.chunk([1, 2, 3], 2);
 const primaryType: string | undefined = analyzeArrayTypes([1, 2]).primaryType;
 const control: string = controlTypeForValue([{ id: 1 }]);
+const hasId: boolean = deepQuery({ id: 1 }).has("id", { by: "key" });
 const response: Promise<{ ok: boolean }> = request<{ ok: boolean }>("https://example.com");
 const contract: JsonContract = { type: "object", properties: { ok: { type: "boolean" } } };
 const code: HttpError["code"] = "TIMEOUT";
-void [chunks, nested, primaryType, control, response, contract, code];
+void [chunks, nested, primaryType, control, hasId, response, contract, code];
 `,
   );
   await writeFile(

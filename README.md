@@ -87,6 +87,21 @@ array.unique([1, 1, 2]);
 object.hasAtPath({ user: { id: 1 } }, "user.id");
 ```
 
+For bounded deep searches with dot-style discovery, wrap the data explicitly:
+
+```js
+import { deepQuery, findAllDeepValues, hasDeep } from "akashatools/object";
+
+hasDeep({ user: { id: 1 } }, "id", { by: "key" }); // true
+findAllDeepValues({ one: { id: 1 }, two: { id: 2 } }, "id", { by: "key" });
+// [1, 2]
+
+deepQuery({ user: { id: 1 } }).has("id", { by: "key" }); // true
+```
+
+The wrapper is syntactic sugar over the same functions. Normal imports never
+patch built-in or object prototypes.
+
 Node-only functions use a separate entry point so browser/shared imports never
 load Node filesystem modules:
 

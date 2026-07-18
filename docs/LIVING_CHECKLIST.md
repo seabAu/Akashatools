@@ -399,10 +399,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 145 current public declarations are complete, with parameter/return prose,
+  All 154 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  145 current public declarations by `npm run check:docs`.
+  154 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -573,10 +573,11 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
   type/value-to-native-input mapping, declared/runtime control classification,
   single field descriptors, and direct data-to-field descriptors without React,
   Mongoose, or application schemas.
-- [ ] Expand bounded deep query/search operations into an explicit `has` family
+- [x] Expand bounded deep query/search operations into an explicit `has` family
   that can return boolean, first match, value, parent, or all matches without
-  changing return shape behind boolean flags.
-- [ ] Add a side-effect-free fluent query wrapper for discoverable dot syntax.
+  changing return shape behind boolean flags. Predicate and exact-needle cores
+  remain separate, with key/value/either matching and output bounds.
+- [x] Add a side-effect-free `deepQuery(data).has(...)` fluent query wrapper for discoverable dot syntax.
   Normal imports must remain inert; direct arbitrary `value.has()` would require
   `Object.prototype` mutation and is not permitted on the default surface.
 - [ ] Decide and test whether an explicit opt-in augmentation entry can safely

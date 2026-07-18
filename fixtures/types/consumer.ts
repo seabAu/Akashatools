@@ -13,6 +13,7 @@ import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { HttpError, request as categoryRequest } from "akashatools/http";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
+import { deepQuery, findAllDeepValues } from "akashatools/object";
 import type { JsonContract } from "akashatools/validation";
 
 const values: number[][] = chunk([1, 2, 3], 2);
@@ -26,6 +27,8 @@ const defaultString: unknown = data.defaultValueForType(String);
 const textInput: string | undefined = inputTypeForValue("Ada");
 const fieldName: string = fieldsFromData({ name: "Ada" })[0].name;
 const nestedInput: string | undefined = input.inputTypeForType(Boolean);
+const hasId: boolean = deepQuery({ user: { id: 1 } }).has("id", { by: "key" });
+const ids: unknown[] = findAllDeepValues({ user: { id: 1 } }, "id", { by: "key" });
 const validEmail: boolean = validation.isEmail("person@example.com");
 const rootPredicate: boolean = isEmail("person@example.com");
 const path: string = resolveContainedPath("/srv/data", "report.json");
@@ -50,6 +53,7 @@ void [
   values, categoryValues, nestedValues, flatValues, namedNamespaceValues,
   initialized, primaryType, defaultString,
   textInput, fieldName, nestedInput,
+  hasId, ids,
   validEmail, rootPredicate, path, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract,
 ];

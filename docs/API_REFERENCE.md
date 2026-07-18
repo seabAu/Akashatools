@@ -1124,6 +1124,132 @@ Throws:
 - `TypeError` — If the root, predicate, or options are invalid.
 - `RangeError` — If traversal would exceed `maxNodes` before a match.
 
+### findAllDeep
+
+Returns every deep traversal entry accepted by a predicate. Traversal order, cycle behavior, property safety, and node/depth limits match `findDeep`. `maxMatches` adds a separate output bound and throws instead of truncating.
+
+- Signature: `findAllDeep()`
+- Import: `import { findAllDeep } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `ObjectTraversalEntry[]` — Every accepted entry in traversal order.
+
+Throws:
+- `TypeError` — If the root, predicate, or options are invalid.
+- `RangeError` — If maxNodes, maxDepth, or maxMatches is invalid/exceeded.
+
+### hasDeep
+
+Checks whether any deep entry's value, key, or either side matches a needle. Matching uses `Object.is` by default; object needles therefore use identity, not implicit serialization or structural equality.
+
+- Signature: `hasDeep()`
+- Import: `import { hasDeep } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `boolean` — Whether a matching entry exists.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal bounds are invalid or exceeded.
+
+### findDeepMatch
+
+Returns the first deep entry whose value/key matches a needle, retaining its key, path, parent, and value. Use the dedicated projection wrappers when only the value or parent is needed.
+
+- Signature: `findDeepMatch()`
+- Import: `import { findDeepMatch } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `ObjectTraversalEntry | undefined` — First matching entry or undefined.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal bounds are invalid or exceeded.
+
+### findDeepValue
+
+Returns the value of the first deep needle match. A matching `undefined` value and no match both project to undefined; use `findDeepMatch` when that distinction matters.
+
+- Signature: `findDeepValue()`
+- Import: `import { findDeepValue } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown` — First matched value, or undefined when absent.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal bounds are invalid or exceeded.
+
+### findDeepParent
+
+Returns the immediate container of the first deep needle match. Root matches and absent matches both project to undefined; use `findDeepMatch` when that distinction matters.
+
+- Signature: `findDeepParent()`
+- Import: `import { findDeepParent } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `ObjectTraversalEntry["parent"]` — First matching parent or undefined.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal bounds are invalid or exceeded.
+
+### findAllDeepMatches
+
+Returns every entry whose value/key matches a needle, preserving traversal metadata and deterministic preorder.
+
+- Signature: `findAllDeepMatches()`
+- Import: `import { findAllDeepMatches } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `ObjectTraversalEntry[]` — All matching entries in traversal order.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal/output bounds are invalid or exceeded.
+
+### findAllDeepValues
+
+Returns the value projection of every deep needle match. Repeated values are retained so indexes stay aligned with `findAllDeepMatches`.
+
+- Signature: `findAllDeepValues()`
+- Import: `import { findAllDeepValues } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown[]` — Matched values in traversal order.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal/output bounds are invalid or exceeded.
+
+### findAllDeepParents
+
+Returns the parent projection of every deep needle match. Duplicate parents are retained, and an included root match contributes undefined.
+
+- Signature: `findAllDeepParents()`
+- Import: `import { findAllDeepParents } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `ObjectTraversalEntry["parent"][]` — Matching parents in traversal order.
+
+Throws:
+- `TypeError` — If the root or options are invalid.
+- `RangeError` — If traversal/output bounds are invalid or exceeded.
+
+### deepQuery
+
+Creates a frozen, side-effect-free dot-style query view over structured data. Methods delegate to the same atomic traversal/search functions; creating a view never mutates the root or any global/built-in prototype.
+
+- Signature: `deepQuery()`
+- Import: `import { deepQuery } from "akashatools/object"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Readonly<DeepQueryView>` — Frozen fluent search/projection view.
+
+Throws:
+- `TypeError` — If the root or base options are invalid.
+- `RangeError` — If base traversal bounds are invalid.
+
 ### pick
 
 Returns an object containing selected own properties.
