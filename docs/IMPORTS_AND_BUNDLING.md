@@ -72,8 +72,8 @@ and both raw and gzip byte counts. The 2026-07-18 measurements are:
 | Category `chunk` | 321 | 252 | 400 / 300 |
 | Category namespace `array.chunk` | 321 | 252 | 400 / 300 |
 | Granular `akashatools/array/chunk` | 321 | 252 | 400 / 300 |
-| Default flat `akasha.chunk` | 70,874 | 21,409 | 75,000 / 24,000 |
-| Default category `akasha.array.chunk` | 70,880 | 21,412 | 75,000 / 24,000 |
+| Default flat `akasha.chunk` | 72,180 | 21,741 | 75,000 / 24,000 |
+| Default category `akasha.array.chunk` | 72,186 | 21,744 | 75,000 / 24,000 |
 | Side-effect-only root import | 0 | 20 | 0 / 20 |
 
 The actual generated granular method import is byte-identical to the named-root
@@ -95,10 +95,10 @@ smaller in both raw and gzip output and is included in `npm run bundle:check`.
 
 | Consumer surface | Functions | Focused raw/gzip | Default raw/gzip | Raw/gzip saved |
 | --- | ---: | ---: | ---: | ---: |
-| Mindspace universal | 10 | 7,388 / 2,666 | 70,990 / 21,464 | 63,602 / 18,798 |
-| Portfolio rebuild | 4 | 5,802 / 2,323 | 70,959 / 21,431 | 65,157 / 19,108 |
-| COMPOSR | 7 | 5,390 / 2,018 | 70,978 / 21,467 | 65,588 / 19,449 |
-| SPLICR | 3 | 3,806 / 1,680 | 70,914 / 21,418 | 67,108 / 19,738 |
+| Mindspace universal | 10 | 7,388 / 2,666 | 72,296 / 21,792 | 64,908 / 19,126 |
+| Portfolio rebuild | 4 | 5,802 / 2,324 | 72,265 / 21,761 | 66,463 / 19,437 |
+| COMPOSR | 7 | 5,390 / 2,017 | 72,284 / 21,795 | 66,894 / 19,778 |
+| SPLICR | 3 | 3,806 / 1,681 | 72,220 / 21,748 | 68,414 / 20,067 |
 
 These 2026-07-18 esbuild 0.28.1 measurements use minified ES2022 ESM. They
 isolate Akashatools dependency cost rather than claiming a whole-application

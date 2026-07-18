@@ -1191,6 +1191,49 @@ Checks whether every segment of a nested own-property path exists.
 Throws:
 - `TypeError | RangeError` — If the path contract is invalid.
 
+### parseJsonPointer
+
+Parses an RFC 6901 JSON Pointer into decoded string reference tokens. The empty pointer addresses the document root. Non-empty pointers must begin with `/`; `~0` decodes to `~` and `~1` decodes to `/`. Prototype-mutating tokens are rejected even though they could be ordinary JSON keys, preserving the package-wide safe-path boundary.
+
+- Signature: `parseJsonPointer()`
+- Import: `import { parseJsonPointer } from "akashatools/object"`
+- Granular import: `import parseJsonPointer from "akashatools/object/parseJsonPointer"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `string[]` — Fresh decoded token array; numeric-looking tokens remain strings until evaluated against an array.
+
+Throws:
+- `TypeError` — If pointer syntax or an escape/prototype-mutating token is invalid.
+- `RangeError` — If the pointer exceeds 10,000 code units or 100 tokens.
+
+### getAtJsonPointer
+
+Reads a value through an RFC 6901 JSON Pointer. Traversal enters only arrays and plain objects, uses own data properties, and never invokes accessors. Array tokens use canonical unsigned decimal spelling (`0` or a nonzero digit followed by digits); sparse/missing elements and `-` are absent. A fallback is returned only for absence, not for an existing `undefined` value.
+
+- Signature: `getAtJsonPointer()`
+- Import: `import { getAtJsonPointer } from "akashatools/object"`
+- Granular import: `import getAtJsonPointer from "akashatools/object/getAtJsonPointer"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `unknown | T` — Referenced own data-property value, root, or fallback.
+
+Throws:
+- `TypeError | RangeError` — If pointer syntax is invalid or traversal encounters an accessor.
+
+### hasAtJsonPointer
+
+Checks whether an RFC 6901 JSON Pointer resolves through own data properties. The empty pointer always resolves to the supplied root, including an `undefined` root. Array, accessor, unsafe-token, and work-bound behavior is identical to `getAtJsonPointer`.
+
+- Signature: `hasAtJsonPointer()`
+- Import: `import { hasAtJsonPointer } from "akashatools/object"`
+- Granular import: `import hasAtJsonPointer from "akashatools/object/hasAtJsonPointer"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `boolean` — Whether the complete pointer resolves, even when its value is undefined.
+
+Throws:
+- `TypeError | RangeError` — If pointer syntax is invalid or traversal encounters an accessor.
+
 ### setAtPath
 
 Sets a nested value while structurally sharing untouched objects and arrays. Missing containers are inferred from the following path segment. If an existing leaf is `Object.is`-identical to `nextValue`, the original root is returned without allocating replacement ancestors.

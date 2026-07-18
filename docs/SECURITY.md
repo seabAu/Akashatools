@@ -11,6 +11,13 @@ the boundaries callers must preserve.
 own properties, so inherited attacker-controlled values are never traversed.
 Paths are bounded to 10,000 code units and 100 segments before recursive writes.
 
+`parseJsonPointer`, `getAtJsonPointer`, and `hasAtJsonPointer` provide a separate
+RFC 6901 spelling for JSON interchange. They retain the same unsafe-token and
+own-property boundary, additionally enter only arrays/plain objects and reject
+accessors without invoking them. Array tokens must be canonical unsigned decimal
+indices; empty-root and escaped-token semantics remain standard. These readers
+do not support URI-fragment `#` pointers or authorize writes.
+
 `deepMerge` accepts only plain objects, copies own enumerable string-keyed data
 properties, and rejects dangerous names, enumerable symbols, and enumerable
 accessors without invoking getters. Arrays and non-plain instances are replaced

@@ -148,6 +148,85 @@ export function hasAtPath(value, path) {
 }
 
 /**
+ * Parses an RFC 6901 JSON Pointer into decoded string reference tokens. The
+ * empty pointer addresses the document root. Non-empty pointers must begin
+ * with `/`; `~0` decodes to `~` and `~1` decodes to `/`. Prototype-mutating
+ * tokens are rejected even though they could be ordinary JSON keys, preserving
+ * the package-wide safe-path boundary.
+ *
+ * @param {string} pointer JSON Pointer text, not a URI-fragment `#` representation.
+ * @returns {string[]} Fresh decoded token array; numeric-looking tokens remain strings until evaluated against an array.
+ * @throws {TypeError} If pointer syntax or an escape/prototype-mutating token is invalid.
+ * @throws {RangeError} If the pointer exceeds 10,000 code units or 100 tokens.
+ * @example
+ * parseJsonPointer("/profile/a~1b/m~0n"); // ["profile", "a/b", "m~n"]
+ * @since 2.0.0
+ */
+export function parseJsonPointer(pointer) {
+  if (typeof pointer !== "string") throw new TypeError("pointer must be a string.");
+  if (pointer.length > maximumPathLength) {
+    throw new RangeError(`pointer cannot exceed ${maximumPathLength} code units.`);
+  }
+  if (pointer === "") return [];
+  if (!pointer.startsWith("/")) {
+    throw new TypeError("A non-empty JSON Pointer must begin with '/'.");
+  }
+
+  const encodedTokens = pointer.slice(1).split("/");
+  if (encodedTokens.length > maximumPathSegments) {
+    throw new RangeError(`pointer cannot contain more than ${maximumPathSegments} tokens.`);
+  }
+  return encodedTokens.map((encoded) => {
+    if (/~(?:[^01]|$)/.test(encoded)) {
+      throw new TypeError(`Invalid JSON Pointer escape in token: ${encoded}`);
+    }
+    const token = encoded.replaceAll("~1", "/").replaceAll("~0", "~");
+    if (blockedPathSegments.has(token)) throw new TypeError(`Unsafe JSON Pointer token: ${token}`);
+    return token;
+  });
+}
+
+/**
+ * Reads a value through an RFC 6901 JSON Pointer. Traversal enters only arrays
+ * and plain objects, uses own data properties, and never invokes accessors.
+ * Array tokens use canonical unsigned decimal spelling (`0` or a nonzero digit
+ * followed by digits); sparse/missing elements and `-` are absent. A fallback
+ * is returned only for absence, not for an existing `undefined` value.
+ *
+ * @template T
+ * @param {unknown} value JSON-like document root.
+ * @param {string} pointer Safe JSON Pointer text; the empty string returns value itself.
+ * @param {T} [fallback] Value returned only when a reference token cannot be resolved.
+ * @returns {unknown | T} Referenced own data-property value, root, or fallback.
+ * @throws {TypeError | RangeError} If pointer syntax is invalid or traversal encounters an accessor.
+ * @example
+ * getAtJsonPointer({ users: [{ name: "Ember" }] }, "/users/0/name"); // "Ember"
+ * @since 2.0.0
+ */
+export function getAtJsonPointer(value, pointer, fallback) {
+  const result = resolveJsonPointer(value, pointer);
+  return result.found ? result.value : fallback;
+}
+
+/**
+ * Checks whether an RFC 6901 JSON Pointer resolves through own data properties.
+ * The empty pointer always resolves to the supplied root, including an
+ * `undefined` root. Array, accessor, unsafe-token, and work-bound behavior is
+ * identical to `getAtJsonPointer`.
+ *
+ * @param {unknown} value JSON-like document root.
+ * @param {string} pointer Safe JSON Pointer text.
+ * @returns {boolean} Whether the complete pointer resolves, even when its value is undefined.
+ * @throws {TypeError | RangeError} If pointer syntax is invalid or traversal encounters an accessor.
+ * @example
+ * hasAtJsonPointer({ value: undefined }, "/value"); // true
+ * @since 2.0.0
+ */
+export function hasAtJsonPointer(value, pointer) {
+  return resolveJsonPointer(value, pointer).found;
+}
+
+/**
  * Sets a nested value while structurally sharing untouched objects and arrays.
  * Missing containers are inferred from the following path segment. If an
  * existing leaf is `Object.is`-identical to `nextValue`, the original root is
@@ -730,6 +809,37 @@ export function pickAllowed(value, allowedKeys, { rejectUnknown = true } = {}) {
 /** @param {unknown} value @returns {value is Record<PropertyKey, unknown> | unknown[]} */
 function isObjectLike(value) {
   return value !== null && typeof value === "object";
+}
+
+/** @param {unknown} value @param {string} pointer */
+function resolveJsonPointer(value, pointer) {
+  const tokens = parseJsonPointer(pointer);
+  let current = value;
+
+  for (const token of tokens) {
+    /** @type {PropertyDescriptor | undefined} */
+    let descriptor;
+    if (Array.isArray(current)) {
+      if (!/^(?:0|[1-9]\d*)$/.test(token)) return { found: false, value: undefined };
+      const index = Number(token);
+      if (!Number.isSafeInteger(index) || index >= current.length) {
+        return { found: false, value: undefined };
+      }
+      descriptor = Object.getOwnPropertyDescriptor(current, index);
+    } else if (isPlainObject(current)) {
+      descriptor = Object.getOwnPropertyDescriptor(current, token);
+    } else {
+      return { found: false, value: undefined };
+    }
+
+    if (!descriptor) return { found: false, value: undefined };
+    if (!("value" in descriptor)) {
+      throw new TypeError(`JSON Pointer cannot traverse accessor property: ${token}`);
+    }
+    current = descriptor.value;
+  }
+
+  return { found: true, value: current };
 }
 
 /** @param {unknown} value @param {string} name */

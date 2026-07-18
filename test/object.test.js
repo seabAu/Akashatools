@@ -15,10 +15,13 @@ import {
   findDeepMatch,
   findDeepParent,
   findDeepValue,
+  getAtJsonPointer,
   getAtPath,
+  hasAtJsonPointer,
   hasAtPath,
   hasDeep,
   isPlainObject,
+  parseJsonPointer,
   parsePath,
   pickAllowed,
   setAtPath,
@@ -106,6 +109,63 @@ test("nested paths are safe, own-property based, and immutable", () => {
   assert.throws(() => setAtPath({}, ["constructor", "prototype", "polluted"], true), TypeError);
   assert.throws(() => parsePath("a".repeat(10_001)), RangeError);
   assert.throws(() => parsePath(Array.from({ length: 101 }, () => "item")), RangeError);
+});
+
+test("JSON Pointer parsing preserves RFC 6901 root and escape semantics", () => {
+  assert.deepEqual(parseJsonPointer(""), []);
+  assert.deepEqual(parseJsonPointer("/profile/a~1b/m~0n/"), ["profile", "a/b", "m~n", ""]);
+  assert.deepEqual(parseJsonPointer("/~01"), ["~1"]);
+  assert.throws(() => parseJsonPointer("profile/name"), TypeError);
+  assert.throws(() => parseJsonPointer("#/profile"), TypeError);
+  assert.throws(() => parseJsonPointer("/bad~2escape"), TypeError);
+  assert.throws(() => parseJsonPointer("/bad~"), TypeError);
+  assert.throws(() => parseJsonPointer("/__proto__/polluted"), TypeError);
+  assert.throws(() => parseJsonPointer("/constructor/prototype"), TypeError);
+  assert.throws(() => parseJsonPointer("/" + "a".repeat(10_000)), RangeError);
+  assert.throws(() => parseJsonPointer("/" + Array.from({ length: 101 }, () => "a").join("/")), RangeError);
+});
+
+test("JSON Pointer reads own plain-data properties and canonical array indices", () => {
+  const source = {
+    "a/b": { "m~n": true },
+    users: [{ name: "Ember" }, undefined],
+    value: undefined,
+    "": "empty key",
+  };
+  assert.equal(getAtJsonPointer(source, ""), source);
+  assert.equal(hasAtJsonPointer(undefined, ""), true);
+  assert.equal(getAtJsonPointer(source, "/a~1b/m~0n"), true);
+  assert.equal(getAtJsonPointer(source, "/users/0/name"), "Ember");
+  assert.equal(getAtJsonPointer(source, "/users/1", "fallback"), undefined);
+  assert.equal(hasAtJsonPointer(source, "/users/1"), true);
+  assert.equal(getAtJsonPointer(source, "/", "fallback"), "empty key");
+  assert.equal(getAtJsonPointer(source, "/missing", "fallback"), "fallback");
+  assert.equal(hasAtJsonPointer(source, "/value"), true);
+  assert.equal(hasAtJsonPointer(source, "/users/01"), false);
+  assert.equal(hasAtJsonPointer(source, "/users/-"), false);
+  assert.equal(hasAtJsonPointer(source, "/users/2"), false);
+});
+
+test("JSON Pointer traversal rejects active properties without invoking them", () => {
+  let calls = 0;
+  const active = Object.defineProperty({}, "computed", {
+    enumerable: true,
+    get() {
+      calls += 1;
+      return { value: true };
+    },
+  });
+  assert.throws(() => getAtJsonPointer(active, "/computed/value"), TypeError);
+  assert.equal(calls, 0);
+
+  const inherited = runInNewContext("Object.prototype.hidden = true; ({ own: { visible: true } })");
+  assert.equal(hasAtJsonPointer(inherited, "/hidden"), false);
+  assert.equal(hasAtJsonPointer(inherited, "/own/visible"), true);
+  assert.equal(hasAtJsonPointer(new Date(), "/getTime"), false);
+
+  const sparse = [];
+  sparse.length = 1;
+  assert.equal(hasAtJsonPointer(sparse, "/0"), false);
 });
 
 test("setAtPath structurally shares untouched branches and elides identical writes", () => {

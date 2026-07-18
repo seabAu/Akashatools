@@ -72,9 +72,11 @@ drop-in compatibility.
 | `formatRelativeTime` | date | universal | no input mutation | `akashatools/date/formatRelativeTime` | None |
 | `fromUnixSeconds` | date | universal | no input mutation | `akashatools/date/fromUnixSeconds` | None |
 | `fulfilledValues` | async | universal | no input mutation | `akashatools/async/fulfilledValues` | None |
+| `getAtJsonPointer` | object | universal | no input mutation | `akashatools/object/getAtJsonPointer` | None |
 | `getAtPath` | object | universal | no input mutation | `akashatools/object/getAtPath` | None |
 | `globPaths` | node | node | no input mutation | `akashatools/node/globPaths` | None |
 | `groupBy` | array | universal | no input mutation | `akashatools/array/groupBy` | None |
+| `hasAtJsonPointer` | object | universal | no input mutation | `akashatools/object/hasAtJsonPointer` | None |
 | `hasAtPath` | object | universal | no input mutation | `akashatools/object/hasAtPath` | `AO.has` |
 | `hasDeep` | object | universal | no input mutation | `akashatools/object/hasDeep` | `AO.has`, `AO.hasAll`, `AO.objContains`, `AO.arrayContains` |
 | `HttpError` | http | universal | no input mutation | `akashatools/http/HttpError` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
@@ -120,6 +122,7 @@ drop-in compatibility.
 | `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation/normalizeNanpPhone` | None |
 | `omit` | object | universal | no input mutation | `akashatools/object/omit` | `AO.removeKey` |
 | `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http/parseContentDispositionFilename` | None |
+| `parseJsonPointer` | object | universal | no input mutation | `akashatools/object/parseJsonPointer` | None |
 | `parsePath` | object | universal | no input mutation | `akashatools/object/parsePath` | None |
 | `partition` | array | universal | no input mutation | `akashatools/array/partition` | None |
 | `pascalCase` | string | universal | no input mutation | `akashatools/string/pascalCase` | `String.toUpperCamelCase` |

@@ -185,6 +185,9 @@
 - Added bounded global and keyed concurrency limiters with per-key eligible-work
   scheduling, queued AbortSignal cancellation, live counts, queue limits, and
   automatic release after synchronous or asynchronous settlement.
+- Added strict RFC 6901 JSON Pointer parsing, reading, and presence checks with
+  bounded tokens, safe own-data traversal, canonical array indices, and
+  accessor/prototype protection.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

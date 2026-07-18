@@ -402,10 +402,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 156 current public declarations are complete, with parameter/return prose,
+  All 159 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  156 current public declarations by `npm run check:docs`.
+  159 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -415,7 +415,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 190 declaration files, including generated
+  byte-for-byte drift check across 193 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -602,6 +602,9 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
 - [x] Generalize COMPOSR's origin concurrency governor into bounded global and
   keyed async limiters with per-key fairness, queued cancellation, live counts,
   queue-capacity rejection, and unconditional release after sync/async failure.
+- [x] Add strict RFC 6901 JSON Pointer parsing and own-data-property reads with
+  root/escape semantics, canonical array indices, absent-versus-undefined
+  results, unsafe-token rejection, and no accessor invocation.
 - [ ] Re-run API collision, types, editor completions, package smoke, bundle,
   coverage, Node 22/24, and browser regression gates after the expanded surface
   stabilizes. Replace the superseded release-readiness measurements.
@@ -736,7 +739,7 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
-| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 156 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 159 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
 | 2026-07-18 | Treat the second source refresh as a delta, not a bulk copy. | Current dirty and untracked consumer source is evidence for atomic contracts, but thread archives, TTS providers, UI components, storage, and application policy remain with their owning projects; the dated ledger records every new family and the reusable implementation queue. |

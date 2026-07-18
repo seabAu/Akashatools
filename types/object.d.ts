@@ -177,6 +177,55 @@ export declare function getAtPath<T>(value: unknown, path: string | readonly (st
  */
 export declare function hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
 /**
+ * Parses an RFC 6901 JSON Pointer into decoded string reference tokens. The
+ * empty pointer addresses the document root. Non-empty pointers must begin
+ * with `/`; `~0` decodes to `~` and `~1` decodes to `/`. Prototype-mutating
+ * tokens are rejected even though they could be ordinary JSON keys, preserving
+ * the package-wide safe-path boundary.
+ *
+ * @param {string} pointer JSON Pointer text, not a URI-fragment `#` representation.
+ * @returns {string[]} Fresh decoded token array; numeric-looking tokens remain strings until evaluated against an array.
+ * @throws {TypeError} If pointer syntax or an escape/prototype-mutating token is invalid.
+ * @throws {RangeError} If the pointer exceeds 10,000 code units or 100 tokens.
+ * @example
+ * parseJsonPointer("/profile/a~1b/m~0n"); // ["profile", "a/b", "m~n"]
+ * @since 2.0.0
+ */
+export declare function parseJsonPointer(pointer: string): string[];
+/**
+ * Reads a value through an RFC 6901 JSON Pointer. Traversal enters only arrays
+ * and plain objects, uses own data properties, and never invokes accessors.
+ * Array tokens use canonical unsigned decimal spelling (`0` or a nonzero digit
+ * followed by digits); sparse/missing elements and `-` are absent. A fallback
+ * is returned only for absence, not for an existing `undefined` value.
+ *
+ * @template T
+ * @param {unknown} value JSON-like document root.
+ * @param {string} pointer Safe JSON Pointer text; the empty string returns value itself.
+ * @param {T} [fallback] Value returned only when a reference token cannot be resolved.
+ * @returns {unknown | T} Referenced own data-property value, root, or fallback.
+ * @throws {TypeError | RangeError} If pointer syntax is invalid or traversal encounters an accessor.
+ * @example
+ * getAtJsonPointer({ users: [{ name: "Ember" }] }, "/users/0/name"); // "Ember"
+ * @since 2.0.0
+ */
+export declare function getAtJsonPointer<T>(value: unknown, pointer: string, fallback?: T): unknown | T;
+/**
+ * Checks whether an RFC 6901 JSON Pointer resolves through own data properties.
+ * The empty pointer always resolves to the supplied root, including an
+ * `undefined` root. Array, accessor, unsafe-token, and work-bound behavior is
+ * identical to `getAtJsonPointer`.
+ *
+ * @param {unknown} value JSON-like document root.
+ * @param {string} pointer Safe JSON Pointer text.
+ * @returns {boolean} Whether the complete pointer resolves, even when its value is undefined.
+ * @throws {TypeError | RangeError} If pointer syntax is invalid or traversal encounters an accessor.
+ * @example
+ * hasAtJsonPointer({ value: undefined }, "/value"); // true
+ * @since 2.0.0
+ */
+export declare function hasAtJsonPointer(value: unknown, pointer: string): boolean;
+/**
  * Sets a nested value while structurally sharing untouched objects and arrays.
  * Missing containers are inferred from the following path segment. If an
  * existing leaf is `Object.is`-identical to `nextValue`, the original root is

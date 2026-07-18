@@ -231,6 +231,9 @@ export declare const object: Readonly<{
     parsePath(path: string | readonly (string | number)[]): (string | number)[];
     getAtPath<T>(value: unknown, path: string | readonly (string | number)[], fallback?: T): unknown | T;
     hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
+    parseJsonPointer(pointer: string): string[];
+    getAtJsonPointer<T>(value: unknown, pointer: string, fallback?: T): unknown | T;
+    hasAtJsonPointer(value: unknown, pointer: string): boolean;
     setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
     traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry[];
     findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry | undefined;
@@ -370,6 +373,9 @@ export declare const akasha: Readonly<{
     parsePath: typeof objectModule.parsePath;
     getAtPath: typeof objectModule.getAtPath;
     hasAtPath: typeof objectModule.hasAtPath;
+    parseJsonPointer: typeof objectModule.parseJsonPointer;
+    getAtJsonPointer: typeof objectModule.getAtJsonPointer;
+    hasAtJsonPointer: typeof objectModule.hasAtJsonPointer;
     setAtPath: typeof objectModule.setAtPath;
     traverseObject: typeof objectModule.traverseObject;
     findDeep: typeof objectModule.findDeep;
@@ -732,6 +738,9 @@ export declare const akasha: Readonly<{
         parsePath(path: string | readonly (string | number)[]): (string | number)[];
         getAtPath<T>(value: unknown, path: string | readonly (string | number)[], fallback?: T): unknown | T;
         hasAtPath(value: unknown, path: string | readonly (string | number)[]): boolean;
+        parseJsonPointer(pointer: string): string[];
+        getAtJsonPointer<T>(value: unknown, pointer: string, fallback?: T): unknown | T;
+        hasAtJsonPointer(value: unknown, pointer: string): boolean;
         setAtPath<T>(value: T, path: string | readonly (string | number)[], nextValue: unknown): T;
         traverseObject(value: Record<PropertyKey, unknown> | unknown[], options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry[];
         findDeep(value: Record<PropertyKey, unknown> | unknown[], predicate: (entry: objectModule.ObjectTraversalEntry) => boolean, options?: objectModule.ObjectTraversalOptions): objectModule.ObjectTraversalEntry | undefined;

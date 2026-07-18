@@ -64,7 +64,7 @@ edited again after this dated review.
 
 - [x] Add global and keyed bounded concurrency limiters with cancellation and
   release-on-settlement regression tests.
-- [ ] Add strict RFC 6901 JSON Pointer parsing, reading, and presence checks.
+- [x] Add strict RFC 6901 JSON Pointer parsing, reading, and presence checks.
 - [ ] Add identity-preserving `keyBy` and comparator-based binary-search bounds.
 - [ ] Add strict `Retry-After` parsing without adding implicit HTTP retries.
 - [ ] Design and add native hashing/checksum atoms plus stable JSON composition;
