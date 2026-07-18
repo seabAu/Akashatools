@@ -1,7 +1,7 @@
 # Akashatools 2026 living checklist
 
-> Status: active project plan; the local release-candidate evidence is reopened
-> for the 2026-07-18 `(excepted modules)` audit and implementation pass. Update this document in
+> Status: active project plan; the 2026-07-18 `(excepted modules)` redesign and
+> complete local release-candidate evidence are finished. Update this document in
 > the same commit as each meaningful implementation batch. Check an item only when its acceptance
 > criteria are verified. Add newly discovered work instead of keeping it in chat.
 
@@ -74,14 +74,14 @@ case. No package entry mutates built-in constructors or prototypes.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; all 183 current contracts pass on the
+- [x] Add dependency-free runtime tests; all 199 current contracts pass on the
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 483 files at approximately 331 kB packed and 1.24 MB unpacked.
+  selects 521 files at approximately 367 kB packed and 1.37 MB unpacked.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
-  87,552 raw/26,336 gzip bytes for the complete discoverable namespace.
+  111,079 raw/32,793 gzip bytes for the complete discoverable namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -117,7 +117,7 @@ Acceptance criteria:
 ### 1.2 Canonical categories
 
 - [x] Confirm and document the stable categories: `array`, `async`, `browser`,
-  `collection`, `data`, `date`, `function`, `hash`, `http`, `input`, `number`,
+  `collection`, `data`, `date`, `function`, `geo`, `hash`, `http`, `input`, `number`,
   `object`, `random`, `sort`, `string`, and `validation`; function control is
   admitted only with explicit receiver, outcome, cache, timer, and cancellation
   contracts.
@@ -409,10 +409,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 175 current public declarations are complete, with parameter/return prose,
+  All 191 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  175 current public declarations by `npm run check:docs`.
+  191 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -422,7 +422,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 213 declaration files, including generated
+  byte-for-byte drift check across 231 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -464,11 +464,11 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The stabilized surface measures
-  98.37% lines / 89.83% branches / 97.09% functions on Node 22.18.0 and
-  98.37% / 89.68% / 97.09% on Node 24.18.0. Branch accounting varies slightly
+  97.41% lines / 87.76% branches / 95.90% functions on Node 22.18.0 and
+  97.41% / 87.67% / 95.90% on Node 24.18.0. Branch accounting varies slightly
   by runtime; see `docs/TESTING.md`.
-- [x] Run the complete release audit locally on supported Node 22.18.0 and
-  Node 24.18.0, and run all 15 Chromium/Firefox/WebKit browser contracts.
+- [x] Run the complete release gates locally on supported Node 22.18.0 and
+  Node 24.18.0, and run all 18 Chromium/Firefox/WebKit browser contracts.
 - [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
   are configured, but local multi-runtime evidence cannot prove hosted setup,
   checkout, dependency installation, or runner behavior.
@@ -499,8 +499,8 @@ Acceptance criteria:
 - [x] Add bundle fixtures for named root, category named/namespace, default
   flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
-  gzip bytes; the stabilized discoverable default namespace uses 90,000 raw/
-  27,000 gzip guardrails around the measured 87,552 raw/26,336 gzip maximum.
+  gzip bytes; the stabilized discoverable default namespace uses 114,000 raw/
+  34,000 gzip guardrails around the measured 111,079 raw/32,793 gzip maximum.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -549,7 +549,7 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 80,274-83,780 raw and 23,717-24,659 gzip bytes;
+  imports. Focused sets save 103,804-107,310 raw and 30,176-31,119 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
@@ -678,12 +678,12 @@ browser behavior must not be copied into the canonical package.
 - [x] Recover the portable DOM/storage atoms as late-bound media-query helpers
   and explicit-Storage JSON read/write helpers; leave React renderers and
   product database layouts with their owners.
-- [ ] Add contract, generation, type, package, collision, bundle, and
+- [x] Add contract, generation, type, package, collision, bundle, and
   three-engine browser coverage for every adopted function.
 - [x] Benchmark semantically equivalent parsing and geo hot paths at high call
   counts. Keep elapsed time out of deterministic test assertions and document
   when precompiled parsers improve repeated-handler throughput.
-- [ ] Refresh generated declarations, API snapshots/reference, migration notes,
+- [x] Refresh generated declarations, API snapshots/reference, migration notes,
   changelog, package measurements, coverage, and Node 22/24 release evidence.
 
 Acceptance criteria:
@@ -702,10 +702,10 @@ Acceptance criteria:
 
 ### Alpha exit
 
-- [ ] Reconfirm the disposition ledger after completing the newly discovered
+- [x] Reconfirm the disposition ledger after completing the newly discovered
   `(excepted modules)` source set.
 - [x] Stabilize default/named/category namespace architecture.
-- [ ] Reconfirm the expanded universal core, generated declarations, and
+- [x] Reconfirm the expanded universal core, generated declarations, and
   contracts on both supported Node audit runtimes after Phase 9.6.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
@@ -713,20 +713,20 @@ Acceptance criteria:
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [ ] Re-freeze canonical names and option shapes after Phase 9.6 through the
+- [x] Re-freeze canonical names and option shapes after Phase 9.6 through the
   reviewed API snapshot, generated surfaces, types, and explicit decisions.
-- [ ] Refresh security review and performance/bundle baselines.
+- [x] Refresh security review and performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
 
 ### Release candidate exit
 
-- [ ] Refresh API docs, migration guide, declarations, and package smoke tests.
-- [ ] Resolve the newly reopened geo, input parsing, browser adapter, and storage
+- [x] Refresh API docs, migration guide, declarations, and package smoke tests.
+- [x] Resolve the newly reopened geo, input parsing, browser adapter, and storage
   contract questions recorded in Phase 9.6 and its source ledger.
-- [ ] Reconfirm clean install and the local supported-runtime matrix on Node
+- [x] Reconfirm clean install and the local supported-runtime matrix on Node
   22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
   remains a separate open gate under Phase 7.
-- [ ] Reconfirm package contents, license, changelog, repository links, and current
+- [x] Reconfirm package contents, license, changelog, repository links, and current
   alpha version. See `docs/RELEASE_READINESS.md`; stable version promotion is
   still part of the authorized publication gate.
 - [ ] Obtain explicit user approval before publishing an RC.
@@ -815,7 +815,7 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
-| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 175 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 191 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Reject even an explicit opt-in built-in augmentation entry. | Non-enumerability and pre-install collision checks cannot solve future collisions, cross-realm gaps, duplicate-package ownership, ambient-type mismatch, or safe uninstall races; `deepQuery(value).has(...)` supplies local dot syntax while descriptor snapshots enforce inert modern imports. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
@@ -827,14 +827,14 @@ Acceptance criteria:
 | 2026-07-18 | Separate serialized datatype parsing from browser control extraction. | `createInputValueParser` precomputes reusable descriptor/options policy and `parseInputValue` provides one-shot convenience; strict numeric, date, JSON, collection, URL, RegExp, binary, and branded-value branches replace lossy `parseInt`, truthiness, event-shape, and implicit-zone behavior. |
 | 2026-07-18 | Recover only late-bound browser atoms from the excepted DOM and LocalDB modules. | Semantic form-control extraction composes with a pure parser; media queries run only when called; and strict JSON storage requires an explicit Storage object. Import-time `window`, React renderers, HTML interpolation, product database layouts, and quota guesses remain excluded. |
 | 2026-07-18 | Retain one-shot/compiled parsing and atomic/batched geo variants. | Equal-output benchmarks show that precompiled parsing removes repeated policy setup and batched geo filtering normalizes shared invariants once. The broader variants have distinct high-volume contracts rather than duplicating their atomic cores. |
-| 2026-07-18 | Recalibrate only the expanded full-discovery bundle guardrail to 114,000 raw/34,000 gzip. | GeoJSON validation and the deliberately complete datatype parser move the largest default namespace to 110,931/32,760. Focused root/category/granular imports remain exactly 321/252, side-effect-only remains zero raw bytes, and real-consumer focused sets save 103,656-107,162 raw bytes. |
+| 2026-07-18 | Recalibrate only the expanded full-discovery bundle guardrail to 114,000 raw/34,000 gzip. | GeoJSON validation and the deliberately complete datatype parser move the largest default namespace to 111,079/32,793. Focused root/category/granular imports remain exactly 321/252, side-effect-only remains zero raw bytes, and real-consumer focused sets save 103,804-107,310 raw bytes. |
 
 ## Definition of done
 
 Akashatools 2.0 is done when:
 
-- every candidate in Akashatools and the four current consumer source sets has a
-  recorded disposition;
+- every candidate in Akashatools, the repository's excepted modules, and the four
+  current consumer source sets has a recorded disposition;
 - the canonical API is coherent, collision-free, documented, and discoverable;
 - default, flat, named, category, and approved compatibility imports are tested;
 - all public functions have strict types/JSDoc and behavioral tests;

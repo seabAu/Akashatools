@@ -1,14 +1,13 @@
 # Release readiness
 
-> Status on 2026-07-18: release-candidate evidence is reopened while the newly
-> discovered `(excepted modules)` source set is redesigned and verified. The
-> snapshot below remains the last complete pre-expansion baseline; its counts are
-> historical until Phase 9.6 passes on both supported Node runtimes and all three
-> browser engines. Hosted workflow evidence, bounded real-app migrations, and
+> Status on 2026-07-18: the `(excepted modules)` redesign and complete local
+> release-candidate evidence are finished. All local gates pass on both supported
+> Node runtimes and all three browser engines. Hosted workflow evidence, bounded
+> real-app migrations, and
 > every push, tag, automation, and publication action remain external approval
 > gates.
 
-## Last complete local candidate snapshot (superseded by Phase 9.6 work)
+## Current local candidate snapshot
 
 | Field | Verified value |
 | --- | --- |
@@ -17,13 +16,13 @@
 | Module format | ESM-only |
 | Node.js engine | `>=22.17` |
 | Universal categories | 17 |
-| Public methods | 175 |
-| Generated declaration files | 213 |
-| Reviewed API surfaces | 18 |
+| Public methods | 191 |
+| Generated declaration files | 231 |
+| Reviewed API surfaces | 19 |
 | License | ISC (`LICENSE`, 741 bytes) |
-| Dry-run files | 483 |
-| Dry-run packed size | Approximately 331 kB |
-| Dry-run unpacked size | Approximately 1.24 MB |
+| Dry-run files | 521 |
+| Dry-run packed size | Approximately 367 kB |
+| Dry-run unpacked size | Approximately 1.37 MB |
 
 `npm pack --dry-run --json` verifies the selected package content without
 creating or publishing an artifact. The package includes runtime sources,
@@ -39,30 +38,29 @@ automation change occurred during this work.
 
 ## Reproducible local evidence
 
-`npm run audit:release` completed successfully on the installed Node.js
-22.18.0 runtime and an isolated Node.js 24.18.0 runtime on Windows. The command
-performs the dependency audit, complete project check, source coverage gate, and
-dry-run package inspection. Playwright separately passed all five browser
-contracts in Chromium, Firefox, and WebKit.
+The complete project check and source coverage gate completed successfully on
+the installed Node.js 22.18.0 runtime and an isolated Node.js 24.18.0 runtime on
+Windows. Dependency audit and dry-run package inspection also pass. Playwright
+separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 
 | Gate | Current result |
 | --- | --- |
 | Dependency audit | 0 reported vulnerabilities |
-| Maintained syntax | 284 JavaScript files pass |
-| Public documentation | 175 declarations pass |
-| Generated declarations | 213 files current |
-| API surface snapshot | 18 surfaces current |
-| Node contract tests | 183 passed, 0 failed on Node 22 and Node 24 |
+| Maintained syntax | 304 JavaScript files pass |
+| Public documentation | 191 declarations pass |
+| Generated declarations | 231 files current |
+| API surface snapshot | 19 surfaces current |
+| Node contract tests | 199 passed, 0 failed on Node 22 and Node 24 |
 | Installed-package smoke | Fresh JavaScript and TypeScript consumers pass |
-| Node 22 source coverage | 98.37% lines / 89.83% branches / 97.09% functions |
-| Node 24 source coverage | 98.37% lines / 89.68% branches / 97.09% functions |
-| Browser tests | 15 passed across Chromium, Firefox, and WebKit |
+| Node 22 source coverage | 97.41% lines / 87.76% branches / 95.90% functions |
+| Node 24 source coverage | 97.41% lines / 87.67% branches / 95.90% functions |
+| Browser tests | 18 passed across Chromium, Firefox, and WebKit |
 | Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
-| Default namespace maximum | 87,552 raw / 26,336 gzip; budget 90,000 / 27,000 |
+| Default namespace maximum | 111,079 raw / 32,793 gzip; budget 114,000 / 34,000 |
 | Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |
-| Consumer bundle evidence | Focused fixtures save 80,274-83,780 raw and 23,717-24,659 gzip bytes |
+| Consumer bundle evidence | Focused fixtures save 103,804-107,310 raw and 30,176-31,119 gzip bytes |
 | Legacy usage evidence | 1,982 parsed reads; every member dispositioned; 559 reads drove seven strict APIs |
-| Modern import inertness | Root, all 17 categories, and all 175 granular methods preserve complete Array/Object/Date descriptors |
+| Modern import inertness | Root, all 18 category surfaces, and all 191 granular methods preserve complete Array/Object/Date descriptors |
 
 The unified gate also verifies formatting, linting, JSDoc/TypeScript checking,
 editor completions, generated documentation and migration data, export-map
@@ -71,12 +69,14 @@ bundle equivalence, and representative source-consumer fixtures.
 
 ## Scope conclusions
 
-The 2026-07-18 read-only delta review covers the changed Mindspace, portfolio,
-COMPOSR, and SPLICR utility sources. It promoted independently reusable data,
-input, deep-query, concurrency, JSON Pointer, Retry-After, hashing, path,
-function-control, binary-search/indexing, and Jaccard-similarity atoms. Archive,
-audio, provider, template, persistence, UI, profiling, schema, retry-execution,
-and application-record behavior remains with its owning domain.
+The 2026-07-18 read-only reviews cover the changed Mindspace, portfolio,
+COMPOSR, and SPLICR utility sources plus every file in `(excepted modules)`.
+They promoted independently reusable data, input, geo/GeoJSON, deep-query,
+concurrency, JSON Pointer, Retry-After, hashing, path, function-control,
+binary-search/indexing, Jaccard-similarity, browser control/media, and strict JSON
+Storage atoms. Archive, audio, provider, template, product persistence, React/UI,
+profiling, application schema, retry-execution, and application-record behavior
+remains with its owning domain.
 
 Meaningfully distinct variants remain only where their documented return shape
 or policy differs. The atomic type/default/input and deep-query functions

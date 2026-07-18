@@ -2,7 +2,7 @@
 
 The full active work plan is maintained in
 [LIVING_CHECKLIST.md](LIVING_CHECKLIST.md). This document summarizes the audit
-and first-alpha migration decisions; the living checklist is authoritative for
+and current alpha migration decisions; the living checklist is authoritative for
 remaining work and completion criteria.
 
 The per-export source review and migration disposition are maintained in
@@ -10,7 +10,7 @@ The per-export source review and migration disposition are maintained in
 
 ## Source audit
 
-The initial audit covered four source sets:
+The audit covers the current working copies of six source sets:
 
 | Source | Audited locations | Reusable themes |
 | --- | --- | --- |
@@ -18,6 +18,8 @@ The initial audit covered four source sets:
 | Mindspace | `app/client/src/lib/utilities`, `app/server/utilities` | arrays, nested data, validation, local dates, sorting, random data |
 | Portfolio rebuild | `client/src/utilities`, `server/utilities`, `shared/contracts` | safe field paths, own-property filtering, stable ordering, JSON contracts |
 | COMPOSR | `app/packages/utilities` | bounded async work, settled-result filtering, ID collections, browser files |
+| SPLICR | `app` utility sources | bounded text work, provider-neutral text metrics, offsets, similarity helpers |
+| Excepted modules | repository-level `(excepted modules)` | geospatial data, datatype parsing, form controls, media queries, strict JSON storage |
 
 The migration copies behavior, not files. Each adopted utility is reviewed for
 generic applicability, duplication, failure behavior, platform dependencies,
@@ -47,6 +49,15 @@ includes dirty and untracked source without modifying any consumer project.
   with iterative Fibonacci and native integer conversion.
 - Legacy JSON cloning was replaced by `structuredClone`, preserving supported
   Dates, Maps, Sets, typed arrays, and circular references.
+- The excepted `Geo.js` behavior became a provider-neutral `geo` category with
+  canonical GeoJSON coordinate order, range validation, Haversine distance,
+  bounded searches, and deterministic Feature/FeatureCollection construction.
+- The unfinished `Schema.js` input formatter became strict pure parsing through
+  `createInputValueParser` and `parseInputValue`; browser control extraction is
+  separately available as `inputValueFromControl`.
+- Portable `DOM.js` and `LocalDB.js` behavior became late-bound media-query
+  helpers and strict JSON storage helpers that require an explicit Storage
+  implementation. React rendering and product database layouts remain excluded.
 
 ## Deliberately excluded from the generic core
 
@@ -126,7 +137,49 @@ explicit options for ambiguous operations. Consult
 | Random numbers | `rand` accepted `(maximum, minimum)` and all randomness looked interchangeable. | `randomFloat` uses `(minimum, maximum)`; secure IDs/strings are separately named Web Crypto APIs. |
 | Dates/timestamps | Some “seconds” helpers actually returned milliseconds or silently substituted now. | Unix-second and instant-range APIs use strict units and explicit boundaries. |
 | HTTP | Legacy wrappers delayed, logged/swallowed, and resolved some errors as values. | `http.request` performs one bounded attempt and throws typed, redacted `HttpError` instances. |
+| Geospatial data | Mapbox-oriented helpers mixed coordinate orders, random jitter, HTML, degree boxes, and broken array validation. | `geo` uses canonical `[longitude, latitude]`, strict normalization, real spherical distance, explicit units, bounded searches, and deterministic GeoJSON. |
+| Serialized input values | `formatInputValue` mixed event extraction with lossy `parseInt`, truthiness, and incomplete datatype branches. | Pure parsing supports strict scalar, date/time, JSON, collection, URL, RegExp, binary, typed-array, error, and branded-value policies; compiled parsers avoid repeated setup. |
+| Browser controls and storage | Helpers depended on ambient browser globals, event shapes, or product database names and sometimes swallowed or broke writes. | Browser work is late-bound; semantic controls are extracted explicitly and JSON storage requires a caller-provided Storage object with visible failures and work bounds. |
 | Side effects | Prototype-extension and logging modules could alter globals or console output. | Canonical imports are inert; browser/network effects are explicitly named. |
+
+## Excepted-module replacements
+
+The repository-level source files were not copied into the package. Their
+portable intent maps to composed APIs as follows:
+
+```js
+import {
+  createGeoJsonFeature,
+  createGeoJsonFeatureCollection,
+  createInputValueParser,
+  filterPositionsWithinDistance,
+} from "akashatools";
+import {
+  inputValueFromControl,
+  prefersColorScheme,
+  readJsonStorage,
+  writeJsonStorage,
+} from "akashatools/browser";
+
+const parseCount = createInputValueParser("number");
+const count = parseCount(inputValueFromControl(numberInput));
+
+const nearby = filterPositionsWithinDistance(center, points, 5, {
+  unit: "kilometers",
+});
+const collection = createGeoJsonFeatureCollection(
+  nearby.map((position) => createGeoJsonFeature("Point", position)),
+);
+
+const theme = prefersColorScheme() ? "dark" : "light";
+const settings = readJsonStorage(localStorage, "settings", { fallback: {} });
+writeJsonStorage(localStorage, "settings", { ...settings, theme });
+```
+
+Legacy latitude-first arrays must opt in with the documented `arrayOrder`
+option. Date/time parsing similarly requires explicit policy whenever converting
+a local wall-clock value into an instant. These choices prevent silent axis
+swaps and host-timezone-dependent results.
 
 ## Legacy path lifetime
 
@@ -138,16 +191,14 @@ ambiguous behavior. The `lib` paths are eligible for removal no earlier than
 removal receives explicit approval. No 2.0 codemod is planned until those
 fixtures show that mechanical rewriting can preserve intent.
 
-## Remaining phases
+## Remaining external phases
 
-1. Extend the new Node-only `akashatools/node` surface only after file discovery
-   and safe read/write/delete contracts address encoding, aborts, atomicity, and
-   operation-time containment.
-2. Exercise the adopted Fetch surface in consumer fixtures before adding any
-   retry or application-client policy.
-3. Consolidate the remaining date-range, timezone, schema-to-model, sort, and
-   deep-search candidates after source-specific behavior tests are captured.
-4. Add generated declaration files or a TypeScript build if downstream editor
-   testing shows JSDoc-only types are insufficient.
-5. Run compatibility fixtures in existing consumers before removing any 1.x
-   alias or publishing the stable 2.0.0 release.
+1. Capture the configured hosted Node 22, Node 24, and three-engine browser
+   workflow result from a clean checkout after a push is explicitly authorized.
+2. With explicit authorization, migrate bounded real application areas and run
+   their complete integration suites; repository fixtures cannot prove every
+   dependency on historical coercion, mutation, or swallowed failures.
+3. Remove no 1.x compatibility path before real migrations support that decision
+   and the removal is separately approved.
+4. Publish, tag, push, or change release automation only after explicit approval
+   of the exact commit, version, npm dist-tag, and provenance setup.

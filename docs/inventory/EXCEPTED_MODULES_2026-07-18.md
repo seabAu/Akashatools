@@ -56,7 +56,7 @@ not a per-axis degree box.
 | `pointArray2PointObj` | Covered by redesigned normalization | Canonical output names are `longitude` and `latitude`; aliases are an explicit option. |
 | `filterNearby` | Adopt, redesigned | Bounded nearby filtering/search composed from normalization and distance atoms. |
 
-Planned public atoms: `normalizeGeoPosition`, `isGeoPosition`,
+Adopted public atoms: `normalizeGeoPosition`, `isGeoPosition`,
 `geoPositionToObject`, `haversineDistance`, `isWithinGeoDistance`,
 `hasPositionWithinDistance`, `filterPositionsWithinDistance`,
 `createGeoJsonFeature`, and `createGeoJsonFeatureCollection`.
@@ -83,12 +83,12 @@ value to a declared JavaScript datatype.
 | `schemaToFormModel` | Application-owned | Schema shape, random initialization, and form-layout metadata are product policy. |
 | `schemaToModel` | Application-owned | Model compilation and initialization policy remain with the owning application. |
 
-Planned public atoms are a reusable `createInputValueParser` factory and a
+Adopted public atoms are a reusable `createInputValueParser` factory and a
 one-shot `parseInputValue` wrapper. The factory precomputes descriptor and option
 policy for high-volume form handlers. A browser-only `inputValueFromControl`
-adapter will extract checkboxes, files, multiple selections, and ordinary values
+adapter extracts checkboxes, files, multiple selections, and ordinary values
 before delegating to the pure parser. Unsupported or inherently lossy datatypes
-will fail explicitly instead of being guessed.
+fail explicitly instead of being guessed.
 
 ## `DOM.js`
 
@@ -111,7 +111,7 @@ will fail explicitly instead of being guessed.
 | `list` | Reject unsafe | String-built HTML interpolates unescaped data and element names. |
 | `ObjMap` | Application-owned | React component, logging, and wrapper-element policy. |
 
-Planned browser atoms are `matchesMediaQuery` and `prefersColorScheme`. Both are
+Adopted browser atoms are `matchesMediaQuery` and `prefersColorScheme`. Both are
 late-bound, side-effect-free until called, and accept an injectable browser
 environment for deterministic tests.
 
@@ -129,7 +129,7 @@ environment for deterministic tests.
 | `getLocalDBSize` | Reject misleading | Browser quota accounting is implementation-specific; UTF-8 JSON bytes are not a storage quota measurement. |
 | `getByteLength` | Covered | `utf8ByteLength` has a tested byte contract. |
 
-Planned browser atoms are `readJsonStorage` and `writeJsonStorage`. Storage is an
+Adopted browser atoms are `readJsonStorage` and `writeJsonStorage`. Storage is an
 explicit argument, JSON parsing/serialization errors remain visible, text work
 is bounded, and browser quota/security exceptions are never swallowed.
 
@@ -162,3 +162,8 @@ to migrate.
   and WebKit. Jest is not added solely as a benchmark runner.
 - The source files above remain untouched. Only redesigned canonical package
   code, tests, documentation, and generated entry points enter Akashatools.
+
+The completed redesign passes 199 Node contracts on Node 22.18.0 and 24.18.0,
+plus 18 Playwright checks across Chromium, Firefox, and WebKit. Equal-output
+benchmarks and their reproducible commands are recorded in
+[`../BENCHMARKS.md`](../BENCHMARKS.md).

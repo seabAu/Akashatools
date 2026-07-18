@@ -1,6 +1,7 @@
 # Browser surface decisions
 
-The 2.x browser surface currently contains download composition only:
+The 2.x browser surface contains explicit download, form-control, media-query,
+and strict JSON Storage adapters:
 
 - `downloadBlob` uses an injected or ambient document/URL API, appends and
   removes a temporary hidden anchor synchronously, and revokes the object URL on
@@ -9,7 +10,13 @@ The 2.x browser surface currently contains download composition only:
 - `downloadTextFile` constructs a text Blob with an explicit/default media type;
 - `downloadJson` serializes strictly and normalizes exactly one `.json`
   extension. `safeFilename` remains a stem helper rather than guessing arbitrary
-  extensions.
+  extensions;
+- `inputValueFromControl` extracts checkbox, radio, file, multiple-select, and
+  ordinary values before an optional precompiled pure parser;
+- `matchesMediaQuery` and `prefersColorScheme` query only when called and accept
+  an injectable media-query environment; and
+- `readJsonStorage`/`writeJsonStorage` require an explicit Storage object,
+  preserve operational failures, and enforce strict bounded plain JSON.
 
 Injected unit tests cover operation order, deferred and failure cleanup, Blob
 media/content, and duplicate-extension prevention. The retained browser fixture
@@ -30,8 +37,9 @@ Other browser candidates remain separately deferred:
   permission, user-activation, data-type, and rejection policy.
 - File reading needs encoding, result type, progress, size, and abort behavior;
   it is not the same API as URL fetching.
-- Storage helpers need serialization/versioning, quota, unavailable/private-mode,
-  cross-tab, and migration contracts.
+- Product storage versioning, migrations, quota management, private-mode policy,
+  and cross-tab synchronization remain application-owned above the strict JSON
+  storage atom.
 - DOM measurement/style/construction helpers reviewed in Mindspace are UI or
   framework adapters unless a smaller environment-injected primitive repeats.
 

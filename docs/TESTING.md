@@ -57,8 +57,8 @@ The current package contract is ESM on Node.js 22.17 or newer. Browser-dependent
 functions use injected DOM and URL capabilities in unit tests. The retained
 `fixtures/browser/download.html` fixture also verifies native Blob/File guards,
 iframe-realm Map/Set/typed-array guards, download cleanup, and browser console
-health. `npm run test:browser` automates five behavior contracts in each of
-Playwright's Chromium, Firefox, and WebKit engines, for 15 passing tests; install
+health. `npm run test:browser` automates six behavior contracts in each of
+Playwright's Chromium, Firefox, and WebKit engines, for 18 passing tests; install
 their matching binaries once with `npm run test:browser:install`.
 
 The GitHub Actions workflow runs the unified check, source coverage gate, and
@@ -70,11 +70,11 @@ suite. The matrix follows the [official Node release status](https://nodejs.org/
 and [Playwright browser support](https://playwright.dev/docs/browsers); update it
 when those support windows change.
 
-The local 2026-07-18 expanded release matrix ran `npm run audit:release`
-successfully on Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed
-all 183 tests, fresh JavaScript/TypeScript tarball installation, 175-API and
-213-declaration generation checks, bundle budgets, dependency audit, and package
-inspection. Node 22 measured 98.37% lines, 89.83% branches, and 97.09%
-functions; Node 24 measured 98.37% / 89.68% / 97.09%. Playwright separately
-passed all 15 tests across Chromium, Firefox, and WebKit. The first hosted
+The local 2026-07-18 expanded release matrix completed the full check and
+coverage gates on Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed
+all 199 tests, fresh JavaScript/TypeScript tarball installation, 191-API and
+231-declaration generation checks, bundle budgets, dependency audit, and package
+inspection. Node 22 measured 97.41% lines, 87.76% branches, and 95.90%
+functions; Node 24 measured 97.41% / 87.67% / 95.90%. Playwright separately
+passed all 18 tests across Chromium, Firefox, and WebKit. The first hosted
 workflow result remains a distinct release gate.
