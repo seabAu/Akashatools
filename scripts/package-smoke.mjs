@@ -43,7 +43,7 @@ import { chunk as categoryChunk } from "akashatools/array";
 import methodChunk, { chunk as granularChunk } from "akashatools/array/chunk";
 import { defaultValueForType, initializeLike } from "akashatools/data";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
-import { memoize, once } from "akashatools/function";
+import { debounce, memoize, once, throttle } from "akashatools/function";
 import { crc32, sha256Hex } from "akashatools/hash";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
 import granularHasDeep from "akashatools/object/hasDeep";
@@ -70,6 +70,13 @@ const initialize = once(() => ({ ready: true }));
 assert.equal(initialize(), initialize());
 const cachedLength = memoize((value) => value.length, (value) => value);
 assert.equal(cachedLength("Akasha"), 6);
+const debouncedLength = debounce((value) => value.length, 100);
+const pendingLength = debouncedLength("Akasha");
+assert.equal(await debouncedLength.flush(), 6);
+assert.equal(await pendingLength, 6);
+const throttledLength = throttle((value) => value.length, 100, { trailing: false });
+assert.equal(await throttledLength("Akasha"), 6);
+assert.equal(throttledLength.cancel(), true);
 assert.equal(normalizePortableRelativePath("reports/2026.json"), "reports/2026.json");
 assert.deepEqual(
   normalizePortableRelativePaths(["assets/", "assets/logo.svg"], { kind: "either" }),
@@ -91,7 +98,7 @@ import { deepQuery } from "akashatools/object";
 import granularDeepQuery from "akashatools/object/deepQuery";
 import { HttpError } from "akashatools/http";
 import { crc32, sha256Hex } from "akashatools/hash";
-import { memoize, once } from "akashatools/function";
+import { debounce, memoize, once, throttle } from "akashatools/function";
 import { normalizePortableRelativePath, normalizePortableRelativePaths } from "akashatools/validation";
 import type { JsonContract } from "akashatools/validation";
 
@@ -112,7 +119,11 @@ const archivePaths: ReadonlyArray<string> = normalizePortableRelativePaths(["ass
 const initialize: () => { ready: boolean } = once(() => ({ ready: true }));
 const cachedLength = memoize((value: string) => value.length, (value: string) => value);
 const length: number = cachedLength("Akasha");
-void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths, initialize, cachedLength, length];
+const debouncedLength = debounce((value: string) => value.length, 25);
+const pendingLength: Promise<number> = debouncedLength("Akasha");
+const throttledLength = throttle((value: string) => value.length, 25, { trailing: false });
+const throttledPending: Promise<number> = throttledLength("Akasha");
+void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest, archivePath, archivePaths, initialize, cachedLength, length, debouncedLength, pendingLength, throttledLength, throttledPending];
 `,
   );
   await writeFile(

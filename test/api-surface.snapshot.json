@@ -37,6 +37,7 @@
       "data",
       "date",
       "daysInMonth",
+      "debounce",
       "deepClone",
       "deepMerge",
       "deepQuery",
@@ -176,6 +177,7 @@
       "subtract",
       "sum",
       "summarizeNumbers",
+      "throttle",
       "toBinary",
       "toDate",
       "toUnixSeconds",
@@ -284,8 +286,10 @@
       "inputTypeForValue"
     ],
     "./function": [
+      "debounce",
       "memoize",
-      "once"
+      "once",
+      "throttle"
     ],
     "./node": [
       "globPaths",

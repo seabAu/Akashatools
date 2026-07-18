@@ -38,6 +38,7 @@ drop-in compatibility.
 | `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async/createKeyedSingleFlight` | None |
 | `createSingleFlight` | async | universal | no input mutation | `akashatools/async/createSingleFlight` | None |
 | `daysInMonth` | date | universal | no input mutation | `akashatools/date/daysInMonth` | None |
+| `debounce` | function | universal | no input mutation | `akashatools/function/debounce` | None |
 | `deepClone` | object | universal | no input mutation | `akashatools/object/deepClone` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
 | `deepMerge` | object | universal | no input mutation | `akashatools/object/deepMerge` | None |
 | `deepQuery` | object | universal | no input mutation | `akashatools/object/deepQuery` | `AO.has` |
@@ -171,6 +172,7 @@ drop-in compatibility.
 | `subtract` | number | universal | no input mutation | `akashatools/number/subtract` | `Math.sub` |
 | `sum` | number | universal | no input mutation | `akashatools/number/sum` | `Math.add` |
 | `summarizeNumbers` | number | universal | no input mutation | `akashatools/number/summarizeNumbers` | None |
+| `throttle` | function | universal | no input mutation | `akashatools/function/throttle` | None |
 | `toBinary` | number | universal | no input mutation | `akashatools/number/toBinary` | `Math.decToBinary` |
 | `toDate` | date | universal | no input mutation | `akashatools/date/toDate` | None |
 | `toUnixSeconds` | date | universal | no input mutation | `akashatools/date/toUnixSeconds` | None |

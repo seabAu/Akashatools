@@ -33,3 +33,37 @@ references only; they cannot cancel work already started by the callback.
 The returned function exposes non-enumerable `clear`, `delete`, `has`, and
 read-only `size` controls. Same-key synchronous reentrancy throws, while
 different derived keys may recurse.
+
+## `debounce`
+
+`debounce(callback, wait)` is deliberately trailing-only. Every call in one
+quiet-period batch receives the same Promise, and the latest call supplies the
+receiver and arguments. Callback values and Promise-like results fulfill it;
+synchronous throws and rejected results reject it. This prevents the reviewed
+legacy failure mode where superseded async callers were silently orphaned.
+
+`flush()` starts queued work immediately and returns its existing Promise.
+`cancel(reason)` rejects queued work, and `pending` reports whether that work
+exists. Controls do not abort a callback after invocation. A scheduler can be
+injected for deterministic hosts/tests; normal construction creates no timer.
+
+## `throttle`
+
+`throttle(callback, wait)` enables both leading and trailing edges by default.
+At most one callback starts per wait window. Calls inside the window share one
+trailing Promise and the latest receiver/arguments. A trailing invocation begins
+a new cooldown at its start. When trailing is disabled, suppressed calls receive
+the latest invocation's exact Promise rather than an invented `undefined` result.
+
+Leading-only and trailing-only operation are available, but both edges cannot
+be disabled. `flush()` acts only on queued trailing work; `cancel()` rejects that
+work and resets the cooldown. `pending` reports a queued trailing invocation,
+not a cooldown alone. No control claims to stop already-started work.
+
+Both timer wrappers validate the host timer range and normalize callback results
+to Promises, including synchronous throws. Their optional scheduler interface
+must provide `set(callback, milliseconds)` and `clear(handle)` and schedule the
+callback after `set` returns.
+Scheduler failures reject the queued Promise. The only state without such a
+Promise is a throttle cooldown with no trailing work; `cancel()` propagates a
+`clear` failure in that case instead of hiding it.

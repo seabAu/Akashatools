@@ -39,16 +39,24 @@ Synchronous throws are not cached. Pending native Promises coalesce while they
 remain cached; rejected Promises are evicted after settlement unless explicitly
 retained. Cache controls do not cancel ongoing work.
 
+`function.debounce` is trailing-only and returns one shared Promise to every
+caller in a quiet-period batch. The latest receiver/arguments win. `flush`
+starts queued work immediately; `cancel` rejects it. Once callback execution
+starts, neither control claims to abort it.
+
+`function.throttle` starts at most one callback per wait window. Leading and
+trailing edges are explicit and cannot both be disabled. Suppressed calls share
+the queued latest-arguments trailing Promise; when trailing is disabled they
+receive the most recent invocation's exact Promise. A trailing invocation starts
+a new cooldown. `pending` means trailing work is queued, not merely that a
+cooldown exists.
+
 The reviewed sources do not establish safe shared contracts for the following:
 
-- Mindspace debounce drops superseded async results, loses dynamic `this`, and
-  has no cancel/flush/pending API;
 - retry behavior is HTTP-specific in COMPOSR and depends on idempotency,
   `Retry-After`, jitter, attempt numbering, and an elapsed budget;
 - generic timeout behavior must decide whether timing out only rejects a wrapper
   or actually aborts the underlying operation;
-- throttle still needs receiver, argument, result, reentrancy, and cancellation
-  rules backed by real consumers.
 
 These remain deferred. Small primitives and caller composition are preferred to
 one options-heavy control function.

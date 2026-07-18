@@ -71,7 +71,7 @@ edited again after this dated review.
   keep cryptographic and non-cryptographic names visibly distinct.
 - [x] Add portable relative/archive path validation if its write-authorization
   boundary can remain unambiguous.
-- [ ] Reopen the reserved `function` category for independently useful
+- [x] Reopen the reserved `function` category for independently useful
   once/memoize/debounce/throttle contracts after receiver, async result,
   cancellation, cache, and timer semantics are written down.
 - [ ] Resolve the explicit opt-in `Array.prototype` augmentation decision. Never

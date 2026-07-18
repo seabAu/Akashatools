@@ -202,7 +202,8 @@
   and work-bound contracts while making no filesystem-write authorization claim.
 - Added the universal `function` category with receiver-preserving `once` and
   explicit-key, bounded-LRU `memoize` controls, including literal throw and
-  native-Promise rejection policies.
+  native-Promise rejection policies, plus Promise-result-preserving `debounce`
+  and leading/trailing `throttle` with cancel/flush/pending controls.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

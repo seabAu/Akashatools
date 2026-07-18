@@ -1141,6 +1141,37 @@ Throws:
 - `RangeError` — If maximumSize is not a positive safe integer.
 - `Error` — If callback synchronously reenters the wrapper with the same key.
 
+### debounce
+
+Creates a trailing debounce wrapper whose calls in one quiet-period batch share one Promise. The latest call's receiver and arguments are used when the timer elapses. Synchronous callback returns, throws, and Promise-like results become fulfillment or rejection of that shared Promise. `cancel` rejects work that has not started and returns whether anything was pending. `flush` starts pending work immediately and returns its existing Promise, or `undefined` when idle. Neither operation can cancel a callback after it starts. Timer creation occurs only when the wrapper is called.
+
+- Signature: `debounce()`
+- Import: `import { debounce } from "akashatools/function"`
+- Granular import: `import debounce from "akashatools/function/debounce"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `((this: This, ...args: Args) => Promise<Awaited<Result>>) & ScheduledControls<Result>` — Promise-returning debounced wrapper with non-enumerable controls.
+
+Throws:
+- `TypeError` — If callback, options, or scheduler are invalid.
+- `RangeError` — If wait is outside the supported host timer range.
+
+### throttle
+
+Creates a Promise-returning throttle with explicit leading/trailing policy. At most one callback starts per wait window. A leading call invokes after its cooldown timer is established; calls suppressed during that window either share one latest-arguments trailing Promise or, when trailing is disabled, receive the exact Promise from the most recent invocation. A trailing invocation begins a new cooldown at its start. `pending` reports a queued trailing invocation rather than a cooldown by itself. `flush` starts a queued trailing invocation immediately; `cancel` rejects queued work and resets the cooldown. Neither operation cancels work that already started. An injected scheduler failure rejects queued work; if `cancel` only clears a cooldown and has no queued Promise to reject, it propagates the clear error.
+
+- Signature: `throttle()`
+- Import: `import { throttle } from "akashatools/function"`
+- Granular import: `import throttle from "akashatools/function/throttle"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `((this: This, ...args: Args) => Promise<Awaited<Result>>) & ScheduledControls<Result>` — Promise-returning throttled wrapper with non-enumerable controls.
+
+Throws:
+- `TypeError` — If callback, options, booleans, or scheduler are invalid, or both edges are disabled.
+- `RangeError` — If wait is outside the supported host timer range.
+- `Error` — If an injected scheduler throws while `cancel` clears a cooldown with no queued work.
+
 ## number
 
 Runtime: Universal JavaScript on the supported runtime floor.

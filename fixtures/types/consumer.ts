@@ -67,6 +67,10 @@ const initializedOnce: () => { ready: boolean } = once(() => ({ ready: true }));
 const granularInitialized: () => string = granularOnce(() => "ready");
 const memoizedLength = functionUtils.memoize((value: string) => value.length, (value: string) => value);
 const cachedLength: number = memoizedLength("Akasha");
+const debouncedLength = functionUtils.debounce((value: string) => value.length, 25);
+const pendingLength: Promise<number> = debouncedLength("Akasha");
+const throttledLength = functionUtils.throttle((value: string) => value.length, 25, { trailing: false });
+const throttledPending: Promise<number> = throttledLength("Akasha");
 
 // @ts-expect-error Node-only helpers are intentionally absent from the root.
 akasha.resolveContainedPath;
@@ -84,4 +88,5 @@ void [
   namespacedResponse, errorCode, invalidContract,
   checksum, digest, deterministicId, namespacedDigest,
   initializedOnce, granularInitialized, memoizedLength, cachedLength,
+  debouncedLength, pendingLength, throttledLength, throttledPending,
 ];

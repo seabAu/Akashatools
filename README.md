@@ -50,7 +50,7 @@ import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { deepClone, setAtPath } from "akashatools/object";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { crc32, sha256Hex, sha256Json } from "akashatools/hash";
-import { memoize, once } from "akashatools/function";
+import { debounce, memoize, once, throttle } from "akashatools/function";
 ```
 
 Generated method subpaths make a dependency maximally explicit while exporting
@@ -117,11 +117,15 @@ import { memoize, once } from "akashatools/function";
 
 const initialize = once(createApplicationState);
 const loadById = memoize(loadRecord, (id) => id, { maximumSize: 500 });
+const saveDraft = debounce(writeDraft, 250);
+const updatePointer = throttle(renderPointer, 16);
 ```
 
 `once` preserves the first exact outcome, including throws and native Promises,
 unless retry behavior is selected. `memoize` requires an explicit key selector,
 uses a bounded identity-safe LRU cache, and exposes local cache controls.
+`debounce` and `throttle` return Promises for every call and expose `cancel`,
+`flush`, and `pending` controls without orphaning superseded callers.
 
 Node-only functions use a separate entry point so browser/shared imports never
 load Node filesystem modules:

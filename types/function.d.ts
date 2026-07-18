@@ -24,17 +24,35 @@ export type MemoizedControls<Key> = {
     has: (key: Key) => boolean;
     readonly size: number;
 };
-/**
- * @typedef {object} OnceOptions
- * @property {boolean} [retryOnThrow=false] Whether a synchronous throw returns the wrapper to its unused state.
- * @property {boolean} [retryOnRejection=false] Whether a rejected native Promise returns the wrapper to its unused state after settlement.
- */
-/**
- * @typedef {object} MemoizeOptions
- * @property {number} [maximumSize=1000] Positive safe-integer least-recently-used cache bound.
- * @property {boolean} [cacheRejected=false] Whether rejected native Promises remain cached after settlement.
- */
-/** @template Key @typedef {{clear: () => void, delete: (key: Key) => boolean, has: (key: Key) => boolean, readonly size: number}} MemoizedControls */
+export type TimerScheduler = {
+    set: (callback: () => void, milliseconds: number) => unknown;
+    clear: (handle: unknown) => void;
+};
+export type ScheduledControls<Result> = {
+    cancel: (reason?: unknown) => boolean;
+    flush: () => Promise<Awaited<Result>> | undefined;
+    readonly pending: boolean;
+};
+export type DebounceOptions = {
+    /**
+     * Injectable timer scheduler whose callbacks run after `set` returns.
+     */
+    scheduler?: TimerScheduler;
+};
+export type ThrottleOptions = {
+    /**
+     * Whether the first call outside a cooldown invokes immediately.
+     */
+    leading?: boolean;
+    /**
+     * Whether calls inside a cooldown queue one latest-arguments invocation.
+     */
+    trailing?: boolean;
+    /**
+     * Injectable timer scheduler whose callbacks run after `set` returns.
+     */
+    scheduler?: TimerScheduler;
+};
 /**
  * Creates a receiver-preserving wrapper that invokes a function at most once and
  * replays its exact return value or thrown error. Reentrant calls made before the
@@ -89,3 +107,59 @@ export declare function once<This, Args extends unknown[], Result>(callback: (th
  * @since 2.0.0
  */
 export declare function memoize<This, Args extends unknown[], Result, Key>(callback: (this: This, ...args: Args) => Result, toKey: (this: This, ...args: Args) => Key, options?: MemoizeOptions): ((this: This, ...args: Args) => Result) & MemoizedControls<Key>;
+/**
+ * Creates a trailing debounce wrapper whose calls in one quiet-period batch
+ * share one Promise. The latest call's receiver and arguments are used when the
+ * timer elapses. Synchronous callback returns, throws, and Promise-like results
+ * become fulfillment or rejection of that shared Promise.
+ *
+ * `cancel` rejects work that has not started and returns whether anything was
+ * pending. `flush` starts pending work immediately and returns its existing
+ * Promise, or `undefined` when idle. Neither operation can cancel a callback
+ * after it starts. Timer creation occurs only when the wrapper is called.
+ *
+ * @template This
+ * @template {unknown[]} Args
+ * @template Result
+ * @param {(this: This, ...args: Args) => Result} callback Function invoked after calls remain quiet for wait milliseconds.
+ * @param {number} wait Finite timer delay from 0 through 2,147,483,647 milliseconds.
+ * @param {DebounceOptions} [options] Optional timer injection for deterministic hosts/tests.
+ * @returns {((this: This, ...args: Args) => Promise<Awaited<Result>>) & ScheduledControls<Result>} Promise-returning debounced wrapper with non-enumerable controls.
+ * @throws {TypeError} If callback, options, or scheduler are invalid.
+ * @throws {RangeError} If wait is outside the supported host timer range.
+ * @example
+ * const save = debounce(writeDraft, 250);
+ * await save(latestDraft);
+ * @since 2.0.0
+ */
+export declare function debounce<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, wait: number, options?: DebounceOptions): ((this: This, ...args: Args) => Promise<Awaited<Result>>) & ScheduledControls<Result>;
+/**
+ * Creates a Promise-returning throttle with explicit leading/trailing policy.
+ * At most one callback starts per wait window. A leading call invokes after its
+ * cooldown timer is established; calls suppressed during that window either
+ * share one latest-arguments trailing Promise or, when trailing is disabled,
+ * receive the exact Promise from the most recent invocation.
+ *
+ * A trailing invocation begins a new cooldown at its start. `pending` reports a
+ * queued trailing invocation rather than a cooldown by itself. `flush` starts a
+ * queued trailing invocation immediately; `cancel` rejects queued work and
+ * resets the cooldown. Neither operation cancels work that already started.
+ * An injected scheduler failure rejects queued work; if `cancel` only clears a
+ * cooldown and has no queued Promise to reject, it propagates the clear error.
+ *
+ * @template This
+ * @template {unknown[]} Args
+ * @template Result
+ * @param {(this: This, ...args: Args) => Result} callback Function rate-limited without changing its dynamic receiver.
+ * @param {number} wait Finite cooldown from 0 through 2,147,483,647 milliseconds.
+ * @param {ThrottleOptions} [options] Leading/trailing policy and optional timer injection.
+ * @returns {((this: This, ...args: Args) => Promise<Awaited<Result>>) & ScheduledControls<Result>} Promise-returning throttled wrapper with non-enumerable controls.
+ * @throws {TypeError} If callback, options, booleans, or scheduler are invalid, or both edges are disabled.
+ * @throws {RangeError} If wait is outside the supported host timer range.
+ * @throws {Error} If an injected scheduler throws while `cancel` clears a cooldown with no queued work.
+ * @example
+ * const update = throttle(renderPosition, 16, { leading: true, trailing: true });
+ * await update(position);
+ * @since 2.0.0
+ */
+export declare function throttle<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, wait: number, options?: ThrottleOptions): ((this: This, ...args: Args) => Promise<Awaited<Result>>) & ScheduledControls<Result>;

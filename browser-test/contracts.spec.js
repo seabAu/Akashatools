@@ -68,3 +68,49 @@ test("portable paths retain Unicode and collision contracts in browsers", async 
   expect(result).toEqual({ normalized: "caf\u00e9/menu.txt", collisionRejected: true });
   expect(errors).toEqual([]);
 });
+
+test("timer controls coalesce results and cancel pending browser work", async ({ page }) => {
+  const errors = collectBrowserErrors(page);
+  await page.goto(fixturePath);
+  const result = await page.evaluate(async () => {
+    const { debounce, throttle } = await import("/src/function.js");
+    const calls = [];
+    const debounced = debounce((value) => {
+      calls.push(`debounce:${value}`);
+      return value;
+    }, 0);
+    const first = debounced("first");
+    const latest = debounced("latest");
+
+    const throttled = throttle(
+      (value) => {
+        calls.push(`throttle:${value}`);
+        return value;
+      },
+      0,
+      { leading: false },
+    );
+    const queued = throttled("queued");
+
+    const cancelled = debounce(() => "unused", 1_000);
+    const cancellation = cancelled("unused").catch((error) => error.name);
+    cancelled.cancel();
+
+    return {
+      sameDebouncePromise: first === latest,
+      debounceResult: await latest,
+      throttleResult: await queued,
+      cancellation: await cancellation,
+      calls,
+    };
+  });
+
+  expect(result).toEqual({
+    sameDebouncePromise: true,
+    debounceResult: "latest",
+    throttleResult: "queued",
+    cancellation: "AbortError",
+    calls: ["debounce:latest", "throttle:queued"],
+  });
+  expect(errors).toEqual([]);
+});

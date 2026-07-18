@@ -13,6 +13,7 @@ const files = new Map([
   ["/src/object.js", [new URL("../src/object.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/string.js", [new URL("../src/string.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/validation.js", [new URL("../src/validation.js", import.meta.url), "text/javascript; charset=utf-8"]],
+  ["/src/function.js", [new URL("../src/function.js", import.meta.url), "text/javascript; charset=utf-8"]],
 ]);
 
 const server = createServer(async (request, response) => {

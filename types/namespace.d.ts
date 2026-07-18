@@ -228,6 +228,8 @@ export declare const input: Readonly<{
 export declare const functionUtils: Readonly<{
     once<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, options?: functionModule.OnceOptions): (this: This, ...args: Args) => Result;
     memoize<This, Args extends unknown[], Result, Key>(callback: (this: This, ...args: Args) => Result, toKey: (this: This, ...args: Args) => Key, options?: functionModule.MemoizeOptions): ((this: This, ...args: Args) => Result) & functionModule.MemoizedControls<Key>;
+    debounce<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, wait: number, options?: functionModule.DebounceOptions): ((this: This, ...args: Args) => Promise<Awaited<Result>>) & functionModule.ScheduledControls<Result>;
+    throttle<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, wait: number, options?: functionModule.ThrottleOptions): ((this: This, ...args: Args) => Promise<Awaited<Result>>) & functionModule.ScheduledControls<Result>;
 }>;
 /** Frozen numeric utilities for namespace-style discovery. */
 export declare const number: Readonly<{
@@ -544,6 +546,8 @@ export declare const akasha: Readonly<{
     formatRelativeTime: typeof dateModule.formatRelativeTime;
     once: typeof functionModule.once;
     memoize: typeof functionModule.memoize;
+    debounce: typeof functionModule.debounce;
+    throttle: typeof functionModule.throttle;
     sha256Hex: typeof hashModule.sha256Hex;
     crc32: typeof hashModule.crc32;
     sha256Json: typeof hashModule.sha256Json;
@@ -781,6 +785,8 @@ export declare const akasha: Readonly<{
     function: Readonly<{
         once<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, options?: functionModule.OnceOptions): (this: This, ...args: Args) => Result;
         memoize<This, Args extends unknown[], Result, Key>(callback: (this: This, ...args: Args) => Result, toKey: (this: This, ...args: Args) => Key, options?: functionModule.MemoizeOptions): ((this: This, ...args: Args) => Result) & functionModule.MemoizedControls<Key>;
+        debounce<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, wait: number, options?: functionModule.DebounceOptions): ((this: This, ...args: Args) => Promise<Awaited<Result>>) & functionModule.ScheduledControls<Result>;
+        throttle<This, Args extends unknown[], Result>(callback: (this: This, ...args: Args) => Result, wait: number, options?: functionModule.ThrottleOptions): ((this: This, ...args: Args) => Promise<Awaited<Result>>) & functionModule.ScheduledControls<Result>;
     }>;
     number: Readonly<{
         clamp(value: number, minimum: number, maximum: number): number;
