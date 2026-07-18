@@ -5,6 +5,7 @@ import * as collectionModule from "./collection/index.js";
 import * as dataModule from "./data/index.js";
 import * as dateModule from "./date/index.js";
 import * as httpModule from "./http/index.js";
+import * as hashModule from "./hash/index.js";
 import * as inputModule from "./input/index.js";
 import * as numberModule from "./number/index.js";
 import * as objectModule from "./object/index.js";
@@ -192,6 +193,17 @@ export declare const http: Readonly<{
         maximumHeaderLength?: number;
         maximumLength?: number;
     }): string | undefined;
+}>;
+/** Frozen checksum and deterministic hashing utilities. */
+export declare const hash: Readonly<{
+    sha256Hex(value: hashModule.HashInput, options?: hashModule.Sha256Options): Promise<string>;
+    crc32(value: hashModule.HashInput, options?: {
+        maximumBytes?: number;
+    }): number;
+    sha256Json(value: unknown, options?: hashModule.JsonHashOptions): Promise<string>;
+    stableJsonId(prefix: string, value: unknown, options?: hashModule.JsonHashOptions & {
+        hashLength?: number;
+    }): Promise<string>;
 }>;
 /** Frozen form-input inference and descriptor utilities. */
 export declare const input: Readonly<{
@@ -517,6 +529,10 @@ export declare const akasha: Readonly<{
     formatDateTime: typeof dateModule.formatDateTime;
     formatDuration: typeof dateModule.formatDuration;
     formatRelativeTime: typeof dateModule.formatRelativeTime;
+    sha256Hex: typeof hashModule.sha256Hex;
+    crc32: typeof hashModule.crc32;
+    sha256Json: typeof hashModule.sha256Json;
+    stableJsonId: typeof hashModule.stableJsonId;
     HttpError: typeof httpModule.HttpError;
     request: typeof httpModule.request;
     redactHeaders: typeof httpModule.redactHeaders;
@@ -719,6 +735,16 @@ export declare const akasha: Readonly<{
             maximumHeaderLength?: number;
             maximumLength?: number;
         }): string | undefined;
+    }>;
+    hash: Readonly<{
+        sha256Hex(value: hashModule.HashInput, options?: hashModule.Sha256Options): Promise<string>;
+        crc32(value: hashModule.HashInput, options?: {
+            maximumBytes?: number;
+        }): number;
+        sha256Json(value: unknown, options?: hashModule.JsonHashOptions): Promise<string>;
+        stableJsonId(prefix: string, value: unknown, options?: hashModule.JsonHashOptions & {
+            hashLength?: number;
+        }): Promise<string>;
     }>;
     input: Readonly<{
         inputTypeForType(descriptor: string | Function, options?: inputModule.InputTypeOptions): string | undefined;

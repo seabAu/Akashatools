@@ -31,6 +31,7 @@ drop-in compatibility.
 | `controlTypeForValue` | input | universal | no input mutation | `akashatools/input/controlTypeForValue` | `Val.getFieldType` |
 | `countBy` | array | universal | no input mutation | `akashatools/array/countBy` | None |
 | `countWords` | string | universal | no input mutation | `akashatools/string/countWords` | None |
+| `crc32` | hash | universal | no input mutation | `akashatools/hash/crc32` | None |
 | `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort/createCollatorComparator` | None |
 | `createConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createConcurrencyLimiter` | None |
 | `createKeyedConcurrencyLimiter` | async | universal | no input mutation | `akashatools/async/createKeyedConcurrencyLimiter` | None |
@@ -152,6 +153,8 @@ drop-in compatibility.
 | `secureRandomUuid` | random | universal | no input mutation | `akashatools/random/secureRandomUuid` | None |
 | `sentenceCase` | string | universal | no input mutation | `akashatools/string/sentenceCase` | None |
 | `setAtPath` | object | universal | no input mutation | `akashatools/object/setAtPath` | `AO.deepFindSet`, `AO.findAndSetObject` |
+| `sha256Hex` | hash | universal | no input mutation | `akashatools/hash/sha256Hex` | None |
+| `sha256Json` | hash | universal | no input mutation | `akashatools/hash/sha256Json` | None |
 | `shuffle` | array | universal | no input mutation | `akashatools/array/shuffle` | None |
 | `slugify` | string | universal | no input mutation | `akashatools/string/slugify` | None |
 | `sortBy` | sort | universal | no input mutation | `akashatools/sort/sortBy` | `AO.keySortData`, `AO.sortObjArray` |
@@ -159,6 +162,7 @@ drop-in compatibility.
 | `sortByNumericOrder` | sort | universal | no input mutation | `akashatools/sort/sortByNumericOrder` | `AO.sortObjArray` |
 | `splitTextByLimits` | string | universal | no input mutation | `akashatools/string/splitTextByLimits` | None |
 | `stableJson` | string | universal | no input mutation | `akashatools/string/stableJson` | None |
+| `stableJsonId` | hash | universal | no input mutation | `akashatools/hash/stableJsonId` | None |
 | `startOfLocalDay` | date | universal | no input mutation | `akashatools/date/startOfLocalDay` | None |
 | `subtract` | number | universal | no input mutation | `akashatools/number/subtract` | `Math.sub` |
 | `sum` | number | universal | no input mutation | `akashatools/number/sum` | `Math.add` |

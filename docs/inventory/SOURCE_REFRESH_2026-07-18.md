@@ -67,7 +67,7 @@ edited again after this dated review.
 - [x] Add strict RFC 6901 JSON Pointer parsing, reading, and presence checks.
 - [x] Add identity-preserving `keyBy` and comparator-based binary-search bounds.
 - [x] Add strict `Retry-After` parsing without adding implicit HTTP retries.
-- [ ] Design and add native hashing/checksum atoms plus stable JSON composition;
+- [x] Design and add native hashing/checksum atoms plus stable JSON composition;
   keep cryptographic and non-cryptographic names visibly distinct.
 - [ ] Add portable relative/archive path validation if its write-authorization
   boundary can remain unambiguous.

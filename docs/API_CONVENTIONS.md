@@ -46,6 +46,8 @@ import granularChunk from "akashatools/array/chunk";
 | `collection` | implemented | Identity-based operations shared across collection shapes. |
 | `data` | implemented | Runtime type analysis and initialized data defaults/shapes. |
 | `date` | implemented | Instants, local calendar dates, clocks, and formatting. |
+| `hash` | implemented | Native cryptographic digests, checksums, and deterministic strict-JSON identifiers. |
+| `http` | implemented | Bounded Fetch, cancellation, parsing, redaction, and typed HTTP errors. |
 | `input` | implemented | Framework-neutral input/control inference and field descriptors. |
 | `number` | implemented | Finite-number arithmetic and numeric transforms. |
 | `object` | implemented | Plain objects, paths, copies, selection, and merging. |
@@ -54,7 +56,6 @@ import granularChunk from "akashatools/array/chunk";
 | `string` | implemented | Case, replacement, escaping, and serialization helpers. |
 | `validation` | implemented | Literal predicates, normalization, and contract checks. |
 | `function` | reserved | Function control such as once/debounce/throttle if adopted. |
-| `http` | implemented | Bounded Fetch, cancellation, parsing, redaction, and typed HTTP errors. |
 | `node` | implemented subpath | Node-only filesystem, path, and runtime operations; never flattened into the universal root. |
 
 `schema` and `debug` are explicitly not 2.0 categories. The reviewed schema

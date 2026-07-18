@@ -12,6 +12,7 @@ export * from "./collection/index.js";
 export * from "./data/index.js";
 export * from "./date/index.js";
 export * from "./http/index.js";
+export * from "./hash/index.js";
 export * from "./input/index.js";
 export * from "./number/index.js";
 export * from "./object/index.js";
@@ -30,6 +31,7 @@ export {
   data,
   date,
   http,
+  hash,
   input,
   number,
   object,

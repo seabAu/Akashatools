@@ -16,6 +16,7 @@ const categoryNames = [
   "data",
   "date",
   "http",
+  "hash",
   "input",
   "number",
   "object",

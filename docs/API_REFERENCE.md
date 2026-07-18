@@ -947,6 +947,72 @@ Throws:
 - `TypeError` — If value, options, or fallback violates its literal contract.
 - `RangeError` — If a length bound is invalid or the header exceeds maximumHeaderLength.
 
+## hash
+
+Runtime: Universal JavaScript on the supported runtime floor.
+
+Focused import: `akashatools/hash`
+
+### sha256Hex
+
+Computes a lowercase SHA-256 digest with the runtime's native Web Crypto implementation. Strings are encoded as UTF-8; binary views hash only their visible byte range. Input bytes are copied before the asynchronous digest so later caller mutation cannot change the result. This is a cryptographic digest primitive, not a password hash, MAC, signature, encryption operation, or proof that content is trustworthy.
+
+- Signature: `sha256Hex()`
+- Import: `import { sha256Hex } from "akashatools/hash"`
+- Granular import: `import sha256Hex from "akashatools/hash/sha256Hex"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Promise<string>` — Promise for exactly 64 lowercase hexadecimal characters.
+
+Throws:
+- `TypeError` — If value, options, or crypto does not satisfy the literal contract.
+- `RangeError` — If maximumBytes is invalid or the encoded input exceeds it.
+
+### crc32
+
+Computes the standard unsigned CRC-32/ISO-HDLC checksum used by ZIP and many file formats. Strings are encoded as UTF-8 and binary views use only their visible byte range. CRC-32 detects accidental corruption efficiently but is not collision resistant and must not be used as a security digest.
+
+- Signature: `crc32()`
+- Import: `import { crc32 } from "akashatools/hash"`
+- Granular import: `import crc32 from "akashatools/hash/crc32"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — Unsigned 32-bit checksum in the range 0 through 4294967295.
+
+Throws:
+- `TypeError` — If value or options does not satisfy the literal contract.
+- `RangeError` — If maximumBytes is invalid or the encoded input exceeds it.
+
+### sha256Json
+
+Produces a prefixed SHA-256 digest of strict deterministic JSON. It composes `stableJson` rather than inventing another normalizer, so active properties, unsupported values, sparse arrays, non-finite numbers, and cycles retain the canonical JSON rejection contract.
+
+- Signature: `sha256Json()`
+- Import: `import { sha256Json } from "akashatools/hash"`
+- Granular import: `import sha256Json from "akashatools/hash/sha256Json"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Promise<string>` — Promise for `sha256:` followed by 64 lowercase hexadecimal characters.
+
+Throws:
+- `TypeError` — If value, options, crypto, or JSON shape is unsupported.
+- `RangeError` — If a serialization or byte work bound is invalid or exceeded.
+
+### stableJsonId
+
+Creates a deterministic, readable identifier from strict JSON and a caller-owned prefix. The identifier truncates SHA-256 for compactness; it is suitable for reproducible local keys, not secrets, unguessable IDs, digital signatures, or global uniqueness without a domain-specific collision plan.
+
+- Signature: `stableJsonId()`
+- Import: `import { stableJsonId } from "akashatools/hash"`
+- Granular import: `import stableJsonId from "akashatools/hash/stableJsonId"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Promise<string>` — Promise for `${prefix}_${hexadecimalSuffix}`.
+
+Throws:
+- `TypeError` — If prefix, value, options, crypto, or JSON shape is unsupported.
+- `RangeError` — If hashLength or a work bound is invalid or exceeded.
+
 ## input
 
 Runtime: Universal JavaScript on the supported runtime floor.

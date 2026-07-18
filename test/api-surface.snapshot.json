@@ -28,6 +28,7 @@
       "controlTypeForValue",
       "countBy",
       "countWords",
+      "crc32",
       "createCollatorComparator",
       "createConcurrencyLimiter",
       "createKeyedConcurrencyLimiter",
@@ -79,6 +80,7 @@
       "hasAtJsonPointer",
       "hasAtPath",
       "hasDeep",
+      "hash",
       "http",
       "includesText",
       "initializeLike",
@@ -153,6 +155,8 @@
       "secureRandomUuid",
       "sentenceCase",
       "setAtPath",
+      "sha256Hex",
+      "sha256Json",
       "shuffle",
       "slugify",
       "sort",
@@ -161,6 +165,7 @@
       "sortByNumericOrder",
       "splitTextByLimits",
       "stableJson",
+      "stableJsonId",
       "startOfLocalDay",
       "string",
       "subtract",
@@ -258,6 +263,12 @@
       "parseRetryAfter",
       "redactHeaders",
       "request"
+    ],
+    "./hash": [
+      "crc32",
+      "sha256Hex",
+      "sha256Json",
+      "stableJsonId"
     ],
     "./input": [
       "controlTypeForType",

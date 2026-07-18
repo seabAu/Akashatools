@@ -118,8 +118,9 @@ Acceptance criteria:
 ### 1.2 Canonical categories
 
 - [x] Confirm and document the stable categories: `array`, `async`, `browser`,
-  `collection`, `date`, `function`, `http`, `number`, `object`, `random`, `sort`,
-  `string`, and `validation`.
+  `collection`, `data`, `date`, `hash`, `http`, `input`, `number`, `object`,
+  `random`, `sort`, `string`, and `validation`; keep `function` reserved until
+  its timer/receiver/cancellation contracts are adopted.
 - [x] Design a separate `node` surface for filesystem/path/runtime utilities.
 - [x] Decide whether schema and data-model helpers are generic enough for a
   `schema` category or belong in a separate package/add-on.
@@ -402,10 +403,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 164 current public declarations are complete, with parameter/return prose,
+  All 168 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  164 current public declarations by `npm run check:docs`.
+  168 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -415,7 +416,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 198 declaration files, including generated
+  byte-for-byte drift check across 204 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -611,6 +612,9 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
 - [x] Add strict bounded `Retry-After` interpretation in seconds with standard
   integer and HTTP-date forms, explicit fractional compatibility for current
   provider APIs, injectable time/caps, and no implicit request retries.
+- [x] Add a universal hash category separating native SHA-256, fast non-security
+  CRC-32, strict stable-JSON digests, and configurable deterministic JSON IDs;
+  retain explicit byte/shape bounds and leave streaming/archive/trust policy out.
 - [ ] Re-run API collision, types, editor completions, package smoke, bundle,
   coverage, Node 22/24, and browser regression gates after the expanded surface
   stabilizes. Replace the superseded release-readiness measurements.
@@ -745,7 +749,7 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
-| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 164 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 168 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
 | 2026-07-18 | Raise the temporary full-discovery guardrail to 100,000 raw/30,000 gzip after the Retry-After batch. | Strict support for all standard HTTP-date forms moved the complete namespace to 75,742 raw/22,873 gzip, 742 raw bytes over the prior expansion ceiling. Focused root/category/granular imports remain exactly 321/252 and side-effect-only remains zero; only the intentionally comprehensive namespace receives more headroom, and it must be recalibrated before RC. |

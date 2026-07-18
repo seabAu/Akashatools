@@ -9,6 +9,7 @@ const files = new Map([
     [new URL("../fixtures/browser/download.html", import.meta.url), "text/html; charset=utf-8"],
   ],
   ["/src/browser.js", [new URL("../src/browser.js", import.meta.url), "text/javascript; charset=utf-8"]],
+  ["/src/hash.js", [new URL("../src/hash.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/object.js", [new URL("../src/object.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/string.js", [new URL("../src/string.js", import.meta.url), "text/javascript; charset=utf-8"]],
   ["/src/validation.js", [new URL("../src/validation.js", import.meta.url), "text/javascript; charset=utf-8"]],

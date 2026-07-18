@@ -83,6 +83,16 @@
       "import": "./src/http/*.js",
       "default": "./src/http/*.js"
     },
+    "./hash": {
+      "types": "./types/hash/index.d.ts",
+      "import": "./src/hash/index.js",
+      "default": "./src/hash/index.js"
+    },
+    "./hash/*": {
+      "types": "./types/hash/*.d.ts",
+      "import": "./src/hash/*.js",
+      "default": "./src/hash/*.js"
+    },
     "./input": {
       "types": "./types/input/index.d.ts",
       "import": "./src/input/index.js",

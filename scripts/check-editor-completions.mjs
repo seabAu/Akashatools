@@ -11,9 +11,10 @@ const expectations = [
   ["data", "akasha.data.", ["analyzeArrayTypes", "defaultValueForType", "initializeLike"]],
   ["validation", "akasha.validation.", ["isEmail", "isJson", "isPlainObjectArray"]],
   ["http", "akasha.http.", ["HttpError", "redactHeaders", "request"]],
+  ["hash", "akasha.hash.", ["crc32", "sha256Hex", "sha256Json", "stableJsonId"]],
   ["input", "akasha.input.", ["controlTypeForValue", "fieldsFromData", "inputTypeForType"]],
   ["object", "akasha.object.", ["deepQuery", "findAllDeepValues", "hasDeep"]],
-  ["flat", "akasha.", ["chunk", "deepQuery", "fieldsFromData", "initializeLike", "isEmail", "request"]],
+  ["flat", "akasha.", ["chunk", "crc32", "deepQuery", "fieldsFromData", "initializeLike", "isEmail", "request"]],
 ];
 const files = [];
 

@@ -13,6 +13,7 @@ const granularCategories = [
   "data",
   "date",
   "http",
+  "hash",
   "input",
   "number",
   "object",

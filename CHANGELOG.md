@@ -194,6 +194,9 @@
 - Added bounded `parseRetryAfter` interpretation for RFC integer delays and all
   HTTP-date forms, with an explicit fractional-seconds compatibility option and
   no automatic request retry policy.
+- Added a universal `hash` category with native Web Crypto `sha256Hex`, clearly
+  non-security `crc32`, strict `sha256Json`, and configurable `stableJsonId`
+  composition; streaming/archive/trust policy stays with its owning packages.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

@@ -2,7 +2,8 @@
 
 Akashatools is a dependency-free collection of focused JavaScript utilities for
 arrays, objects, strings, numbers, dates, data introspection/initialization,
-validation, asynchronous workflows, collections, and browser file downloads.
+validation, asynchronous workflows, collections, hashing, HTTP operations, and
+browser file downloads.
 
 Version 2 is an ES module package for Node.js 22.17+ and modern browsers. Functions
 are side-effect free unless their names explicitly describe an effect.
@@ -48,6 +49,7 @@ import { chunk, removeFromArray } from "akashatools/array";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { deepClone, setAtPath } from "akashatools/object";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
+import { crc32, sha256Hex, sha256Json } from "akashatools/hash";
 ```
 
 Generated method subpaths make a dependency maximally explicit while exporting
@@ -63,12 +65,7 @@ chunk === namedChunk; // true
 The `data` category keeps related operations distinct and composable:
 
 ```js
-import {
-  analyzeArrayTypes,
-  defaultValueForType,
-  initializeLike,
-  normalizeDataType,
-} from "akashatools/data";
+import { analyzeArrayTypes, defaultValueForType, initializeLike, normalizeDataType } from "akashatools/data";
 
 normalizeDataType("DateTimeLocal"); // "date"
 analyzeArrayTypes([1, "2", 3]).types; // ["number", "string"]
@@ -116,10 +113,7 @@ Node-only functions use a separate entry point so browser/shared imports never
 load Node filesystem modules:
 
 ```js
-import {
-  resolveContainedPath,
-  resolveExistingContainedPath,
-} from "akashatools/node";
+import { resolveContainedPath, resolveExistingContainedPath } from "akashatools/node";
 
 resolveContainedPath("/srv/media", "2026/report.pdf");
 ```

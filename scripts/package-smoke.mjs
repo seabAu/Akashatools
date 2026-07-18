@@ -43,6 +43,7 @@ import { chunk as categoryChunk } from "akashatools/array";
 import methodChunk, { chunk as granularChunk } from "akashatools/array/chunk";
 import { defaultValueForType, initializeLike } from "akashatools/data";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
+import { crc32, sha256Hex } from "akashatools/hash";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
 import granularHasDeep from "akashatools/object/hasDeep";
 import { resolveContainedPath } from "akashatools/node";
@@ -61,6 +62,8 @@ assert.equal(fieldsFromData({ title: "Draft" })[0].name, "title");
 assert.equal(deepQuery({ id: 1 }).has("id", { by: "key" }), true);
 assert.deepEqual(findAllDeepValues({ one: { id: 1 } }, "id", { by: "key" }), [1]);
 assert.equal(granularHasDeep({ id: 1 }, "id", { by: "key" }), true);
+assert.equal(crc32("123456789"), 0xcbf43926);
+assert.match(await sha256Hex("abc"), /^[a-f0-9]{64}$/u);
 assert.equal(resolveContainedPath("/srv/data", "report.json"), path.resolve("/srv/data", "report.json"));
 `,
   );
@@ -76,6 +79,7 @@ import { controlTypeForValue } from "akashatools/input";
 import { deepQuery } from "akashatools/object";
 import granularDeepQuery from "akashatools/object/deepQuery";
 import { HttpError } from "akashatools/http";
+import { crc32, sha256Hex } from "akashatools/hash";
 import type { JsonContract } from "akashatools/validation";
 
 const chunks: number[][] = chunk([1, 2, 3], 2);
@@ -88,7 +92,9 @@ const granularHasId: boolean = granularDeepQuery({ id: 1 }).has("id", { by: "key
 const response: Promise<{ ok: boolean }> = request<{ ok: boolean }>("https://example.com");
 const contract: JsonContract = { type: "object", properties: { ok: { type: "boolean" } } };
 const code: HttpError["code"] = "TIMEOUT";
-void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code];
+const checksum: number = crc32("content");
+const digest: Promise<string> = sha256Hex("content");
+void [chunks, granularChunks, nested, primaryType, control, hasId, granularHasId, response, contract, code, checksum, digest];
 `,
   );
   await writeFile(

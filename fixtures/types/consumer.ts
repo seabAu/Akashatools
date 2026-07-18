@@ -2,6 +2,7 @@ import akasha, {
   array,
   chunk,
   data,
+  hash,
   http,
   input,
   isEmail,
@@ -12,6 +13,7 @@ import { chunk as categoryChunk } from "akashatools/array";
 import granularChunk from "akashatools/array/chunk";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { HttpError, request as categoryRequest } from "akashatools/http";
+import { crc32, sha256Hex, stableJsonId } from "akashatools/hash";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
@@ -45,6 +47,10 @@ const response: Promise<{ ok: boolean }> = request<{ ok: boolean }>("https://exa
 const categoryResponse: Promise<string> = categoryRequest<string>("https://example.com/text", { responseType: "text" });
 const namespacedResponse: Promise<string> = http.request<string>("https://example.com/text");
 const errorCode: HttpError["code"] = "TIMEOUT";
+const checksum: number = crc32("content");
+const digest: Promise<string> = sha256Hex("content");
+const deterministicId: Promise<string> = stableJsonId("item", { id: 1 });
+const namespacedDigest: Promise<string> = hash.sha256Json({ id: 1 });
 
 // @ts-expect-error Node-only helpers are intentionally absent from the root.
 akasha.resolveContainedPath;
@@ -60,4 +66,5 @@ void [
   hasId, ids, granularHasId,
   validEmail, rootPredicate, path, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract,
+  checksum, digest, deterministicId, namespacedDigest,
 ];
