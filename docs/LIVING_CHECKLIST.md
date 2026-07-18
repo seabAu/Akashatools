@@ -593,9 +593,10 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
   identity. Each category also has a generated index that fronts its canonical
   implementation; generated-source, identity, declaration, installed-package,
   and bundle-equivalence checks prevent drift.
-- [ ] Refresh the changed-source delta across Mindspace, portfolio rebuild,
-  COMPOSR, and SPLICR after the 2026-07-16 snapshot; disposition every new or
-  changed generic candidate.
+- [x] Refresh the changed-source delta across Mindspace, portfolio rebuild,
+  COMPOSR, and SPLICR after the 2026-07-16 snapshot. The dated 2026-07-18 ledger
+  screens current dirty/untracked source and dispositions every new generic
+  family without modifying a consumer.
 - [ ] Review rejected/deferred families for useful atomic variants and add
   justified missing utilities in small, independently tested batches.
 - [ ] Re-run API collision, types, editor completions, package smoke, bundle,
@@ -735,6 +736,7 @@ Acceptance criteria:
 | 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 154 method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
+| 2026-07-18 | Treat the second source refresh as a delta, not a bulk copy. | Current dirty and untracked consumer source is evidence for atomic contracts, but thread archives, TTS providers, UI components, storage, and application policy remain with their owning projects; the dated ledger records every new family and the reusable implementation queue. |
 
 ## Definition of done
 

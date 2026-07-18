@@ -27,6 +27,9 @@ The source directories were refreshed and active Akashatools usage was parsed
 again on 2026-07-16. The reproducible results, parser boundaries, and remaining
 manual migration cases are recorded in
 [CONSUMER_USAGE_AUDIT_2026-07-16.md](inventory/CONSUMER_USAGE_AUDIT_2026-07-16.md).
+The subsequent current-working-copy regression delta is recorded in
+[SOURCE_REFRESH_2026-07-18.md](inventory/SOURCE_REFRESH_2026-07-18.md); it
+includes dirty and untracked source without modifying any consumer project.
 
 ## Included in alpha 1
 

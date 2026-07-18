@@ -178,6 +178,10 @@
   options now reject invalid container types instead of coercing or ignoring them.
 - Began the 2026-07-16 active-source refresh across Mindspace, the portfolio
   rebuild, COMPOSR, and SPLICR with a dated delta ledger and implementation queue.
+- Repeated the read-only source regression scan on 2026-07-18, including current
+  dirty and untracked consumer code, and separated new atomic concurrency,
+  JSON-Pointer, retry-advice, hashing, indexing, and portable-path candidates
+  from application/archive/media/UI policy.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.
