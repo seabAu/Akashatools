@@ -124,7 +124,7 @@ mixes primitive-looking functions with HTML input and schema-form policy.
 | `getArrayType` | Infers from the first item and references undeclared `test` for nonempty arrays. | Reject broken implementation; adopted structured replacement `data.analyzeArrayTypes`. |
 | `formatInputValue` | Reads DOM event/control shapes and applies HTML-field coercion. | App-local UI adapter. |
 | `initializeModel` | Delegates to legacy `cleanJSON`, which does not preserve a general value model. | Reject implementation; related explicit replacement is `data.initializeLike`. |
-| `arrayToEnum` | Builds a frozen value-to-itself object without defining duplicate/unsafe-key behavior. | Defer safe lookup/keying helper only if usage warrants it. |
+| `arrayToEnum` | Builds a frozen value-to-itself object without defining duplicate/unsafe-key behavior. | Replaced by `array.keyBy`; the canonical `Map` index preserves key identity and makes first/last/error duplicate behavior explicit. |
 | `typeToInitialDefault` | Maps form types to defaults but loses explicit false/zero defaults through truthiness checks. | Split: adopted generic core `data.defaultValueForType`; schema overrides remain app-local. |
 | `dataType2fieldType` | Maps custom data-type labels to HTML input types. | Adopted atomic replacement `input.inputTypeForType`; composite rendering uses `controlTypeForType`. |
 | `generateRandom` | Dispatches fixture generation by schema/form type using `Math.random`. | Primitive cases are covered by `random`; schema dispatch remains fixture-local. |

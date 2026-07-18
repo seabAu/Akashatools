@@ -1,7 +1,9 @@
 import { assertRandomSource, sampleRandom } from "./internal/random-source.js";
 import { isPlainObject } from "./object.js";
+import { compareValues } from "./sort.js";
 
 /** @typedef {"auto" | "index" | "value" | "predicate"} RemovalMode */
+/** @typedef {"first" | "last" | "error"} DuplicateKeyPolicy */
 const maximumRangeLength = 1_000_000;
 
 /**
@@ -268,6 +270,48 @@ export function groupBy(values, toKey) {
 }
 
 /**
+ * Indexes items in a Map without coercing object, symbol, numeric, or string
+ * keys into property names. Sparse slots are treated as `undefined` items and
+ * the selector receives a dense input copy. Duplicate-key behavior is explicit.
+ *
+ * This is the identity-safe replacement for legacy `arrayToEnum` and
+ * object-backed registry builders. Use `groupBy` when every duplicate value
+ * should be retained rather than selecting one value per key.
+ *
+ * @template T, K
+ * @param {readonly T[]} values Array to index without mutation.
+ * @param {(value: T, index: number, values: readonly T[]) => K} toKey Key selector called once per dense input item.
+ * @param {{onDuplicate?: DuplicateKeyPolicy}} [options] Keep the last value (default), keep the first, or reject duplicate SameValueZero keys.
+ * @returns {Map<K, T>} Insertion-ordered identity-preserving key/value index.
+ * @throws {TypeError} If values, toKey, options, or the duplicate policy is invalid.
+ * @throws {RangeError} If `onDuplicate` is `"error"` and a key repeats.
+ * @example
+ * keyBy(users, ({ id }) => id, { onDuplicate: "error" });
+ * @since 2.0.0
+ */
+export function keyBy(values, toKey, options = {}) {
+  assertArray(values, "values");
+  if (typeof toKey !== "function") throw new TypeError("toKey must be a function.");
+  if (!isPlainObject(options)) throw new TypeError("options must be a plain object.");
+  const { onDuplicate = "last" } = options;
+  if (onDuplicate !== "first" && onDuplicate !== "last" && onDuplicate !== "error") {
+    throw new TypeError(`Unsupported duplicate-key policy: ${onDuplicate}`);
+  }
+
+  const denseValues = [...values];
+  const index = new Map();
+  denseValues.forEach((value, itemIndex) => {
+    const key = toKey(value, itemIndex, denseValues);
+    if (!index.has(key) || onDuplicate === "last") {
+      index.set(key, value);
+    } else if (onDuplicate === "error") {
+      throw new RangeError("Duplicate key encountered while building the index.");
+    }
+  });
+  return index;
+}
+
+/**
  * Counts items by a derived key without coercing keys to object properties.
  * Sparse slots are treated as `undefined` items. Callback errors propagate.
  *
@@ -337,6 +381,65 @@ export function partition(values, predicate) {
     (predicate(value, index, denseValues) ? matching : nonMatching).push(value);
   });
   return [matching, nonMatching];
+}
+
+/**
+ * Finds the first insertion index at which `needle` can be placed without
+ * moving an equal value earlier. The input must already be sorted under the
+ * same comparator; ordering is intentionally not rescanned so work stays
+ * logarithmic. Sparse slots compare as `undefined` values.
+ *
+ * @template T, U
+ * @param {readonly T[]} values Sorted array to search without mutation.
+ * @param {U} needle Value whose lower insertion bound is requested.
+ * @param {(value: T, needle: U) => number} [compare=compareValues] Comparator returning a finite ordering signal.
+ * @returns {number} First index whose value does not compare below the needle, in `[0, values.length]`.
+ * @throws {TypeError} If values or compare is invalid, or compare returns a non-finite number.
+ * @example
+ * lowerBound([1, 2, 2, 4], 2); // 1
+ * @since 2.0.0
+ */
+export function lowerBound(values, needle, compare = compareValues) {
+  return searchBound(values, needle, compare, false);
+}
+
+/**
+ * Finds the first insertion index after every comparator-equal value. The
+ * input must already be sorted under the same comparator; ordering is not
+ * rescanned, preserving logarithmic work. Sparse slots compare as `undefined`.
+ *
+ * @template T, U
+ * @param {readonly T[]} values Sorted array to search without mutation.
+ * @param {U} needle Value whose upper insertion bound is requested.
+ * @param {(value: T, needle: U) => number} [compare=compareValues] Comparator returning a finite ordering signal.
+ * @returns {number} First index whose value compares above the needle, in `[0, values.length]`.
+ * @throws {TypeError} If values or compare is invalid, or compare returns a non-finite number.
+ * @example
+ * upperBound([1, 2, 2, 4], 2); // 3
+ * @since 2.0.0
+ */
+export function upperBound(values, needle, compare = compareValues) {
+  return searchBound(values, needle, compare, true);
+}
+
+/**
+ * Returns the first comparator-equal item in a sorted array. Unlike
+ * `Array.prototype.findIndex`, this performs logarithmic comparisons. The
+ * input must already be sorted under the same comparator and is not mutated.
+ *
+ * @template T, U
+ * @param {readonly T[]} values Sorted array to search without mutation.
+ * @param {U} needle Value to locate.
+ * @param {(value: T, needle: U) => number} [compare=compareValues] Comparator returning a finite ordering signal.
+ * @returns {number} First equal index, or `-1` when absent.
+ * @throws {TypeError} If values or compare is invalid, or compare returns a non-finite number.
+ * @example
+ * binarySearch([1, 2, 2, 4], 2); // 1
+ * @since 2.0.0
+ */
+export function binarySearch(values, needle, compare = compareValues) {
+  const index = searchBound(values, needle, compare, false);
+  return index < values.length && readComparison(compare, values[index], needle) === 0 ? index : -1;
 }
 
 /**
@@ -436,6 +539,40 @@ export function shuffle(values, random = Math.random) {
 /** @param {unknown} value @param {string} name */
 function assertArray(value, name) {
   if (!Array.isArray(value)) throw new TypeError(`${name} must be an array.`);
+}
+
+/**
+ * @template T, U
+ * @param {readonly T[]} values
+ * @param {U} needle
+ * @param {(value: T, needle: U) => number} compare
+ * @param {boolean} upper
+ */
+function searchBound(values, needle, compare, upper) {
+  assertArray(values, "values");
+  if (typeof compare !== "function") throw new TypeError("compare must be a function.");
+
+  let low = 0;
+  let high = values.length;
+  while (low < high) {
+    const middle = low + Math.floor((high - low) / 2);
+    const comparison = readComparison(compare, values[middle], needle);
+    if (comparison < 0 || (upper && comparison === 0)) low = middle + 1;
+    else high = middle;
+  }
+  return low;
+}
+
+/**
+ * @template T, U
+ * @param {(value: T, needle: U) => number} compare
+ * @param {T} value
+ * @param {U} needle
+ */
+function readComparison(compare, value, needle) {
+  const result = compare(value, needle);
+  if (!Number.isFinite(result)) throw new TypeError("compare must return a finite number.");
+  return result;
 }
 
 /** @param {number} index @param {number} length @param {string} name */

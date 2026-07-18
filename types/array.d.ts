@@ -1,4 +1,5 @@
 export type RemovalMode = "auto" | "index" | "value" | "predicate";
+export type DuplicateKeyPolicy = "first" | "last" | "error";
 /**
  * Returns the input when it is an array, preserving its identity and sparse
  * slots, or a fresh dense copy of the fallback otherwise.
@@ -149,6 +150,29 @@ export declare function removeFromArray<T>(values: readonly T[], selector: numbe
  * @since 2.0.0
  */
 export declare function groupBy<T, K>(values: readonly T[], toKey: (value: T, index: number) => K): Map<K, T[]>;
+/**
+ * Indexes items in a Map without coercing object, symbol, numeric, or string
+ * keys into property names. Sparse slots are treated as `undefined` items and
+ * the selector receives a dense input copy. Duplicate-key behavior is explicit.
+ *
+ * This is the identity-safe replacement for legacy `arrayToEnum` and
+ * object-backed registry builders. Use `groupBy` when every duplicate value
+ * should be retained rather than selecting one value per key.
+ *
+ * @template T, K
+ * @param {readonly T[]} values Array to index without mutation.
+ * @param {(value: T, index: number, values: readonly T[]) => K} toKey Key selector called once per dense input item.
+ * @param {{onDuplicate?: DuplicateKeyPolicy}} [options] Keep the last value (default), keep the first, or reject duplicate SameValueZero keys.
+ * @returns {Map<K, T>} Insertion-ordered identity-preserving key/value index.
+ * @throws {TypeError} If values, toKey, options, or the duplicate policy is invalid.
+ * @throws {RangeError} If `onDuplicate` is `"error"` and a key repeats.
+ * @example
+ * keyBy(users, ({ id }) => id, { onDuplicate: "error" });
+ * @since 2.0.0
+ */
+export declare function keyBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K, options?: {
+    onDuplicate?: DuplicateKeyPolicy;
+}): Map<K, T>;
 export declare function countBy<T>(values: readonly T[]): Map<T, number>;
 export declare function countBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K): Map<K, number>;
 /**
@@ -165,6 +189,55 @@ export declare function countBy<T, K>(values: readonly T[], toKey: (value: T, in
  * @since 2.0.0
  */
 export declare function partition<T>(values: readonly T[], predicate: (value: T, index: number, values: readonly T[]) => boolean): [T[], T[]];
+/**
+ * Finds the first insertion index at which `needle` can be placed without
+ * moving an equal value earlier. The input must already be sorted under the
+ * same comparator; ordering is intentionally not rescanned so work stays
+ * logarithmic. Sparse slots compare as `undefined` values.
+ *
+ * @template T, U
+ * @param {readonly T[]} values Sorted array to search without mutation.
+ * @param {U} needle Value whose lower insertion bound is requested.
+ * @param {(value: T, needle: U) => number} [compare=compareValues] Comparator returning a finite ordering signal.
+ * @returns {number} First index whose value does not compare below the needle, in `[0, values.length]`.
+ * @throws {TypeError} If values or compare is invalid, or compare returns a non-finite number.
+ * @example
+ * lowerBound([1, 2, 2, 4], 2); // 1
+ * @since 2.0.0
+ */
+export declare function lowerBound<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
+/**
+ * Finds the first insertion index after every comparator-equal value. The
+ * input must already be sorted under the same comparator; ordering is not
+ * rescanned, preserving logarithmic work. Sparse slots compare as `undefined`.
+ *
+ * @template T, U
+ * @param {readonly T[]} values Sorted array to search without mutation.
+ * @param {U} needle Value whose upper insertion bound is requested.
+ * @param {(value: T, needle: U) => number} [compare=compareValues] Comparator returning a finite ordering signal.
+ * @returns {number} First index whose value compares above the needle, in `[0, values.length]`.
+ * @throws {TypeError} If values or compare is invalid, or compare returns a non-finite number.
+ * @example
+ * upperBound([1, 2, 2, 4], 2); // 3
+ * @since 2.0.0
+ */
+export declare function upperBound<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
+/**
+ * Returns the first comparator-equal item in a sorted array. Unlike
+ * `Array.prototype.findIndex`, this performs logarithmic comparisons. The
+ * input must already be sorted under the same comparator and is not mutated.
+ *
+ * @template T, U
+ * @param {readonly T[]} values Sorted array to search without mutation.
+ * @param {U} needle Value to locate.
+ * @param {(value: T, needle: U) => number} [compare=compareValues] Comparator returning a finite ordering signal.
+ * @returns {number} First equal index, or `-1` when absent.
+ * @throws {TypeError} If values or compare is invalid, or compare returns a non-finite number.
+ * @example
+ * binarySearch([1, 2, 2, 4], 2); // 1
+ * @since 2.0.0
+ */
+export declare function binarySearch<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
 /**
  * Returns unique values present in every input array. Sparse slots are treated
  * as `undefined` items and the returned array is dense.

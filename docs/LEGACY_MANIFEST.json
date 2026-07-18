@@ -6,10 +6,19 @@
     {
       "module": "AO.js",
       "name": "arrayToEnum",
-      "canonicalReferences": [],
-      "decision": "Merge into a future safe `keyBy`/lookup builder only if consumers need it.",
+      "canonicalReferences": [
+        {
+          "name": "keyBy",
+          "category": "array",
+          "runtime": "universal",
+          "mutation": "no input mutation",
+          "importPath": "akashatools/array/keyBy",
+          "relation": "related"
+        }
+      ],
+      "decision": "Replaced by `array.keyBy`, which returns an identity-preserving `Map` and requires an explicit selector; exact legacy object coercion is intentionally not retained.",
       "behavior": "Freezes an object mapping each array value to itself; property coercion and unsafe keys are unspecified.",
-      "evidence": "Source reviewed; parity pending."
+      "evidence": "Array identity/duplicate-policy tests and current registry consumers."
     },
     {
       "module": "AO.js",

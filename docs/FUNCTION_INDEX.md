@@ -15,6 +15,7 @@ drop-in compatibility.
 | `analyzeArrayTypes` | data | universal | no input mutation | `akashatools/data/analyzeArrayTypes` | `Val.getType`, `Val.getArrayType` |
 | `asArray` | array | universal | no input mutation | `akashatools/array/asArray` | None |
 | `assertJsonContract` | validation | universal | no input mutation | `akashatools/validation/assertJsonContract` | None |
+| `binarySearch` | array | universal | no input mutation | `akashatools/array/binarySearch` | None |
 | `camelCase` | string | universal | no input mutation | `akashatools/string/camelCase` | None |
 | `capitalize` | string | universal | no input mutation | `akashatools/string/capitalize` | `String.toCapitalCase` |
 | `chunk` | array | universal | no input mutation | `akashatools/array/chunk` | None |
@@ -112,8 +113,10 @@ drop-in compatibility.
 | `isValidDate` | date | universal | no input mutation | `akashatools/date/isValidDate` | None |
 | `isWithinInstantRange` | date | universal | no input mutation | `akashatools/date/isWithinInstantRange` | None |
 | `kebabCase` | string | universal | no input mutation | `akashatools/string/kebabCase` | `String.toKebabCase` |
+| `keyBy` | array | universal | no input mutation | `akashatools/array/keyBy` | `AO.arrayToEnum` |
 | `localDateKey` | date | universal | no input mutation | `akashatools/date/localDateKey` | `Time.convertTimestampToYYYYMMDDDD`, `Time.formatTimestampDDMMYYYY` |
 | `longestStringLength` | string | universal | no input mutation | `akashatools/string/longestStringLength` | `String.getLongest` |
+| `lowerBound` | array | universal | no input mutation | `akashatools/array/lowerBound` | None |
 | `mapSettledWithConcurrency` | async | universal | no input mutation | `akashatools/async/mapSettledWithConcurrency` | None |
 | `minutesToClockTime` | date | universal | no input mutation | `akashatools/date/minutesToClockTime` | None |
 | `moveItem` | array | universal | no input mutation | `akashatools/array/moveItem` | None |
@@ -165,6 +168,7 @@ drop-in compatibility.
 | `traverseObject` | object | universal | no input mutation | `akashatools/object/traverseObject` | None |
 | `typeOf` | validation | universal | no input mutation | `akashatools/validation/typeOf` | `Val.getType` |
 | `unique` | array | universal | no input mutation | `akashatools/array/unique` | `AO.uniqueArray` |
+| `upperBound` | array | universal | no input mutation | `akashatools/array/upperBound` | None |
 | `upsertBy` | collection | universal | no input mutation | `akashatools/collection/upsertBy` | None |
 | `upsertById` | collection | universal | no input mutation | `akashatools/collection/upsertById` | None |
 | `utf8ByteLength` | string | universal | no input mutation | `akashatools/string/utf8ByteLength` | None |
@@ -176,7 +180,7 @@ drop-in compatibility.
 
 | Legacy name | Canonical replacement or related 2.0 API | Decision |
 | --- | --- | --- |
-| `AO.arrayToEnum` | None | Merge into a future safe `keyBy`/lookup builder only if consumers need it. |
+| `AO.arrayToEnum` | related: `array.keyBy` | Replaced by `array.keyBy`, which returns an identity-preserving `Map` and requires an explicit selector; exact legacy object coercion is intentionally not retained. |
 | `AO.isOneOf` | None | Native `Array.prototype.includes`. |
 | `AO.uniqueArray` | replacement: `array.unique` | Adopted as `array.unique`. |
 | `AO.mergeArray` | None | Native spread/`concat`; merge deduplicated behavior into future `union`. |

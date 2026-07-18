@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   asArray,
+  binarySearch,
   chunk,
   compact,
   countBy,
@@ -10,12 +11,15 @@ import {
   groupBy,
   insertItem,
   intersection,
+  keyBy,
+  lowerBound,
   moveItem,
   partition,
   range,
   removeFromArray,
   shuffle,
   unique,
+  upperBound,
   zip,
 } from "akashatools/array";
 
@@ -109,6 +113,88 @@ test("countBy preserves key identity and treats sparse slots as undefined", () =
       [3, 2],
       [4, 1],
     ],
+  );
+});
+
+test("keyBy preserves key identity and makes duplicate policy explicit", () => {
+  const objectKey = {};
+  const symbolKey = Symbol("record");
+  const records = [
+    { key: objectKey, value: "object" },
+    { key: symbolKey, value: "first" },
+    { key: symbolKey, value: "last" },
+    { key: 1, value: "number" },
+    { key: "1", value: "string" },
+  ];
+
+  const last = keyBy(records, ({ key }) => key);
+  assert.equal(last.get(objectKey)?.value, "object");
+  assert.equal(last.get(symbolKey)?.value, "last");
+  assert.equal(last.get(1)?.value, "number");
+  assert.equal(last.get("1")?.value, "string");
+
+  const first = keyBy(records, ({ key }) => key, { onDuplicate: "first" });
+  assert.equal(first.get(symbolKey)?.value, "first");
+  assert.throws(() => keyBy(records, ({ key }) => key, { onDuplicate: "error" }), RangeError);
+});
+
+test("keyBy uses the dense callback contract and rejects invalid options", () => {
+  const sparse = ["a", , "c"];
+  /** @type {Array<[unknown, number, readonly unknown[]]>} */
+  const calls = [];
+  const index = keyBy(sparse, (value, itemIndex, values) => {
+    calls.push([value, itemIndex, values]);
+    return itemIndex;
+  });
+
+  assert.deepEqual([...index.values()], ["a", undefined, "c"]);
+  assert.equal(calls.length, 3);
+  assert.equal(calls[0][2], calls[1][2]);
+  assert.deepEqual(calls[0][2], ["a", undefined, "c"]);
+  assert.equal(1 in sparse, false);
+  assert.throws(() => keyBy([], /** @type {any} */ (null)), TypeError);
+  assert.throws(() => keyBy([], () => 1, /** @type {any} */ (null)), TypeError);
+  assert.throws(() => keyBy([], () => 1, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => keyBy([], () => 1, { onDuplicate: /** @type {any} */ ("merge") }), TypeError);
+});
+
+test("binary-search bounds find duplicate ranges and absent insertion points", () => {
+  const values = [1, 2, 2, 2, 4, 8];
+  assert.equal(lowerBound(values, 2), 1);
+  assert.equal(upperBound(values, 2), 4);
+  assert.equal(binarySearch(values, 2), 1);
+  assert.equal(lowerBound(values, 3), 4);
+  assert.equal(upperBound(values, 3), 4);
+  assert.equal(binarySearch(values, 3), -1);
+  assert.equal(lowerBound([], 1), 0);
+  assert.equal(upperBound(values, 10), values.length);
+});
+
+test("binary-search functions support heterogeneous needles and logarithmic work", () => {
+  const values = Array.from({ length: 1_024 }, (_, id) => ({ id }));
+  let comparisons = 0;
+  const compare = (value, id) => {
+    comparisons += 1;
+    return value.id - id;
+  };
+
+  assert.equal(binarySearch(values, 513, compare), 513);
+  assert.ok(comparisons <= 12);
+  assert.equal(lowerBound(values, 512.5, compare), 513);
+  assert.equal(upperBound(values, 512.5, compare), 513);
+});
+
+test("binary-search contracts reject invalid comparators and their results", () => {
+  assert.throws(() => lowerBound(/** @type {any} */ (null), 1), TypeError);
+  assert.throws(() => upperBound([], 1, /** @type {any} */ (null)), TypeError);
+  assert.throws(() => binarySearch([1], 1, () => Number.NaN), TypeError);
+  assert.throws(() => lowerBound([1], 1, () => Number.POSITIVE_INFINITY), TypeError);
+  assert.throws(
+    () =>
+      binarySearch([1], 1, () => {
+        throw new Error("comparison failed");
+      }),
+    /comparison failed/,
   );
 });
 

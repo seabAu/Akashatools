@@ -188,6 +188,9 @@
 - Added strict RFC 6901 JSON Pointer parsing, reading, and presence checks with
   bounded tokens, safe own-data traversal, canonical array indices, and
   accessor/prototype protection.
+- Added identity-preserving `keyBy` indexes with explicit duplicate policy and
+  comparator-based `lowerBound`, `upperBound`, and first-match `binarySearch`
+  primitives distilled from live registry and sorted-offset consumers.
 - Added bounded `createSingleFlight` and `createKeyedSingleFlight` async helpers
   from live portfolio request-coalescing evidence, with generational invalidation
   and least-recently accessed key eviction.

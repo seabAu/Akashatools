@@ -27,9 +27,15 @@ export declare const array: Readonly<{
         all?: boolean;
     }): T[];
     groupBy<T, K>(values: readonly T[], toKey: (value: T, index: number) => K): Map<K, T[]>;
+    keyBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K, options?: {
+        onDuplicate?: arrayModule.DuplicateKeyPolicy;
+    }): Map<K, T>;
     countBy<T>(values: readonly T[]): Map<T, number>;
     countBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K): Map<K, number>;
     partition<T>(values: readonly T[], predicate: (value: T, index: number, values: readonly T[]) => boolean): [T[], T[]];
+    lowerBound<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
+    upperBound<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
+    binarySearch<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
     intersection<T>(...arrays: (readonly T[])[]): T[];
     range(start: number, end?: number, step?: number): number[];
     zip(...arrays: (readonly unknown[])[]): unknown[][];
@@ -394,6 +400,12 @@ export declare const akasha: Readonly<{
     cloneJson: typeof objectModule.cloneJson;
     deepMerge: typeof objectModule.deepMerge;
     pickAllowed: typeof objectModule.pickAllowed;
+    sortBy: typeof sortModule.sortBy;
+    sortByMany: typeof sortModule.sortByMany;
+    createCollatorComparator: typeof sortModule.createCollatorComparator;
+    compareValues: typeof sortModule.compareValues;
+    compareNumericOrder: typeof sortModule.compareNumericOrder;
+    sortByNumericOrder: typeof sortModule.sortByNumericOrder;
     asArray: typeof arrayModule.asArray;
     isNonEmptyArray: typeof arrayModule.isNonEmptyArray;
     compact: typeof arrayModule.compact;
@@ -404,8 +416,12 @@ export declare const akasha: Readonly<{
     insertItem: typeof arrayModule.insertItem;
     removeFromArray: typeof arrayModule.removeFromArray;
     groupBy: typeof arrayModule.groupBy;
+    keyBy: typeof arrayModule.keyBy;
     countBy: typeof arrayModule.countBy;
     partition: typeof arrayModule.partition;
+    lowerBound: typeof arrayModule.lowerBound;
+    upperBound: typeof arrayModule.upperBound;
+    binarySearch: typeof arrayModule.binarySearch;
     intersection: typeof arrayModule.intersection;
     range: typeof arrayModule.range;
     zip: typeof arrayModule.zip;
@@ -523,12 +539,6 @@ export declare const akasha: Readonly<{
     secureRandomUuid: typeof randomModule.secureRandomUuid;
     secureRandomString: typeof randomModule.secureRandomString;
     randomDate: typeof randomModule.randomDate;
-    sortBy: typeof sortModule.sortBy;
-    sortByMany: typeof sortModule.sortByMany;
-    createCollatorComparator: typeof sortModule.createCollatorComparator;
-    compareValues: typeof sortModule.compareValues;
-    compareNumericOrder: typeof sortModule.compareNumericOrder;
-    sortByNumericOrder: typeof sortModule.sortByNumericOrder;
     array: Readonly<{
         asArray<T>(value: unknown, fallback?: readonly T[]): T[];
         isNonEmptyArray<T>(value: unknown): value is T[];
@@ -543,9 +553,15 @@ export declare const akasha: Readonly<{
             all?: boolean;
         }): T[];
         groupBy<T, K>(values: readonly T[], toKey: (value: T, index: number) => K): Map<K, T[]>;
+        keyBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K, options?: {
+            onDuplicate?: arrayModule.DuplicateKeyPolicy;
+        }): Map<K, T>;
         countBy<T>(values: readonly T[]): Map<T, number>;
         countBy<T, K>(values: readonly T[], toKey: (value: T, index: number, values: readonly T[]) => K): Map<K, number>;
         partition<T>(values: readonly T[], predicate: (value: T, index: number, values: readonly T[]) => boolean): [T[], T[]];
+        lowerBound<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
+        upperBound<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
+        binarySearch<T, U>(values: readonly T[], needle: U, compare?: (value: T, needle: U) => number): number;
         intersection<T>(...arrays: (readonly T[])[]): T[];
         range(start: number, end?: number, step?: number): number[];
         zip(...arrays: (readonly unknown[])[]): unknown[][];

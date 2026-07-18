@@ -35,7 +35,7 @@ Runtime: universal JavaScript, but coupled through the circular legacy
 
 | Legacy export | Behavior and finding | 2.x disposition | Evidence |
 | --- | --- | --- | --- |
-| `arrayToEnum` | Freezes an object mapping each array value to itself; property coercion and unsafe keys are unspecified. | Merge into a future safe `keyBy`/lookup builder only if consumers need it. | Source reviewed; parity pending. |
+| `arrayToEnum` | Freezes an object mapping each array value to itself; property coercion and unsafe keys are unspecified. | Replaced by `array.keyBy`, which returns an identity-preserving `Map` and requires an explicit selector; exact legacy object coercion is intentionally not retained. | Array identity/duplicate-policy tests and current registry consumers. |
 | `isOneOf` | Strict membership in an array. | Native `Array.prototype.includes`. | Source reviewed. |
 | `uniqueArray` | Set-based first-occurrence deduplication after legacy array validation. | Adopted as `array.unique`. | 2.x array tests. |
 | `mergeArray` | Concatenates two arrays and optionally deduplicates via a positional boolean. | Native spread/`concat`; merge deduplicated behavior into future `union`. | Source reviewed. |

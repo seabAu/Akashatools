@@ -153,6 +153,21 @@ Groups items in a Map, avoiding object-key coercion and prototype collisions. Sp
 Throws:
 - `TypeError` — If values is not an array or toKey is not a function.
 
+### keyBy
+
+Indexes items in a Map without coercing object, symbol, numeric, or string keys into property names. Sparse slots are treated as `undefined` items and the selector receives a dense input copy. Duplicate-key behavior is explicit. This is the identity-safe replacement for legacy `arrayToEnum` and object-backed registry builders. Use `groupBy` when every duplicate value should be retained rather than selecting one value per key.
+
+- Signature: `keyBy()`
+- Import: `import { keyBy } from "akashatools/array"`
+- Granular import: `import keyBy from "akashatools/array/keyBy"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `Map<K, T>` — Insertion-ordered identity-preserving key/value index.
+
+Throws:
+- `TypeError` — If values, toKey, options, or the duplicate policy is invalid.
+- `RangeError` — If `onDuplicate` is `"error"` and a key repeats.
+
 ### countBy
 
 Counts items by a derived key without coercing key identity.
@@ -180,6 +195,48 @@ Splits items into matching and non-matching arrays while preserving order. Spars
 
 Throws:
 - `TypeError` — If values is not an array or predicate is not a function.
+
+### lowerBound
+
+Finds the first insertion index at which `needle` can be placed without moving an equal value earlier. The input must already be sorted under the same comparator; ordering is intentionally not rescanned so work stays logarithmic. Sparse slots compare as `undefined` values.
+
+- Signature: `lowerBound()`
+- Import: `import { lowerBound } from "akashatools/array"`
+- Granular import: `import lowerBound from "akashatools/array/lowerBound"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — First index whose value does not compare below the needle, in `[0, values.length]`.
+
+Throws:
+- `TypeError` — If values or compare is invalid, or compare returns a non-finite number.
+
+### upperBound
+
+Finds the first insertion index after every comparator-equal value. The input must already be sorted under the same comparator; ordering is not rescanned, preserving logarithmic work. Sparse slots compare as `undefined`.
+
+- Signature: `upperBound()`
+- Import: `import { upperBound } from "akashatools/array"`
+- Granular import: `import upperBound from "akashatools/array/upperBound"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — First index whose value compares above the needle, in `[0, values.length]`.
+
+Throws:
+- `TypeError` — If values or compare is invalid, or compare returns a non-finite number.
+
+### binarySearch
+
+Returns the first comparator-equal item in a sorted array. Unlike `Array.prototype.findIndex`, this performs logarithmic comparisons. The input must already be sorted under the same comparator and is not mutated.
+
+- Signature: `binarySearch()`
+- Import: `import { binarySearch } from "akashatools/array"`
+- Granular import: `import binarySearch from "akashatools/array/binarySearch"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number` — First equal index, or `-1` when absent.
+
+Throws:
+- `TypeError` — If values or compare is invalid, or compare returns a non-finite number.
 
 ### intersection
 
