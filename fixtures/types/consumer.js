@@ -1,4 +1,5 @@
 import akasha, { chunk, validation } from "akashatools";
+import granularChunk from "akashatools/array/chunk";
 import { initializeLike } from "akashatools/data";
 import { fieldsFromData } from "akashatools/input";
 import { deepQuery, getAtPath } from "akashatools/object";
@@ -6,6 +7,8 @@ import { secureRandomUuid } from "akashatools/random";
 
 /** @type {number[][]} */
 const chunks = chunk([1, 2, 3], 2);
+/** @type {number[][]} */
+const granularChunks = granularChunk([1, 2, 3], 2);
 /** @type {boolean} */
 const valid = akasha.validation.isEmail("person@example.com");
 /** @type {unknown} */
@@ -24,4 +27,4 @@ akasha.schema;
 // @ts-expect-error Email validation requires exactly one argument.
 validation.isEmail("a@example.com", "extra");
 
-void [chunks, valid, nested, identifier, initialized, fieldName, hasTitle];
+void [chunks, granularChunks, valid, nested, identifier, initialized, fieldName, hasTitle];

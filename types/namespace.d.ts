@@ -1,17 +1,17 @@
-import * as arrayModule from "./array.js";
-import * as asyncModule from "./async.js";
-import * as browserModule from "./browser.js";
-import * as collectionModule from "./collection.js";
-import * as dataModule from "./data.js";
-import * as dateModule from "./date.js";
-import * as httpModule from "./http.js";
-import * as inputModule from "./input.js";
-import * as numberModule from "./number.js";
-import * as objectModule from "./object.js";
-import * as randomModule from "./random.js";
-import * as sortModule from "./sort.js";
-import * as stringModule from "./string.js";
-import * as validationModule from "./validation.js";
+import * as arrayModule from "./array/index.js";
+import * as asyncModule from "./async/index.js";
+import * as browserModule from "./browser/index.js";
+import * as collectionModule from "./collection/index.js";
+import * as dataModule from "./data/index.js";
+import * as dateModule from "./date/index.js";
+import * as httpModule from "./http/index.js";
+import * as inputModule from "./input/index.js";
+import * as numberModule from "./number/index.js";
+import * as objectModule from "./object/index.js";
+import * as randomModule from "./random/index.js";
+import * as sortModule from "./sort/index.js";
+import * as stringModule from "./string/index.js";
+import * as validationModule from "./validation/index.js";
 /** Frozen array utilities for namespace-style discovery. */
 export declare const array: Readonly<{
     asArray<T>(value: unknown, fallback?: readonly T[]): T[];

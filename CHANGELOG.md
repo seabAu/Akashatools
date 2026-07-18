@@ -15,6 +15,9 @@
   explicit exact-needle boolean, entry, value, parent, and all projections.
 - Added frozen `deepQuery(data).has(...)` dot-style syntax without modifying
   `Object.prototype`, `Array.prototype`, constructors, or import-time globals.
+- Added generated category indexes and named/default granular method subpaths
+  such as `akashatools/array/chunk`, with canonical function identity, types,
+  package-smoke coverage, and bundle equivalence checks.
 - Reclassified the Mindspace/portfolio data and input families so generic
   introspection/default/control primitives can compose beneath application-owned
   Mongoose, React, layout, custom-ID, and product-schema adapters.
@@ -149,8 +152,9 @@
   a Node 22/24 LTS GitHub Actions matrix, browser CI, and a package-wide
   JavaScript syntax scanner.
 - Added exactly pinned esbuild bundle fixtures and budgets, verified focused
-  import equivalence and zero-byte side-effect elimination, and rejected
-  redundant per-method subpaths after a byte-identical simulation.
+  import equivalence and zero-byte side-effect elimination, then used the
+  byte-identical result to support generated category/method subpaths without
+  duplicating implementations.
 - Completed and enforced IDE-visible parameter/return descriptions, thrown-error
   contracts, examples, and edge-case prose for async, browser, collection, and
   Node public APIs; regenerated the API reference and declarations.

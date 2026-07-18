@@ -50,6 +50,16 @@ import { deepClone, setAtPath } from "akashatools/object";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 ```
 
+Generated method subpaths make a dependency maximally explicit while exporting
+the same canonical function as both default and named:
+
+```js
+import chunk, { chunk as namedChunk } from "akashatools/array/chunk";
+import hasDeep from "akashatools/object/hasDeep";
+
+chunk === namedChunk; // true
+```
+
 The `data` category keeps related operations distinct and composable:
 
 ```js

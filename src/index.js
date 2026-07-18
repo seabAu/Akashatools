@@ -5,20 +5,20 @@
  * namespaces are also exported for callers who prefer `array.chunk(...)`.
  */
 
-export * from "./array.js";
-export * from "./async.js";
-export * from "./browser.js";
-export * from "./collection.js";
-export * from "./data.js";
-export * from "./date.js";
-export * from "./http.js";
-export * from "./input.js";
-export * from "./number.js";
-export * from "./object.js";
-export * from "./random.js";
-export * from "./sort.js";
-export * from "./string.js";
-export * from "./validation.js";
+export * from "./array/index.js";
+export * from "./async/index.js";
+export * from "./browser/index.js";
+export * from "./collection/index.js";
+export * from "./data/index.js";
+export * from "./date/index.js";
+export * from "./http/index.js";
+export * from "./input/index.js";
+export * from "./number/index.js";
+export * from "./object/index.js";
+export * from "./random/index.js";
+export * from "./sort/index.js";
+export * from "./string/index.js";
+export * from "./validation/index.js";
 
 export {
   akasha,

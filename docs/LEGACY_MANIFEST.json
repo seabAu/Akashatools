@@ -28,7 +28,7 @@
           "category": "array",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/array",
+          "importPath": "akashatools/array/unique",
           "relation": "replacement"
         }
       ],
@@ -53,7 +53,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/defaultIfBlank",
           "relation": "replacement"
         }
       ],
@@ -70,7 +70,7 @@
           "category": "array",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/array",
+          "importPath": "akashatools/array/compact",
           "relation": "related"
         }
       ],
@@ -95,7 +95,7 @@
           "category": "data",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/data",
+          "importPath": "akashatools/data/initializeLike",
           "relation": "related"
         }
       ],
@@ -136,7 +136,7 @@
           "category": "array",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/array",
+          "importPath": "akashatools/array/compact",
           "relation": "related"
         }
       ],
@@ -153,7 +153,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/omit",
           "relation": "replacement"
         }
       ],
@@ -202,7 +202,7 @@
           "category": "array",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/array",
+          "importPath": "akashatools/array/flatten",
           "relation": "replacement"
         }
       ],
@@ -283,7 +283,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/pick",
           "relation": "related"
         }
       ],
@@ -324,7 +324,7 @@
           "category": "sort",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/sort",
+          "importPath": "akashatools/sort/sortBy",
           "relation": "replacement"
         }
       ],
@@ -341,7 +341,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/pick",
           "relation": "replacement"
         }
       ],
@@ -374,7 +374,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/hasAtPath",
           "relation": "related"
         },
         {
@@ -382,7 +382,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/hasDeep",
           "relation": "related"
         },
         {
@@ -390,7 +390,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/deepQuery",
           "relation": "related"
         }
       ],
@@ -407,7 +407,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/hasDeep",
           "relation": "related"
         }
       ],
@@ -424,7 +424,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/includesText",
           "relation": "replacement"
         }
       ],
@@ -441,7 +441,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/hasDeep",
           "relation": "replacement"
         },
         {
@@ -449,7 +449,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findDeep",
           "relation": "replacement"
         },
         {
@@ -457,7 +457,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findAllDeep",
           "relation": "replacement"
         }
       ],
@@ -474,7 +474,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/hasDeep",
           "relation": "replacement"
         }
       ],
@@ -491,7 +491,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findDeepValue",
           "relation": "replacement"
         },
         {
@@ -499,7 +499,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findAllDeepValues",
           "relation": "replacement"
         }
       ],
@@ -516,7 +516,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findDeepMatch",
           "relation": "related"
         },
         {
@@ -524,7 +524,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findDeepValue",
           "relation": "related"
         },
         {
@@ -532,7 +532,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findDeepParent",
           "relation": "related"
         },
         {
@@ -540,7 +540,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findDeep",
           "relation": "related"
         }
       ],
@@ -557,7 +557,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/findAllDeepMatches",
           "relation": "related"
         }
       ],
@@ -574,7 +574,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/setAtPath",
           "relation": "related"
         }
       ],
@@ -591,7 +591,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/deepClone",
           "relation": "replacement"
         }
       ],
@@ -608,7 +608,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/deepClone",
           "relation": "replacement"
         }
       ],
@@ -625,7 +625,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/deepClone",
           "relation": "replacement"
         }
       ],
@@ -642,7 +642,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/setAtPath",
           "relation": "related"
         }
       ],
@@ -667,7 +667,7 @@
           "category": "sort",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/sort",
+          "importPath": "akashatools/sort/sortBy",
           "relation": "replacement"
         },
         {
@@ -675,7 +675,7 @@
           "category": "sort",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/sort",
+          "importPath": "akashatools/sort/sortByNumericOrder",
           "relation": "replacement"
         }
       ],
@@ -692,7 +692,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isDefined",
           "relation": "related"
         }
       ],
@@ -709,7 +709,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isDefined",
           "relation": "related"
         },
         {
@@ -717,7 +717,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isBlank",
           "relation": "related"
         },
         {
@@ -725,7 +725,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isEmpty",
           "relation": "related"
         }
       ],
@@ -750,7 +750,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/defaultIfBlank",
           "relation": "replacement"
         }
       ],
@@ -767,7 +767,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isDefined",
           "relation": "replacement"
         }
       ],
@@ -784,7 +784,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isBlank",
           "relation": "related"
         }
       ],
@@ -801,7 +801,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isString",
           "relation": "replacement"
         }
       ],
@@ -818,7 +818,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isNumber",
           "relation": "replacement"
         },
         {
@@ -826,7 +826,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isFiniteNumber",
           "relation": "replacement"
         }
       ],
@@ -843,7 +843,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isNumber",
           "relation": "related"
         }
       ],
@@ -868,7 +868,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isSafeInteger",
           "relation": "replacement"
         }
       ],
@@ -885,7 +885,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isFiniteNonInteger",
           "relation": "replacement"
         }
       ],
@@ -902,7 +902,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isBoolean",
           "relation": "replacement"
         }
       ],
@@ -919,7 +919,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isBlank",
           "relation": "replacement"
         }
       ],
@@ -936,7 +936,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/escapeHtml",
           "relation": "replacement"
         }
       ],
@@ -961,7 +961,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isJson",
           "relation": "replacement"
         }
       ],
@@ -978,7 +978,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isMap",
           "relation": "replacement"
         }
       ],
@@ -995,7 +995,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isSet",
           "relation": "replacement"
         }
       ],
@@ -1012,7 +1012,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isFile",
           "relation": "replacement"
         }
       ],
@@ -1029,7 +1029,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isBlob",
           "relation": "replacement"
         }
       ],
@@ -1046,7 +1046,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isNonArrayObject",
           "relation": "replacement"
         },
         {
@@ -1054,7 +1054,7 @@
           "category": "object",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/object",
+          "importPath": "akashatools/object/isPlainObject",
           "relation": "replacement"
         }
       ],
@@ -1071,7 +1071,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isArray",
           "relation": "replacement"
         }
       ],
@@ -1088,7 +1088,7 @@
           "category": "array",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/array",
+          "importPath": "akashatools/array/isNonEmptyArray",
           "relation": "replacement"
         },
         {
@@ -1096,7 +1096,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isArray",
           "relation": "replacement"
         }
       ],
@@ -1121,7 +1121,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isPlainObjectArray",
           "relation": "related"
         }
       ],
@@ -1138,7 +1138,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isArray",
           "relation": "related"
         },
         {
@@ -1146,7 +1146,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/isNonArrayObject",
           "relation": "related"
         }
       ],
@@ -1163,7 +1163,7 @@
           "category": "validation",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/validation",
+          "importPath": "akashatools/validation/typeOf",
           "relation": "related"
         },
         {
@@ -1171,7 +1171,7 @@
           "category": "data",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/data",
+          "importPath": "akashatools/data/normalizeDataType",
           "relation": "related"
         },
         {
@@ -1179,7 +1179,7 @@
           "category": "data",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/data",
+          "importPath": "akashatools/data/analyzeArrayTypes",
           "relation": "related"
         }
       ],
@@ -1196,7 +1196,7 @@
           "category": "input",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/input",
+          "importPath": "akashatools/input/inputTypeForValue",
           "relation": "related"
         },
         {
@@ -1204,7 +1204,7 @@
           "category": "input",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/input",
+          "importPath": "akashatools/input/controlTypeForValue",
           "relation": "related"
         }
       ],
@@ -1221,7 +1221,7 @@
           "category": "data",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/data",
+          "importPath": "akashatools/data/analyzeArrayTypes",
           "relation": "replacement"
         }
       ],
@@ -1238,7 +1238,7 @@
           "category": "date",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/date",
+          "importPath": "akashatools/date/formatDate",
           "relation": "related"
         }
       ],
@@ -1311,7 +1311,7 @@
           "category": "date",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/date",
+          "importPath": "akashatools/date/localDateKey",
           "relation": "related"
         }
       ],
@@ -1336,7 +1336,7 @@
           "category": "date",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/date",
+          "importPath": "akashatools/date/formatDate",
           "relation": "replacement"
         }
       ],
@@ -1369,7 +1369,7 @@
           "category": "date",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/date",
+          "importPath": "akashatools/date/localDateKey",
           "relation": "related"
         }
       ],
@@ -1386,7 +1386,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/capitalize",
           "relation": "replacement"
         }
       ],
@@ -1403,7 +1403,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/kebabCase",
           "relation": "replacement"
         }
       ],
@@ -1420,7 +1420,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/pascalCase",
           "relation": "replacement"
         }
       ],
@@ -1437,7 +1437,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/includesText",
           "relation": "replacement"
         }
       ],
@@ -1454,7 +1454,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/replaceMany",
           "relation": "replacement"
         },
         {
@@ -1462,7 +1462,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/replaceRegex",
           "relation": "replacement"
         }
       ],
@@ -1479,7 +1479,7 @@
           "category": "string",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/string",
+          "importPath": "akashatools/string/longestStringLength",
           "relation": "replacement"
         }
       ],
@@ -1496,7 +1496,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/clamp",
           "relation": "replacement"
         }
       ],
@@ -1513,7 +1513,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/wrap",
           "relation": "replacement"
         }
       ],
@@ -1530,7 +1530,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/roundTo",
           "relation": "replacement"
         }
       ],
@@ -1547,7 +1547,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/sum",
           "relation": "replacement"
         }
       ],
@@ -1564,7 +1564,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/subtract",
           "relation": "related"
         }
       ],
@@ -1581,7 +1581,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/distance",
           "relation": "replacement"
         }
       ],
@@ -1598,7 +1598,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/distance2d",
           "relation": "related"
         }
       ],
@@ -1615,7 +1615,7 @@
           "category": "random",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/random",
+          "importPath": "akashatools/random/randomBoolean",
           "relation": "related"
         }
       ],
@@ -1632,7 +1632,7 @@
           "category": "number",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/number",
+          "importPath": "akashatools/number/toBinary",
           "relation": "replacement"
         }
       ],
@@ -1649,7 +1649,7 @@
           "category": "random",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/random",
+          "importPath": "akashatools/random/randomFloat",
           "relation": "replacement"
         }
       ],
@@ -1666,7 +1666,7 @@
           "category": "random",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/random",
+          "importPath": "akashatools/random/randomString",
           "relation": "replacement"
         }
       ],
@@ -1683,7 +1683,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "network effect",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/request",
           "relation": "related"
         }
       ],
@@ -1700,7 +1700,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "network effect",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/request",
           "relation": "related"
         }
       ],
@@ -1717,7 +1717,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/HttpError",
           "relation": "replacement"
         }
       ],
@@ -1734,7 +1734,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "network effect",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/request",
           "relation": "related"
         },
         {
@@ -1742,7 +1742,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/HttpError",
           "relation": "related"
         }
       ],
@@ -1759,7 +1759,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "no input mutation",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/HttpError",
           "relation": "related"
         }
       ],
@@ -1776,7 +1776,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "network effect",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/request",
           "relation": "related"
         }
       ],
@@ -1793,7 +1793,7 @@
           "category": "http",
           "runtime": "universal",
           "mutation": "network effect",
-          "importPath": "akashatools/http",
+          "importPath": "akashatools/http/request",
           "relation": "related"
         }
       ],

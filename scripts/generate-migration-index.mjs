@@ -39,7 +39,7 @@ for (const category of categories) {
       category,
       runtime: category === "node" ? "node" : category === "browser" ? "browser-effect" : "universal",
       mutation: mutation(category, match[1]),
-      importPath: category === "node" ? "akashatools/node" : `akashatools/${category}`,
+      importPath: `akashatools/${category}/${match[1]}`,
     });
   }
 }

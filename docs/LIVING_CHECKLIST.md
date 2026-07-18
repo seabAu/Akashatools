@@ -27,7 +27,7 @@ Akashatools should be a modern, dependency-light utility library that is:
 - equally coherent in browser, server, and shared JavaScript code;
 - documented well enough that source-project archaeology is never required.
 
-The intended experience supports three complementary import styles:
+The intended experience supports four complementary import styles:
 
 ```js
 // Discoverable namespace: optimize for editor exploration.
@@ -42,6 +42,9 @@ akasha.isEmail(input);
 // Focused imports: optimize for explicit dependencies and bundling.
 import { chunk, isEmail } from "akashatools";
 import { chunk } from "akashatools/array";
+
+// Granular subpath: one explicit generated method endpoint.
+import chunkMethod from "akashatools/array/chunk";
 ```
 
 The default namespace remains a plain, frozen utility object. The 2026-07-18
@@ -412,7 +415,8 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 19 declaration files.
+  byte-for-byte drift check across 188 declaration files, including generated
+  category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
   service in JavaScript and TypeScript consumers.
@@ -486,10 +490,10 @@ Acceptance criteria:
 - [x] Avoid micro-optimizations that reduce readability without measured benefit;
   measured decisions retain clear Set/Map/collator and allocation-free text paths.
 - [x] Add bundle fixtures for named root, category named/namespace, default
-  flat/category namespace, a simulated per-method export, and side-effect-only import.
+  flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
-  gzip bytes; the growing discoverable default namespace is guarded at 55,000
-  raw/18,000 gzip after the 2026 source refresh.
+  gzip bytes; the reopened discoverable default namespace temporarily uses the
+  75,000 raw/24,000 gzip expansion guardrail pending final recalibration.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -503,9 +507,10 @@ Acceptance criteria:
   decision changes.
 - [x] Keep extensionless modern subpaths as the canonical spelling; extensioned
   `lib/*.js` paths exist only for explicitly temporary 1.x compatibility.
-- [x] Evaluate explicit per-method subpaths such as `akashatools/chunk` using a
-  real bundle simulation: it is byte-identical to named-root and category imports,
-  so 2.0 will not add redundant per-method exports or separate npm packages.
+- [x] Evaluate per-method subpaths and implement the explicitly requested
+  category/method form such as `akashatools/array/chunk`. Generated wrappers are
+  byte-identical to named-root/category focused imports and remain inside this
+  package; no separate method packages or duplicate implementations are created.
 - [x] Ensure export maps expose types, import targets, and environment targets
   consistently.
 - [x] Add reproducible scripts for type-check, lint/format, test, browser test,
@@ -583,11 +588,11 @@ or wrap it. See `docs/inventory/DATA_INPUT_REGRESSION_2026-07-18.md`.
 - [ ] Decide and test whether an explicit opt-in augmentation entry can safely
   provide non-enumerable, collision-checked `Array.prototype` conveniences with
   an uninstall path. Do not augment `Object.prototype`.
-- [ ] Add generated granular method subpaths beneath their category, such as
+- [x] Add generated granular method subpaths beneath their category, such as
   `akashatools/array/chunk`, while keeping one package and one canonical function
-  identity. Re-measure focused bundles even though the prior simulation was
-  byte-identical, because granular dependency declarations are now an explicit
-  ergonomics requirement rather than only a byte-saving proposal.
+  identity. Each category also has a generated index that fronts its canonical
+  implementation; generated-source, identity, declaration, installed-package,
+  and bundle-equivalence checks prevent drift.
 - [ ] Refresh the changed-source delta across Mindspace, portfolio rebuild,
   COMPOSR, and SPLICR after the 2026-07-16 snapshot; disposition every new or
   changed generic candidate.
@@ -659,10 +664,10 @@ Acceptance criteria:
   Recommendation: yes, with automated collision detection.
 - [x] Whether abbreviated namespaces remain outside a legacy-only surface.
   Recommendation: legacy-only with JSDoc migration guidance.
-- [ ] How generated per-method package subpaths should be exposed beneath each
-  category. The earlier bundle-only rationale was byte-identical at 321 raw / 252
-  gzip bytes, but explicit granular dependency declarations are now a user
-  requirement and must be designed and re-measured.
+- [x] How generated per-method package subpaths should be exposed beneath each
+  category: `akashatools/<category>/<method>`, with both named and default export
+  identity, a wildcard export-map condition, generated declarations, and no
+  separate npm packages.
 - [x] Whether generated declarations are needed beyond JSDoc for downstream IDEs:
   yes, expose deterministic conditional type targets generated from source.
 - [x] Whether ESM-only is acceptable for all active consumers: yes; retain ESM
@@ -727,6 +732,7 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 154 method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
 

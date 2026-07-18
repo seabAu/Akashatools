@@ -19,6 +19,7 @@ Returns the input when it is an array, preserving its identity and sparse slots,
 
 - Signature: `asArray()`
 - Import: `import { asArray } from "akashatools/array"`
+- Granular import: `import asArray from "akashatools/array/asArray"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Original array value, or a fresh dense fallback copy.
@@ -32,6 +33,7 @@ Checks whether a value is an array containing at least one item.
 
 - Signature: `isNonEmptyArray()`
 - Import: `import { isNonEmptyArray } from "akashatools/array"`
+- Granular import: `import isNonEmptyArray from "akashatools/array/isNonEmptyArray"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is T[]` — Whether value is an array with length greater than zero.
@@ -42,6 +44,7 @@ Removes nullish values from an array without removing `0`, `false`, or `""`. Spa
 
 - Signature: `compact()`
 - Import: `import { compact } from "akashatools/array"`
+- Granular import: `import compact from "akashatools/array/compact"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense copy containing every non-nullish value in order.
@@ -55,6 +58,7 @@ Splits an array into same-sized chunks. The final chunk may be shorter. Sparse s
 
 - Signature: `chunk()`
 - Import: `import { chunk } from "akashatools/array"`
+- Granular import: `import chunk from "akashatools/array/chunk"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[][]` — Ordered dense chunks; an empty input produces an empty array.
@@ -69,6 +73,7 @@ Returns the first item for each unique key, preserving input order. Sparse slots
 
 - Signature: `unique()`
 - Import: `import { unique } from "akashatools/array"`
+- Granular import: `import unique from "akashatools/array/unique"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense, ordered copy containing the first value for each SameValueZero key.
@@ -82,6 +87,7 @@ Flattens nested arrays to a requested depth without mutating the input. Semantic
 
 - Signature: `flatten()`
 - Import: `import { flatten } from "akashatools/array"`
+- Granular import: `import flatten from "akashatools/array/flatten"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown[]` — Native-flat result with flattened sparse slots removed.
@@ -96,6 +102,7 @@ Moves one item to another position without mutating the input. Sparse slots are 
 
 - Signature: `moveItem()`
 - Import: `import { moveItem } from "akashatools/array"`
+- Granular import: `import moveItem from "akashatools/array/moveItem"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense reordered copy, including when both indices are equal.
@@ -110,6 +117,7 @@ Inserts an item at a bounded index without mutating the input. Indices below zer
 
 - Signature: `insertItem()`
 - Import: `import { insertItem } from "akashatools/array"`
+- Granular import: `import insertItem from "akashatools/array/insertItem"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense copy containing item at the bounded index.
@@ -123,6 +131,7 @@ Removes array items by index, value, or predicate. The input is never mutated. I
 
 - Signature: `removeFromArray()`
 - Import: `import { removeFromArray } from "akashatools/array"`
+- Granular import: `import removeFromArray from "akashatools/array/removeFromArray"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense copy with the requested item or matches removed.
@@ -136,6 +145,7 @@ Groups items in a Map, avoiding object-key coercion and prototype collisions. Sp
 
 - Signature: `groupBy()`
 - Import: `import { groupBy } from "akashatools/array"`
+- Granular import: `import groupBy from "akashatools/array/groupBy"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Map<K, T[]>` — Insertion-ordered keys mapped to dense, ordered value arrays.
@@ -149,6 +159,7 @@ Counts items by a derived key without coercing key identity.
 
 - Signature: `countBy()`
 - Import: `import { countBy } from "akashatools/array"`
+- Granular import: `import countBy from "akashatools/array/countBy"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Map<unknown, number>` — Insertion-ordered SameValueZero key counts.
@@ -162,6 +173,7 @@ Splits items into matching and non-matching arrays while preserving order. Spars
 
 - Signature: `partition()`
 - Import: `import { partition } from "akashatools/array"`
+- Granular import: `import partition from "akashatools/array/partition"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `[T[], T[]]` — Pair of dense arrays: matches first, non-matches second.
@@ -175,6 +187,7 @@ Returns unique values present in every input array. Sparse slots are treated as 
 
 - Signature: `intersection()`
 - Import: `import { intersection } from "akashatools/array"`
+- Granular import: `import intersection from "akashatools/array/intersection"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense unique values from the first array present in every later array.
@@ -188,6 +201,7 @@ Creates an end-exclusive numeric range, like Python's `range`.
 
 - Signature: `range()`
 - Import: `import { range } from "akashatools/array"`
+- Granular import: `import range from "akashatools/array/range"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number[]` — Arithmetic sequence containing at most one million values.
@@ -202,6 +216,7 @@ Combines arrays by position, stopping at the shortest input. Sparse slots are re
 
 - Signature: `zip()`
 - Import: `import { zip } from "akashatools/array"`
+- Granular import: `import zip from "akashatools/array/zip"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown[][]` — Dense positional rows through the shortest input length.
@@ -215,6 +230,7 @@ Returns a shuffled copy using Fisher-Yates. A random source can be injected for 
 
 - Signature: `shuffle()`
 - Import: `import { shuffle } from "akashatools/array"`
+- Granular import: `import shuffle from "akashatools/array/shuffle"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense Fisher-Yates shuffled copy.
@@ -235,6 +251,7 @@ Coalesces concurrent loader calls and optionally caches an accepted result. Inva
 
 - Signature: `createSingleFlight()`
 - Import: `import { createSingleFlight } from "akashatools/async"`
+- Granular import: `import createSingleFlight from "akashatools/async/createSingleFlight"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Readonly<{load: () => Promise<T>, invalidate: () => void}>` — Frozen controller with a shared load Promise and synchronous cache invalidation.
@@ -249,6 +266,7 @@ Creates bounded per-key single-flight controllers. Entries use least-recently ac
 
 - Signature: `createKeyedSingleFlight()`
 - Import: `import { createKeyedSingleFlight } from "akashatools/async"`
+- Granular import: `import createKeyedSingleFlight from "akashatools/async/createKeyedSingleFlight"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Readonly<{load: (key: K) => Promise<V>, invalidate: (key: K) => boolean, invalidateAll: () => number, readonly size: number}>` — Frozen keyed controller; invalidation reports whether/count of retained entries removed.
@@ -263,6 +281,7 @@ Maps values with a fixed concurrency ceiling. Results retain input order and ind
 
 - Signature: `mapSettledWithConcurrency()`
 - Import: `import { mapSettledWithConcurrency } from "akashatools/async"`
+- Granular import: `import mapSettledWithConcurrency from "akashatools/async/mapSettledWithConcurrency"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Promise<PromiseSettledResult<R>[]>` — Settled results in input order.
@@ -277,6 +296,7 @@ Extracts values from fulfilled settled results.
 
 - Signature: `fulfilledValues()`
 - Import: `import { fulfilledValues } from "akashatools/async"`
+- Granular import: `import fulfilledValues from "akashatools/async/fulfilledValues"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Values from fulfilled entries only.
@@ -290,6 +310,7 @@ Waits for a duration and optionally supports cancellation.
 
 - Signature: `delay()`
 - Import: `import { delay } from "akashatools/async"`
+- Granular import: `import delay from "akashatools/async/delay"`
 - Input mutation: Does not mutate inputs; schedules a timer.
 - Since: 2.0.0
 - Returns: `Promise<void>` — Promise fulfilled after the duration or rejected on cancellation.
@@ -310,6 +331,7 @@ Triggers a browser download for a Blob. The temporary anchor is removed synchron
 
 - Signature: `downloadBlob()`
 - Import: `import { downloadBlob } from "akashatools/browser"`
+- Granular import: `import downloadBlob from "akashatools/browser/downloadBlob"`
 - Input mutation: Does not mutate inputs; performs a browser download effect.
 - Since: 2.0.0
 - Returns: `void` — Performs the download effect synchronously and schedules URL cleanup.
@@ -324,6 +346,7 @@ Downloads string content as a file in a browser.
 
 - Signature: `downloadTextFile()`
 - Import: `import { downloadTextFile } from "akashatools/browser"`
+- Granular import: `import downloadTextFile from "akashatools/browser/downloadTextFile"`
 - Input mutation: Does not mutate inputs; performs a browser download effect.
 - Since: 2.0.0
 - Returns: `void` — Performs the download effect.
@@ -338,6 +361,7 @@ Creates a safe filename and downloads JSON content.
 
 - Signature: `downloadJson()`
 - Import: `import { downloadJson } from "akashatools/browser"`
+- Granular import: `import downloadJson from "akashatools/browser/downloadJson"`
 - Input mutation: Does not mutate inputs; performs a browser download effect.
 - Since: 2.0.0
 - Returns: `void` — Performs a JSON download using a normalized safe filename.
@@ -358,6 +382,7 @@ Inserts or replaces a value by a derived identity, preserving immutability. Keys
 
 - Signature: `upsertBy()`
 - Import: `import { upsertBy } from "akashatools/collection"`
+- Granular import: `import upsertBy from "akashatools/collection/upsertBy"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense copied array containing the upserted value.
@@ -371,6 +396,7 @@ Excludes values whose derived identities occur in a Set. Numeric keys are never 
 
 - Signature: `excludeBy()`
 - Import: `import { excludeBy } from "akashatools/collection"`
+- Granular import: `import excludeBy from "akashatools/collection/excludeBy"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense copied array without excluded identities.
@@ -384,6 +410,7 @@ Inserts or replaces an object by its `id` property.
 
 - Signature: `upsertById()`
 - Import: `import { upsertById } from "akashatools/collection"`
+- Granular import: `import upsertById from "akashatools/collection/upsertById"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Copied array containing the upserted object.
@@ -398,6 +425,7 @@ Excludes objects whose `id` properties occur in a Set.
 
 - Signature: `excludeIds()`
 - Import: `import { excludeIds } from "akashatools/collection"`
+- Granular import: `import excludeIds from "akashatools/collection/excludeIds"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Copied array without objects carrying excluded ids.
@@ -418,6 +446,7 @@ Normalizes a built-in constructor or common schema-style type name to the lowerc
 
 - Signature: `normalizeDataType()`
 - Import: `import { normalizeDataType } from "akashatools/data"`
+- Granular import: `import normalizeDataType from "akashatools/data/normalizeDataType"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Canonical lowercase data type.
@@ -431,6 +460,7 @@ Scans every slot in an array and reports its complete runtime type profile. Spar
 
 - Signature: `analyzeArrayTypes()`
 - Import: `import { analyzeArrayTypes } from "akashatools/data"`
+- Granular import: `import analyzeArrayTypes from "akashatools/data/analyzeArrayTypes"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `{length: number, empty: boolean, homogeneous: boolean, primaryType: string | undefined, types: readonly string[], counts: Readonly<Record<string, number>>}` — Frozen type analysis in first-seen order.
@@ -444,6 +474,7 @@ Creates a fresh initialized value for a type descriptor without invoking custom 
 
 - Signature: `defaultValueForType()`
 - Import: `import { defaultValueForType } from "akashatools/data"`
+- Granular import: `import defaultValueForType from "akashatools/data/defaultValueForType"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown` — Fresh initialized value for the normalized type.
@@ -457,6 +488,7 @@ Creates a fresh initialized value based on a runtime value's intrinsic type. Thi
 
 - Signature: `defaultValueFor()`
 - Import: `import { defaultValueFor } from "akashatools/data"`
+- Granular import: `import defaultValueFor from "akashatools/data/defaultValueFor"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown` — Fresh initialized value for the runtime type.
@@ -470,6 +502,7 @@ Builds an initialized skeleton from plain data without mutating it. Objects can 
 
 - Signature: `initializeLike()`
 - Import: `import { initializeLike } from "akashatools/data"`
+- Granular import: `import initializeLike from "akashatools/data/initializeLike"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown` — Independent initialized skeleton.
@@ -490,6 +523,7 @@ Checks whether a value represents a valid Date object.
 
 - Signature: `isValidDate()`
 - Import: `import { isValidDate } from "akashatools/date"`
+- Granular import: `import isValidDate from "akashatools/date/isValidDate"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Date` — Whether Date.prototype can read a finite timestamp from value.
@@ -500,6 +534,7 @@ Converts a Date-compatible value to a fresh Date or returns null.
 
 - Signature: `toDate()`
 - Import: `import { toDate } from "akashatools/date"`
+- Granular import: `import toDate from "akashatools/date/toDate"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Date | null` — Fresh valid Date, or null for absent/invalid input.
@@ -510,6 +545,7 @@ Returns the number of days in a local calendar month.
 
 - Signature: `daysInMonth()`
 - Import: `import { daysInMonth } from "akashatools/date"`
+- Granular import: `import daysInMonth from "akashatools/date/daysInMonth"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Number of local calendar days in the selected month.
@@ -523,6 +559,7 @@ Returns a new Date at the beginning of the local calendar day.
 
 - Signature: `startOfLocalDay()`
 - Import: `import { startOfLocalDay } from "akashatools/date"`
+- Granular import: `import startOfLocalDay from "akashatools/date/startOfLocalDay"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Date` — Fresh Date set to 00:00:00.000 in the local timezone.
@@ -536,6 +573,7 @@ Returns a stable local date key in YYYY-MM-DD format.
 
 - Signature: `localDateKey()`
 - Import: `import { localDateKey } from "akashatools/date"`
+- Granular import: `import localDateKey from "akashatools/date/localDateKey"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Local calendar key formatted `YYYY-MM-DD`.
@@ -549,6 +587,7 @@ Calculates whole local calendar-day boundaries between two values. This uses UTC
 
 - Signature: `differenceInLocalDays()`
 - Import: `import { differenceInLocalDays } from "akashatools/date"`
+- Granular import: `import differenceInLocalDays from "akashatools/date/differenceInLocalDays"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Signed count of crossed local calendar-day boundaries.
@@ -562,6 +601,7 @@ Checks whether two values fall on the same local calendar day.
 
 - Signature: `isSameLocalDay()`
 - Import: `import { isSameLocalDay } from "akashatools/date"`
+- Granular import: `import isSameLocalDay from "akashatools/date/isSameLocalDay"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether both values share one local calendar date.
@@ -575,6 +615,7 @@ Checks whether a value falls on today's local calendar day.
 
 - Signature: `isToday()`
 - Import: `import { isToday } from "akashatools/date"`
+- Granular import: `import isToday from "akashatools/date/isToday"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether value shares now's local calendar date.
@@ -588,6 +629,7 @@ Converts a date value to whole Unix seconds.
 
 - Signature: `toUnixSeconds()`
 - Import: `import { toUnixSeconds } from "akashatools/date"`
+- Granular import: `import toUnixSeconds from "akashatools/date/toUnixSeconds"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Truncated whole seconds since the Unix epoch.
@@ -601,6 +643,7 @@ Converts Unix seconds to a Date.
 
 - Signature: `fromUnixSeconds()`
 - Import: `import { fromUnixSeconds } from "akashatools/date"`
+- Granular import: `import fromUnixSeconds from "akashatools/date/fromUnixSeconds"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Date` — Fresh Date at seconds times 1,000 milliseconds.
@@ -615,6 +658,7 @@ Normalizes two Date-compatible boundaries into fresh Date objects. Boundaries re
 
 - Signature: `normalizeInstantRange()`
 - Import: `import { normalizeInstantRange } from "akashatools/date"`
+- Granular import: `import normalizeInstantRange from "akashatools/date/normalizeInstantRange"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `{start: Date, end: Date}` — Fresh normalized boundary Dates.
@@ -629,6 +673,7 @@ Checks whether a Date-compatible value is within an absolute instant range. The 
 
 - Signature: `isWithinInstantRange()`
 - Import: `import { isWithinInstantRange } from "akashatools/date"`
+- Granular import: `import isWithinInstantRange from "akashatools/date/isWithinInstantRange"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether value satisfies both range boundaries.
@@ -642,6 +687,7 @@ Parses a 24-hour `HH:mm` clock time into minutes after midnight.
 
 - Signature: `clockTimeToMinutes()`
 - Import: `import { clockTimeToMinutes } from "akashatools/date"`
+- Granular import: `import clockTimeToMinutes from "akashatools/date/clockTimeToMinutes"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number | null` — Minutes after midnight, or null for invalid syntax/ranges.
@@ -652,6 +698,7 @@ Formats minutes after midnight as 24-hour `HH:mm`, wrapping across days.
 
 - Signature: `minutesToClockTime()`
 - Import: `import { minutesToClockTime } from "akashatools/date"`
+- Granular import: `import minutesToClockTime from "akashatools/date/minutesToClockTime"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Zero-padded 24-hour `HH:mm` clock text.
@@ -665,6 +712,7 @@ Converts a 12-hour clock string such as `2:05 PM` to `14:05`.
 
 - Signature: `clock12To24()`
 - Import: `import { clock12To24 } from "akashatools/date"`
+- Granular import: `import clock12To24 from "akashatools/date/clock12To24"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | null` — Zero-padded 24-hour text, or null for invalid input.
@@ -675,6 +723,7 @@ Converts a `HH:mm` clock string to a 12-hour form such as `2:05 PM`.
 
 - Signature: `clock24To12()`
 - Import: `import { clock24To12 } from "akashatools/date"`
+- Granular import: `import clock24To12 from "akashatools/date/clock24To12"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | null` — 12-hour clock text, or null for invalid input.
@@ -685,6 +734,7 @@ Formats a date using `Intl.DateTimeFormat`.
 
 - Signature: `formatDate()`
 - Import: `import { formatDate } from "akashatools/date"`
+- Granular import: `import formatDate from "akashatools/date/formatDate"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Locale-formatted date text.
@@ -698,6 +748,7 @@ Formats a date and time using `Intl.DateTimeFormat`.
 
 - Signature: `formatDateTime()`
 - Import: `import { formatDateTime } from "akashatools/date"`
+- Granular import: `import formatDateTime from "akashatools/date/formatDateTime"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Locale-formatted date-and-time text.
@@ -711,6 +762,7 @@ Formats a non-negative minute duration as compact, locale-independent hours and 
 
 - Signature: `formatDuration()`
 - Import: `import { formatDuration } from "akashatools/date"`
+- Granular import: `import formatDuration from "akashatools/date/formatDuration"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Compact `0m`, `45m`, `2h`, or `2h 5m`-style label.
@@ -725,6 +777,7 @@ Formats a Date-compatible instant relative to an injectable base through `Intl.R
 
 - Signature: `formatRelativeTime()`
 - Import: `import { formatRelativeTime } from "akashatools/date"`
+- Granular import: `import formatRelativeTime from "akashatools/date/formatRelativeTime"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Locale-formatted relative time such as `yesterday` or `in 2 hours`.
@@ -744,6 +797,7 @@ A stable HTTP/network error with redacted response metadata.
 
 - Signature: `class HttpError`
 - Import: `import { HttpError } from "akashatools/http"`
+- Granular import: `import HttpError from "akashatools/http/HttpError"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 
@@ -753,6 +807,7 @@ Performs one HTTP(S) request without application auth, envelopes, delays, or aut
 
 - Signature: `request()`
 - Import: `import { request } from "akashatools/http"`
+- Granular import: `import request from "akashatools/http/request"`
 - Input mutation: Does not mutate inputs; performs one network request.
 - Since: 2.0.0
 - Returns: `Promise<T>` — Parsed response value, Blob/ArrayBuffer, or raw Response according to responseType.
@@ -767,6 +822,7 @@ Copies headers while replacing common credential/cookie values with `[REDACTED]`
 
 - Signature: `redactHeaders()`
 - Import: `import { redactHeaders } from "akashatools/http"`
+- Granular import: `import redactHeaders from "akashatools/http/redactHeaders"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Record<string, string>` — Plain copied record with sensitive values replaced by `[REDACTED]`.
@@ -780,6 +836,7 @@ Extracts a bounded cross-platform-safe filename suggestion from an HTTP `Content
 
 - Signature: `parseContentDispositionFilename()`
 - Import: `import { parseContentDispositionFilename } from "akashatools/http"`
+- Granular import: `import parseContentDispositionFilename from "akashatools/http/parseContentDispositionFilename"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | undefined` — Safe filename suggestion, normalized fallback, or undefined.
@@ -800,6 +857,7 @@ Returns the native HTML input type suited to one scalar data type. Composite con
 
 - Signature: `inputTypeForType()`
 - Import: `import { inputTypeForType } from "akashatools/input"`
+- Granular import: `import inputTypeForType from "akashatools/input/inputTypeForType"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | undefined` — Native input type or undefined for unsupported/composite data.
@@ -813,6 +871,7 @@ Returns the native HTML input type suited to a runtime scalar value. Strings rem
 
 - Signature: `inputTypeForValue()`
 - Import: `import { inputTypeForValue } from "akashatools/input"`
+- Granular import: `import inputTypeForValue from "akashatools/input/inputTypeForValue"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | undefined` — Native input type or undefined for unsupported/composite data.
@@ -826,6 +885,7 @@ Classifies a declared type into a renderer-level control without pretending comp
 
 - Signature: `controlTypeForType()`
 - Import: `import { controlTypeForType } from "akashatools/input"`
+- Granular import: `import controlTypeForType from "akashatools/input/controlTypeForType"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `"input" | "array" | "object" | "map" | "set" | "unsupported"` — Generic control category.
@@ -839,6 +899,7 @@ Classifies a runtime value into a renderer-level control. Arrays are analyzed in
 
 - Signature: `controlTypeForValue()`
 - Import: `import { controlTypeForValue } from "akashatools/input"`
+- Granular import: `import controlTypeForValue from "akashatools/input/controlTypeForValue"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `"input" | "array" | "scalar-array" | "object-array" | "nested-array" | "mixed-array" | "object" | "map" | "set" | "unsupported"` — Generic control category.
@@ -852,6 +913,7 @@ Describes one generic data-backed input field without importing a UI framework o
 
 - Signature: `fieldDescriptorFor()`
 - Import: `import { fieldDescriptorFor } from "akashatools/input"`
+- Granular import: `import fieldDescriptorFor from "akashatools/input/fieldDescriptorFor"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Readonly<{name: string, label: string, path: readonly (string | number)[], dataType: string, inputType: string | undefined, controlType: ReturnType<typeof controlTypeForValue>, defaultValue: unknown, arrayAnalysis: ReturnType<typeof analyzeArrayTypes> | undefined}>` — Frozen framework-neutral field descriptor.
@@ -865,6 +927,7 @@ Creates descriptors for the direct fields of a plain object or array. Object acc
 
 - Signature: `fieldsFromData()`
 - Import: `import { fieldsFromData } from "akashatools/input"`
+- Granular import: `import fieldsFromData from "akashatools/input/fieldsFromData"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `readonly ReturnType<typeof fieldDescriptorFor>[]` — Frozen ordered field descriptors.
@@ -885,6 +948,7 @@ Constrains a finite number to an inclusive range.
 
 - Signature: `clamp()`
 - Import: `import { clamp } from "akashatools/number"`
+- Granular import: `import clamp from "akashatools/number/clamp"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Value constrained to the inclusive range.
@@ -899,6 +963,7 @@ Wraps a finite number into the half-open interval [minimum, maximum).
 
 - Signature: `wrap()`
 - Import: `import { wrap } from "akashatools/number"`
+- Granular import: `import wrap from "akashatools/number/wrap"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Equivalent value in the half-open interval.
@@ -913,6 +978,7 @@ Rounds a number to a decimal precision using exponent shifting.
 
 - Signature: `roundTo()`
 - Import: `import { roundTo } from "akashatools/number"`
+- Granular import: `import roundTo from "akashatools/number/roundTo"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Rounded finite value.
@@ -927,6 +993,7 @@ Adds finite numeric arguments.
 
 - Signature: `sum()`
 - Import: `import { sum } from "akashatools/number"`
+- Granular import: `import sum from "akashatools/number/sum"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Arithmetic sum, which can overflow if the result is not representable.
@@ -940,6 +1007,7 @@ Subtracts each subsequent value from the first.
 
 - Signature: `subtract()`
 - Import: `import { subtract } from "akashatools/number"`
+- Granular import: `import subtract from "akashatools/number/subtract"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Arithmetic difference, which can overflow if the result is not representable.
@@ -953,6 +1021,7 @@ Returns the absolute distance between two finite numbers.
 
 - Signature: `distance()`
 - Import: `import { distance } from "akashatools/number"`
+- Granular import: `import distance from "akashatools/number/distance"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Absolute arithmetic distance, possibly Infinity after numeric overflow.
@@ -966,6 +1035,7 @@ Calculates Euclidean distance between two `[x, y]` coordinates.
 
 - Signature: `distance2d()`
 - Import: `import { distance2d } from "akashatools/number"`
+- Granular import: `import distance2d from "akashatools/number/distance2d"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Euclidean distance, possibly Infinity when no finite result is representable.
@@ -979,6 +1049,7 @@ Returns the nth Fibonacci number using an iterative O(n) implementation.
 
 - Signature: `fibonacci()`
 - Import: `import { fibonacci } from "akashatools/number"`
+- Granular import: `import fibonacci from "akashatools/number/fibonacci"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Exactly representable Fibonacci number at index.
@@ -992,6 +1063,7 @@ Converts a safe integer to a binary string.
 
 - Signature: `toBinary()`
 - Import: `import { toBinary } from "akashatools/number"`
+- Granular import: `import toBinary from "akashatools/number/toBinary"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Signed binary digits without a radix prefix.
@@ -1005,6 +1077,7 @@ Formats a non-negative byte quantity with deterministic decimal or IEC binary un
 
 - Signature: `formatBytes()`
 - Import: `import { formatBytes } from "akashatools/number"`
+- Granular import: `import formatBytes from "akashatools/number/formatBytes"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Compact value followed by B/KB/MB or B/KiB/MiB-style units.
@@ -1019,6 +1092,7 @@ Summarizes a finite numeric sample without mutating it. Percentiles use linear i
 
 - Signature: `summarizeNumbers()`
 - Import: `import { summarizeNumbers } from "akashatools/number"`
+- Granular import: `import summarizeNumbers from "akashatools/number/summarizeNumbers"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `{ count: number, minimum: number | null, maximum: number | null, median: number | null, p75: number | null, p95: number | null, mean: number | null, standardDeviation: number | null }` — Summary with interpolated percentiles and population deviation.
@@ -1039,6 +1113,7 @@ Checks whether a value is an object with Object.prototype or a null prototype.
 
 - Signature: `isPlainObject()`
 - Import: `import { isPlainObject } from "akashatools/object"`
+- Granular import: `import isPlainObject from "akashatools/object/isPlainObject"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Record<PropertyKey, unknown>` — Whether value has the intrinsic Object constructor or null prototype.
@@ -1049,6 +1124,7 @@ Parses a safe dot/bracket property path. Prototype-mutating segments are rejecte
 
 - Signature: `parsePath()`
 - Import: `import { parsePath } from "akashatools/object"`
+- Granular import: `import parsePath from "akashatools/object/parsePath"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `(string | number)[]` — Fresh normalized string/number segment array.
@@ -1063,6 +1139,7 @@ Reads an own property at a nested path, returning a fallback only when the path 
 
 - Signature: `getAtPath()`
 - Import: `import { getAtPath } from "akashatools/object"`
+- Granular import: `import getAtPath from "akashatools/object/getAtPath"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown | T` — Existing leaf value (including undefined) or fallback.
@@ -1076,6 +1153,7 @@ Checks whether every segment of a nested own-property path exists.
 
 - Signature: `hasAtPath()`
 - Import: `import { hasAtPath } from "akashatools/object"`
+- Granular import: `import hasAtPath from "akashatools/object/hasAtPath"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether every path segment exists, even if the leaf is undefined.
@@ -1089,6 +1167,7 @@ Sets a nested value while structurally sharing untouched objects and arrays. Mis
 
 - Signature: `setAtPath()`
 - Import: `import { setAtPath } from "akashatools/object"`
+- Granular import: `import setAtPath from "akashatools/object/setAtPath"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T` — Structurally shared root, or the original root for an identical leaf.
@@ -1102,6 +1181,7 @@ Traverses own enumerable data properties of plain objects and arrays in determin
 
 - Signature: `traverseObject()`
 - Import: `import { traverseObject } from "akashatools/object"`
+- Granular import: `import traverseObject from "akashatools/object/traverseObject"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry[]` — Deterministic preorder entries with fresh paths.
@@ -1116,6 +1196,7 @@ Returns the first deep traversal entry accepted by a predicate, or `undefined`. 
 
 - Signature: `findDeep()`
 - Import: `import { findDeep } from "akashatools/object"`
+- Granular import: `import findDeep from "akashatools/object/findDeep"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry | undefined` — First accepted entry or undefined.
@@ -1130,6 +1211,7 @@ Returns every deep traversal entry accepted by a predicate. Traversal order, cyc
 
 - Signature: `findAllDeep()`
 - Import: `import { findAllDeep } from "akashatools/object"`
+- Granular import: `import findAllDeep from "akashatools/object/findAllDeep"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry[]` — Every accepted entry in traversal order.
@@ -1144,6 +1226,7 @@ Checks whether any deep entry's value, key, or either side matches a needle. Mat
 
 - Signature: `hasDeep()`
 - Import: `import { hasDeep } from "akashatools/object"`
+- Granular import: `import hasDeep from "akashatools/object/hasDeep"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether a matching entry exists.
@@ -1158,6 +1241,7 @@ Returns the first deep entry whose value/key matches a needle, retaining its key
 
 - Signature: `findDeepMatch()`
 - Import: `import { findDeepMatch } from "akashatools/object"`
+- Granular import: `import findDeepMatch from "akashatools/object/findDeepMatch"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry | undefined` — First matching entry or undefined.
@@ -1172,6 +1256,7 @@ Returns the value of the first deep needle match. A matching `undefined` value a
 
 - Signature: `findDeepValue()`
 - Import: `import { findDeepValue } from "akashatools/object"`
+- Granular import: `import findDeepValue from "akashatools/object/findDeepValue"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown` — First matched value, or undefined when absent.
@@ -1186,6 +1271,7 @@ Returns the immediate container of the first deep needle match. Root matches and
 
 - Signature: `findDeepParent()`
 - Import: `import { findDeepParent } from "akashatools/object"`
+- Granular import: `import findDeepParent from "akashatools/object/findDeepParent"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry["parent"]` — First matching parent or undefined.
@@ -1200,6 +1286,7 @@ Returns every entry whose value/key matches a needle, preserving traversal metad
 
 - Signature: `findAllDeepMatches()`
 - Import: `import { findAllDeepMatches } from "akashatools/object"`
+- Granular import: `import findAllDeepMatches from "akashatools/object/findAllDeepMatches"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry[]` — All matching entries in traversal order.
@@ -1214,6 +1301,7 @@ Returns the value projection of every deep needle match. Repeated values are ret
 
 - Signature: `findAllDeepValues()`
 - Import: `import { findAllDeepValues } from "akashatools/object"`
+- Granular import: `import findAllDeepValues from "akashatools/object/findAllDeepValues"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `unknown[]` — Matched values in traversal order.
@@ -1228,6 +1316,7 @@ Returns the parent projection of every deep needle match. Duplicate parents are 
 
 - Signature: `findAllDeepParents()`
 - Import: `import { findAllDeepParents } from "akashatools/object"`
+- Granular import: `import findAllDeepParents from "akashatools/object/findAllDeepParents"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `ObjectTraversalEntry["parent"][]` — Matching parents in traversal order.
@@ -1242,6 +1331,7 @@ Creates a frozen, side-effect-free dot-style query view over structured data. Me
 
 - Signature: `deepQuery()`
 - Import: `import { deepQuery } from "akashatools/object"`
+- Granular import: `import deepQuery from "akashatools/object/deepQuery"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Readonly<DeepQueryView>` — Frozen fluent search/projection view.
@@ -1256,6 +1346,7 @@ Returns an object containing selected own properties.
 
 - Signature: `pick()`
 - Import: `import { pick } from "akashatools/object"`
+- Granular import: `import pick from "akashatools/object/pick"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Partial<T>` — New ordinary object containing selected own values.
@@ -1269,6 +1360,7 @@ Returns a shallow copy without the selected own properties.
 
 - Signature: `omit()`
 - Import: `import { omit } from "akashatools/object"`
+- Granular import: `import omit from "akashatools/object/omit"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Partial<T>` — New ordinary object without selected enumerable string keys.
@@ -1282,6 +1374,7 @@ Deeply clones structured-cloneable values, including circular references, Maps, 
 
 - Signature: `deepClone()`
 - Import: `import { deepClone } from "akashatools/object"`
+- Granular import: `import deepClone from "akashatools/object/deepClone"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T` — Independent structured clone preserving supported built-in types/cycles.
@@ -1295,6 +1388,7 @@ Clones strict plain JSON data without invoking `toJSON` methods or accessors. Th
 
 - Signature: `cloneJson()`
 - Import: `import { cloneJson } from "akashatools/object"`
+- Granular import: `import cloneJson from "akashatools/object/cloneJson"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T` — Independent plain JSON clone.
@@ -1309,6 +1403,7 @@ Recursively merges own enumerable string-keyed data properties of plain objects 
 
 - Signature: `deepMerge()`
 - Import: `import { deepMerge } from "akashatools/object"`
+- Granular import: `import deepMerge from "akashatools/object/deepMerge"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T & U` — New recursively merged plain object.
@@ -1323,6 +1418,7 @@ Returns a new object containing only allowed own properties. Unknown or prototyp
 
 - Signature: `pickAllowed()`
 - Import: `import { pickAllowed } from "akashatools/object"`
+- Granular import: `import pickAllowed from "akashatools/object/pickAllowed"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Record<string, unknown>` — New ordinary object containing allowed own properties.
@@ -1342,6 +1438,7 @@ Returns a random float in the half-open range [minimum, maximum).
 
 - Signature: `randomFloat()`
 - Import: `import { randomFloat } from "akashatools/random"`
+- Granular import: `import randomFloat from "akashatools/random/randomFloat"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Random value in the requested half-open interval.
@@ -1356,6 +1453,7 @@ Returns a random integer. The minimum is inclusive; the maximum can be inclusive
 
 - Signature: `randomInt()`
 - Import: `import { randomInt } from "akashatools/random"`
+- Granular import: `import randomInt from "akashatools/random/randomInt"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Random safe integer in the requested range.
@@ -1370,6 +1468,7 @@ Returns a random boolean.
 
 - Signature: `randomBoolean()`
 - Import: `import { randomBoolean } from "akashatools/random"`
+- Granular import: `import randomBoolean from "akashatools/random/randomBoolean"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — False below 0.5 and true at or above 0.5.
@@ -1384,6 +1483,7 @@ Returns a random string from the supplied character set. This is not suitable fo
 
 - Signature: `randomString()`
 - Import: `import { randomString } from "akashatools/random"`
+- Granular import: `import randomString from "akashatools/random/randomString"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Non-cryptographic sampled string of exactly length code units.
@@ -1398,6 +1498,7 @@ Returns a cryptographically secure RFC 4122 UUID through Web Crypto.
 
 - Signature: `secureRandomUuid()`
 - Import: `import { secureRandomUuid } from "akashatools/random"`
+- Granular import: `import secureRandomUuid from "akashatools/random/secureRandomUuid"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Cryptographically secure UUID string supplied by Web Crypto.
@@ -1411,6 +1512,7 @@ Returns a cryptographically secure string using rejection sampling to avoid modu
 
 - Signature: `secureRandomString()`
 - Import: `import { secureRandomString } from "akashatools/random"`
+- Granular import: `import secureRandomString from "akashatools/random/secureRandomString"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Cryptographically secure unbiased sampled string.
@@ -1426,6 +1528,7 @@ Returns a random Date within an inclusive timestamp range.
 
 - Signature: `randomDate()`
 - Import: `import { randomDate } from "akashatools/random"`
+- Granular import: `import randomDate from "akashatools/random/randomDate"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Date` — Fresh Date at a whole-millisecond instant in the range.
@@ -1446,6 +1549,7 @@ Returns a stably sorted copy based on a derived key. Nullish keys sort last. Mod
 
 - Signature: `sortBy()`
 - Import: `import { sortBy } from "akashatools/sort"`
+- Granular import: `import sortBy from "akashatools/sort/sortBy"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense stably sorted copy.
@@ -1459,6 +1563,7 @@ Returns a stable copy ordered by multiple selector criteria. Criteria are evalua
 
 - Signature: `sortByMany()`
 - Import: `import { sortByMany } from "akashatools/sort"`
+- Granular import: `import sortByMany from "akashatools/sort/sortByMany"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Dense stably sorted copy using criteria in priority order.
@@ -1472,6 +1577,7 @@ Creates a reusable locale-aware comparator. Reusing the returned function avoids
 
 - Signature: `createCollatorComparator()`
 - Import: `import { createCollatorComparator } from "akashatools/sort"`
+- Granular import: `import createCollatorComparator from "akashatools/sort/createCollatorComparator"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `(left: unknown, right: unknown) => number` — Reusable comparator that stringifies values.
@@ -1485,6 +1591,7 @@ Compares strings, numbers, bigints, booleans, and Dates with nullish values orde
 
 - Signature: `compareValues()`
 - Import: `import { compareValues } from "akashatools/sort"`
+- Granular import: `import compareValues from "akashatools/sort/compareValues"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Negative, zero, or positive ordering signal.
@@ -1498,6 +1605,7 @@ Compares objects across the first available finite numeric ordering key. Missing
 
 - Signature: `compareNumericOrder()`
 - Import: `import { compareNumericOrder } from "akashatools/sort"`
+- Granular import: `import compareNumericOrder from "akashatools/sort/compareNumericOrder"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Numeric ordering signal; zero when all normalized fields tie.
@@ -1511,6 +1619,7 @@ Returns a stable copy ordered by common numeric position fields.
 
 - Signature: `sortByNumericOrder()`
 - Import: `import { sortByNumericOrder } from "akashatools/sort"`
+- Granular import: `import sortByNumericOrder from "akashatools/sort/sortByNumericOrder"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T[]` — Stable sorted copy with absent/invalid order fields last.
@@ -1530,6 +1639,7 @@ Uppercases the first Unicode-aware character of a string.
 
 - Signature: `capitalize()`
 - Import: `import { capitalize } from "akashatools/string"`
+- Granular import: `import capitalize from "akashatools/string/capitalize"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — New string, or an empty string for empty input.
@@ -1543,6 +1653,7 @@ Converts words and common identifier styles to kebab-case.
 
 - Signature: `kebabCase()`
 - Import: `import { kebabCase } from "akashatools/string"`
+- Granular import: `import kebabCase from "akashatools/string/kebabCase"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Lowercase hyphen-delimited words.
@@ -1556,6 +1667,7 @@ Converts words and common identifier styles to camelCase.
 
 - Signature: `camelCase()`
 - Import: `import { camelCase } from "akashatools/string"`
+- Granular import: `import camelCase from "akashatools/string/camelCase"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Lower camel-cased identifier.
@@ -1569,6 +1681,7 @@ Converts words and common identifier styles to PascalCase.
 
 - Signature: `pascalCase()`
 - Import: `import { pascalCase } from "akashatools/string"`
+- Granular import: `import pascalCase from "akashatools/string/pascalCase"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Upper camel-cased identifier.
@@ -1582,6 +1695,7 @@ Converts an identifier into a human-readable sentence.
 
 - Signature: `sentenceCase()`
 - Import: `import { sentenceCase } from "akashatools/string"`
+- Granular import: `import sentenceCase from "akashatools/string/sentenceCase"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Space-delimited lowercase words with the first code point uppercased.
@@ -1595,6 +1709,7 @@ Checks for literal text with optional case sensitivity.
 
 - Signature: `includesText()`
 - Import: `import { includesText } from "akashatools/string"`
+- Granular import: `import includesText from "akashatools/string/includesText"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether search occurs in value.
@@ -1608,6 +1723,7 @@ Applies literal string replacements in insertion order. Unlike a RegExp-based im
 
 - Signature: `replaceMany()`
 - Import: `import { replaceMany } from "akashatools/string"`
+- Granular import: `import replaceMany from "akashatools/string/replaceMany"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — String after every ordered literal replacement.
@@ -1621,6 +1737,7 @@ Applies a caller-provided regular expression without mutating its `lastIndex`. T
 
 - Signature: `replaceRegex()`
 - Import: `import { replaceRegex } from "akashatools/string"`
+- Granular import: `import replaceRegex from "akashatools/string/replaceRegex"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Replaced string without changing pattern.lastIndex.
@@ -1634,6 +1751,7 @@ Returns the greatest string length among values, object keys, or a scalar.
 
 - Signature: `longestStringLength()`
 - Import: `import { longestStringLength } from "akashatools/string"`
+- Granular import: `import longestStringLength from "akashatools/string/longestStringLength"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Greatest UTF-16 code-unit length; nullish scalar entries count as empty.
@@ -1644,6 +1762,7 @@ Measures the UTF-8 encoding length of a string without allocating an encoded byt
 
 - Signature: `utf8ByteLength()`
 - Import: `import { utf8ByteLength } from "akashatools/string"`
+- Granular import: `import utf8ByteLength from "akashatools/string/utf8ByteLength"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Number of bytes in the UTF-8 representation.
@@ -1657,6 +1776,7 @@ Counts whitespace-delimited tokens without language-specific word-breaking guess
 
 - Signature: `countWords()`
 - Import: `import { countWords } from "akashatools/string"`
+- Granular import: `import countWords from "akashatools/string/countWords"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `number` — Number of non-whitespace runs.
@@ -1670,6 +1790,7 @@ Splits text under byte, word, and optional caller-defined cost limits while pref
 
 - Signature: `splitTextByLimits()`
 - Import: `import { splitTextByLimits } from "akashatools/string"`
+- Granular import: `import splitTextByLimits from "akashatools/string/splitTextByLimits"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string[]` — Non-empty, ordered, lossless chunks satisfying every enabled limit.
@@ -1684,6 +1805,7 @@ Creates a conservative lowercase filename stem. Output is ASCII, NFKD normalized
 
 - Signature: `safeFilename()`
 - Import: `import { safeFilename } from "akashatools/string"`
+- Granular import: `import safeFilename from "akashatools/string/safeFilename"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Non-empty conservative ASCII filename stem.
@@ -1697,6 +1819,7 @@ Creates a bounded ASCII URL/path slug with Unicode compatibility normalization. 
 
 - Signature: `slugify()`
 - Import: `import { slugify } from "akashatools/string"`
+- Granular import: `import slugify from "akashatools/string/slugify"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Non-empty lowercase ASCII slug.
@@ -1710,6 +1833,7 @@ Encodes five HTML-significant characters for an HTML text context. This is not H
 
 - Signature: `escapeHtml()`
 - Import: `import { escapeHtml } from "akashatools/string"`
+- Granular import: `import escapeHtml from "akashatools/string/escapeHtml"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Text with ampersand, brackets, quotes, and apostrophes encoded.
@@ -1720,6 +1844,7 @@ Serializes a JSON-compatible value with human-readable indentation.
 
 - Signature: `prettyJson()`
 - Import: `import { prettyJson } from "akashatools/string"`
+- Granular import: `import prettyJson from "akashatools/string/prettyJson"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Serialized JSON text.
@@ -1733,6 +1858,7 @@ Serializes strict plain JSON with recursively sorted object keys. Key order is U
 
 - Signature: `stableJson()`
 - Import: `import { stableJson } from "akashatools/string"`
+- Granular import: `import stableJson from "akashatools/string/stableJson"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Compact deterministic JSON text.
@@ -1753,6 +1879,7 @@ Checks whether a value is neither null nor undefined.
 
 - Signature: `isDefined()`
 - Import: `import { isDefined } from "akashatools/validation"`
+- Granular import: `import isDefined from "akashatools/validation/isDefined"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is T` — Whether value is neither null nor undefined; other falsy values pass.
@@ -1763,6 +1890,7 @@ Checks whether a value is an array without coercion.
 
 - Signature: `isArray()`
 - Import: `import { isArray } from "akashatools/validation"`
+- Granular import: `import isArray from "akashatools/validation/isArray"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is unknown[]` — Whether the value is an array, including an empty or cross-realm array.
@@ -1773,6 +1901,7 @@ Checks whether a value is a primitive string without accepting boxed String obje
 
 - Signature: `isString()`
 - Import: `import { isString } from "akashatools/validation"`
+- Granular import: `import isString from "akashatools/validation/isString"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is string` — Whether the value has the primitive string type.
@@ -1783,6 +1912,7 @@ Checks whether a value is a primitive number. NaN and infinities are numbers; us
 
 - Signature: `isNumber()`
 - Import: `import { isNumber } from "akashatools/validation"`
+- Granular import: `import isNumber from "akashatools/validation/isNumber"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is number` — Whether the value has the primitive number type.
@@ -1793,6 +1923,7 @@ Checks whether a value is a primitive boolean without coercion.
 
 - Signature: `isBoolean()`
 - Import: `import { isBoolean } from "akashatools/validation"`
+- Granular import: `import isBoolean from "akashatools/validation/isBoolean"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is boolean` — Whether the value is exactly true or false.
@@ -1803,6 +1934,7 @@ Checks for a non-null object while excluding arrays and functions. Plain objects
 
 - Signature: `isNonArrayObject()`
 - Import: `import { isNonArrayObject } from "akashatools/validation"`
+- Granular import: `import isNonArrayObject from "akashatools/validation/isNonArrayObject"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is object` — Whether the value is a non-array object.
@@ -1813,6 +1945,7 @@ Checks for nullish values or strings containing only whitespace.
 
 - Signature: `isBlank()`
 - Import: `import { isBlank } from "akashatools/validation"`
+- Granular import: `import isBlank from "akashatools/validation/isBlank"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — True only for null, undefined, or whitespace-only strings.
@@ -1823,6 +1956,7 @@ Returns a fallback for nullish or whitespace-only input and otherwise returns th
 
 - Signature: `defaultIfBlank()`
 - Import: `import { defaultIfBlank } from "akashatools/validation"`
+- Granular import: `import defaultIfBlank from "akashatools/validation/defaultIfBlank"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T | U` — Original nonblank value or the supplied fallback.
@@ -1833,6 +1967,7 @@ Checks common empty values: blank strings, empty arrays, empty Maps/Sets, and pl
 
 - Signature: `isEmpty()`
 - Import: `import { isEmpty } from "akashatools/validation"`
+- Granular import: `import isEmpty from "akashatools/validation/isEmpty"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `boolean` — Whether value matches one explicitly supported empty shape.
@@ -1843,6 +1978,7 @@ Checks whether a value is a finite primitive number.
 
 - Signature: `isFiniteNumber()`
 - Import: `import { isFiniteNumber } from "akashatools/validation"`
+- Granular import: `import isFiniteNumber from "akashatools/validation/isFiniteNumber"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is number` — Whether value is a primitive finite number without coercion.
@@ -1853,6 +1989,7 @@ Checks whether a value is a finite primitive number with a fractional part.
 
 - Signature: `isFiniteNonInteger()`
 - Import: `import { isFiniteNonInteger } from "akashatools/validation"`
+- Granular import: `import isFiniteNonInteger from "akashatools/validation/isFiniteNonInteger"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is number` — Whether the value is finite and not an integer.
@@ -1863,6 +2000,7 @@ Checks whether a value is a safe primitive integer.
 
 - Signature: `isSafeInteger()`
 - Import: `import { isSafeInteger } from "akashatools/validation"`
+- Granular import: `import isSafeInteger from "akashatools/validation/isSafeInteger"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is number` — Whether value is a primitive safe integer without coercion.
@@ -1873,6 +2011,7 @@ Checks for a Map, including Maps created in another JavaScript realm.
 
 - Signature: `isMap()`
 - Import: `import { isMap } from "akashatools/validation"`
+- Granular import: `import isMap from "akashatools/validation/isMap"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Map<unknown, unknown>` — Whether the intrinsic Map brand accepts value.
@@ -1883,6 +2022,7 @@ Checks for a Set, including Sets created in another JavaScript realm.
 
 - Signature: `isSet()`
 - Import: `import { isSet } from "akashatools/validation"`
+- Granular import: `import isSet from "akashatools/validation/isSet"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Set<unknown>` — Whether the intrinsic Set brand accepts value.
@@ -1893,6 +2033,7 @@ Checks for any typed-array view while excluding DataView. Cross-realm typed arra
 
 - Signature: `isTypedArray()`
 - Import: `import { isTypedArray } from "akashatools/validation"`
+- Granular import: `import isTypedArray from "akashatools/validation/isTypedArray"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Exclude<ArrayBufferView, DataView>` — Whether value is a typed array rather than DataView.
@@ -1903,6 +2044,7 @@ Checks whether every item in an array is a plain object. Empty arrays satisfy th
 
 - Signature: `isPlainObjectArray()`
 - Import: `import { isPlainObjectArray } from "akashatools/validation"`
+- Granular import: `import isPlainObjectArray from "akashatools/validation/isPlainObjectArray"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Record<PropertyKey, unknown>[]` — Whether every item is a plain object; empty arrays pass.
@@ -1913,6 +2055,7 @@ Checks for a Blob when the current runtime exposes `globalThis.Blob`. Returns fa
 
 - Signature: `isBlob()`
 - Import: `import { isBlob } from "akashatools/validation"`
+- Granular import: `import isBlob from "akashatools/validation/isBlob"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is Blob` — Whether current global Blob exists and value is its instance.
@@ -1923,6 +2066,7 @@ Checks for a File when the current runtime exposes `globalThis.File`. Returns fa
 
 - Signature: `isFile()`
 - Import: `import { isFile } from "akashatools/validation"`
+- Granular import: `import isFile from "akashatools/validation/isFile"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is File` — Whether current global File exists and value is its instance.
@@ -1933,6 +2077,7 @@ Returns a precise, lowercase runtime type name.
 
 - Signature: `typeOf()`
 - Import: `import { typeOf } from "akashatools/validation"`
+- Granular import: `import typeOf from "akashatools/validation/typeOf"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Lowercase intrinsic brand, with explicit null/array/nan names.
@@ -1943,6 +2088,7 @@ Checks whether a string contains valid JSON. Valid scalar JSON is accepted.
 
 - Signature: `isJson()`
 - Import: `import { isJson } from "akashatools/validation"`
+- Granular import: `import isJson from "akashatools/validation/isJson"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is string` — Whether value is a string accepted by JSON.parse, including scalar JSON.
@@ -1953,6 +2099,7 @@ Performs pragmatic email syntax validation. It does not attempt deliverability o
 
 - Signature: `isEmail()`
 - Import: `import { isEmail } from "akashatools/validation"`
+- Granular import: `import isEmail from "akashatools/validation/isEmail"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `value is string` — Whether value satisfies bounded pragmatic syntax only.
@@ -1963,6 +2110,7 @@ Normalizes a North American phone number into ten digits, or returns null. A lea
 
 - Signature: `normalizeNanpPhone()`
 - Import: `import { normalizeNanpPhone } from "akashatools/validation"`
+- Granular import: `import normalizeNanpPhone from "akashatools/validation/normalizeNanpPhone"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | null` — Ten normalized digits, or null for unsupported syntax/ranges.
@@ -1973,6 +2121,7 @@ Formats a valid North American phone number as `(555) 123-4567`.
 
 - Signature: `formatNanpPhone()`
 - Import: `import { formatNanpPhone } from "akashatools/validation"`
+- Granular import: `import formatNanpPhone from "akashatools/validation/formatNanpPhone"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string | null` — `(555) 123-4567` text, or null when normalization fails.
@@ -1983,6 +2132,7 @@ Validates a value against a useful JSON Schema subset. Supported keywords are `$
 
 - Signature: `validateJsonContract()`
 - Import: `import { validateJsonContract } from "akashatools/validation"`
+- Granular import: `import validateJsonContract from "akashatools/validation/validateJsonContract"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string[]` — Deterministic path-prefixed validation errors; empty means valid.
@@ -1996,6 +2146,7 @@ Asserts a value against the supported JSON Schema subset.
 
 - Signature: `assertJsonContract()`
 - Import: `import { assertJsonContract } from "akashatools/validation"`
+- Granular import: `import assertJsonContract from "akashatools/validation/assertJsonContract"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `T` — Original value after successful validation.
@@ -2015,6 +2166,7 @@ Resolves a relative path beneath a root without accessing the filesystem. Absolu
 
 - Signature: `resolveContainedPath()`
 - Import: `import { resolveContainedPath } from "akashatools/node"`
+- Granular import: `import resolveContainedPath from "akashatools/node/resolveContainedPath"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `string` — Lexically resolved path beneath root.
@@ -2029,6 +2181,7 @@ Resolves an existing path beneath an existing root, following symlinks for both 
 
 - Signature: `resolveExistingContainedPath()`
 - Import: `import { resolveExistingContainedPath } from "akashatools/node"`
+- Granular import: `import resolveExistingContainedPath from "akashatools/node/resolveExistingContainedPath"`
 - Input mutation: Does not mutate inputs; reads filesystem metadata.
 - Since: 2.0.0
 - Returns: `Promise<string>` — Real target path proven inside the real root at check time.
@@ -2043,6 +2196,7 @@ Collects paths matching one or more native Node glob patterns in deterministic c
 
 - Signature: `globPaths()`
 - Import: `import { globPaths } from "akashatools/node"`
+- Granular import: `import globPaths from "akashatools/node/globPaths"`
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Promise<string[]>` — Deduplicated matching paths sorted deterministically.

@@ -101,6 +101,8 @@ import { flatten, isBlank, kebabCase } from "akashatools";
 // or
 import * as array from "akashatools/array";
 array.flatten(values);
+// or one generated method subpath (default and named exports are identical)
+import flattenMethod from "akashatools/array/flatten";
 ```
 
 The old and new functions are not assumed behavior-identical. In particular,

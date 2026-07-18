@@ -12,81 +12,158 @@
       "default": "./src/index.js"
     },
     "./array": {
-      "types": "./types/array.d.ts",
-      "import": "./src/array.js",
-      "default": "./src/array.js"
+      "types": "./types/array/index.d.ts",
+      "import": "./src/array/index.js",
+      "default": "./src/array/index.js"
+    },
+    "./array/*": {
+      "types": "./types/array/*.d.ts",
+      "import": "./src/array/*.js",
+      "default": "./src/array/*.js"
     },
     "./async": {
-      "types": "./types/async.d.ts",
-      "import": "./src/async.js",
-      "default": "./src/async.js"
+      "types": "./types/async/index.d.ts",
+      "import": "./src/async/index.js",
+      "default": "./src/async/index.js"
+    },
+    "./async/*": {
+      "types": "./types/async/*.d.ts",
+      "import": "./src/async/*.js",
+      "default": "./src/async/*.js"
     },
     "./browser": {
-      "types": "./types/browser.d.ts",
-      "browser": "./src/browser.js",
-      "import": "./src/browser.js",
-      "default": "./src/browser.js"
+      "types": "./types/browser/index.d.ts",
+      "browser": "./src/browser/index.js",
+      "import": "./src/browser/index.js",
+      "default": "./src/browser/index.js"
+    },
+    "./browser/*": {
+      "types": "./types/browser/*.d.ts",
+      "browser": "./src/browser/*.js",
+      "import": "./src/browser/*.js",
+      "default": "./src/browser/*.js"
     },
     "./collection": {
-      "types": "./types/collection.d.ts",
-      "import": "./src/collection.js",
-      "default": "./src/collection.js"
+      "types": "./types/collection/index.d.ts",
+      "import": "./src/collection/index.js",
+      "default": "./src/collection/index.js"
+    },
+    "./collection/*": {
+      "types": "./types/collection/*.d.ts",
+      "import": "./src/collection/*.js",
+      "default": "./src/collection/*.js"
     },
     "./data": {
-      "types": "./types/data.d.ts",
-      "import": "./src/data.js",
-      "default": "./src/data.js"
+      "types": "./types/data/index.d.ts",
+      "import": "./src/data/index.js",
+      "default": "./src/data/index.js"
+    },
+    "./data/*": {
+      "types": "./types/data/*.d.ts",
+      "import": "./src/data/*.js",
+      "default": "./src/data/*.js"
     },
     "./date": {
-      "types": "./types/date.d.ts",
-      "import": "./src/date.js",
-      "default": "./src/date.js"
+      "types": "./types/date/index.d.ts",
+      "import": "./src/date/index.js",
+      "default": "./src/date/index.js"
+    },
+    "./date/*": {
+      "types": "./types/date/*.d.ts",
+      "import": "./src/date/*.js",
+      "default": "./src/date/*.js"
     },
     "./http": {
-      "types": "./types/http.d.ts",
-      "import": "./src/http.js",
-      "default": "./src/http.js"
+      "types": "./types/http/index.d.ts",
+      "import": "./src/http/index.js",
+      "default": "./src/http/index.js"
+    },
+    "./http/*": {
+      "types": "./types/http/*.d.ts",
+      "import": "./src/http/*.js",
+      "default": "./src/http/*.js"
     },
     "./input": {
-      "types": "./types/input.d.ts",
-      "import": "./src/input.js",
-      "default": "./src/input.js"
+      "types": "./types/input/index.d.ts",
+      "import": "./src/input/index.js",
+      "default": "./src/input/index.js"
+    },
+    "./input/*": {
+      "types": "./types/input/*.d.ts",
+      "import": "./src/input/*.js",
+      "default": "./src/input/*.js"
     },
     "./node": {
-      "types": "./types/node.d.ts",
-      "node": "./src/node.js",
-      "import": "./src/node.js",
-      "default": "./src/node.js"
+      "types": "./types/node/index.d.ts",
+      "node": "./src/node/index.js",
+      "import": "./src/node/index.js",
+      "default": "./src/node/index.js"
+    },
+    "./node/*": {
+      "types": "./types/node/*.d.ts",
+      "node": "./src/node/*.js",
+      "import": "./src/node/*.js",
+      "default": "./src/node/*.js"
     },
     "./number": {
-      "types": "./types/number.d.ts",
-      "import": "./src/number.js",
-      "default": "./src/number.js"
+      "types": "./types/number/index.d.ts",
+      "import": "./src/number/index.js",
+      "default": "./src/number/index.js"
+    },
+    "./number/*": {
+      "types": "./types/number/*.d.ts",
+      "import": "./src/number/*.js",
+      "default": "./src/number/*.js"
     },
     "./object": {
-      "types": "./types/object.d.ts",
-      "import": "./src/object.js",
-      "default": "./src/object.js"
+      "types": "./types/object/index.d.ts",
+      "import": "./src/object/index.js",
+      "default": "./src/object/index.js"
+    },
+    "./object/*": {
+      "types": "./types/object/*.d.ts",
+      "import": "./src/object/*.js",
+      "default": "./src/object/*.js"
     },
     "./random": {
-      "types": "./types/random.d.ts",
-      "import": "./src/random.js",
-      "default": "./src/random.js"
+      "types": "./types/random/index.d.ts",
+      "import": "./src/random/index.js",
+      "default": "./src/random/index.js"
+    },
+    "./random/*": {
+      "types": "./types/random/*.d.ts",
+      "import": "./src/random/*.js",
+      "default": "./src/random/*.js"
     },
     "./sort": {
-      "types": "./types/sort.d.ts",
-      "import": "./src/sort.js",
-      "default": "./src/sort.js"
+      "types": "./types/sort/index.d.ts",
+      "import": "./src/sort/index.js",
+      "default": "./src/sort/index.js"
+    },
+    "./sort/*": {
+      "types": "./types/sort/*.d.ts",
+      "import": "./src/sort/*.js",
+      "default": "./src/sort/*.js"
     },
     "./string": {
-      "types": "./types/string.d.ts",
-      "import": "./src/string.js",
-      "default": "./src/string.js"
+      "types": "./types/string/index.d.ts",
+      "import": "./src/string/index.js",
+      "default": "./src/string/index.js"
+    },
+    "./string/*": {
+      "types": "./types/string/*.d.ts",
+      "import": "./src/string/*.js",
+      "default": "./src/string/*.js"
     },
     "./validation": {
-      "types": "./types/validation.d.ts",
-      "import": "./src/validation.js",
-      "default": "./src/validation.js"
+      "types": "./types/validation/index.d.ts",
+      "import": "./src/validation/index.js",
+      "default": "./src/validation/index.js"
+    },
+    "./validation/*": {
+      "types": "./types/validation/*.d.ts",
+      "import": "./src/validation/*.js",
+      "default": "./src/validation/*.js"
     },
     "./lib": "./lib/index.js",
     "./lib/index.js": "./lib/index.js",
@@ -122,9 +199,10 @@
     "audit:release": "npm run audit:dependencies && npm run check && npm run test:coverage && npm run pack:check",
     "check": "node --run check:syntax && node --run lint && node --run format:check && node --run check:docs && node --run check:generated && node --run check:types && node --run test:types && node --run test:completions && node --run bundle:check && node --run test:package && node --run test",
     "check:docs": "node scripts/check-api-docs.mjs",
-    "check:generated": "node scripts/generate-api-reference.mjs --check && node scripts/generate-migration-index.mjs --check && node scripts/generate-api-snapshot.mjs --check",
+    "check:generated": "node scripts/generate-entrypoints.mjs --check && node scripts/generate-api-reference.mjs --check && node scripts/generate-migration-index.mjs --check && node scripts/generate-api-snapshot.mjs --check",
     "check:syntax": "node scripts/check-syntax.mjs",
     "docs:api": "node scripts/generate-api-reference.mjs",
+    "entrypoints": "node scripts/generate-entrypoints.mjs",
     "docs:migration": "node scripts/generate-migration-index.mjs",
     "api:snapshot": "node scripts/generate-api-snapshot.mjs",
     "types:build": "node scripts/build-types.mjs",

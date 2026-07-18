@@ -1,4 +1,3 @@
-// Simulates an `akashatools/chunk` export pointing at the current array module.
-import { chunk } from "../../src/array.js";
+import chunk from "akashatools/array/chunk";
 
 export const run = (values) => chunk(values, 20);

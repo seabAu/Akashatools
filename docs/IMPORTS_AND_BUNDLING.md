@@ -1,6 +1,6 @@
 # Imports, discovery, and bundling
 
-Akashatools supports three intentional ergonomics levels.
+Akashatools supports four intentional ergonomics levels.
 
 ## Default namespace: maximum discovery
 
@@ -28,7 +28,7 @@ harness produces the same 321-byte minified / 252-byte gzip `chunk` fixture from
 the named root, category named import, and category namespace import. All three
 are held to 400 raw / 300 gzip byte budgets.
 
-## Category subpath: narrowest stable boundary
+## Category subpath: focused group boundary
 
 ```js
 import { chunk } from "akashatools/array";
@@ -38,11 +38,22 @@ import { resolveContainedPath } from "akashatools/node";
 Subpaths make runtime/category intent explicit and avoid loading namespace
 construction. A wildcard category import such as
 `import * as array from "akashatools/array"` preserves dot completion but may
-retain the whole category depending on use and bundler analysis.
+retain the whole category depending on use and bundler analysis. Each category
+subpath is backed by a generated `index.js` so its public names cannot drift from
+the canonical category module.
 
-Akashatools does not publish one npm package per function and does not currently
-promise per-method subpaths. Named exports already provide the primary fine-
-grained optimization. Node-only code stays outside the universal root entirely.
+## Granular method subpath: one explicit dependency
+
+```js
+import chunk, { chunk as namedChunk } from "akashatools/array/chunk";
+import hasDeep from "akashatools/object/hasDeep";
+```
+
+Every public method has a generated category/method subpath with both a default
+and same-named export. Both resolve to the same canonical function object as the
+root and category exports; there is no copied implementation. Akashatools remains
+one npm package rather than publishing a package per function. Node-only methods
+remain under `akashatools/node/*` and outside the universal root.
 
 ## Reproducible measurements and budgets
 
@@ -53,22 +64,22 @@ npm run bundle:check
 ```
 
 The harness uses exactly pinned esbuild 0.28.1, minified ESM, an ES2022 target,
-and both raw and gzip byte counts. The 2026-07-16 measurements are:
+and both raw and gzip byte counts. The 2026-07-18 measurements are:
 
 | Fixture | Raw bytes | Gzip bytes | Raw/gzip budget |
 | --- | ---: | ---: | ---: |
 | Named root `chunk` | 321 | 252 | 400 / 300 |
 | Category `chunk` | 321 | 252 | 400 / 300 |
 | Category namespace `array.chunk` | 321 | 252 | 400 / 300 |
-| Default flat `akasha.chunk` | 54,330 | 17,101 | 55,000 / 18,000 |
-| Default category `akasha.array.chunk` | 54,336 | 17,103 | 55,000 / 18,000 |
-| Simulated `akashatools/chunk` | 321 | 252 | 400 / 300 |
+| Granular `akashatools/array/chunk` | 321 | 252 | 400 / 300 |
+| Default flat `akasha.chunk` | 68,586 | 20,754 | 75,000 / 24,000 |
+| Default category `akasha.array.chunk` | 68,592 | 20,757 | 75,000 / 24,000 |
 | Side-effect-only root import | 0 | 20 | 0 / 20 |
 
-The per-method simulation points directly at the same array source module a
-future `akashatools/chunk` export would target. It is byte-identical to both
-supported focused styles, so 2.0 will not add per-method subpaths. This avoids a
-larger export/type/documentation surface without sacrificing bundle efficiency.
+The actual generated granular method import is byte-identical to the named-root
+and category-focused styles. Export-resolution, identity, declaration, installed-
+package, and generation-drift checks keep this larger ergonomic surface tied to
+the canonical implementations.
 
 The zero-byte side-effect-only output verifies that the package can be removed
 when none of its values are used. Combined with the source review that public
@@ -84,12 +95,12 @@ smaller in both raw and gzip output and is included in `npm run bundle:check`.
 
 | Consumer surface | Functions | Focused raw/gzip | Default raw/gzip | Raw/gzip saved |
 | --- | ---: | ---: | ---: | ---: |
-| Mindspace universal | 10 | 7,388 / 2,666 | 54,446 / 17,159 | 47,058 / 14,493 |
-| Portfolio rebuild | 4 | 5,802 / 2,324 | 54,415 / 17,119 | 48,613 / 14,795 |
-| COMPOSR | 7 | 5,390 / 2,019 | 54,434 / 17,150 | 49,044 / 15,131 |
-| SPLICR | 3 | 3,806 / 1,681 | 54,370 / 17,122 | 50,564 / 15,441 |
+| Mindspace universal | 10 | 7,388 / 2,666 | 68,702 / 20,811 | 61,314 / 18,145 |
+| Portfolio rebuild | 4 | 5,802 / 2,325 | 68,671 / 20,778 | 62,869 / 18,453 |
+| COMPOSR | 7 | 5,390 / 2,018 | 68,690 / 20,817 | 63,300 / 18,799 |
+| SPLICR | 3 | 3,806 / 1,680 | 68,626 / 20,764 | 64,820 / 19,084 |
 
-These 2026-07-16 esbuild 0.28.1 measurements use minified ES2022 ESM. They
+These 2026-07-18 esbuild 0.28.1 measurements use minified ES2022 ESM. They
 isolate Akashatools dependency cost rather than claiming a whole-application
 bundle result. Mindspace's Node-only containment helper has no universal-default
 equivalent and correctly remains a direct `akashatools/node` import.

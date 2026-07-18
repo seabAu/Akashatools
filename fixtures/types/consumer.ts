@@ -9,15 +9,18 @@ import akasha, {
   validation,
 } from "akashatools";
 import { chunk as categoryChunk } from "akashatools/array";
+import granularChunk from "akashatools/array/chunk";
 import { analyzeArrayTypes, initializeLike } from "akashatools/data";
 import { HttpError, request as categoryRequest } from "akashatools/http";
 import { fieldsFromData, inputTypeForValue } from "akashatools/input";
 import { resolveContainedPath } from "akashatools/node";
 import { deepQuery, findAllDeepValues } from "akashatools/object";
+import granularHasDeep from "akashatools/object/hasDeep";
 import type { JsonContract } from "akashatools/validation";
 
 const values: number[][] = chunk([1, 2, 3], 2);
 const categoryValues: number[][] = categoryChunk([1, 2, 3], 2);
+const granularValues: number[][] = granularChunk([1, 2, 3], 2);
 const nestedValues: number[][] = akasha.array.chunk([1, 2, 3], 2);
 const flatValues: number[][] = akasha.chunk([1, 2, 3], 2);
 const namedNamespaceValues: number[][] = array.chunk([1, 2, 3], 2);
@@ -29,6 +32,7 @@ const fieldName: string = fieldsFromData({ name: "Ada" })[0].name;
 const nestedInput: string | undefined = input.inputTypeForType(Boolean);
 const hasId: boolean = deepQuery({ user: { id: 1 } }).has("id", { by: "key" });
 const ids: unknown[] = findAllDeepValues({ user: { id: 1 } }, "id", { by: "key" });
+const granularHasId: boolean = granularHasDeep({ id: 1 }, "id", { by: "key" });
 const validEmail: boolean = validation.isEmail("person@example.com");
 const rootPredicate: boolean = isEmail("person@example.com");
 const path: string = resolveContainedPath("/srv/data", "report.json");
@@ -50,10 +54,10 @@ chunk("not an array", 2);
 const invalidContract: JsonContract = { type: "date" };
 
 void [
-  values, categoryValues, nestedValues, flatValues, namedNamespaceValues,
+  values, categoryValues, granularValues, nestedValues, flatValues, namedNamespaceValues,
   initialized, primaryType, defaultString,
   textInput, fieldName, nestedInput,
-  hasId, ids,
+  hasId, ids, granularHasId,
   validEmail, rootPredicate, path, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract,
 ];

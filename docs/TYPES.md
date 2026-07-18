@@ -5,10 +5,14 @@ truth for both VS Code IntelliSense and committed TypeScript declarations.
 
 - `npm run typecheck` checks source and JavaScript editor fixtures without emit.
 - `npm run types:build` recreates the `types/` tree from source JSDoc.
-- `npm run check:types` independently emits and byte-compares all 17 declaration
-  files, preventing stale generated output.
+- `npm run entrypoints` regenerates category indexes and granular method wrappers
+  from canonical public declarations.
+- `npm run check:types` independently emits and byte-compares the complete
+  declaration tree, including category indexes and granular method targets,
+  preventing stale generated output.
 - `npm run test:types` compiles JavaScript and TypeScript package consumers using
-  default, named, category namespace, category subpath, Node-only, HTTP, and
+  default, named, category namespace, category subpath, granular method,
+  Node-only, HTTP, and
   type-only imports, including negative contract assertions.
 - `npm run test:completions` asks the TypeScript 7 language service used by
   VS Code for JavaScript and TypeScript completions after `akasha.`,

@@ -83,8 +83,8 @@ a clean branch without publishing.
    file list. The tarball must contain no tests, credentials, local configuration,
    coverage, or consumer source.
 9. Install that exact local tarball into fresh JavaScript and TypeScript
-   directories and exercise root, named, category, Node-only, and retained
-   `lib/*.js` imports.
+   directories and exercise root, named, category, generated granular method,
+   Node-only, and retained `lib/*.js` imports.
 10. Commit candidate metadata and evidence, rerun the unified check, and identify
     the exact commit in the approval request. Do not rebuild or edit the candidate
     after approval; any change creates a new candidate.
@@ -123,7 +123,8 @@ Immediately after publication:
 4. Install `akashatools@<exact-version>` from the registry—not a local tarball or
    workspace link—into fresh JavaScript and TypeScript projects.
 5. Run the README import examples and smoke-test the root namespace, named root
-   exports, category subpaths, `akashatools/node`, and retained 1.x paths.
+   exports, category subpaths, generated granular method subpaths,
+   `akashatools/node`, and retained 1.x paths.
 6. Verify the published README, API reference, migration guide, changelog,
    license, repository links, and declaration resolution.
 7. Create the matching GitHub release and record links to the hosted CI and npm

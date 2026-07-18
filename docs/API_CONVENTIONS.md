@@ -6,7 +6,7 @@ explains the exception.
 
 ## Import and namespace conventions
 
-Akashatools provides three first-class styles:
+Akashatools provides four first-class styles:
 
 ```js
 import akasha from "akashatools";
@@ -15,6 +15,7 @@ akasha.chunk(values, 10);
 
 import { chunk } from "akashatools";
 import { chunk as chunkArray } from "akashatools/array";
+import granularChunk from "akashatools/array/chunk";
 ```
 
 - `akasha` is the canonical default-import name in documentation. A consumer may
@@ -24,8 +25,10 @@ import { chunk as chunkArray } from "akashatools/array";
 - Flat properties and their categorized/named equivalents must share identity.
 - Flat-name collisions are build-breaking errors. A function must be renamed,
   retained only in a category, or given an explicit unambiguous alias.
-- Named root and category imports are preferred when bundle size and explicit
-  dependencies matter. The default namespace prioritizes editor discovery.
+- Named root, category, and granular method imports are preferred when bundle
+  size and explicit dependencies matter. The default namespace prioritizes
+  editor discovery. Granular wrappers expose the canonical function as both a
+  default and named export and never contain a second implementation.
 - A current esbuild smoke measurement produces identical focused bundles for a
   named-root `chunk` import and an `akashatools/array` import. Bundle behavior is
   a release gate and must be rechecked as the namespace grows.
@@ -41,7 +44,9 @@ import { chunk as chunkArray } from "akashatools/array";
 | `async` | implemented | Promise coordination, delay, and bounded async work. |
 | `browser` | implemented | Browser effects that are safe to import universally. |
 | `collection` | implemented | Identity-based operations shared across collection shapes. |
+| `data` | implemented | Runtime type analysis and initialized data defaults/shapes. |
 | `date` | implemented | Instants, local calendar dates, clocks, and formatting. |
+| `input` | implemented | Framework-neutral input/control inference and field descriptors. |
 | `number` | implemented | Finite-number arithmetic and numeric transforms. |
 | `object` | implemented | Plain objects, paths, copies, selection, and merging. |
 | `random` | implemented | Explicitly non-cryptographic pseudo-random operations. |

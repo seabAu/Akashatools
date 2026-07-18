@@ -101,6 +101,7 @@ function renderDeclaration(declaration, importPath, category) {
     "",
     `- Signature: \`${signature}\``,
     `- Import: \`import { ${declaration.name} } from "${importPath}"\``,
+    `- Granular import: \`import ${declaration.name} from "${importPath}/${declaration.name}"\``,
     `- Input mutation: ${mutationNote(category, declaration.name)}`,
     `- Since: ${declaration.since}`,
   ];

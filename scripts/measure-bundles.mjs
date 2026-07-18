@@ -8,7 +8,7 @@ const fixtures = [
   { name: "category namespace", filename: "category-namespace.js", maximumBytes: 400, maximumGzip: 300 },
   { name: "default flat", filename: "default-flat.js", maximumBytes: 75_000, maximumGzip: 24_000 },
   { name: "default category", filename: "default-category.js", maximumBytes: 75_000, maximumGzip: 24_000 },
-  { name: "per-method simulation", filename: "per-method-simulation.js", maximumBytes: 400, maximumGzip: 300 },
+  { name: "granular method", filename: "per-method-simulation.js", maximumBytes: 400, maximumGzip: 300 },
   { name: "side-effect only", filename: "side-effect-only.js", maximumBytes: 0, maximumGzip: 20 },
 ];
 
@@ -41,10 +41,10 @@ for (const fixture of fixtures) {
 console.log(`esbuild ${version}; minified ESM targeting ES2022`);
 console.table(measurements);
 
-const focusedNames = ["named root", "category", "category namespace", "per-method simulation"];
+const focusedNames = ["named root", "category", "category namespace", "granular method"];
 const focused = measurements.filter(({ name }) => focusedNames.includes(name));
 if (new Set(focused.map(({ bytes, gzip }) => `${bytes}/${gzip}`)).size !== 1) {
-  throw new Error("Focused and simulated per-method fixtures no longer produce identical bundles.");
+  throw new Error("Focused and granular method fixtures no longer produce identical bundles.");
 }
 
 const overBudget = measurements.filter(

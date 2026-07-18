@@ -12,160 +12,160 @@ drop-in compatibility.
 
 | Name | Category | Runtime | Mutation/effect | Focused import | Related 1.x names |
 | --- | --- | --- | --- | --- | --- |
-| `analyzeArrayTypes` | data | universal | no input mutation | `akashatools/data` | `Val.getType`, `Val.getArrayType` |
-| `asArray` | array | universal | no input mutation | `akashatools/array` | None |
-| `assertJsonContract` | validation | universal | no input mutation | `akashatools/validation` | None |
-| `camelCase` | string | universal | no input mutation | `akashatools/string` | None |
-| `capitalize` | string | universal | no input mutation | `akashatools/string` | `String.toCapitalCase` |
-| `chunk` | array | universal | no input mutation | `akashatools/array` | None |
-| `clamp` | number | universal | no input mutation | `akashatools/number` | `Math.clamp` |
-| `clock12To24` | date | universal | no input mutation | `akashatools/date` | None |
-| `clock24To12` | date | universal | no input mutation | `akashatools/date` | None |
-| `clockTimeToMinutes` | date | universal | no input mutation | `akashatools/date` | None |
-| `cloneJson` | object | universal | no input mutation | `akashatools/object` | None |
-| `compact` | array | universal | no input mutation | `akashatools/array` | `AO.removeEmpty`, `AO.cleanArray` |
-| `compareNumericOrder` | sort | universal | no input mutation | `akashatools/sort` | None |
-| `compareValues` | sort | universal | no input mutation | `akashatools/sort` | None |
-| `controlTypeForType` | input | universal | no input mutation | `akashatools/input` | None |
-| `controlTypeForValue` | input | universal | no input mutation | `akashatools/input` | `Val.getFieldType` |
-| `countBy` | array | universal | no input mutation | `akashatools/array` | None |
-| `countWords` | string | universal | no input mutation | `akashatools/string` | None |
-| `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort` | None |
-| `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async` | None |
-| `createSingleFlight` | async | universal | no input mutation | `akashatools/async` | None |
-| `daysInMonth` | date | universal | no input mutation | `akashatools/date` | None |
-| `deepClone` | object | universal | no input mutation | `akashatools/object` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
-| `deepMerge` | object | universal | no input mutation | `akashatools/object` | None |
-| `deepQuery` | object | universal | no input mutation | `akashatools/object` | `AO.has` |
-| `defaultIfBlank` | validation | universal | no input mutation | `akashatools/validation` | `AO.replaceIfInvalid`, `Val.cleanInvalid` |
-| `defaultValueFor` | data | universal | no input mutation | `akashatools/data` | None |
-| `defaultValueForType` | data | universal | no input mutation | `akashatools/data` | None |
-| `delay` | async | universal | timer effect | `akashatools/async` | None |
-| `differenceInLocalDays` | date | universal | no input mutation | `akashatools/date` | None |
-| `distance` | number | universal | no input mutation | `akashatools/number` | `Math.distance` |
-| `distance2d` | number | universal | no input mutation | `akashatools/number` | `Math.distance2` |
-| `downloadBlob` | browser | browser-effect | browser effect | `akashatools/browser` | None |
-| `downloadJson` | browser | browser-effect | browser effect | `akashatools/browser` | None |
-| `downloadTextFile` | browser | browser-effect | browser effect | `akashatools/browser` | None |
-| `escapeHtml` | string | universal | no input mutation | `akashatools/string` | `Val.escapeHtml` |
-| `excludeBy` | collection | universal | no input mutation | `akashatools/collection` | None |
-| `excludeIds` | collection | universal | no input mutation | `akashatools/collection` | None |
-| `fibonacci` | number | universal | no input mutation | `akashatools/number` | None |
-| `fieldDescriptorFor` | input | universal | no input mutation | `akashatools/input` | None |
-| `fieldsFromData` | input | universal | no input mutation | `akashatools/input` | None |
-| `findAllDeep` | object | universal | no input mutation | `akashatools/object` | `AO.objContains` |
-| `findAllDeepMatches` | object | universal | no input mutation | `akashatools/object` | `AO.deepSearchItems` |
-| `findAllDeepParents` | object | universal | no input mutation | `akashatools/object` | None |
-| `findAllDeepValues` | object | universal | no input mutation | `akashatools/object` | `AO.deepGetKey` |
-| `findDeep` | object | universal | no input mutation | `akashatools/object` | `AO.objContains`, `AO.deepSearch` |
-| `findDeepMatch` | object | universal | no input mutation | `akashatools/object` | `AO.deepSearch` |
-| `findDeepParent` | object | universal | no input mutation | `akashatools/object` | `AO.deepSearch` |
-| `findDeepValue` | object | universal | no input mutation | `akashatools/object` | `AO.deepGetKey`, `AO.deepSearch` |
-| `flatten` | array | universal | no input mutation | `akashatools/array` | `AO.flatten` |
-| `formatBytes` | number | universal | no input mutation | `akashatools/number` | None |
-| `formatDate` | date | universal | no input mutation | `akashatools/date` | `Time.convertDate`, `Time.formatDate` |
-| `formatDateTime` | date | universal | no input mutation | `akashatools/date` | None |
-| `formatDuration` | date | universal | no input mutation | `akashatools/date` | None |
-| `formatNanpPhone` | validation | universal | no input mutation | `akashatools/validation` | None |
-| `formatRelativeTime` | date | universal | no input mutation | `akashatools/date` | None |
-| `fromUnixSeconds` | date | universal | no input mutation | `akashatools/date` | None |
-| `fulfilledValues` | async | universal | no input mutation | `akashatools/async` | None |
-| `getAtPath` | object | universal | no input mutation | `akashatools/object` | None |
-| `globPaths` | node | node | no input mutation | `akashatools/node` | None |
-| `groupBy` | array | universal | no input mutation | `akashatools/array` | None |
-| `hasAtPath` | object | universal | no input mutation | `akashatools/object` | `AO.has` |
-| `hasDeep` | object | universal | no input mutation | `akashatools/object` | `AO.has`, `AO.hasAll`, `AO.objContains`, `AO.arrayContains` |
-| `HttpError` | http | universal | no input mutation | `akashatools/http` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
-| `includesText` | string | universal | no input mutation | `akashatools/string` | `AO.valContains`, `String.subStringSearch` |
-| `initializeLike` | data | universal | no input mutation | `akashatools/data` | `AO.cleanJSON` |
-| `inputTypeForType` | input | universal | no input mutation | `akashatools/input` | None |
-| `inputTypeForValue` | input | universal | no input mutation | `akashatools/input` | `Val.getFieldType` |
-| `insertItem` | array | universal | no input mutation | `akashatools/array` | None |
-| `intersection` | array | universal | no input mutation | `akashatools/array` | None |
-| `isArray` | validation | universal | no input mutation | `akashatools/validation` | `Val.isArray`, `Val.isValidArray`, `Val.isAO` |
-| `isBlank` | validation | universal | no input mutation | `akashatools/validation` | `Val.isValid`, `Val.isTruthy`, `Val.isBlank` |
-| `isBlob` | validation | universal | no input mutation | `akashatools/validation` | `Val.isBlob` |
-| `isBoolean` | validation | universal | no input mutation | `akashatools/validation` | `Val.isBool` |
-| `isDefined` | validation | universal | no input mutation | `akashatools/validation` | `Val.valid`, `Val.isValid`, `Val.isDefined` |
-| `isEmail` | validation | universal | no input mutation | `akashatools/validation` | None |
-| `isEmpty` | validation | universal | no input mutation | `akashatools/validation` | `Val.isValid` |
-| `isFile` | validation | universal | no input mutation | `akashatools/validation` | `Val.isFile` |
-| `isFiniteNonInteger` | validation | universal | no input mutation | `akashatools/validation` | `Val.isFloat` |
-| `isFiniteNumber` | validation | universal | no input mutation | `akashatools/validation` | `Val.isNumber` |
-| `isJson` | validation | universal | no input mutation | `akashatools/validation` | `Val.isJSON` |
-| `isMap` | validation | universal | no input mutation | `akashatools/validation` | `Val.isMap` |
-| `isNonArrayObject` | validation | universal | no input mutation | `akashatools/validation` | `Val.isObject`, `Val.isAO` |
-| `isNonEmptyArray` | array | universal | no input mutation | `akashatools/array` | `Val.isValidArray` |
-| `isNumber` | validation | universal | no input mutation | `akashatools/validation` | `Val.isNumber`, `Val.isNum` |
-| `isPlainObject` | object | universal | no input mutation | `akashatools/object` | `Val.isObject` |
-| `isPlainObjectArray` | validation | universal | no input mutation | `akashatools/validation` | `Val.isObjectArray` |
-| `isSafeInteger` | validation | universal | no input mutation | `akashatools/validation` | `Val.isSafeInt` |
-| `isSameLocalDay` | date | universal | no input mutation | `akashatools/date` | None |
-| `isSet` | validation | universal | no input mutation | `akashatools/validation` | `Val.isSet` |
-| `isString` | validation | universal | no input mutation | `akashatools/validation` | `Val.isString` |
-| `isToday` | date | universal | no input mutation | `akashatools/date` | None |
-| `isTypedArray` | validation | universal | no input mutation | `akashatools/validation` | None |
-| `isValidDate` | date | universal | no input mutation | `akashatools/date` | None |
-| `isWithinInstantRange` | date | universal | no input mutation | `akashatools/date` | None |
-| `kebabCase` | string | universal | no input mutation | `akashatools/string` | `String.toKebabCase` |
-| `localDateKey` | date | universal | no input mutation | `akashatools/date` | `Time.convertTimestampToYYYYMMDDDD`, `Time.formatTimestampDDMMYYYY` |
-| `longestStringLength` | string | universal | no input mutation | `akashatools/string` | `String.getLongest` |
-| `mapSettledWithConcurrency` | async | universal | no input mutation | `akashatools/async` | None |
-| `minutesToClockTime` | date | universal | no input mutation | `akashatools/date` | None |
-| `moveItem` | array | universal | no input mutation | `akashatools/array` | None |
-| `normalizeDataType` | data | universal | no input mutation | `akashatools/data` | `Val.getType` |
-| `normalizeInstantRange` | date | universal | no input mutation | `akashatools/date` | None |
-| `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation` | None |
-| `omit` | object | universal | no input mutation | `akashatools/object` | `AO.removeKey` |
-| `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http` | None |
-| `parsePath` | object | universal | no input mutation | `akashatools/object` | None |
-| `partition` | array | universal | no input mutation | `akashatools/array` | None |
-| `pascalCase` | string | universal | no input mutation | `akashatools/string` | `String.toUpperCamelCase` |
-| `pick` | object | universal | no input mutation | `akashatools/object` | `AO.extractKeys`, `AO.filterKeys` |
-| `pickAllowed` | object | universal | no input mutation | `akashatools/object` | None |
-| `prettyJson` | string | universal | no input mutation | `akashatools/string` | None |
-| `randomBoolean` | random | universal | no input mutation | `akashatools/random` | `Math.boolRand` |
-| `randomDate` | random | universal | no input mutation | `akashatools/random` | None |
-| `randomFloat` | random | universal | no input mutation | `akashatools/random` | `Rand.rand` |
-| `randomInt` | random | universal | no input mutation | `akashatools/random` | None |
-| `randomString` | random | universal | no input mutation | `akashatools/random` | `Rand.randString` |
-| `range` | array | universal | no input mutation | `akashatools/array` | None |
-| `redactHeaders` | http | universal | no input mutation | `akashatools/http` | None |
-| `removeFromArray` | array | universal | no input mutation | `akashatools/array` | None |
-| `replaceMany` | string | universal | no input mutation | `akashatools/string` | `String.replaceMultiple` |
-| `replaceRegex` | string | universal | no input mutation | `akashatools/string` | `String.replaceMultiple` |
-| `request` | http | universal | network effect | `akashatools/http` | `Http.handleBasicFetch`, `Http.fetchData`, `Http.handleFetchResponse`, `Http.handleFetch`, `File.importFile` |
-| `resolveContainedPath` | node | node | no input mutation | `akashatools/node` | None |
-| `resolveExistingContainedPath` | node | node | filesystem read | `akashatools/node` | None |
-| `roundTo` | number | universal | no input mutation | `akashatools/number` | `Math.round` |
-| `safeFilename` | string | universal | no input mutation | `akashatools/string` | None |
-| `secureRandomString` | random | universal | no input mutation | `akashatools/random` | None |
-| `secureRandomUuid` | random | universal | no input mutation | `akashatools/random` | None |
-| `sentenceCase` | string | universal | no input mutation | `akashatools/string` | None |
-| `setAtPath` | object | universal | no input mutation | `akashatools/object` | `AO.deepFindSet`, `AO.findAndSetObject` |
-| `shuffle` | array | universal | no input mutation | `akashatools/array` | None |
-| `slugify` | string | universal | no input mutation | `akashatools/string` | None |
-| `sortBy` | sort | universal | no input mutation | `akashatools/sort` | `AO.keySortData`, `AO.sortObjArray` |
-| `sortByMany` | sort | universal | no input mutation | `akashatools/sort` | None |
-| `sortByNumericOrder` | sort | universal | no input mutation | `akashatools/sort` | `AO.sortObjArray` |
-| `splitTextByLimits` | string | universal | no input mutation | `akashatools/string` | None |
-| `stableJson` | string | universal | no input mutation | `akashatools/string` | None |
-| `startOfLocalDay` | date | universal | no input mutation | `akashatools/date` | None |
-| `subtract` | number | universal | no input mutation | `akashatools/number` | `Math.sub` |
-| `sum` | number | universal | no input mutation | `akashatools/number` | `Math.add` |
-| `summarizeNumbers` | number | universal | no input mutation | `akashatools/number` | None |
-| `toBinary` | number | universal | no input mutation | `akashatools/number` | `Math.decToBinary` |
-| `toDate` | date | universal | no input mutation | `akashatools/date` | None |
-| `toUnixSeconds` | date | universal | no input mutation | `akashatools/date` | None |
-| `traverseObject` | object | universal | no input mutation | `akashatools/object` | None |
-| `typeOf` | validation | universal | no input mutation | `akashatools/validation` | `Val.getType` |
-| `unique` | array | universal | no input mutation | `akashatools/array` | `AO.uniqueArray` |
-| `upsertBy` | collection | universal | no input mutation | `akashatools/collection` | None |
-| `upsertById` | collection | universal | no input mutation | `akashatools/collection` | None |
-| `utf8ByteLength` | string | universal | no input mutation | `akashatools/string` | None |
-| `validateJsonContract` | validation | universal | no input mutation | `akashatools/validation` | None |
-| `wrap` | number | universal | no input mutation | `akashatools/number` | `Math.wrap` |
-| `zip` | array | universal | no input mutation | `akashatools/array` | None |
+| `analyzeArrayTypes` | data | universal | no input mutation | `akashatools/data/analyzeArrayTypes` | `Val.getType`, `Val.getArrayType` |
+| `asArray` | array | universal | no input mutation | `akashatools/array/asArray` | None |
+| `assertJsonContract` | validation | universal | no input mutation | `akashatools/validation/assertJsonContract` | None |
+| `camelCase` | string | universal | no input mutation | `akashatools/string/camelCase` | None |
+| `capitalize` | string | universal | no input mutation | `akashatools/string/capitalize` | `String.toCapitalCase` |
+| `chunk` | array | universal | no input mutation | `akashatools/array/chunk` | None |
+| `clamp` | number | universal | no input mutation | `akashatools/number/clamp` | `Math.clamp` |
+| `clock12To24` | date | universal | no input mutation | `akashatools/date/clock12To24` | None |
+| `clock24To12` | date | universal | no input mutation | `akashatools/date/clock24To12` | None |
+| `clockTimeToMinutes` | date | universal | no input mutation | `akashatools/date/clockTimeToMinutes` | None |
+| `cloneJson` | object | universal | no input mutation | `akashatools/object/cloneJson` | None |
+| `compact` | array | universal | no input mutation | `akashatools/array/compact` | `AO.removeEmpty`, `AO.cleanArray` |
+| `compareNumericOrder` | sort | universal | no input mutation | `akashatools/sort/compareNumericOrder` | None |
+| `compareValues` | sort | universal | no input mutation | `akashatools/sort/compareValues` | None |
+| `controlTypeForType` | input | universal | no input mutation | `akashatools/input/controlTypeForType` | None |
+| `controlTypeForValue` | input | universal | no input mutation | `akashatools/input/controlTypeForValue` | `Val.getFieldType` |
+| `countBy` | array | universal | no input mutation | `akashatools/array/countBy` | None |
+| `countWords` | string | universal | no input mutation | `akashatools/string/countWords` | None |
+| `createCollatorComparator` | sort | universal | no input mutation | `akashatools/sort/createCollatorComparator` | None |
+| `createKeyedSingleFlight` | async | universal | no input mutation | `akashatools/async/createKeyedSingleFlight` | None |
+| `createSingleFlight` | async | universal | no input mutation | `akashatools/async/createSingleFlight` | None |
+| `daysInMonth` | date | universal | no input mutation | `akashatools/date/daysInMonth` | None |
+| `deepClone` | object | universal | no input mutation | `akashatools/object/deepClone` | `AO.cloneObj`, `AO.deepCopy`, `AO.deepCopyJSON` |
+| `deepMerge` | object | universal | no input mutation | `akashatools/object/deepMerge` | None |
+| `deepQuery` | object | universal | no input mutation | `akashatools/object/deepQuery` | `AO.has` |
+| `defaultIfBlank` | validation | universal | no input mutation | `akashatools/validation/defaultIfBlank` | `AO.replaceIfInvalid`, `Val.cleanInvalid` |
+| `defaultValueFor` | data | universal | no input mutation | `akashatools/data/defaultValueFor` | None |
+| `defaultValueForType` | data | universal | no input mutation | `akashatools/data/defaultValueForType` | None |
+| `delay` | async | universal | timer effect | `akashatools/async/delay` | None |
+| `differenceInLocalDays` | date | universal | no input mutation | `akashatools/date/differenceInLocalDays` | None |
+| `distance` | number | universal | no input mutation | `akashatools/number/distance` | `Math.distance` |
+| `distance2d` | number | universal | no input mutation | `akashatools/number/distance2d` | `Math.distance2` |
+| `downloadBlob` | browser | browser-effect | browser effect | `akashatools/browser/downloadBlob` | None |
+| `downloadJson` | browser | browser-effect | browser effect | `akashatools/browser/downloadJson` | None |
+| `downloadTextFile` | browser | browser-effect | browser effect | `akashatools/browser/downloadTextFile` | None |
+| `escapeHtml` | string | universal | no input mutation | `akashatools/string/escapeHtml` | `Val.escapeHtml` |
+| `excludeBy` | collection | universal | no input mutation | `akashatools/collection/excludeBy` | None |
+| `excludeIds` | collection | universal | no input mutation | `akashatools/collection/excludeIds` | None |
+| `fibonacci` | number | universal | no input mutation | `akashatools/number/fibonacci` | None |
+| `fieldDescriptorFor` | input | universal | no input mutation | `akashatools/input/fieldDescriptorFor` | None |
+| `fieldsFromData` | input | universal | no input mutation | `akashatools/input/fieldsFromData` | None |
+| `findAllDeep` | object | universal | no input mutation | `akashatools/object/findAllDeep` | `AO.objContains` |
+| `findAllDeepMatches` | object | universal | no input mutation | `akashatools/object/findAllDeepMatches` | `AO.deepSearchItems` |
+| `findAllDeepParents` | object | universal | no input mutation | `akashatools/object/findAllDeepParents` | None |
+| `findAllDeepValues` | object | universal | no input mutation | `akashatools/object/findAllDeepValues` | `AO.deepGetKey` |
+| `findDeep` | object | universal | no input mutation | `akashatools/object/findDeep` | `AO.objContains`, `AO.deepSearch` |
+| `findDeepMatch` | object | universal | no input mutation | `akashatools/object/findDeepMatch` | `AO.deepSearch` |
+| `findDeepParent` | object | universal | no input mutation | `akashatools/object/findDeepParent` | `AO.deepSearch` |
+| `findDeepValue` | object | universal | no input mutation | `akashatools/object/findDeepValue` | `AO.deepGetKey`, `AO.deepSearch` |
+| `flatten` | array | universal | no input mutation | `akashatools/array/flatten` | `AO.flatten` |
+| `formatBytes` | number | universal | no input mutation | `akashatools/number/formatBytes` | None |
+| `formatDate` | date | universal | no input mutation | `akashatools/date/formatDate` | `Time.convertDate`, `Time.formatDate` |
+| `formatDateTime` | date | universal | no input mutation | `akashatools/date/formatDateTime` | None |
+| `formatDuration` | date | universal | no input mutation | `akashatools/date/formatDuration` | None |
+| `formatNanpPhone` | validation | universal | no input mutation | `akashatools/validation/formatNanpPhone` | None |
+| `formatRelativeTime` | date | universal | no input mutation | `akashatools/date/formatRelativeTime` | None |
+| `fromUnixSeconds` | date | universal | no input mutation | `akashatools/date/fromUnixSeconds` | None |
+| `fulfilledValues` | async | universal | no input mutation | `akashatools/async/fulfilledValues` | None |
+| `getAtPath` | object | universal | no input mutation | `akashatools/object/getAtPath` | None |
+| `globPaths` | node | node | no input mutation | `akashatools/node/globPaths` | None |
+| `groupBy` | array | universal | no input mutation | `akashatools/array/groupBy` | None |
+| `hasAtPath` | object | universal | no input mutation | `akashatools/object/hasAtPath` | `AO.has` |
+| `hasDeep` | object | universal | no input mutation | `akashatools/object/hasDeep` | `AO.has`, `AO.hasAll`, `AO.objContains`, `AO.arrayContains` |
+| `HttpError` | http | universal | no input mutation | `akashatools/http/HttpError` | `Http.constructFetchError`, `Http.handleFetchResponse`, `Http.parseError` |
+| `includesText` | string | universal | no input mutation | `akashatools/string/includesText` | `AO.valContains`, `String.subStringSearch` |
+| `initializeLike` | data | universal | no input mutation | `akashatools/data/initializeLike` | `AO.cleanJSON` |
+| `inputTypeForType` | input | universal | no input mutation | `akashatools/input/inputTypeForType` | None |
+| `inputTypeForValue` | input | universal | no input mutation | `akashatools/input/inputTypeForValue` | `Val.getFieldType` |
+| `insertItem` | array | universal | no input mutation | `akashatools/array/insertItem` | None |
+| `intersection` | array | universal | no input mutation | `akashatools/array/intersection` | None |
+| `isArray` | validation | universal | no input mutation | `akashatools/validation/isArray` | `Val.isArray`, `Val.isValidArray`, `Val.isAO` |
+| `isBlank` | validation | universal | no input mutation | `akashatools/validation/isBlank` | `Val.isValid`, `Val.isTruthy`, `Val.isBlank` |
+| `isBlob` | validation | universal | no input mutation | `akashatools/validation/isBlob` | `Val.isBlob` |
+| `isBoolean` | validation | universal | no input mutation | `akashatools/validation/isBoolean` | `Val.isBool` |
+| `isDefined` | validation | universal | no input mutation | `akashatools/validation/isDefined` | `Val.valid`, `Val.isValid`, `Val.isDefined` |
+| `isEmail` | validation | universal | no input mutation | `akashatools/validation/isEmail` | None |
+| `isEmpty` | validation | universal | no input mutation | `akashatools/validation/isEmpty` | `Val.isValid` |
+| `isFile` | validation | universal | no input mutation | `akashatools/validation/isFile` | `Val.isFile` |
+| `isFiniteNonInteger` | validation | universal | no input mutation | `akashatools/validation/isFiniteNonInteger` | `Val.isFloat` |
+| `isFiniteNumber` | validation | universal | no input mutation | `akashatools/validation/isFiniteNumber` | `Val.isNumber` |
+| `isJson` | validation | universal | no input mutation | `akashatools/validation/isJson` | `Val.isJSON` |
+| `isMap` | validation | universal | no input mutation | `akashatools/validation/isMap` | `Val.isMap` |
+| `isNonArrayObject` | validation | universal | no input mutation | `akashatools/validation/isNonArrayObject` | `Val.isObject`, `Val.isAO` |
+| `isNonEmptyArray` | array | universal | no input mutation | `akashatools/array/isNonEmptyArray` | `Val.isValidArray` |
+| `isNumber` | validation | universal | no input mutation | `akashatools/validation/isNumber` | `Val.isNumber`, `Val.isNum` |
+| `isPlainObject` | object | universal | no input mutation | `akashatools/object/isPlainObject` | `Val.isObject` |
+| `isPlainObjectArray` | validation | universal | no input mutation | `akashatools/validation/isPlainObjectArray` | `Val.isObjectArray` |
+| `isSafeInteger` | validation | universal | no input mutation | `akashatools/validation/isSafeInteger` | `Val.isSafeInt` |
+| `isSameLocalDay` | date | universal | no input mutation | `akashatools/date/isSameLocalDay` | None |
+| `isSet` | validation | universal | no input mutation | `akashatools/validation/isSet` | `Val.isSet` |
+| `isString` | validation | universal | no input mutation | `akashatools/validation/isString` | `Val.isString` |
+| `isToday` | date | universal | no input mutation | `akashatools/date/isToday` | None |
+| `isTypedArray` | validation | universal | no input mutation | `akashatools/validation/isTypedArray` | None |
+| `isValidDate` | date | universal | no input mutation | `akashatools/date/isValidDate` | None |
+| `isWithinInstantRange` | date | universal | no input mutation | `akashatools/date/isWithinInstantRange` | None |
+| `kebabCase` | string | universal | no input mutation | `akashatools/string/kebabCase` | `String.toKebabCase` |
+| `localDateKey` | date | universal | no input mutation | `akashatools/date/localDateKey` | `Time.convertTimestampToYYYYMMDDDD`, `Time.formatTimestampDDMMYYYY` |
+| `longestStringLength` | string | universal | no input mutation | `akashatools/string/longestStringLength` | `String.getLongest` |
+| `mapSettledWithConcurrency` | async | universal | no input mutation | `akashatools/async/mapSettledWithConcurrency` | None |
+| `minutesToClockTime` | date | universal | no input mutation | `akashatools/date/minutesToClockTime` | None |
+| `moveItem` | array | universal | no input mutation | `akashatools/array/moveItem` | None |
+| `normalizeDataType` | data | universal | no input mutation | `akashatools/data/normalizeDataType` | `Val.getType` |
+| `normalizeInstantRange` | date | universal | no input mutation | `akashatools/date/normalizeInstantRange` | None |
+| `normalizeNanpPhone` | validation | universal | no input mutation | `akashatools/validation/normalizeNanpPhone` | None |
+| `omit` | object | universal | no input mutation | `akashatools/object/omit` | `AO.removeKey` |
+| `parseContentDispositionFilename` | http | universal | no input mutation | `akashatools/http/parseContentDispositionFilename` | None |
+| `parsePath` | object | universal | no input mutation | `akashatools/object/parsePath` | None |
+| `partition` | array | universal | no input mutation | `akashatools/array/partition` | None |
+| `pascalCase` | string | universal | no input mutation | `akashatools/string/pascalCase` | `String.toUpperCamelCase` |
+| `pick` | object | universal | no input mutation | `akashatools/object/pick` | `AO.extractKeys`, `AO.filterKeys` |
+| `pickAllowed` | object | universal | no input mutation | `akashatools/object/pickAllowed` | None |
+| `prettyJson` | string | universal | no input mutation | `akashatools/string/prettyJson` | None |
+| `randomBoolean` | random | universal | no input mutation | `akashatools/random/randomBoolean` | `Math.boolRand` |
+| `randomDate` | random | universal | no input mutation | `akashatools/random/randomDate` | None |
+| `randomFloat` | random | universal | no input mutation | `akashatools/random/randomFloat` | `Rand.rand` |
+| `randomInt` | random | universal | no input mutation | `akashatools/random/randomInt` | None |
+| `randomString` | random | universal | no input mutation | `akashatools/random/randomString` | `Rand.randString` |
+| `range` | array | universal | no input mutation | `akashatools/array/range` | None |
+| `redactHeaders` | http | universal | no input mutation | `akashatools/http/redactHeaders` | None |
+| `removeFromArray` | array | universal | no input mutation | `akashatools/array/removeFromArray` | None |
+| `replaceMany` | string | universal | no input mutation | `akashatools/string/replaceMany` | `String.replaceMultiple` |
+| `replaceRegex` | string | universal | no input mutation | `akashatools/string/replaceRegex` | `String.replaceMultiple` |
+| `request` | http | universal | network effect | `akashatools/http/request` | `Http.handleBasicFetch`, `Http.fetchData`, `Http.handleFetchResponse`, `Http.handleFetch`, `File.importFile` |
+| `resolveContainedPath` | node | node | no input mutation | `akashatools/node/resolveContainedPath` | None |
+| `resolveExistingContainedPath` | node | node | filesystem read | `akashatools/node/resolveExistingContainedPath` | None |
+| `roundTo` | number | universal | no input mutation | `akashatools/number/roundTo` | `Math.round` |
+| `safeFilename` | string | universal | no input mutation | `akashatools/string/safeFilename` | None |
+| `secureRandomString` | random | universal | no input mutation | `akashatools/random/secureRandomString` | None |
+| `secureRandomUuid` | random | universal | no input mutation | `akashatools/random/secureRandomUuid` | None |
+| `sentenceCase` | string | universal | no input mutation | `akashatools/string/sentenceCase` | None |
+| `setAtPath` | object | universal | no input mutation | `akashatools/object/setAtPath` | `AO.deepFindSet`, `AO.findAndSetObject` |
+| `shuffle` | array | universal | no input mutation | `akashatools/array/shuffle` | None |
+| `slugify` | string | universal | no input mutation | `akashatools/string/slugify` | None |
+| `sortBy` | sort | universal | no input mutation | `akashatools/sort/sortBy` | `AO.keySortData`, `AO.sortObjArray` |
+| `sortByMany` | sort | universal | no input mutation | `akashatools/sort/sortByMany` | None |
+| `sortByNumericOrder` | sort | universal | no input mutation | `akashatools/sort/sortByNumericOrder` | `AO.sortObjArray` |
+| `splitTextByLimits` | string | universal | no input mutation | `akashatools/string/splitTextByLimits` | None |
+| `stableJson` | string | universal | no input mutation | `akashatools/string/stableJson` | None |
+| `startOfLocalDay` | date | universal | no input mutation | `akashatools/date/startOfLocalDay` | None |
+| `subtract` | number | universal | no input mutation | `akashatools/number/subtract` | `Math.sub` |
+| `sum` | number | universal | no input mutation | `akashatools/number/sum` | `Math.add` |
+| `summarizeNumbers` | number | universal | no input mutation | `akashatools/number/summarizeNumbers` | None |
+| `toBinary` | number | universal | no input mutation | `akashatools/number/toBinary` | `Math.decToBinary` |
+| `toDate` | date | universal | no input mutation | `akashatools/date/toDate` | None |
+| `toUnixSeconds` | date | universal | no input mutation | `akashatools/date/toUnixSeconds` | None |
+| `traverseObject` | object | universal | no input mutation | `akashatools/object/traverseObject` | None |
+| `typeOf` | validation | universal | no input mutation | `akashatools/validation/typeOf` | `Val.getType` |
+| `unique` | array | universal | no input mutation | `akashatools/array/unique` | `AO.uniqueArray` |
+| `upsertBy` | collection | universal | no input mutation | `akashatools/collection/upsertBy` | None |
+| `upsertById` | collection | universal | no input mutation | `akashatools/collection/upsertById` | None |
+| `utf8ByteLength` | string | universal | no input mutation | `akashatools/string/utf8ByteLength` | None |
+| `validateJsonContract` | validation | universal | no input mutation | `akashatools/validation/validateJsonContract` | None |
+| `wrap` | number | universal | no input mutation | `akashatools/number/wrap` | `Math.wrap` |
+| `zip` | array | universal | no input mutation | `akashatools/array/zip` | None |
 
 ## Akashatools 1.0.2 migration lookup
 
