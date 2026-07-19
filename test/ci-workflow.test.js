@@ -14,21 +14,19 @@ import { checkReadmeExamples, extractJavascriptExamples } from "../scripts/check
 
 const workflowUrl = new URL("../.github/workflows/ci.yml", import.meta.url);
 const packageUrl = new URL("../package.json", import.meta.url);
+const reviewedActionReferences = Object.freeze({
+  "actions/checkout": "df4cb1c069e1874edd31b4311f1884172cec0e10",
+  "actions/setup-node": "249970729cb0ef3589644e2896645e5dc5ba9c38",
+});
 
 test("hosted CI pins action identities and retains the supported runtime gates", async () => {
   const workflow = await readFile(workflowUrl, "utf8");
-  const actionReferences = [...workflow.matchAll(/^\s*- uses:\s+([^@\s]+)@([^\s#]+)/gm)].map(
-    ([, action, reference]) => ({ action, reference }),
+  assertReviewedActionReferences(workflow);
+  assert.throws(
+    () =>
+      assertReviewedActionReferences(workflow.replace(reviewedActionReferences["actions/checkout"], "0".repeat(40))),
+    /must use its reviewed commit identity/u,
   );
-
-  assert.deepEqual([...new Set(actionReferences.map(({ action }) => action))].sort(), [
-    "actions/checkout",
-    "actions/setup-node",
-  ]);
-  assert.equal(actionReferences.length, 4);
-  for (const { action, reference } of actionReferences) {
-    assert.match(reference, /^[0-9a-f]{40}$/, `${action} must use an immutable full commit SHA`);
-  }
 
   assert.match(workflow, /^permissions:\r?\n\s+contents: read$/m);
   assert.doesNotMatch(workflow, /^\s+id-token:\s+write$/m);
@@ -117,3 +115,20 @@ test("documentation integrity rejects escaping and missing package links", async
     await rm(root, { force: true, recursive: true });
   }
 });
+
+/** @param {string} workflow */
+function assertReviewedActionReferences(workflow) {
+  const actionReferences = [...workflow.matchAll(/^\s*- uses:\s+([^@\s]+)@([^\s#]+)/gm)].map(
+    ([, action, reference]) => ({ action, reference }),
+  );
+
+  assert.deepEqual(
+    [...new Set(actionReferences.map(({ action }) => action))].sort(),
+    Object.keys(reviewedActionReferences).sort(),
+  );
+  assert.equal(actionReferences.length, 4);
+  for (const { action, reference } of actionReferences) {
+    assert.match(reference, /^[0-9a-f]{40}$/, `${action} must use an immutable full commit SHA`);
+    assert.equal(reference, reviewedActionReferences[action], `${action} must use its reviewed commit identity`);
+  }
+}

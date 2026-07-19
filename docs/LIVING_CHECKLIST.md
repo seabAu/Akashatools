@@ -546,9 +546,9 @@ Acceptance criteria:
 - [x] Add CI for Node 22/24 LTS, source coverage, package smoke/content checks,
   and Chromium/Firefox/WebKit browser contracts. First hosted execution remains
   an evidence gate under Phase 7.
-- [x] Pin ordinary CI actions to verified full commit identities, bound job
+- [x] Pin ordinary CI actions to exact reviewed full commit identities, bound job
   runtimes, retain read-only permissions, parse its YAML in the format gate, and
-  test those workflow invariants.
+  reject even syntactically immutable replacement SHAs through a snapshot test.
 - [x] Add an API-surface snapshot so accidental exports fail CI.
 - [x] Add an exports-resolution test generated from `package.json`.
 - [x] Verify the installed tarball in a fresh JavaScript and TypeScript fixture.
@@ -1006,6 +1006,7 @@ Acceptance criteria:
 | 2026-07-19 | Normalize structured timestamps around epoch milliseconds, then wrap them as Dates. | Mindspace repeats this atom in notification, reminder, task-defer, and worker paths. One core makes numeric-string units explicit, distinguishes Firestore `nanoseconds` from Protobuf-message `nanos`, applies native Date precision, and lets every higher-level date helper compose without importing application policy. |
 | 2026-07-19 | Never invoke timestamp-shaped application objects during generic normalization. | Calling arbitrary `toDate`, `valueOf`, accessors, or inherited fields crosses an active-code boundary and makes malformed data look valid. Own data descriptors and standard seconds/nanoseconds ranges keep conversion deterministic and side-effect free. |
 | 2026-07-19 | Recalibrate only the full-discovery namespace guardrail to 119,000 raw/36,000 gzip for structured timestamp support. | The final default-category fixture measures 117,720/35,428 after adding the shared timestamp contract. Focused root/category/granular imports remain 321/252 and side-effect-only output remains zero; the convenience namespace receives explicit review headroom without weakening focused budgets. |
+| 2026-07-19 | Snapshot reviewed CI action identities, not only their SHA syntax. | A random or unintended 40-character commit is immutable but not trusted. The workflow contract now binds each allowed GitHub-owned action to its independently refreshed v6 identity and fails on any unreviewed replacement. |
 
 ## Definition of done
 

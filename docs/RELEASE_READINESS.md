@@ -37,6 +37,12 @@ public `seabAu/Akashatools` project. This local 2.0 repository has no Git remote
 configured, and no push, tag, registry write, consumer-project edit, or release
 automation change occurred during this work.
 
+Read-only checks on 2026-07-19 reconfirmed public GitHub `main` at
+`c52129b78e20b3d61f0c9765213264ffcda5180d`, and npm still exposes only 1.0.0,
+1.0.1, and 1.0.2 with `latest` at 1.0.2. Version 2.0.0-alpha.1 is therefore not
+occupied, but selecting that version and a dist-tag still requires explicit
+approval immediately before candidate freeze.
+
 ## Reproducible local evidence
 
 The complete project check and source coverage gate completed successfully on
@@ -54,6 +60,7 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Public documentation | 195 declarations pass |
 | Generated declarations | 237 files current |
 | API surface snapshot | 19 surfaces current |
+| CI action identities | Exact reviewed checkout/setup-node SHA pairs enforced; arbitrary immutable-looking replacements fail |
 | Node contract tests | 221 passed, 0 failed on Node 22 and Node 24 |
 | Exact package artifact | 536 safe selected files; packed/unpacked output remains below 400,000 / 1,500,000-byte budgets |
 | Installed-package smoke | The exact reviewed tarball passes fresh JavaScript and TypeScript consumers |

@@ -100,9 +100,12 @@ their matching binaries once with `npm run test:browser:install`.
 The GitHub Actions workflow runs the unified check, source coverage gate, and
 package-content check on the currently supported Node 22 and 24 LTS lines. The
 unified check includes focused/default bundle budgets and side-effect
-elimination. A
-separate Node 24 job installs all three browser engines and runs the browser
-suite. The matrix follows the [official Node release status](https://nodejs.org/en/about/previous-releases)
+elimination. A separate Node 24 job installs all three browser engines and runs
+the browser suite. Contract tests require the exact reviewed
+`actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10` and
+`actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38` identities, not
+merely an arbitrary 40-character reference. The matrix follows the
+[official Node release status](https://nodejs.org/en/about/previous-releases)
 and [Playwright browser support](https://playwright.dev/docs/browsers); update it
 when those support windows change.
 

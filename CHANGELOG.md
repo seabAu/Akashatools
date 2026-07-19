@@ -102,9 +102,10 @@
 - Added an approval-gated release runbook for exact candidate verification,
   trusted publishing and provenance, explicit dist-tags, registry smoke tests,
   and fix-forward recovery.
-- Pinned GitHub Actions to verified commit identities and added a workflow
-  contract test covering permissions, supported Node lines, package checks, and
-  the three-engine browser gate.
+- Pinned GitHub Actions to exact reviewed commit identities and added a workflow
+  contract test that rejects arbitrary replacement SHAs while covering
+  permissions, supported Node lines, package checks, and the three-engine
+  browser gate.
 - Added a frozen default `akasha` namespace with both flat utility access and
   frozen categorized namespaces.
 - Added build-time collision detection, namespace completeness tests, and a

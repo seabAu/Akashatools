@@ -94,11 +94,13 @@ the release audit checks reported vulnerabilities and the complete packed file
 list.
 
 The ordinary CI workflow grants only `contents: read`, has bounded job runtimes,
-and pins GitHub-owned actions to verified 40-character commit identities rather
-than mutable major-version tags. A contract test rejects movable action
-references and loss of the supported Node, coverage, package, or browser gates.
-The format gate parses the workflow YAML. The human-readable version comments
-remain update hints; the commit identity is the executable trust boundary.
+and pins GitHub-owned actions to exact reviewed 40-character commit identities
+rather than mutable major-version tags. A contract test snapshots each approved
+action/SHA pair, rejects a different SHA even when it is syntactically immutable,
+and rejects loss of the supported Node, coverage, package, or browser gates. The
+format gate parses the workflow YAML. Human-readable version comments remain
+update hints; changing a commit identity requires deliberate source and test
+review.
 
 The future npm publication workflow is deliberately absent until explicitly
 authorized. Its required OIDC permission, trusted-publisher scope, provenance,
