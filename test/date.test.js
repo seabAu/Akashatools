@@ -22,6 +22,7 @@ import {
   normalizeInstantRange,
   startOfLocalDay,
   toDate,
+  toEpochMilliseconds,
   toUnixSeconds,
 } from "akashatools/date";
 
@@ -66,6 +67,77 @@ test("date conversion and calendar helpers reject invalid values without mutatio
   assert.equal(original.getHours(), 18);
 });
 
+test("timestamp conversion normalizes serialized units and structured records without active coercion", () => {
+  const instant = new Date("2026-07-19T01:02:03.456Z");
+  assert.equal(toEpochMilliseconds(instant), instant.getTime());
+  assert.equal(toEpochMilliseconds(1.9), 1);
+  assert.equal(toEpochMilliseconds("1000"), 1_000);
+  assert.equal(toEpochMilliseconds("1000", { numericStringUnit: "seconds" }), 1_000_000);
+  assert.equal(toEpochMilliseconds("1000", { numericStringUnit: "date" }), new Date("1000").getTime());
+  assert.equal(toEpochMilliseconds("1000", { numericStringUnit: "reject" }), null);
+  assert.equal(toEpochMilliseconds("2026-07-19T01:02:03.456Z", { numericStringUnit: "reject" }), instant.getTime());
+
+  class TimestampRecord {
+    constructor(seconds, nanoseconds) {
+      this.seconds = seconds;
+      this.nanoseconds = nanoseconds;
+    }
+  }
+  const structured = new TimestampRecord("1", "500000000");
+  assert.equal(toEpochMilliseconds(structured), 1_500);
+  assert.equal(toDate(structured)?.toISOString(), "1970-01-01T00:00:01.500Z");
+  assert.equal(toEpochMilliseconds({ seconds: 1, nanos: 250_000_000 }), 1_250);
+  assert.equal(toEpochMilliseconds({ seconds: -1, nanoseconds: 999_999_999 }), 0);
+  assert.equal(toEpochMilliseconds({ seconds: 1 }), 1_000);
+
+  let activeCalls = 0;
+  const accessor = {};
+  Object.defineProperty(accessor, "seconds", {
+    get() {
+      activeCalls += 1;
+      return 1;
+    },
+  });
+  assert.equal(toEpochMilliseconds(accessor), null);
+  assert.equal(
+    toEpochMilliseconds({
+      toDate() {
+        activeCalls += 1;
+        return instant;
+      },
+    }),
+    null,
+  );
+  assert.equal(activeCalls, 0);
+  assert.equal(toEpochMilliseconds(Object.create({ seconds: 1 })), null);
+  assert.equal(toEpochMilliseconds(Object.assign(() => {}, { seconds: 1 })), null);
+  assert.equal(toEpochMilliseconds({ seconds: 1.5 }), null);
+  assert.equal(toEpochMilliseconds({ seconds: 253_402_300_800 }), null);
+  assert.equal(toEpochMilliseconds({ seconds: 1, nanoseconds: -1 }), null);
+  assert.equal(toEpochMilliseconds({ seconds: 1, nanoseconds: 1_000_000_000 }), null);
+  assert.equal(toEpochMilliseconds({ seconds: 1, nanoseconds: 1, nanos: 1 }), null);
+  const nanosAccessor = { seconds: 1 };
+  Object.defineProperty(nanosAccessor, "nanos", {
+    get() {
+      activeCalls += 1;
+      return 1;
+    },
+  });
+  assert.equal(toEpochMilliseconds(nanosAccessor), null);
+  assert.equal(activeCalls, 0);
+  assert.equal(toEpochMilliseconds(Number.MAX_VALUE), null);
+  assert.throws(() => toEpochMilliseconds(0, /** @type {any} */ ([])), TypeError);
+  assert.throws(() => toEpochMilliseconds(0, { numericStringUnit: /** @type {any} */ ("microseconds") }), TypeError);
+});
+
+test("toDate preserves its historical Date-string default and supports explicit serialized units", () => {
+  assert.equal(toDate("0")?.getTime(), new Date("0").getTime());
+  assert.equal(toDate("0", { numericStringUnit: "milliseconds" })?.getTime(), 0);
+  assert.equal(toDate("1", { numericStringUnit: "seconds" })?.getTime(), 1_000);
+  assert.equal(toDate("1", { numericStringUnit: "reject" }), null);
+  assert.throws(() => toDate(0, /** @type {any} */ (null)), TypeError);
+});
+
 test("local calendar and clock helpers use explicit wrapping and invalid-input contracts", () => {
   const local = new Date(2026, 6, 11, 23, 30);
   assert.equal(localDateKey(local), "2026-07-11");
@@ -86,6 +158,7 @@ test("Unix and Intl format helpers delegate with normalized valid dates", () => 
   const instant = new Date("2026-07-11T14:05:06.000Z");
   const unixSeconds = instant.getTime() / 1_000;
   assert.equal(toUnixSeconds(instant), unixSeconds);
+  assert.equal(toUnixSeconds({ seconds: unixSeconds, nanoseconds: 999_999_999 }), unixSeconds);
   assert.equal(fromUnixSeconds(unixSeconds).toISOString(), instant.toISOString());
   assert.throws(() => fromUnixSeconds(Number.NaN), TypeError);
 

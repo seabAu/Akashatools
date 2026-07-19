@@ -151,20 +151,21 @@ export declare const data: Readonly<{
 /** Frozen date and time utilities for namespace-style discovery. */
 export declare const date: Readonly<{
     isValidDate(value: unknown): value is Date;
-    toDate(value: Date | string | number | null | undefined): Date | null;
+    toDate(value: dateModule.TimestampInput | null | undefined, options?: dateModule.TimestampConversionOptions): Date | null;
+    toEpochMilliseconds(value: dateModule.TimestampInput | null | undefined, options?: dateModule.TimestampConversionOptions): number | null;
     daysInMonth(yearOrDate: number | Date, monthIndex?: number): number;
-    startOfLocalDay(value: Date | string | number): Date;
-    localDateKey(value: Date | string | number): string;
-    differenceInLocalDays(later: Date | string | number, earlier: Date | string | number): number;
-    isSameLocalDay(left: Date | string | number, right: Date | string | number): boolean;
-    isToday(value: Date | string | number, now?: Date): boolean;
-    toUnixSeconds(value: Date | string | number): number;
+    startOfLocalDay(value: dateModule.TimestampInput): Date;
+    localDateKey(value: dateModule.TimestampInput): string;
+    differenceInLocalDays(later: dateModule.TimestampInput, earlier: dateModule.TimestampInput): number;
+    isSameLocalDay(left: dateModule.TimestampInput, right: dateModule.TimestampInput): boolean;
+    isToday(value: dateModule.TimestampInput, now?: Date): boolean;
+    toUnixSeconds(value: dateModule.TimestampInput): number;
     fromUnixSeconds(seconds: number): Date;
-    normalizeInstantRange(start: Date | string | number, end: Date | string | number): {
+    normalizeInstantRange(start: dateModule.TimestampInput, end: dateModule.TimestampInput): {
         start: Date;
         end: Date;
     };
-    isWithinInstantRange(value: Date | string | number, start: Date | string | number, end: Date | string | number, { startInclusive, endInclusive }?: {
+    isWithinInstantRange(value: dateModule.TimestampInput, start: dateModule.TimestampInput, end: dateModule.TimestampInput, { startInclusive, endInclusive }?: {
         startInclusive?: boolean;
         endInclusive?: boolean;
     }): boolean;
@@ -172,13 +173,13 @@ export declare const date: Readonly<{
     minutesToClockTime(minutes: number): string;
     clock12To24(value: string): string | null;
     clock24To12(value: string): string | null;
-    formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
-    formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    formatDate(value: dateModule.TimestampInput, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    formatDateTime(value: dateModule.TimestampInput, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
     formatDuration(minutes: number, options?: {
         rounding?: "round" | "floor" | "ceil" | "trunc";
     }): string;
-    formatRelativeTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
-        base?: Date | string | number;
+    formatRelativeTime(value: dateModule.TimestampInput, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
+        base?: dateModule.TimestampInput;
     }): string;
 }>;
 /** Frozen HTTP request and error utilities. */
@@ -580,6 +581,7 @@ export declare const akasha: Readonly<{
     initializeLike: typeof dataModule.initializeLike;
     isValidDate: typeof dateModule.isValidDate;
     toDate: typeof dateModule.toDate;
+    toEpochMilliseconds: typeof dateModule.toEpochMilliseconds;
     daysInMonth: typeof dateModule.daysInMonth;
     startOfLocalDay: typeof dateModule.startOfLocalDay;
     localDateKey: typeof dateModule.localDateKey;
@@ -778,20 +780,21 @@ export declare const akasha: Readonly<{
     }>;
     date: Readonly<{
         isValidDate(value: unknown): value is Date;
-        toDate(value: Date | string | number | null | undefined): Date | null;
+        toDate(value: dateModule.TimestampInput | null | undefined, options?: dateModule.TimestampConversionOptions): Date | null;
+        toEpochMilliseconds(value: dateModule.TimestampInput | null | undefined, options?: dateModule.TimestampConversionOptions): number | null;
         daysInMonth(yearOrDate: number | Date, monthIndex?: number): number;
-        startOfLocalDay(value: Date | string | number): Date;
-        localDateKey(value: Date | string | number): string;
-        differenceInLocalDays(later: Date | string | number, earlier: Date | string | number): number;
-        isSameLocalDay(left: Date | string | number, right: Date | string | number): boolean;
-        isToday(value: Date | string | number, now?: Date): boolean;
-        toUnixSeconds(value: Date | string | number): number;
+        startOfLocalDay(value: dateModule.TimestampInput): Date;
+        localDateKey(value: dateModule.TimestampInput): string;
+        differenceInLocalDays(later: dateModule.TimestampInput, earlier: dateModule.TimestampInput): number;
+        isSameLocalDay(left: dateModule.TimestampInput, right: dateModule.TimestampInput): boolean;
+        isToday(value: dateModule.TimestampInput, now?: Date): boolean;
+        toUnixSeconds(value: dateModule.TimestampInput): number;
         fromUnixSeconds(seconds: number): Date;
-        normalizeInstantRange(start: Date | string | number, end: Date | string | number): {
+        normalizeInstantRange(start: dateModule.TimestampInput, end: dateModule.TimestampInput): {
             start: Date;
             end: Date;
         };
-        isWithinInstantRange(value: Date | string | number, start: Date | string | number, end: Date | string | number, { startInclusive, endInclusive }?: {
+        isWithinInstantRange(value: dateModule.TimestampInput, start: dateModule.TimestampInput, end: dateModule.TimestampInput, { startInclusive, endInclusive }?: {
             startInclusive?: boolean;
             endInclusive?: boolean;
         }): boolean;
@@ -799,13 +802,13 @@ export declare const akasha: Readonly<{
         minutesToClockTime(minutes: number): string;
         clock12To24(value: string): string | null;
         clock24To12(value: string): string | null;
-        formatDate(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
-        formatDateTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+        formatDate(value: dateModule.TimestampInput, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+        formatDateTime(value: dateModule.TimestampInput, locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
         formatDuration(minutes: number, options?: {
             rounding?: "round" | "floor" | "ceil" | "trunc";
         }): string;
-        formatRelativeTime(value: Date | string | number, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
-            base?: Date | string | number;
+        formatRelativeTime(value: dateModule.TimestampInput, locales?: Intl.LocalesArgument, options?: Intl.RelativeTimeFormatOptions & {
+            base?: dateModule.TimestampInput;
         }): string;
     }>;
     http: Readonly<{

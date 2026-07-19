@@ -2,6 +2,22 @@ import { plainObjectOptionsErrorMessage } from "./internal/error-messages.js";
 import { isPlainObject } from "./object.js";
 
 const durationRoundingModes = new Set(["round", "floor", "ceil", "trunc"]);
+const numericTimestampStringUnits = new Set(["date", "milliseconds", "seconds", "reject"]);
+const protobufMinimumSeconds = -62_135_596_800;
+const protobufMaximumSeconds = 253_402_300_799;
+
+/**
+ * @typedef {{seconds: number | string, nanoseconds?: number | string, nanos?: never} | {seconds: number | string, nanos?: number | string, nanoseconds?: never}} StructuredTimestamp
+ * A Firestore-style `seconds`/`nanoseconds` record or Protobuf-message-style
+ * `seconds`/`nanos` record. Supplying both fractional fields is invalid.
+ */
+
+/** @typedef {Date | string | number | StructuredTimestamp} TimestampInput */
+
+/**
+ * @typedef {object} TimestampConversionOptions
+ * @property {"date" | "milliseconds" | "seconds" | "reject"} [numericStringUnit] Interpretation of integer-only strings; nonnumeric strings still use Date parsing.
+ */
 
 /**
  * Checks whether a value represents a valid Date object.
@@ -21,18 +37,41 @@ export function isValidDate(value) {
 }
 
 /**
- * Converts a Date-compatible value to a fresh Date or returns null.
+ * Converts a Date-compatible or structured timestamp value to a fresh Date or
+ * returns null. Integer-only strings retain host Date parsing by default;
+ * select a numeric unit explicitly when consuming serialized timestamps.
  *
- * @param {Date | string | number | null | undefined} value Date-compatible input; nullish/empty string means absent.
+ * @param {TimestampInput | null | undefined} value Date-compatible or structured timestamp input; nullish/empty strings mean absent.
+ * @param {TimestampConversionOptions} [options] Integer-string interpretation policy; defaults to Date-string parsing.
  * @returns {Date | null} Fresh valid Date, or null for absent/invalid input.
+ * @throws {TypeError} If options or numericStringUnit violates its literal contract.
  * @example
  * toDate("2026-07-12T00:00:00Z");
  * @since 2.0.0
  */
-export function toDate(value) {
-  if (value === null || value === undefined || value === "") return null;
-  const date = new Date(value);
-  return isValidDate(date) ? date : null;
+export function toDate(value, options = {}) {
+  const timestamp = resolveEpochMilliseconds(value, timestampStringUnit(options, "date"));
+  return timestamp === null ? null : new Date(timestamp);
+}
+
+/**
+ * Normalizes a Date-compatible value, Firestore-style `seconds`/`nanoseconds`
+ * record, or Protobuf-message-style `seconds`/`nanos` record to whole Unix epoch
+ * milliseconds. Structured fields must be own data properties, so accessors
+ * and `toDate`/coercion methods are never invoked. Integer-only strings are
+ * milliseconds by default; choose an explicit unit or `date` to retain host
+ * Date-string parsing.
+ *
+ * @param {TimestampInput | null | undefined} value Timestamp input; nullish/empty strings mean absent.
+ * @param {TimestampConversionOptions} [options] Integer-string interpretation policy.
+ * @returns {number | null} Whole Date-compatible epoch milliseconds, or null for absent/invalid input.
+ * @throws {TypeError} If options or numericStringUnit violates its literal contract.
+ * @example
+ * toEpochMilliseconds({ seconds: 1, nanoseconds: 500_000_000 }); // 1500
+ * @since 2.0.0
+ */
+export function toEpochMilliseconds(value, options = {}) {
+  return resolveEpochMilliseconds(value, timestampStringUnit(options, "milliseconds"));
 }
 
 /**
@@ -64,7 +103,7 @@ export function daysInMonth(yearOrDate, monthIndex) {
 /**
  * Returns a new Date at the beginning of the local calendar day.
  *
- * @param {Date | string | number} value Valid Date-compatible local instant.
+ * @param {TimestampInput} value Valid Date-compatible or structured local instant.
  * @returns {Date} Fresh Date set to 00:00:00.000 in the local timezone.
  * @throws {TypeError} If value does not represent a valid Date.
  * @example
@@ -80,7 +119,7 @@ export function startOfLocalDay(value) {
 /**
  * Returns a stable local date key in YYYY-MM-DD format.
  *
- * @param {Date | string | number} value Valid Date-compatible local instant.
+ * @param {TimestampInput} value Valid Date-compatible or structured local instant.
  * @returns {string} Local calendar key formatted `YYYY-MM-DD`.
  * @throws {TypeError} If value does not represent a valid Date.
  * @example
@@ -96,8 +135,8 @@ export function localDateKey(value) {
  * Calculates whole local calendar-day boundaries between two values. This uses
  * UTC representations of local calendar fields to avoid daylight-saving shifts.
  *
- * @param {Date | string | number} later Later valid local-calendar instant.
- * @param {Date | string | number} earlier Earlier valid local-calendar instant.
+ * @param {TimestampInput} later Later valid local-calendar instant.
+ * @param {TimestampInput} earlier Earlier valid local-calendar instant.
  * @returns {number} Signed count of crossed local calendar-day boundaries.
  * @throws {TypeError} If either value does not represent a valid Date.
  * @example
@@ -115,8 +154,8 @@ export function differenceInLocalDays(later, earlier) {
 /**
  * Checks whether two values fall on the same local calendar day.
  *
- * @param {Date | string | number} left First valid local-calendar instant.
- * @param {Date | string | number} right Second valid local-calendar instant.
+ * @param {TimestampInput} left First valid local-calendar instant.
+ * @param {TimestampInput} right Second valid local-calendar instant.
  * @returns {boolean} Whether both values share one local calendar date.
  * @throws {TypeError} If either value does not represent a valid Date.
  * @example
@@ -130,7 +169,7 @@ export function isSameLocalDay(left, right) {
 /**
  * Checks whether a value falls on today's local calendar day.
  *
- * @param {Date | string | number} value Valid local-calendar instant to compare.
+ * @param {TimestampInput} value Valid local-calendar instant to compare.
  * @param {Date} [now=new Date()] Injectable valid current instant.
  * @returns {boolean} Whether value shares now's local calendar date.
  * @throws {TypeError} If either value does not represent a valid Date.
@@ -145,7 +184,7 @@ export function isToday(value, now = new Date()) {
 /**
  * Converts a date value to whole Unix seconds.
  *
- * @param {Date | string | number} value Valid absolute instant.
+ * @param {TimestampInput} value Valid absolute instant.
  * @returns {number} Truncated whole seconds since the Unix epoch.
  * @throws {TypeError} If value does not represent a valid Date.
  * @example
@@ -178,8 +217,8 @@ export function fromUnixSeconds(seconds) {
  * Normalizes two Date-compatible boundaries into fresh Date objects. Boundaries
  * represent absolute instants and are never swapped implicitly.
  *
- * @param {Date | string | number} start Valid absolute starting instant.
- * @param {Date | string | number} end Valid absolute ending instant at or after start.
+ * @param {TimestampInput} start Valid absolute starting instant.
+ * @param {TimestampInput} end Valid absolute ending instant at or after start.
  * @returns {{start: Date, end: Date}} Fresh normalized boundary Dates.
  * @throws {TypeError} If either boundary does not represent a valid Date.
  * @throws {RangeError} If start is after end.
@@ -198,9 +237,9 @@ export function normalizeInstantRange(start, end) {
  * Checks whether a Date-compatible value is within an absolute instant range.
  * The default range is start-inclusive and end-exclusive.
  *
- * @param {Date | string | number} value Valid absolute instant to test.
- * @param {Date | string | number} start Valid absolute starting boundary.
- * @param {Date | string | number} end Valid absolute ending boundary.
+ * @param {TimestampInput} value Valid absolute instant to test.
+ * @param {TimestampInput} start Valid absolute starting boundary.
+ * @param {TimestampInput} end Valid absolute ending boundary.
  * @param {{startInclusive?: boolean, endInclusive?: boolean}} [options] Literal boundary-inclusion policy.
  * @returns {boolean} Whether value satisfies both range boundaries.
  * @throws {TypeError | RangeError} If options or Date/range boundaries are invalid.
@@ -293,7 +332,7 @@ export function clock24To12(value) {
 /**
  * Formats a date using `Intl.DateTimeFormat`.
  *
- * @param {Date | string | number} value Valid Date-compatible instant.
+ * @param {TimestampInput} value Valid Date-compatible or structured instant.
  * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.DateTimeFormat.
  * @param {Intl.DateTimeFormatOptions} [options] Date formatting policy; defaults to long date style.
  * @returns {string} Locale-formatted date text.
@@ -309,7 +348,7 @@ export function formatDate(value, locales, options = { dateStyle: "long" }) {
 /**
  * Formats a date and time using `Intl.DateTimeFormat`.
  *
- * @param {Date | string | number} value Valid Date-compatible instant.
+ * @param {TimestampInput} value Valid Date-compatible or structured instant.
  * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.DateTimeFormat.
  * @param {Intl.DateTimeFormatOptions} [options] Date/time policy; defaults to medium date and short time.
  * @returns {string} Locale-formatted date-and-time text.
@@ -357,9 +396,9 @@ export function formatDuration(minutes, options = {}) {
  * seconds, 60 minutes, 24 hours, 30 days, and 365 days; month/year values are
  * therefore presentation approximations rather than calendar arithmetic.
  *
- * @param {Date | string | number} value Valid target instant.
+ * @param {TimestampInput} value Valid target instant.
  * @param {Intl.LocalesArgument} [locales] Locale preferences accepted by Intl.RelativeTimeFormat.
- * @param {Intl.RelativeTimeFormatOptions & {base?: Date | string | number}} [options] Intl presentation options plus the comparison instant; numeric defaults to `auto`.
+ * @param {Intl.RelativeTimeFormatOptions & {base?: TimestampInput}} [options] Intl presentation options plus the comparison instant; numeric defaults to `auto`.
  * @returns {string} Locale-formatted relative time such as `yesterday` or `in 2 hours`.
  * @throws {TypeError | RangeError} If dates, locales, options, or Intl values are invalid.
  * @example
@@ -369,8 +408,7 @@ export function formatDuration(minutes, options = {}) {
 export function formatRelativeTime(value, locales, options = {}) {
   if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
   const { base = new Date(), ...formatOptions } = options;
-  const difference =
-    requiredDate(value).getTime() - requiredDate(/** @type {Date | string | number} */ (base)).getTime();
+  const difference = requiredDate(value).getTime() - requiredDate(/** @type {TimestampInput} */ (base)).getTime();
   const absolute = Math.abs(difference);
   let divisor;
   /** @type {Intl.RelativeTimeFormatUnit} */
@@ -385,11 +423,93 @@ export function formatRelativeTime(value, locales, options = {}) {
   return new Intl.RelativeTimeFormat(locales, { numeric: "auto", ...formatOptions }).format(amount, unit);
 }
 
-/** @param {Date | string | number} value */
+/** @param {TimestampInput} value */
 function requiredDate(value) {
   const date = toDate(value);
   if (!date) throw new TypeError("value must represent a valid date.");
   return date;
+}
+
+/** @param {unknown} value @param {"date" | "milliseconds" | "seconds" | "reject"} numericStringUnit */
+function resolveEpochMilliseconds(value, numericStringUnit) {
+  if (value === null || value === undefined || value === "") return null;
+  if (isValidDate(value)) return Date.prototype.getTime.call(value);
+  if (typeof value === "number") return clippedEpochMilliseconds(value);
+
+  if (typeof value === "string") {
+    const source = value.trim();
+    if (source === "") return null;
+    if (/^-?\d+$/u.test(source)) {
+      if (numericStringUnit === "reject") return null;
+      if (numericStringUnit !== "date") {
+        const numeric = Number(source);
+        return clippedEpochMilliseconds(numericStringUnit === "seconds" ? numeric * 1_000 : numeric);
+      }
+    }
+    return clippedEpochMilliseconds(new Date(source).getTime());
+  }
+
+  if (typeof value !== "object" || value === null) return null;
+  return structuredTimestampMilliseconds(value);
+}
+
+/** @param {object} value */
+function structuredTimestampMilliseconds(value) {
+  let secondsDescriptor;
+  let nanosecondsDescriptor;
+  let nanosDescriptor;
+  try {
+    secondsDescriptor = Object.getOwnPropertyDescriptor(value, "seconds");
+    nanosecondsDescriptor = Object.getOwnPropertyDescriptor(value, "nanoseconds");
+    nanosDescriptor = Object.getOwnPropertyDescriptor(value, "nanos");
+  } catch {
+    return null;
+  }
+  if (!secondsDescriptor || !Object.hasOwn(secondsDescriptor, "value")) return null;
+  if (nanosecondsDescriptor && nanosDescriptor) return null;
+  const fractionDescriptor = nanosecondsDescriptor ?? nanosDescriptor;
+  if (fractionDescriptor && !Object.hasOwn(fractionDescriptor, "value")) return null;
+
+  const seconds = structuredTimestampInteger(secondsDescriptor.value);
+  const nanoseconds = fractionDescriptor ? structuredTimestampInteger(fractionDescriptor.value) : 0;
+  if (
+    seconds === null ||
+    nanoseconds === null ||
+    seconds < protobufMinimumSeconds ||
+    seconds > protobufMaximumSeconds ||
+    nanoseconds < 0 ||
+    nanoseconds > 999_999_999
+  ) {
+    return null;
+  }
+  const nanosecondMilliseconds =
+    seconds < 0 && nanoseconds > 0 ? Math.ceil(nanoseconds / 1_000_000) : Math.floor(nanoseconds / 1_000_000);
+  return clippedEpochMilliseconds(seconds * 1_000 + nanosecondMilliseconds);
+}
+
+/** @param {unknown} value */
+function structuredTimestampInteger(value) {
+  if (typeof value === "number") return Number.isSafeInteger(value) ? value : null;
+  if (typeof value !== "string" || !/^-?\d+$/u.test(value.trim())) return null;
+  const numeric = Number(value);
+  return Number.isSafeInteger(numeric) ? numeric : null;
+}
+
+/** @param {number} value */
+function clippedEpochMilliseconds(value) {
+  if (!Number.isFinite(value)) return null;
+  const date = new Date(value);
+  return isValidDate(date) ? date.getTime() : null;
+}
+
+/** @param {TimestampConversionOptions} options @param {"date" | "milliseconds"} fallback */
+function timestampStringUnit(options, fallback) {
+  if (!isPlainObject(options)) throw new TypeError(plainObjectOptionsErrorMessage);
+  const unit = options.numericStringUnit ?? fallback;
+  if (!numericTimestampStringUnits.has(unit)) {
+    throw new TypeError('numericStringUnit must be "date", "milliseconds", "seconds", or "reject".');
+  }
+  return unit;
 }
 
 /** @param {number} value */

@@ -51,6 +51,16 @@ test("Mindspace client fixture preserves immutable task and time-display workflo
     duration: "2h 5m",
     relative: "tomorrow",
   });
+  assert.deepEqual(
+    presentMindspaceTime(
+      125,
+      { seconds: Date.UTC(2026, 6, 17, 12) / 1_000 },
+      {
+        seconds: Date.UTC(2026, 6, 16, 12) / 1_000,
+      },
+    ),
+    { duration: "2h 5m", relative: "tomorrow" },
+  );
 
   const identifier = createMindspaceClientId("install request");
   assert.match(identifier, /^install-request-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/u);

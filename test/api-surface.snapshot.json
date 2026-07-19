@@ -200,6 +200,7 @@
       "throttle",
       "toBinary",
       "toDate",
+      "toEpochMilliseconds",
       "toUnixSeconds",
       "traverseObject",
       "typeOf",
@@ -290,6 +291,7 @@
       "normalizeInstantRange",
       "startOfLocalDay",
       "toDate",
+      "toEpochMilliseconds",
       "toUnixSeconds"
     ],
     "./http": [

@@ -11,6 +11,7 @@ export-level dispositions back into this ledger:
 - [Mindspace inventory](inventory/MINDSPACE.md)
 - [2026-07-16 active-source refresh, including SPLICR](inventory/SOURCE_REFRESH_2026-07-16.md)
 - [2026-07-18 regression refresh of all four active source trees](inventory/SOURCE_REFRESH_2026-07-18.md)
+- [2026-07-19 post-audit source delta and structured timestamp disposition](inventory/SOURCE_REFRESH_2026-07-19.md)
 
 ## Disposition vocabulary
 

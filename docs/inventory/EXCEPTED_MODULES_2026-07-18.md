@@ -163,8 +163,8 @@ to migrate.
 - The source files above remain untouched. Only redesigned canonical package
   code, tests, documentation, and generated entry points enter Akashatools.
 
-The completed redesign and adversarial refinement pass 219 Node contracts on
-Node 22.18.0 and 24.18.0,
+At this ledger's 2026-07-18 boundary, the completed redesign and adversarial
+refinement passed 219 Node contracts on Node 22.18.0 and 24.18.0,
 plus 18 Playwright checks across Chromium, Firefox, and WebKit. Equal-output
 benchmarks and their reproducible commands are recorded in
 [`../BENCHMARKS.md`](../BENCHMARKS.md).

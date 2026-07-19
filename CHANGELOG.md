@@ -2,6 +2,15 @@
 
 ## 2.0.0-alpha.1
 
+- Added strict `toEpochMilliseconds` normalization for Date-compatible values,
+  explicit numeric-string units, Firestore-style `{ seconds, nanoseconds }`
+  records, and Protobuf-message-style `{ seconds, nanos }` records; `toDate`
+  now supplies the fresh-Date wrapper without invoking accessors or arbitrary
+  coercion methods.
+- Refreshed all four read-only consumer source sets after the 2026-07-18
+  behavioral audit. Only Mindspace had newer production source; its notification
+  delta exposed the repeated timestamp atom while routing, record merging,
+  presentation deduplication, hooks, and launch capability policy remain app-owned.
 - Reopened the candidate for the omitted `(excepted modules)` source set and
   added a universal `geo` category with canonical GeoJSON coordinate order,
   explicit legacy-order conversion, range-checked aliases, Haversine distance,
@@ -34,7 +43,7 @@
   final newlines, forbidden control text, local link existence and package
   selection, and GitHub-style Markdown heading fragments while ignoring links
   shown only as code examples.
-- Strengthened the exact tarball smoke gate with a 533-entry manifest baseline,
+- Strengthened the exact tarball smoke gate with a 536-entry manifest baseline,
   packed/unpacked size budgets, selected-root and portable-path checks,
   development/credential-like path exclusions, non-executable modes, and npm
   file-count/size consistency before fresh JavaScript and TypeScript installs.
@@ -81,9 +90,9 @@
   Mongoose, React, layout, custom-ID, and product-schema adapters.
 - Reopened generated category/method subpaths and safe fluent deep-query syntax
   as explicit ergonomics work while retaining side-effect-free normal imports.
-- Kept focused imports at 321 raw/252 gzip bytes through the expanded 194-method
+- Kept focused imports at 321 raw/252 gzip bytes through the expanded 195-method
   surface and recalibrated only the full default-namespace guardrail to
-  117,000 raw/35,250 gzip around a refined 116,220/34,939 maximum measurement.
+  119,000 raw/36,000 gzip around a refined 117,720/35,428 maximum measurement.
 - Added strict `isArray`, `isString`, `isNumber`, `isBoolean`,
   `isNonArrayObject`, and `isFiniteNonInteger` validation guards plus
   `defaultIfBlank`, based on 559 current legacy consumer reads.

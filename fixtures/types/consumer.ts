@@ -2,6 +2,7 @@ import akasha, {
   array,
   chunk,
   data,
+  date,
   function as functionUtils,
   hash,
   http,
@@ -9,12 +10,16 @@ import akasha, {
   isEmail,
   once,
   request,
+  toEpochMilliseconds,
   validation,
 } from "akashatools";
 import { chunk as categoryChunk } from "akashatools/array";
 import granularChunk from "akashatools/array/chunk";
 import { analyzeArrayTypes, DATA_TYPES, initializeLike } from "akashatools/data";
 import type { DataType } from "akashatools/data";
+import { toDate, toEpochMilliseconds as categoryToEpochMilliseconds } from "akashatools/date";
+import type { TimestampInput } from "akashatools/date";
+import granularToEpochMilliseconds from "akashatools/date/toEpochMilliseconds";
 import { HttpError, request as categoryRequest } from "akashatools/http";
 import { crc32, sha256Hex, stableJsonId } from "akashatools/hash";
 import granularOnce from "akashatools/function/once";
@@ -45,6 +50,15 @@ const dataType: DataType = DATA_TYPES.BOOLEAN;
 const inputType: InputType = INPUT_TYPES.CHECKBOX;
 const controlType: ControlType = CONTROL_TYPES.INPUT;
 const rootDataType: "boolean" = akasha.DATA_TYPES.BOOLEAN;
+const structuredTimestamp: TimestampInput = { seconds: 1, nanoseconds: 500_000_000 };
+const protobufTimestamp: TimestampInput = { seconds: 1, nanos: 250_000_000 };
+// @ts-expect-error Firestore and Protobuf fractional field spellings are mutually exclusive.
+const invalidStructuredTimestamp: TimestampInput = { seconds: 1, nanoseconds: 1, nanos: 1 };
+const timestampMilliseconds: number | null = toEpochMilliseconds(structuredTimestamp);
+const categoryTimestampMilliseconds: number | null = categoryToEpochMilliseconds(structuredTimestamp);
+const granularTimestampMilliseconds: number | null = granularToEpochMilliseconds(structuredTimestamp);
+const namespacedTimestampMilliseconds: number | null = date.toEpochMilliseconds(structuredTimestamp);
+const timestampDate: Date | null = toDate(structuredTimestamp);
 const hasId: boolean = deepQuery({ user: { id: 1 } }).has("id", { by: "key" });
 const ids: unknown[] = findAllDeepValues({ user: { id: 1 } }, "id", { by: "key" });
 const granularHasId: boolean = granularHasDeep({ id: 1 }, "id", { by: "key" });
@@ -91,6 +105,8 @@ void [
   values, categoryValues, granularValues, nestedValues, flatValues, namedNamespaceValues,
   initialized, primaryType, defaultString,
   textInput, fieldName, nestedInput, dataType, inputType, controlType, rootDataType,
+  structuredTimestamp, protobufTimestamp, invalidStructuredTimestamp, timestampMilliseconds, categoryTimestampMilliseconds,
+  granularTimestampMilliseconds, namespacedTimestampMilliseconds, timestampDate,
   hasId, ids, granularHasId,
   validEmail, rootPredicate, path, archivePath, archivePaths, contract, response, categoryResponse,
   namespacedResponse, errorCode, invalidContract, invalidDataType,

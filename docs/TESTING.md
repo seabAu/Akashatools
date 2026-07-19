@@ -36,7 +36,7 @@ also checks syntax, lint and formatting, generated artifacts, JSDoc/TypeScript
 declarations, JavaScript and TypeScript consumers, editor completions, and a
 clean installation of the exact packed artifact.
 
-`npm run test:package` first validates npm's exact 533-file pack manifest:
+`npm run test:package` first validates npm's exact 536-file pack manifest:
 selected portable roots only, no hidden, development-only, credential-like, or
 executable paths, no bundled dependencies, consistent file-count and unpacked
 size totals, and 400,000-byte packed/1,500,000-byte unpacked ceilings. It then
@@ -57,8 +57,8 @@ inline or fenced code examples are intentionally ignored.
 
 `npm run check:readme` parses all JavaScript-fenced README examples, resolves
 every documented `akashatools` specifier through the actual package export map,
-and verifies every default and named binding. It currently covers 18 examples,
-29 package imports, and 65 bindings; a focused missing-binding fixture verifies
+and verifies every default and named binding. It currently covers 19 examples,
+31 package imports, and 69 bindings; a focused missing-binding fixture verifies
 the failure path. Registry-installed example execution remains a distinct
 post-publication gate.
 
@@ -106,12 +106,13 @@ suite. The matrix follows the [official Node release status](https://nodejs.org/
 and [Playwright browser support](https://playwright.dev/docs/browsers); update it
 when those support windows change.
 
-The local 2026-07-18 expanded release matrix completed the full check and
+The local 2026-07-19 expanded release matrix completed the full check and
 coverage gates on Node 22.18.0 and an isolated Node 24.18.0 runtime. Both passed
-all 219 tests, exact artifact safety plus fresh JavaScript/TypeScript tarball
-installation, 194-API and 236-declaration generation checks, bundle budgets,
-dependency audit, and package inspection. Node 22 measured 98.25% lines, 89.74%
-branches, and 97.23%
-functions; Node 24 measured 98.25% / 89.66% / 97.23%. Playwright separately
-passed all 18 tests across Chromium, Firefox, and WebKit. The first hosted
-workflow result remains a distinct release gate.
+all 221 tests, exact artifact safety plus fresh JavaScript/TypeScript tarball
+installation, 195-API and 237-declaration generation checks, bundle budgets,
+dependency audit, and package inspection. The latest exact runs measured 98.25%
+lines, 89.82% branches, and 97.26% functions on Node 22, and 98.25% / 89.77% /
+97.26% on Node 24. Node's experimental branch counter can vary slightly between
+executions and runtimes while exercising asynchronous host paths. Playwright
+separately passed all 18 tests across Chromium, Firefox, and WebKit. The first
+hosted workflow result remains a distinct release gate.

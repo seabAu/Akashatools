@@ -713,7 +713,7 @@ Checks whether a value represents a valid Date object.
 
 ### toDate
 
-Converts a Date-compatible value to a fresh Date or returns null.
+Converts a Date-compatible or structured timestamp value to a fresh Date or returns null. Integer-only strings retain host Date parsing by default; select a numeric unit explicitly when consuming serialized timestamps.
 
 - Signature: `toDate()`
 - Import: `import { toDate } from "akashatools/date"`
@@ -721,6 +721,23 @@ Converts a Date-compatible value to a fresh Date or returns null.
 - Input mutation: Does not mutate inputs.
 - Since: 2.0.0
 - Returns: `Date | null` — Fresh valid Date, or null for absent/invalid input.
+
+Throws:
+- `TypeError` — If options or numericStringUnit violates its literal contract.
+
+### toEpochMilliseconds
+
+Normalizes a Date-compatible value, Firestore-style `seconds`/`nanoseconds` record, or Protobuf-message-style `seconds`/`nanos` record to whole Unix epoch milliseconds. Structured fields must be own data properties, so accessors and `toDate`/coercion methods are never invoked. Integer-only strings are milliseconds by default; choose an explicit unit or `date` to retain host Date-string parsing.
+
+- Signature: `toEpochMilliseconds()`
+- Import: `import { toEpochMilliseconds } from "akashatools/date"`
+- Granular import: `import toEpochMilliseconds from "akashatools/date/toEpochMilliseconds"`
+- Input mutation: Does not mutate inputs.
+- Since: 2.0.0
+- Returns: `number | null` — Whole Date-compatible epoch milliseconds, or null for absent/invalid input.
+
+Throws:
+- `TypeError` — If options or numericStringUnit violates its literal contract.
 
 ### daysInMonth
 

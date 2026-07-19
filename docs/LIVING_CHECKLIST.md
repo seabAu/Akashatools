@@ -74,20 +74,20 @@ case. No package entry mutates built-in constructors or prototypes.
 - [x] Add named root exports and category subpath exports.
 - [x] Retain legacy `akashatools/lib` entry points temporarily.
 - [x] Add strict JSDoc checking through `jsconfig.json`.
-- [x] Add dependency-free runtime tests; all 219 current contracts pass on the
+- [x] Add dependency-free runtime tests; all 221 current contracts pass on the
   supported Node 22.18.0 and Node 24.18.0 audit runtimes.
 - [x] Verify root, category, and legacy imports.
 - [x] Verify npm tarball contents with `npm pack --dry-run`: the expanded alpha
-  selects 533 files at approximately 387 KB packed and 1.44 MB unpacked. Capture
+  selects 536 files at approximately 393 KB packed and 1.46 MB unpacked. Capture
   exact bytes only for an immutable release candidate because a self-recorded
   compressed size changes the packaged payload.
-- [x] Enforce the exact 533-file tarball manifest, 400,000-byte packed and
+- [x] Enforce the exact 536-file tarball manifest, 400,000-byte packed and
   1,500,000-byte unpacked ceilings, selected portable roots, non-executable
   modes, no bundled dependencies, no development-only or credential-like
   paths, and npm-reported file-count/size consistency before install smoke tests.
 - [x] Verify focused-import tree-shaking on the stabilized surface: esbuild
   0.28.1 produces 321-byte raw/252-byte gzip focused bundles versus at most
-  116,220 raw/34,939 gzip bytes for the complete discoverable namespace.
+  117,720 raw/35,428 gzip bytes for the complete discoverable namespace.
 - [x] Inventory the main utility locations in Akashatools, Mindspace, the 2026
   portfolio rebuild, COMPOSR, and SPLICR. The 2026-07-16 delta refresh covers
   the changes made in all four consumer source trees after the first snapshot.
@@ -415,10 +415,10 @@ Acceptance criteria:
 
 - [x] Give every public function a complete JSDoc summary, generic types,
   parameters, return type, thrown errors, examples, and important edge cases.
-  All 194 current public declarations are complete, with parameter/return prose,
+  All 195 current public declarations are complete, with parameter/return prose,
   documented throws, and examples enforced by `npm run check:docs`.
 - [x] Add `@since 2.0.0` and `@deprecated` consistently, enforced across all
-  194 current public declarations by `npm run check:docs`.
+  195 current public declarations by `npm run check:docs`.
 - [x] Generate an API reference grouped by category from source comments or a
   single authoritative manifest, with drift enforced by `npm run check:generated`.
 - [x] Add a searchable function index with old name, new name, category, runtime,
@@ -428,7 +428,7 @@ Acceptance criteria:
 - [x] Add migration examples for `utils.val.*`, `utils.ao.*`, `utils.str.*`, and
   category-level wildcard imports.
 - [x] Evaluate and commit generated `.d.ts` files from checked JavaScript, with a
-  byte-for-byte drift check across 236 declaration files, including generated
+  byte-for-byte drift check across 237 declaration files, including generated
   category and granular method targets.
 - [x] Add declaration tests proving default, named, namespace, and subpath imports.
 - [x] Verify VS Code-compatible completion through the TypeScript 7 language
@@ -470,9 +470,10 @@ Acceptance criteria:
   plus iframe-realm Map, Set, and typed arrays with a visible pass signal.
 - [x] Add source-only coverage reporting with enforced aggregate floors of 95%
   lines, 80% branches, and 90% functions. The stabilized surface measures
-  98.25% lines / 89.74% branches / 97.23% functions on Node 22.18.0 and
-  98.25% / 89.66% / 97.23% on Node 24.18.0. Branch accounting varies slightly
-  by runtime; see `docs/TESTING.md`.
+  98.25% lines / 89.82% branches / 97.26% functions on Node 22.18.0 and
+  98.25% / 89.77% / 97.26% on Node 24.18.0. Node's experimental branch
+  accounting varies slightly between executions and runtimes; see
+  `docs/TESTING.md`.
 - [x] Run the complete release gates locally on supported Node 22.18.0 and
   Node 24.18.0, and run all 18 Chromium/Firefox/WebKit browser contracts.
 - [x] Enforce residual release hygiene in the unified check: maintained source
@@ -484,8 +485,8 @@ Acceptance criteria:
   newline and no forbidden control text; require every local link to remain
   inside the selected package, resolve to a real shipped file, and name an
   existing GitHub-style heading fragment when one is present.
-- [x] Parse all 18 published README JavaScript examples and resolve their 29
-  `akashatools` import declarations through the real export map; all 65 default,
+- [x] Parse all 19 published README JavaScript examples and resolve their 31
+  `akashatools` import declarations through the real export map; all 69 default,
   named, and namespace bindings are valid, and a missing-binding fixture proves
   the gate fails visibly.
 - [ ] Capture the first hosted Node 22/24 and browser workflow result. The jobs
@@ -518,8 +519,8 @@ Acceptance criteria:
 - [x] Add bundle fixtures for named root, category named/namespace, default
   flat/category namespace, an actual granular method export, and side-effect-only import.
 - [x] Set measured esbuild 0.28.1 budgets: focused imports remain at 400 raw/300
-  gzip bytes; the stabilized discoverable default namespace uses 117,000 raw/
-  35,250 gzip guardrails around the measured 116,220 raw/34,939 gzip maximum.
+  gzip bytes; the stabilized discoverable default namespace uses 119,000 raw/
+  36,000 gzip guardrails around the measured 117,720 raw/35,428 gzip maximum.
 - [x] Verify `sideEffects: false` remains truthful through source review and a
   zero-byte side-effect-only bundle contract.
 
@@ -568,7 +569,7 @@ edits. When authorized, migrate one bounded area at a time.
 - [x] Create a SPLICR algorithm-compatibility fixture for ported
   provider-neutral text helpers, including byte/word/cost limits and offsets.
 - [x] Measure representative bundle/runtime impact before and after focused
-  imports. Focused sets save 108,945-112,442 raw and 32,291-33,256 gzip bytes;
+  imports. Focused sets save 109,035-113,942 raw and 32,355-33,748 gzip bytes;
   their runtime contracts pass and imports remain side-effect free. Whole-app
   runtime profiling still belongs to an authorized consumer migration.
 - [x] Record missing ergonomics discovered through real usage. The fixture pass
@@ -817,6 +818,46 @@ Acceptance criteria:
 - Existing valid string callers and stored schemas continue to behave exactly as
   before, while TypeScript consumers can opt into exact identifier unions.
 
+### 9.10 Post-audit source delta and structured timestamps
+
+- [x] Recheck all four read-only consumer working copies after the 2026-07-18
+  behavioral-audit boundary and record the exact evidence in
+  `docs/inventory/SOURCE_REFRESH_2026-07-19.md`.
+- [x] Separate Mindspace's repeated serialized-instant atom from notification,
+  reminder, task-defer, worker, route, store, hook, and UI policy.
+- [x] Add `toEpochMilliseconds` as the atomic normalizer for Date-compatible
+  values, explicit integer-string units, strict Firestore-style
+  `{seconds, nanoseconds}` records, and Protobuf-message-style `{seconds, nanos}`
+  records.
+- [x] Make `toDate` the fresh-Date wrapper over the same normalization contract
+  while preserving its historical Date parsing for integer-only strings by
+  default.
+- [x] Reject inherited structured fields, accessors, arbitrary `toDate`/coercion
+  methods, competing `nanos`/`nanoseconds` fields, fractional/out-of-range
+  standard fields, invalid options, and values outside JavaScript's Date range.
+- [x] Share `TimestampInput`, `StructuredTimestamp`, and
+  `TimestampConversionOptions` across every date helper that consumes an
+  instant; expose root, category, and generated granular imports.
+- [x] Verify structured timestamp composition in the Mindspace fixture, strict
+  JSDoc/declarations, editor completion, canonical identity, bundles, clean
+  installed JavaScript/TypeScript consumers, and both supported Node runtimes.
+- [x] Keep ambiguous parse-or-original JSON behavior and all changed application
+  policy in Mindspace; existing strict input, HTTP, validation, and Storage
+  primitives remain the safe generic parsing boundaries.
+
+Acceptance criteria:
+
+- Serialized timestamp units never depend on magnitude guessing or a misleading
+  name, and the caller can select or reject numeric-string units explicitly.
+- Ordinary structured timestamp records are inspected without reading through
+  accessors or invoking conversion methods; Proxy reflection traps remain native
+  JavaScript behavior and are not treated as inert data.
+- Every date helper accepts the same documented timestamp input union through
+  one normalization path, while ordinary Date/string/number behavior remains
+  compatible.
+- The refresh changes only Akashatools and its evidence; consumer working copies
+  remain untouched until explicitly authorized.
+
 ## Phase 10 — release gates
 
 ### Alpha exit
@@ -825,14 +866,14 @@ Acceptance criteria:
   `(excepted modules)` source set.
 - [x] Stabilize default/named/category namespace architecture.
 - [x] Reconfirm the expanded universal core, generated declarations, and
-  contracts on both supported Node audit runtimes after Phase 9.9.
+  contracts on both supported Node audit runtimes after Phase 9.10.
 - [ ] Publish nothing until the user explicitly approves an alpha release.
 
 ### Beta exit
 
 - [x] Finish selected browser, Node, and HTTP surfaces.
 - [x] Pass all representative consumer compatibility fixtures.
-- [x] Re-freeze canonical names and option shapes after Phase 9.9 through the
+- [x] Re-freeze canonical names and option shapes after Phase 9.10 through the
   reviewed API snapshot, generated surfaces, types, and explicit decisions.
 - [x] Refresh security review and performance/bundle baselines.
 - [ ] Publish nothing until the user explicitly approves a beta release.
@@ -841,7 +882,8 @@ Acceptance criteria:
 
 - [x] Refresh API docs, migration guide, declarations, and package smoke tests.
 - [x] Resolve the newly reopened geo, input parsing, browser adapter, and storage
-  contract questions recorded in Phases 9.6-9.7 and their source ledger.
+  contract questions recorded in Phases 9.6-9.7, plus the structured timestamp
+  delta recorded in Phase 9.10 and their source ledgers.
 - [x] Reconfirm clean install and the local supported-runtime matrix on Node
   22.18.0, Node 24.18.0, Chromium, Firefox, and WebKit. Hosted workflow evidence
   remains a separate open gate under Phase 7.
@@ -934,7 +976,7 @@ Acceptance criteria:
 | 2026-07-18 | Keep meaningfully distinct variants around an atomic core. | Redundancy is harmful only when contracts are indistinguishable; runtime branding, descriptor normalization, array profiling, default creation, and recursive initialization answer separate questions and should compose rather than be collapsed. |
 | 2026-07-18 | Add a universal `data` category but still reject a universal application-schema category. | Generic type/default/shape behavior is shared and dependency-free, while Mongoose adapters, custom IDs, layout metadata, React components, and product models remain incompatible application policy. |
 | 2026-07-18 | Reopen generated granular subpaths as an ergonomics requirement. | Named and category imports already tree-shake, but explicit per-method paths make dependency intent and discovery more granular; they will remain subpaths of one package rather than separate packages. |
-| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 194 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
+| 2026-07-18 | Generate category indexes and granular wrappers from canonical declarations. | All 195 current method paths re-export the canonical function identity with default and named forms; generation-drift, type-resolution, package-install, identity, and actual bundle checks prevent wrapper divergence. |
 | 2026-07-18 | Provide dot-style deep queries without default prototype mutation. | A fluent wrapper can offer discoverable syntax safely; arbitrary `value.has()` requires global `Object.prototype` mutation, so normal package imports must never install it. |
 | 2026-07-18 | Reject even an explicit opt-in built-in augmentation entry. | Non-enumerability and pre-install collision checks cannot solve future collisions, cross-realm gaps, duplicate-package ownership, ambient-type mismatch, or safe uninstall races; `deepQuery(value).has(...)` supplies local dot syntax while descriptor snapshots enforce inert modern imports. |
 | 2026-07-18 | Raise the temporary expanded default-namespace guardrail to 75,000 raw/24,000 gzip. | The first `data` batch measures 61,279 raw/19,058 gzip while every focused fixture remains 321/252 and side-effect-only remains zero bytes; the widened cap leaves room for the already approved input/query surface while still failing unbounded growth. Recalibrate to the stabilized measured surface before RC. |
@@ -961,6 +1003,9 @@ Acceptance criteria:
 | 2026-07-18 | Treat packaged Markdown integrity as release behavior. | README and contract links are part of the npm artifact. Strict UTF-8 decoding plus target, package-selection, and heading-fragment checks prevent a green runtime suite from shipping unreadable or dead documentation while excluding link syntax shown only in code examples. |
 | 2026-07-18 | Treat the npm pack manifest as a bounded release contract. | Installing a tarball proves resolution but does not by itself prove the artifact is small, path-safe, dependency-free, non-executable, or free of development and credential-like filenames. Validate npm's exact file manifest and internal totals before using that same tarball in fresh consumers. |
 | 2026-07-18 | Resolve README imports as executable release contracts. | Syntax-highlighted examples and local link checks do not catch misspelled exports or missing imports. Parse every JavaScript fence, load each documented `akashatools` specifier through the package export map, and verify its imported bindings while keeping registry-installed execution as a separate post-publication gate. |
+| 2026-07-19 | Normalize structured timestamps around epoch milliseconds, then wrap them as Dates. | Mindspace repeats this atom in notification, reminder, task-defer, and worker paths. One core makes numeric-string units explicit, distinguishes Firestore `nanoseconds` from Protobuf-message `nanos`, applies native Date precision, and lets every higher-level date helper compose without importing application policy. |
+| 2026-07-19 | Never invoke timestamp-shaped application objects during generic normalization. | Calling arbitrary `toDate`, `valueOf`, accessors, or inherited fields crosses an active-code boundary and makes malformed data look valid. Own data descriptors and standard seconds/nanoseconds ranges keep conversion deterministic and side-effect free. |
+| 2026-07-19 | Recalibrate only the full-discovery namespace guardrail to 119,000 raw/36,000 gzip for structured timestamp support. | The final default-category fixture measures 117,720/35,428 after adding the shared timestamp contract. Focused root/category/granular imports remain 321/252 and side-effect-only output remains zero; the convenience namespace receives explicit review headroom without weakening focused budgets. |
 
 ## Definition of done
 

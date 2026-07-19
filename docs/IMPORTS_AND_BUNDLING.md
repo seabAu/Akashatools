@@ -64,7 +64,7 @@ npm run bundle:check
 ```
 
 The harness uses exactly pinned esbuild 0.28.1, minified ESM, an ES2022 target,
-and both raw and gzip byte counts. The 2026-07-18 measurements are:
+and both raw and gzip byte counts. The 2026-07-19 measurements are:
 
 | Fixture | Raw bytes | Gzip bytes | Raw/gzip budget |
 | --- | ---: | ---: | ---: |
@@ -72,8 +72,8 @@ and both raw and gzip byte counts. The 2026-07-18 measurements are:
 | Category `chunk` | 321 | 252 | 400 / 300 |
 | Category namespace `array.chunk` | 321 | 252 | 400 / 300 |
 | Granular `akashatools/array/chunk` | 321 | 252 | 400 / 300 |
-| Default flat `akasha.chunk` | 116,214 | 34,936 | 117,000 / 35,250 |
-| Default category `akasha.array.chunk` | 116,220 | 34,939 | 117,000 / 35,250 |
+| Default flat `akasha.chunk` | 117,714 | 35,426 | 119,000 / 36,000 |
+| Default category `akasha.array.chunk` | 117,720 | 35,428 | 119,000 / 36,000 |
 | Side-effect-only root import | 0 | 20 | 0 / 20 |
 
 The actual generated granular method import is byte-identical to the named-root
@@ -95,12 +95,12 @@ smaller in both raw and gzip output and is included in `npm run bundle:check`.
 
 | Consumer surface | Functions | Focused raw/gzip | Default raw/gzip | Raw/gzip saved |
 | --- | ---: | ---: | ---: | ---: |
-| Mindspace universal | 10 | 7,390 / 2,705 | 116,335 / 34,996 | 108,945 / 32,291 |
-| Portfolio rebuild | 4 | 5,718 / 2,335 | 116,304 / 34,973 | 110,586 / 32,638 |
-| COMPOSR | 7 | 5,398 / 2,023 | 116,323 / 34,994 | 110,925 / 32,971 |
-| SPLICR | 3 | 3,814 / 1,687 | 116,256 / 34,943 | 112,442 / 33,256 |
+| Mindspace universal | 10 | 8,800 / 3,132 | 117,835 / 35,487 | 109,035 / 32,355 |
+| Portfolio rebuild | 4 | 5,718 / 2,335 | 117,804 / 35,462 | 112,086 / 33,127 |
+| COMPOSR | 7 | 5,398 / 2,023 | 117,823 / 35,486 | 112,425 / 33,463 |
+| SPLICR | 3 | 3,814 / 1,687 | 117,756 / 35,435 | 113,942 / 33,748 |
 
-These 2026-07-18 esbuild 0.28.1 measurements use minified ES2022 ESM. They
+These 2026-07-19 esbuild 0.28.1 measurements use minified ES2022 ESM. They
 isolate Akashatools dependency cost rather than claiming a whole-application
 bundle result. Mindspace's Node-only containment helper has no universal-default
 equivalent and correctly remains a direct `akashatools/node` import.

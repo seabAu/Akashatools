@@ -194,6 +194,7 @@ drop-in compatibility.
 | `throttle` | function | universal | no input mutation | `akashatools/function/throttle` | None |
 | `toBinary` | number | universal | no input mutation | `akashatools/number/toBinary` | `Math.decToBinary` |
 | `toDate` | date | universal | no input mutation | `akashatools/date/toDate` | None |
+| `toEpochMilliseconds` | date | universal | no input mutation | `akashatools/date/toEpochMilliseconds` | None |
 | `toUnixSeconds` | date | universal | no input mutation | `akashatools/date/toUnixSeconds` | None |
 | `traverseObject` | object | universal | no input mutation | `akashatools/object/traverseObject` | None |
 | `typeOf` | validation | universal | no input mutation | `akashatools/validation/typeOf` | `Val.getType` |

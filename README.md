@@ -53,7 +53,26 @@ import { haversineDistance, normalizeGeoPosition } from "akashatools/geo";
 import { crc32, sha256Hex, sha256Json } from "akashatools/hash";
 import { debounce, memoize, once, throttle } from "akashatools/function";
 import { jaccardSimilarity } from "akashatools/collection";
+import { toDate, toEpochMilliseconds } from "akashatools/date";
 ```
+
+Date helpers accept ordinary Date-compatible values, Firestore-style
+`{ seconds, nanoseconds }` records, and Protobuf-message-style
+`{ seconds, nanos }` records without invoking object coercion methods or
+accessors:
+
+```js
+import { toDate, toEpochMilliseconds } from "akashatools/date";
+
+toEpochMilliseconds({ seconds: 1, nanoseconds: 500_000_000 }); // 1500
+toEpochMilliseconds({ seconds: 1, nanos: 250_000_000 }); // 1250
+toDate({ seconds: 1 }).toISOString(); // "1970-01-01T00:00:01.000Z"
+toEpochMilliseconds("1700000000", { numericStringUnit: "seconds" });
+```
+
+`toDate` preserves Date-string parsing for integer-only strings by default;
+`toEpochMilliseconds` treats them as milliseconds. Use `numericStringUnit` to
+select `"date"`, `"milliseconds"`, `"seconds"`, or `"reject"` explicitly.
 
 Geospatial helpers use GeoJSON `[longitude, latitude]` order by default and
 make legacy array order explicit:
