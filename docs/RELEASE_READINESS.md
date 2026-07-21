@@ -67,6 +67,7 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Node 22 source coverage | 98.25% lines / 89.82% branches / 97.26% functions |
 | Node 24 source coverage | 98.25% lines / 89.77% branches / 97.26% functions |
 | Browser tests | 18 passed across Chromium, Firefox, and WebKit |
+| Hosted CI | [Run 29838673334](https://github.com/seabAu/Akashatools/actions/runs/29838673334) passed on commit `355451b`: Node 22, Node 24, and Chromium/Firefox/WebKit |
 | Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
 | Default namespace maximum | 117,720 raw / 35,428 gzip; budget 119,000 / 36,000 |
 | Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |
@@ -108,16 +109,13 @@ opt-in package entry patches built-in constructors or prototypes.
 
 ## External gates still open
 
-1. Push the exact reviewed candidate only with explicit authorization, then
-   capture the configured hosted Node 22, Node 24, and browser workflow result
-   from a clean checkout. Local execution cannot prove hosted runner setup.
-2. With explicit authorization, migrate bounded areas of Mindspace, the
+1. With explicit authorization, migrate bounded areas of Mindspace, the
    portfolio rebuild, COMPOSR, and SPLICR. The behavioral AST refresh classifies
    all current parsed calls, result contexts, direct bindings, dynamic access,
    and malformed-file candidates, but representative fixtures and static
    evidence still cannot prove runtime values, nested alias identity, rendered
    fallbacks, or whole-application drop-in compatibility.
-3. Obtain explicit approval for the intended version, exact commit, npm
+2. Obtain explicit approval for the intended version, exact commit, npm
    dist-tag, provenance/trusted-publishing setup, tag, push, and publication.
 4. After publication, install the registry artifact and verify its integrity,
    provenance, file list, declarations, and documented imports before calling

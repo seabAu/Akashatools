@@ -118,4 +118,7 @@ lines, 89.82% branches, and 97.26% functions on Node 22, and 98.25% / 89.77% /
 97.26% on Node 24. Node's experimental branch counter can vary slightly between
 executions and runtimes while exercising asynchronous host paths. Playwright
 separately passed all 18 tests across Chromium, Firefox, and WebKit. The first
-hosted workflow result remains a distinct release gate.
+hosted workflow completed successfully on 2026-07-21: [CI run
+29838673334](https://github.com/seabAu/Akashatools/actions/runs/29838673334)
+passed Node 22, Node 24, and the Chromium/Firefox/WebKit browser job for commit
+`355451b`.
