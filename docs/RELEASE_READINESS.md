@@ -1,10 +1,11 @@
 # Release readiness
 
-> Status on 2026-07-19: the post-audit consumer refresh, structured timestamp
-> redesign, and complete local release-candidate evidence are finished. All local
-> gates pass on both supported Node runtimes and all three browser engines.
-> Hosted workflow evidence, bounded real-app migrations, and every push, tag,
-> automation, and publication action remain external approval gates.
+> Status on 2026-10-23: the post-audit consumer refresh and structured timestamp
+> redesign remain complete. After lockfile-only commit `f7707af`, the local Node
+> 22, tarball, package, and three-browser gates were rerun successfully; the
+> prior Node 24 matrix covers unchanged source. Hosted CI evidence, bounded
+> real-app migrations, and every push, tag, automation, and publication action
+> remain external approval gates.
 
 ## Current local candidate snapshot
 
@@ -68,6 +69,7 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Node 24 source coverage | 98.25% lines / 89.77% branches / 97.26% functions |
 | Browser tests | 18 passed across Chromium, Firefox, and WebKit |
 | Hosted CI | [Run 29838673334](https://github.com/seabAu/Akashatools/actions/runs/29838673334) passed on commit `355451b`: Node 22, Node 24, and Chromium/Firefox/WebKit |
+| 2026-10-23 lockfile refresh | Commit `f7707af` passed npm audit (0 vulnerabilities), all Node 22 local contract/coverage/package gates, and all 18 browser tests; source files are unchanged |
 | Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
 | Default namespace maximum | 117,720 raw / 35,428 gzip; budget 119,000 / 36,000 |
 | Side-effect-only import | 0 raw bytes / 20-byte empty gzip envelope |

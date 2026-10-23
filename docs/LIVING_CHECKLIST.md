@@ -1009,6 +1009,7 @@ Acceptance criteria:
 | 2026-07-19 | Recalibrate only the full-discovery namespace guardrail to 119,000 raw/36,000 gzip for structured timestamp support. | The final default-category fixture measures 117,720/35,428 after adding the shared timestamp contract. Focused root/category/granular imports remain 321/252 and side-effect-only output remains zero; the convenience namespace receives explicit review headroom without weakening focused budgets. |
 | 2026-07-19 | Snapshot reviewed CI action identities, not only their SHA syntax. | A random or unintended 40-character commit is immutable but not trusted. The workflow contract now binds each allowed GitHub-owned action to its independently refreshed v6 identity and fails on any unreviewed replacement. |
 | 2026-07-21 | Push the 2.0 candidate on a dedicated `v2` branch while preserving legacy `main`. | The public `main` tree matches preserved 1.0.2 baseline `3a245be`; `v2` at `355451b` isolates the breaking-line review and its first hosted CI run passed all Node and browser jobs. |
+| 2026-10-23 | Refresh local release evidence after the lockfile-only audit update. | Commit `f7707af` changes only dependency-audit lock metadata; npm audit reports zero vulnerabilities, and Node 22, exact tarball, bundle, documentation, type, and all three browser-engine gates pass without modifying consumer projects. |
 
 ## Definition of done
 
