@@ -38,13 +38,14 @@ Perform this only after the user authorizes release automation.
    approve deployments to it.
 3. Configure the `akashatools` package on npm with a GitHub Actions trusted
    publisher scoped to the exact repository, workflow filename, and environment.
-4. Add a dedicated publication workflow with only the permissions it needs:
+4. The dedicated `publish.yml` workflow uses only the permissions it needs:
    `contents: read` and `id-token: write`. Use npm CLI 11.5.1 or newer, the
    minimum documented for trusted publishing.
-5. Make publication depend on the already-green commit checks. The workflow
-   must verify that its requested version equals `package.json`, that the version
-   is absent from npm, and that the checked-out commit is the approved tagged
-   commit before it can run `npm publish`.
+5. Publication is tag-only and the protected environment blocks the publish job
+   pending deployment approval. The workflow verifies that the release tag equals
+   `v${package.json.version}` and resolves to the checked-out commit before it
+   can run `npm publish`. Prereleases deterministically use `next`; stable
+   versions use `latest`.
 6. Do not place a long-lived npm token in the repository or workflow when trusted
    publishing is available. Keep two-factor authentication enabled on maintainer
    accounts and retain a separately secured recovery path.

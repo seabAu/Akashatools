@@ -13,6 +13,7 @@ import {
 import { checkReadmeExamples, extractJavascriptExamples } from "../scripts/check-readme-examples.mjs";
 
 const workflowUrl = new URL("../.github/workflows/ci.yml", import.meta.url);
+const publishWorkflowUrl = new URL("../.github/workflows/publish.yml", import.meta.url);
 const packageUrl = new URL("../package.json", import.meta.url);
 const reviewedActionReferences = Object.freeze({
   "actions/checkout": "df4cb1c069e1874edd31b4311f1884172cec0e10",
@@ -47,6 +48,21 @@ test("hosted CI pins action identities and retains the supported runtime gates",
   assert.match(packageJson.scripts.check, /node --run check:hygiene/);
   assert.match(packageJson.scripts.check, /node --run check:markdown/);
   assert.match(packageJson.scripts.check, /node --run check:readme/);
+});
+
+test("trusted publishing is tag-only, environment-protected, and uses reviewed action identities", async () => {
+  const workflow = await readFile(publishWorkflowUrl, "utf8");
+  assertReviewedActionReferences(workflow, 2);
+  assert.match(workflow, /^\s{2}push:\r?\n\s{4}tags:\r?\n\s{6}- "v\*"$/m);
+  assert.match(workflow, /^permissions:\r?\n\s{2}contents: read\r?\n\s{2}id-token: write$/m);
+  assert.match(workflow, /^\s{4}environment: npm$/m);
+  assert.match(workflow, /^\s{4}timeout-minutes: 30$/m);
+  assert.match(workflow, /node-version: 24/);
+  assert.match(workflow, /package-manager-cache: false/);
+  assert.match(workflow, /npm run audit:release/);
+  assert.match(workflow, /verify-publish-candidate\.mjs --github-output/);
+  assert.match(workflow, /npm publish --access public --tag/);
+  assert.doesNotMatch(workflow, /NODE_AUTH_TOKEN|NPM_TOKEN/u);
 });
 
 test("documentation integrity helpers follow packaged Markdown link semantics", () => {
@@ -117,7 +133,7 @@ test("documentation integrity rejects escaping and missing package links", async
 });
 
 /** @param {string} workflow */
-function assertReviewedActionReferences(workflow) {
+function assertReviewedActionReferences(workflow, expectedCount = 4) {
   const actionReferences = [...workflow.matchAll(/^\s*- uses:\s+([^@\s]+)@([^\s#]+)/gm)].map(
     ([, action, reference]) => ({ action, reference }),
   );
@@ -126,7 +142,7 @@ function assertReviewedActionReferences(workflow) {
     [...new Set(actionReferences.map(({ action }) => action))].sort(),
     Object.keys(reviewedActionReferences).sort(),
   );
-  assert.equal(actionReferences.length, 4);
+  assert.equal(actionReferences.length, expectedCount);
   for (const { action, reference } of actionReferences) {
     assert.match(reference, /^[0-9a-f]{40}$/, `${action} must use an immutable full commit SHA`);
     assert.equal(reference, reviewedActionReferences[action], `${action} must use its reviewed commit identity`);

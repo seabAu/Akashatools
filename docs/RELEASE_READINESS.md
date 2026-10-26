@@ -115,7 +115,7 @@ opt-in package entry patches built-in constructors or prototypes.
    consumer, and COMPOSR's heavily dirty working tree must be isolated first.
    This does not establish whole-application drop-in compatibility.
 2. Obtain explicit approval for the intended version, exact commit, npm
-   dist-tag, provenance/trusted-publishing setup, tag, push, and publication.
+   dist-tag, npm account-side trusted-publisher setup, tag, push, and publication.
 3. After publication, install the registry artifact and verify its integrity,
    provenance, file list, declarations, and documented imports before calling
    the release complete.

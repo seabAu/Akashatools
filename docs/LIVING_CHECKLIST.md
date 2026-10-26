@@ -556,7 +556,10 @@ Acceptance criteria:
 - [x] Document a staged release runbook covering granular approval, exact
   candidate identity, hosted gates, npm trusted publishing/provenance, explicit
   dist-tags, registry-installed verification, and fix-forward recovery.
-- [ ] Add npm provenance/release automation only when publishing is authorized.
+- [x] Add tokenless npm trusted-publishing release automation. `publish.yml` is
+  tag-only, protected by the `npm` GitHub environment, pins reviewed Actions,
+  verifies the tag/commit/package version, and runs the full release audit before
+  publishing. npm account-side trusted-publisher setup remains an external gate.
 
 ## Phase 9 — dogfood in real consumers
 
