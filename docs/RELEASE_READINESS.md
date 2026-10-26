@@ -1,11 +1,9 @@
 # Release readiness
 
-> Status on 2026-10-23: the post-audit consumer refresh and structured timestamp
-> redesign remain complete. After lockfile-only commit `f7707af`, the local Node
-> 22, tarball, package, and three-browser gates were rerun successfully; the
-> prior Node 24 matrix covers unchanged source. The exact current candidate still
-> needs an authorized hosted run; bounded real-app migrations, every push, tag,
-> automation, and publication action remain external approval gates.
+> Status on 2026-10-26: the exact `6a58b42` candidate passed the hosted Node 22,
+> Node 24, and three-browser matrix. A bounded portfolio auth migration now
+> consumes the local v2 package alongside its retained 1.x dependency. Broader
+> real-app evidence, tagging, automation, and publication remain gated.
 
 ## Current local candidate snapshot
 
@@ -33,10 +31,10 @@ and credentials are excluded. Exact byte counts belong to the final immutable
 release candidate: embedding a compressed byte count inside a packaged document
 changes that count and can create a non-converging self-reference.
 
-The repository, issue tracker, and homepage metadata still target the existing
-public `seabAu/Akashatools` project. This local 2.0 repository has no Git remote
-configured, and no push, tag, registry write, consumer-project edit, or release
-automation change occurred during this work.
+The repository, issue tracker, and homepage metadata target the existing public
+`seabAu/Akashatools` project. The v2 branch is remote-backed while legacy `main`
+remains the preserved 1.0.2 baseline; no tag, registry write, or release
+automation change has occurred.
 
 Read-only checks on 2026-07-19 reconfirmed public GitHub `main` at
 `c52129b78e20b3d61f0c9765213264ffcda5180d`, and npm still exposes only 1.0.0,
@@ -68,7 +66,7 @@ separately passed all six browser behaviors in Chromium, Firefox, and WebKit.
 | Node 22 source coverage | 98.25% lines / 89.82% branches / 97.26% functions |
 | Node 24 source coverage | 98.25% lines / 89.77% branches / 97.26% functions |
 | Browser tests | 18 passed across Chromium, Firefox, and WebKit |
-| Hosted CI | [Run 29838673334](https://github.com/seabAu/Akashatools/actions/runs/29838673334) passed on `355451b`, and [run 30196288533](https://github.com/seabAu/Akashatools/actions/runs/30196288533) passed on `3f4b2bb`: Node 22, Node 24, and Chromium/Firefox/WebKit |
+| Hosted CI | [Run 40282730456](https://github.com/seabAu/Akashatools/actions/runs/40282730456) passed on exact candidate `6a58b42`: Node 22, Node 24, and Chromium/Firefox/WebKit |
 | 2026-10-23 lockfile refresh | Commit `f7707af` passed npm audit (0 vulnerabilities), all Node 22 local contract/coverage/package gates, and all 18 browser tests; source files are unchanged |
 | Focused import measurement | 321 raw / 252 gzip bytes; budget 400 / 300 |
 | Default namespace maximum | 117,720 raw / 35,428 gzip; budget 119,000 / 36,000 |
@@ -111,19 +109,14 @@ opt-in package entry patches built-in constructors or prototypes.
 
 ## External gates still open
 
-1. With explicit authorization, push the exact current candidate (`f7707af` plus
-   `d907643`) and capture its hosted Node 22, Node 24, and browser workflow
-   result. Earlier hosted runs prove the configured workflow, not this exact
-   unpushed candidate.
-2. With explicit authorization, migrate bounded areas of Mindspace, the
-   portfolio rebuild, COMPOSR, and SPLICR. The behavioral AST refresh classifies
-   all current parsed calls, result contexts, direct bindings, dynamic access,
-   and malformed-file candidates, but representative fixtures and static
-   evidence still cannot prove runtime values, nested alias identity, rendered
-   fallbacks, or whole-application drop-in compatibility.
-3. Obtain explicit approval for the intended version, exact commit, npm
+1. Extend bounded real-app evidence where it is safe. The portfolio legacy auth
+   hook now uses v2 `findDeepValue` through a local alias and builds successfully;
+   Mindspace has no current package imports, SPLICR is not a JavaScript package
+   consumer, and COMPOSR's heavily dirty working tree must be isolated first.
+   This does not establish whole-application drop-in compatibility.
+2. Obtain explicit approval for the intended version, exact commit, npm
    dist-tag, provenance/trusted-publishing setup, tag, push, and publication.
-4. After publication, install the registry artifact and verify its integrity,
+3. After publication, install the registry artifact and verify its integrity,
    provenance, file list, declarations, and documented imports before calling
    the release complete.
 

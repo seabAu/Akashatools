@@ -583,13 +583,17 @@ edits. When authorized, migrate one bounded area at a time.
   finds zero dynamic imported-root reads, and reproduces two ambient candidates
   in one malformed `_unused` Mindspace file. See
   `docs/inventory/CONSUMER_BEHAVIOR_AUDIT_2026-07-18.md`.
+- [x] Migrate one bounded real application path: the portfolio legacy auth hook
+  now imports v2 `findDeepValue` through a local alias while retaining its broad
+  1.x dependency. Its 3,509-module Vite build and nested auth-response lookup
+  contract pass.
 - [ ] Confirm no source app depended on swallowed errors, mutation, loose coercion,
   or environment globals accidentally. Static evidence now proves no discarded
   call results, no dynamic root reads, two unused `handleFetch` imports, two
   shallow-copy mutator calls, seven flattening calls with residual nested-alias
   risk, three sentinel-producing table adapters, and the malformed ambient
-  reads. Runtime values and rendered/application intent still require an
-  authorized bounded migration.
+  reads. The portfolio auth migration validates one recursive lookup path;
+  broader runtime values and rendered/application intent remain unproven.
 - [x] Feed validated improvements back into the canonical API before 2.0 RC.
   The refresh contributed bounded single-flight loaders, deterministic JSON,
   text measurement/chunking, byte/duration/relative-time formatting, strict JSON
@@ -1011,6 +1015,7 @@ Acceptance criteria:
 | 2026-07-21 | Push the 2.0 candidate on a dedicated `v2` branch while preserving legacy `main`. | The public `main` tree matches preserved 1.0.2 baseline `3a245be`; `v2` at `355451b` isolates the breaking-line review and its first hosted CI run passed all Node and browser jobs. |
 | 2026-10-23 | Refresh local release evidence after the lockfile-only audit update. | Commit `f7707af` changes only dependency-audit lock metadata; npm audit reports zero vulnerabilities, and Node 22, exact tarball, bundle, documentation, type, and all three browser-engine gates pass without modifying consumer projects. |
 | 2026-10-23 | Keep hosted CI evidence candidate-specific. | Runs `29838673334` and `30196288533` passed for the earlier pushed `v2` commits; the newer local lockfile/evidence commits still require an explicitly authorized push and hosted matrix before any release decision. |
+| 2026-10-26 | Validate the exact v2 candidate in hosted CI and migrate one real consumer path. | GitHub run `40282730456` passed Node 22, Node 24, and all browsers for `6a58b42`; portfolio commit `ec0fe29` keeps 1.x intact while its auth hook adopts v2's bounded deep-key lookup through a local alias. |
 
 ## Definition of done
 
